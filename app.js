@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const querystring = require('querystring');
 const cors=require("cors")
+const path=require('path')
 
 const PORT=config.get("port")||5000
 
@@ -20,10 +21,16 @@ const server=https.createServer(options,app)
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json({extended:true}))
-
 app.use('/api/auth',require('./routes/auth.routes.js'))
 app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
+if(process.env.NODE_ENV==='production'){
+  app.use(express.static,path.join(__dirname,'client-vite','dist'))
+  app.get('*',(res,req)=>{
+    res.sendFile(path.resolve(__dirname,'client','dist','index.html'))
+  })
+}
+
 
 async function start(){
   try {
