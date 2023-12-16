@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {baseUrl} from "../config/config"
 
 export const plantsApi = createApi({
   reducerPath: "plants/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://192.168.24.215:5000/api/plant",
+    baseUrl: baseUrl+"/api/plant",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token
       if (token) {

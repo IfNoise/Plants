@@ -11,12 +11,18 @@ const path=require('path')
 const PORT=config.get("port")||5000
 
 const app=express()
-
-const options = {
+let options
+if(process.env.NODE_ENV==='development'){
+options = {
 
   key: fs.readFileSync(__dirname + '/ssl/homeserver.key', 'utf8'),
  cert: fs.readFileSync(__dirname + '/ssl/homeserver.crt', 'utf8')
-};
+};}else{
+  options = {
+
+    key: fs.readFileSync(__dirname + '/ssl/labserver.key', 'utf8'),
+   cert: fs.readFileSync(__dirname + '/ssl/labserver.crt', 'utf8')
+}}
 const server=https.createServer(options,app)
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,6 +31,7 @@ app.use('/api/auth',require('./routes/auth.routes.js'))
 app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
 if(process.env.NODE_ENV==='production'){
+
   app.use(express.static,path.join(__dirname,'client-vite','dist'))
   app.get('*',(res,req)=>{
     res.sendFile(path.resolve(__dirname,'client','dist','index.html'))
