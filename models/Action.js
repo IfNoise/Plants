@@ -14,6 +14,15 @@ const schema = new Schema({
     number: Number,
   },
   source: Types.ObjectId,
+  trouble:{
+    type:String,//Difficite,Insects,Virus
+    difficite:String,//Nitrogen,
+    insect:String,
+
+  },
+  note:{
+    
+  },
   potSize:String,
   reason:String,
   userReason:String,

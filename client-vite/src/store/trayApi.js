@@ -4,7 +4,7 @@ import {baseUrl} from "../config/config"
 export const trayApi = createApi({
   reducerPath: "tray/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+"/api/",
+    baseUrl: baseUrl+"/tray",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token
       if (token) {
@@ -16,14 +16,14 @@ export const trayApi = createApi({
   endpoints: (build) => ({
     getTray: build.query({
       query: () => ({
-        url: "tray",
+        url: "",
       }),
       providesTags:['Tray'],
     }),
     addToTray: build.mutation({
       query(body) {
         return {
-          url: `tray/add`,
+          url: `/add`,
           method: "POST",
           body,
         };
@@ -33,7 +33,7 @@ export const trayApi = createApi({
     removeFromTray: build.mutation({
       query(body) {
         return {
-          url: `tray/remove`,
+          url: `/remove`,
           method: "POST",
           body,
         };
@@ -43,7 +43,7 @@ export const trayApi = createApi({
     printTray: build.mutation({
       query() {
         return {
-          url: `tray/print`,
+          url: `/print`,
           method: "POST",
         };
       }
@@ -51,7 +51,7 @@ export const trayApi = createApi({
     clearTray: build.mutation({
       query(body) {
         return {
-          url: `tray/clear`,
+          url: `/clear`,
           method: "POST",
           body,
         };

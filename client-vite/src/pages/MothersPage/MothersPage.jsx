@@ -1,22 +1,20 @@
-import { Box,Typography ,Alert, CircularProgress} from "@mui/material";
+import { Box,Typography ,Alert, CircularProgress, Stack, Grid} from "@mui/material";
 import { MotherCard } from "./MotherCard/MotherCard";
 import { useGetPlantsQuery } from "../../store/plantsApi";
 export const MothersPage = () => {
   const {isLoading,isError,error,data}=useGetPlantsQuery({state:"MotherPlant"})
-  const plantDetails = (id) => {
-    navigate(`/plant/${id}`)
-  };
   return (
-    <div>
+    <Box sx={{maxHeight:"100%"}}>
       <Typography variant="h3"> Mothers Page</Typography>
-    <Box>
+    
     {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
+      <Grid container spacing={1}>
       {data?.map((obj)=>{
         return (<MotherCard key ={obj._id}plant={obj}/>)
       })}
       
-      </Box>  
-    </div>
+      </Grid>  
+    </Box>
   );
 };

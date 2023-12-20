@@ -3,7 +3,7 @@ import { baseUrl } from '../config/config'
 
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+'/api/auth',
+    baseUrl: baseUrl+'/auth',
     prepareHeaders: (headers, { getState }) => {
       const token = getState() .auth.token
       if (token) {

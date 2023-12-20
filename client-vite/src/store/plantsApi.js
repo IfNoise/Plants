@@ -4,7 +4,7 @@ import {baseUrl} from "../config/config"
 export const plantsApi = createApi({
   reducerPath: "plants/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+"/api/plant",
+    baseUrl: baseUrl+"/plant",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token
       if (token) {
@@ -21,7 +21,7 @@ export const plantsApi = createApi({
           filter: JSON.stringify(filter),
         },
       }),
-      providesTags:['Action'],
+      providesTags:['Action','Plants'],
     }),
     addAction: build.mutation({
       query(body) {
@@ -32,8 +32,18 @@ export const plantsApi = createApi({
         }
       },
       invalidatesTags: ['Action'],
+    }),
+    newPlant: build.mutation({
+      query(body) {
+        return {
+          url: `new_plant`,
+          method: 'POST',
+          body
+        }
+      },
+      invalidatesTags: ['Plants'],
     })
   }),
 });
 
-export const { useGetPlantsQuery , useAddActionMutation,refetch } = plantsApi;
+export const { useGetPlantsQuery , useAddActionMutation,useNewPlantMutation, refetch } = plantsApi;

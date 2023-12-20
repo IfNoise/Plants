@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch} from "react-redux";
 import {
   addReason
-} from "../../../store/newActionSlice";
+} from "../../store/newActionSlice";
 import {
   Box,
   FormControl,

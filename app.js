@@ -30,6 +30,7 @@ app.use(express.json({extended:true}))
 app.use('/api/auth',require('./routes/auth.routes.js'))
 app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
+app.use('/api/strain',require('./routes/strain.routes.js'))
 if(process.env.NODE_ENV==='production'){
 
   app.use(express.static,path.join(__dirname,'client-vite','dist'))

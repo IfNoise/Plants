@@ -1,38 +1,37 @@
 import { useNavigate } from "react-router-dom";
 import { Alert,CircularProgress} from "@mui/material";
 import { DataGrid,GridToolbar,} from "@mui/x-data-grid";
-import { useGetPlantsQuery } from "../store/plantsApi";
+import { useGetStrainsQuery } from "../store/strainApi";
+import { NewStrainButton } from "../components/NewStrainButton/NewStrainButton";
 
 
 function getRowId(row) {
   return row._id;
 }
 const columns = [
-  { field: "strain", headerName: "Strain", width: 200 },
+  { field: "name",
+   headerName: "Strain name",
+    width: 300 },
   {
-    field: "pheno",
-    headerName: "Pheno",
-    width: 100,
+    field: "seedBank",
+    headerName: "Seed Bank",
+    width: 200,
     editable: false,
   },
   {
-    field: "type",
-    headerName: "Type",
-    width: 60,
+    field: "counter",
+    headerName: "Counter",
+    width: 150,
     editable: false,
-  },
-  {
-    field: "state",
-    headerName: "State",
-  },
+  }
 ];
-export const PlantsPage = () => {
+export const StrainsPage = () => {
   const navigate = useNavigate();
-  const {isLoading,isError,error,data}=useGetPlantsQuery({})
+  const {isLoading,isError,error,data}=useGetStrainsQuery({})
   
 
   const plantDetails = (id) => {
-    navigate(`/plant/${id}`)
+    navigate(`/strain/${id}`)
   };
   
   return (
@@ -40,7 +39,7 @@ export const PlantsPage = () => {
       {isError&& <Alert severity="error">{error.message}</Alert>}
       {isLoading&& <CircularProgress />}
        { data && <DataGrid
-        sx={{width:'100vh',alignContent:'center'}}
+        sx={{width:'100%',alignContent:'center'}}
         getRowId={getRowId}
         rows={data}
         columns={columns}
@@ -50,6 +49,7 @@ export const PlantsPage = () => {
         }}
         onCellDoubleClick={(params)=>{plantDetails(params.row._id)}}
       />}
+      <NewStrainButton/>
     </>
   );
 };

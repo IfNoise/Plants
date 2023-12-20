@@ -3,9 +3,13 @@ const Pheno=require('./Pheno')
 
 
 const strain=new Schema({
-
-
-  phenos:[Pheno]
+  name: {type:String},
+  seedBank:{type:String},
+  phenos:[Pheno],
+  seedType:String,
+  counter:Number,
+  lastIdx:Number,
+  description:String
 })
 
 

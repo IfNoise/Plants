@@ -2,7 +2,7 @@ import { useDispatch} from "react-redux";
 import {
 
   addClonesNumber,
-} from "../../../store/newActionSlice";
+} from "../../store/newActionSlice";
 import {
   TextField,
 } from "@mui/material";

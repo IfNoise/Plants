@@ -6,16 +6,16 @@ import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Typography from "@mui/material/Typography";
 
-const actionColor={
-  Start:'success',
-  Picking:'secondary',
-  Relocation:'info',
-  MakeMother:'primary',
-  Note:'info',
-  CuttingClones:'warning',
-  Blooming:'success',
-  Stop:'error',
-  Harvest:'success'
+const actionData={
+  Start:{color:'success',text:'Start'},
+  Picking:{color:'secondary',text:'Picking'},
+  Relocation:{color:'info',text:'Relocation'},
+  MakeMother:{color:'primary',text:'Make Mother'},
+  Note:{color:'info',text:'Note'},
+  CuttingClones:{color:'warning',text:'Cutting Clones'},
+  Blooming:{color:'success',text:'Bluming Start'},
+  Stop:{color:'error',text:'Stop'},
+  Harvest:{color:'success',text:'Harvest'},
 }
 
 export default function TimelineAction({ action }) {
@@ -23,7 +23,7 @@ export default function TimelineAction({ action }) {
     <TimelineItem>
       <TimelineOppositeContent
         sx={{ m: "auto 0" }}
-        align="right"
+        align="center"
         variant="body2"
         color="text.secondary"
       >
@@ -31,11 +31,11 @@ export default function TimelineAction({ action }) {
       </TimelineOppositeContent>
       <TimelineSeparator>
         <TimelineConnector />
-        <TimelineDot color={actionColor[action.type]}></TimelineDot>
+        <TimelineDot color={actionData[action.type]?.color}></TimelineDot>
         <TimelineConnector />
       </TimelineSeparator>
       <TimelineContent sx={{ py: "12px", px: 2 }}>
-        <Typography variant="h6">{action.type}</Typography>
+        <Typography variant="h6">{actionData[action.type]?.text}</Typography>
         {action?.oldAddress && (
           <Typography variant="caption">
             {action.oldAddress.building}
@@ -51,6 +51,9 @@ export default function TimelineAction({ action }) {
         }
         {action?.userReason && 
           <Typography variant="caption">{action.userReason}</Typography>
+        }
+        {action.note?.type && 
+          <Typography variant="caption">{action.note.type}</Typography>
         }
          {action?.clonesNumber && 
           <Typography variant="caption">Cut {action.clonesNumber} clones</Typography>

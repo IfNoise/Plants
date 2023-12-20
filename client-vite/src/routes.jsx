@@ -6,7 +6,8 @@ import {
 import { ClonersPage } from "./pages/ClonersPage/ClonersPage";
 import { MothersPage } from "./pages/MothersPage/MothersPage";
 import { PlantsPage } from "./pages/PlantsPage";
-import { SeedsPage} from "./pages/SeedsPage";
+import { StrainsPage} from "./pages/StrainsPage";
+import { StrainDetailPage} from "./pages/StrainDetailPage";
 import { Layout } from "./pages/Layout";
 import { PlantDetailPage } from "./pages/PlantDetailPage/PlantDetailPage";
 import { AuthPage } from "./pages/AuthPage";
@@ -18,7 +19,7 @@ export const Router = createBrowserRouter(
     <Route path="/" element={<Layout />}>
       <Route index element={<PlantsPage />} />
       
-      <Route path="seeds" element={<SeedsPage />} />
+      <Route path="strains" element={<StrainsPage />} />
 
 
       <Route path="cloners" element={<ClonersPage />} />
@@ -28,6 +29,8 @@ export const Router = createBrowserRouter(
       <Route path="plants" element={<PlantsPage />} />
 
       <Route path="plant/:id" element={<PlantDetailPage />} />
+
+      <Route path="strain/:id" element={<StrainDetailPage />} />
       
       
     </Route>

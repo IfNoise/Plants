@@ -8,7 +8,7 @@ import {
   addTray,
   addNumber,
   addShelf,
-} from "../../../store/newActionSlice";
+} from "../../store/newActionSlice";
 import {
   Box,
   FormControl,

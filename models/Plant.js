@@ -7,6 +7,7 @@ const plant = new Schema({
   strain: { type: String, required: true },
   pheno: { type: String, required: true },
   type: { type: String }, //Seed,Clone
+  gender:String,
   group: String,
   //================
   state: { type: String, required: true, default: "Cloning" }, //new,Germination,Cloning,Growing,Blooming,Stopped,Harvested,MotherPlant

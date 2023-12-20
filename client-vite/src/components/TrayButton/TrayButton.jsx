@@ -29,7 +29,7 @@ export const TrayButton = () => {
         color="inherit"
         onClick={buttonHandler}
       >
-        <Badge badgeContent={data?.length} color="error">
+        <Badge badgeContent={data?.length||'0'} color="error">
           <FolderSpecialIcon />
         </Badge>
       </IconButton>
@@ -49,9 +49,9 @@ export const TrayButton = () => {
       >
         {isError && <Alert severity="error">Error</Alert>}
         {isLoading && <CircularProgress />}
-        {data?.map((obj, i) => (
-          <TrayItem key={i} />
-        ))}
+        {data?.length?data.map((plant, i) => (
+          <TrayItem key={i} plant={plant}/>
+        )):''}
         <Stack direction="row" spacing={1}>
         <IconButton onClick={toggleOpen}>
           <CloseIcon />

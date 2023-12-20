@@ -6,36 +6,49 @@ const auth = require("../middlewares/auth.middleware");
 const router = Router();
 const fs = require("fs");
 const { log } = require("console");
+const Strain = require("../models/Strain");
 
-router.post("/new", auth, async (req, res) => {
+router.post("/new_plant", auth, async (req, res) => {
   try {
-    const obj = req.body.plant;
-
-    const plant = new Plant(obj);
-    if (plant.type === "clone") {
-      plant.state = "Cloning";
-    } else {
-      plant.state = "Germination";
-    }
-    plant.currentAddress = {
-      building: "Hangar1",
-      room: "Laboratory",
-      row: 4,
-      tray: 1,
-    };
+    const strain = Strain.findById(req.body.strain)
+    const form=req.body.form
     const user = User.findById(req.user.userId, "username").exec();
-    console.log("user name", user);
 
-    plant.actions.push({
-      author: "gdfhgf",
-      type: "Start",
-    });
-    await plant.save();
-    res.status(201).json(plant);
+    const number = (number>strain.counter)?strain.counter:form.seedsNumber;
+    const start=strain.lastIdx
+    const newPlants = [];
+    for (let index = start; index < number; index++) {
+      let pheno=strain.code+'#'+index;
+      let firstAction = {
+        date: Date.now(),
+        author:user,
+        type: "Start",
+        gender:"undefunded",
+        source: strain._id,
+      };
+      newPlants.push({
+        strain: strain.name,
+        pheno,
+        type: "Seed",
+        state: "Germination",
+        actions: [firstAction],
+      });
+      strain.phenos.push({
+        idx:index
+      })
+    }
+
+    await Plant.insertMany(newPlants);
+    const current = strain.counter;
+    const newCounter = current - number;
+    strain.set("counter", newCounter);
+    await strain.save();
+    res.status(201).json(strain);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
+
 router.get("/strains", auth, async (req, res) => {
   try {
     const pipeline = [
@@ -78,10 +91,9 @@ router.get("/clones", auth, async (req, res) => {
     return res.status(500).json({ message: "Something wants wrong4" });
   }
 });
-router.get("/plants",auth, async (req, res) => {
+router.get("/plants", auth, async (req, res) => {
   try {
     const filter = JSON.parse(req.query.filter);
-    console.log(filter);
 
     const plants = await Plant.find(filter);
     res.json(plants);
@@ -90,16 +102,19 @@ router.get("/plants",auth, async (req, res) => {
   }
 });
 
-router.post("/new_action",auth, async (req, res) => {
+router.post("/new_action", auth, async (req, res) => {
   try {
+    const user = await User.findById(req.user.userId)
     const data = req.body.action;
     const id = req.body.id;
     const action = {};
+    action.author=user.username;
     id.map(async (idx) => {
       const plant = await Plant.findById(idx);
       action.type = data.actionType;
       switch (action.type) {
         case "Note": {
+          if (data.note) action.note = data.note;
           break;
         }
         case "Picking": {
@@ -140,13 +155,13 @@ router.post("/new_action",auth, async (req, res) => {
         }
         case "CuttingClones": {
           const number = data.clonesNumber;
-          console.log(number)
-          
+          console.log(number);
+
           action.clonesNumber = number;
           const newClones = [];
           for (let index = 0; index < number; index++) {
             let firstAction = {
-              date:Date.now(),
+              date: Date.now(),
               type: "Start",
               source: plant.id,
             };
@@ -159,13 +174,13 @@ router.post("/new_action",auth, async (req, res) => {
               actions: [firstAction],
             });
           }
-         
+
           await Plant.insertMany(newClones);
-          const current =plant.cloneCounter||0
+          const current = plant.cloneCounter || 0;
           const newCounter = current + number;
 
-          console.log(newCounter)
-          
+          console.log(newCounter);
+
           plant.set("cloneCounter", newCounter);
           break;
         }
@@ -181,6 +196,5 @@ router.post("/new_action",auth, async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-
 
 module.exports = router;

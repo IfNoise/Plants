@@ -164,8 +164,8 @@ export const Layout = () => {
               href: "/plants",
             },
             {
-              text: "Cloners",
-              href: "/cloners",
+              text: "Strains",
+              href: "/strains",
             },
           ].map((obj, index) => (
             <ListItem key={obj.text} disablePadding>

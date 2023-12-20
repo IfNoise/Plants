@@ -1,6 +1,5 @@
 import { useDispatch,useSelector } from "react-redux";
-import { addPotSize } from "../../../store/newActionSlice";
-import PropTypes from "prop-types";
+import { addPotSize } from "../../store/newActionSlice";
 import {
   Box,
   FormControl,
@@ -38,7 +37,4 @@ export const PickingFields = () => {
       </FormControl>
     </Box>
   );
-};
-PickingFields.propTypes = {
-  output: PropTypes.func,
 };

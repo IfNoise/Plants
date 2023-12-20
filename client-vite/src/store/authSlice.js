@@ -21,6 +21,6 @@ export const { setCredentials } = slice.actions
 
 export default slice.reducer
 
-export const selectCurrentUser=(state)=>state.auth.user
+export const selectCurrentUser=(state)=>state?.auth.user
 
 export const selectIsAuth = (state) => state.auth.isAuthenticated

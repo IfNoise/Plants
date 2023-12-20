@@ -48,11 +48,14 @@ export const newActionSlice=createSlice({
     clear: (state)=>{
    return {}
     },
-
+    addNoteType:(state,action)=>{
+      state['note']={}
+       state.note.type=action.payload
+    },
   }
 })
 
 
-export const {addType,addAuthor,addPotSize,addBuilding,addRoom,addRack,addShelf,addRow,addTray,addClonesNumber,addNumber,addReason,addUserReason,clear}=newActionSlice.actions
+export const {addType,addAuthor,addPotSize,addBuilding,addRoom,addRack,addShelf,addRow,addTray,addClonesNumber,addNumber,addReason,addUserReason,addNoteType,clear}=newActionSlice.actions
 
 export default newActionSlice.reducer
