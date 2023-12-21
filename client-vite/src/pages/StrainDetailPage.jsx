@@ -3,12 +3,12 @@ import { DataGrid,GridToolbar,} from "@mui/x-data-grid";
 import { useGetStrainsQuery } from "../store/strainApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { NewPlantButton } from "../components/NewPlantButton/NewPlantButton";
 
 function getRowId(row) {
-  return row._id;
+  return row.idx;
 }
 const columns = [
-  { field: "code", headerName: "Code", width: 200 },
   {
     field: "idx",
     headerName: "#",
@@ -29,9 +29,10 @@ export const StrainDetailPage = () => {
   const phenoDetails = (id) => {
     navigate(`/pheno/${id}`)
   };
-  useEffect(()=>{
-    refetch()
-  },[])
+  // useEffect(()=>{
+  //   refetch()
+  // },[])
+
   return (
     <>
       {isError&& <Alert severity="error">{error.message}</Alert>}
@@ -39,14 +40,15 @@ export const StrainDetailPage = () => {
        { data && <DataGrid
         sx={{width:'100%',alignContent:'center'}}
         getRowId={getRowId}
-        rows={data.phenos||[]}
+        rows={data[0].phenos}
         columns={columns}
         initialState={{}} 
         slots={{
           toolbar: GridToolbar,
         }}
-        onCellDoubleClick={(params)=>{phenoDetails(params.row.code+'#'+params.row.idx)}}
+        onCellDoubleClick={(params)=>{phenoDetails(data[0].code+'#'+params.row.idx)}}
       />}
+      <NewPlantButton strain={id}/>
     </>
   );
 };

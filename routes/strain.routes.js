@@ -23,13 +23,15 @@ router.post("/add", async (req, res) => {
   try {
     const strain={
       name:req.body.name,
+      code:req.body.code,
       seedBank:req.body.seedBank,
+      seedType:req.body.seedType,
       counter:req.body.number,
       description:req.body.description
     }
 
     await Strain.create(strain);
-    res.json({ message: "Item is added" });
+    res.json({ message: "Strain is added" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

@@ -12,9 +12,18 @@ const columns = [
   { field: "name",
    headerName: "Strain name",
     width: 300 },
+    { field: "code",
+   headerName: "Strain code",
+    width: 150 },
   {
     field: "seedBank",
     headerName: "Seed Bank",
+    width: 200,
+    editable: false,
+  },
+  {
+    field: "seedType",
+    headerName: "Seeds Type",
     width: 200,
     editable: false,
   },

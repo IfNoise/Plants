@@ -7,9 +7,6 @@ import {
   Popover,
   Typography,
   TextField,
-  InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import AddIcon from "@mui/icons-material/Add";
@@ -40,7 +37,7 @@ export const NewPlantButton = ({strain}) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnack({ open: true, severity: "success", message: "Action is added" });
+      setSnack({ open: true, severity: "success", message: "Plant is added" });
     }
   }, [isSuccess, setSnack]);
 
@@ -82,40 +79,18 @@ export const NewPlantButton = ({strain}) => {
         }}
       >
         <Typography sx={{ p: 2 }} gutterBottom variant="h5" component="div">
-          New Action
+          New Plant
         </Typography>
         <Stack sx={{ p:'2px', width: 300 }} spacing={2}>
           <FormControl variant="outlined" sx={{ my:'2px', minWidth: 200 }}>
             <TextField
-              required
-              name="name"
-              label="Strain Name"
-              onChange={changeHandler}
-            />
-            <TextField
-              required
-              name="seedBank"
-              label="Seed Bank"
-              onChange={changeHandler}
-            />
-            <InputLabel id="seed-label">Seed Type</InputLabel>
-            <Select
-              labelId="seed-label"
-              name="seedType"
-              label="Seed Type"
-              onChange={changeHandler}
-            >
-              <MenuItem value="Feminised">Feminised</MenuItem>
-              <MenuItem value="Regular">Regular</MenuItem>
-            </Select>
-            <TextField
-              name="description"
-              label="Description"
+              name="group"
+              label="Group"
               onChange={changeHandler}
             />
 
             <TextField
-              name="number"
+              name="seedsNumber"
               type="number"
               InputLabelProps={{
                 shrink: true,
@@ -132,5 +107,5 @@ export const NewPlantButton = ({strain}) => {
   );
 };
 NewPlantButton.propTypes = {
-  strain: PropTypes.object,
+  strain: PropTypes.string,
 };

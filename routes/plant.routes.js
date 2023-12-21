@@ -10,18 +10,18 @@ const Strain = require("../models/Strain");
 
 router.post("/new_plant", auth, async (req, res) => {
   try {
-    const strain = Strain.findById(req.body.strain)
+    const strain = await Strain.findById(req.body.strain)
     const form=req.body.form
-    const user = User.findById(req.user.userId, "username").exec();
+    const user = await User.findById(req.user.userId, "username")
 
-    const number = (number>strain.counter)?strain.counter:form.seedsNumber;
-    const start=strain.lastIdx
+    const number = form.seedsNumber;
+    const start=strain?.lastIdx||1
     const newPlants = [];
-    for (let index = start; index < number; index++) {
+    for (let index = start; index <= number; index) {
       let pheno=strain.code+'#'+index;
       let firstAction = {
         date: Date.now(),
-        author:user,
+        author:user.username,
         type: "Start",
         gender:"undefunded",
         source: strain._id,
@@ -31,17 +31,20 @@ router.post("/new_plant", auth, async (req, res) => {
         pheno,
         type: "Seed",
         state: "Germination",
+        group:form?.group||null,
         actions: [firstAction],
       });
-      strain.phenos.push({
+      strain.phenos.create({
         idx:index
       })
     }
 
     await Plant.insertMany(newPlants);
-    const current = strain.counter;
-    const newCounter = current - number;
+    const currentCounter = strain.counter;
+    const currentLIdx=strain.lastIdx||0;
+    const newCounter = currentCounter - number;
     strain.set("counter", newCounter);
+    strain.set('lastIdx',currentLIdx+number);
     await strain.save();
     res.status(201).json(strain);
   } catch (error) {

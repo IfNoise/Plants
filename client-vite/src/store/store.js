@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from '@reduxjs/toolkit/query'
 import { plantsApi } from "./plantsApi";
 import { authApi } from "./authApi";
 import newActionSliceReducer from "./newActionSlice";
@@ -22,3 +23,5 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([plantsApi.middleware, authApi.middleware,trayApi.middleware,strainApi.middleware,localStorageMiddleware]),
 });
+
+setupListeners(store.dispatch)

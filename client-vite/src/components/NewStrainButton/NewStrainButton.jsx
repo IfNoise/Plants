@@ -12,11 +12,6 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
-import CancelIcon from "@mui/icons-material/Cancel";
-import ContentCutIcon from "@mui/icons-material/ContentCut";
 import AddIcon from "@mui/icons-material/Add";
 
 import { SnackbarContext } from "../../context/SnackbarContext";
@@ -45,7 +40,7 @@ export const NewStrainButton = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setSnack({ open: true, severity: "success", message: "Action is added" });
+      setSnack({ open: true, severity: "success", message: "Strain is added" });
     }
   }, [isSuccess, setSnack]);
 
@@ -89,46 +84,53 @@ export const NewStrainButton = () => {
         <Typography sx={{ p: 2 }} gutterBottom variant="h5" component="div">
           New Action
         </Typography>
-        <Stack sx={{ p:'2px', width: 300 }} spacing={2}>
-          <FormControl variant="outlined" sx={{ my:'2px', minWidth: 200 }}>
+        <Stack sx={{ p: "2px", width: 300 }} spacing={1}>
+          <FormControl variant="outlined" >
             <TextField
               required
               name="name"
               label="Strain Name"
               onChange={changeHandler}
             />
+           <FormControl variant="outlined"> <TextField name="code" label="Code" onChange={changeHandler} /></FormControl>
+          </FormControl>
+          <FormControl>
             <TextField
               required
               name="seedBank"
               label="Seed Bank"
               onChange={changeHandler}
             />
+          </FormControl>
+          <FormControl>
             <InputLabel id="seed-label">Seed Type</InputLabel>
             <Select
               labelId="seed-label"
               name="seedType"
               label="Seed Type"
+              value={form?.seedType || ""}
               onChange={changeHandler}
             >
               <MenuItem value="Feminised">Feminised</MenuItem>
               <MenuItem value="Regular">Regular</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl>
             <TextField
               name="description"
               label="Description"
               onChange={changeHandler}
             />
-
+          </FormControl>
+          <FormControl>
             <TextField
               name="number"
               type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
               label="Number of seeds"
               onChange={changeHandler}
             />
           </FormControl>
+
           <Button onClick={newStrain}>Ok</Button>
           <Button onClick={handleCancel}>Cancel</Button>
         </Stack>
