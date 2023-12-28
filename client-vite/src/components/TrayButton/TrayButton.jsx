@@ -29,7 +29,7 @@ export const TrayButton = () => {
         color="inherit"
         onClick={buttonHandler}
       >
-        {data&&<Badge badgeContent={data?.tray.length||'0'} color="error">
+        {data.tray?.length&&<Badge badgeContent={data?.tray.length||'0'} color="error">
           <FolderSpecialIcon />
         </Badge>}
       </IconButton>
