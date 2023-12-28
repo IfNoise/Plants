@@ -8,30 +8,31 @@ const fs = require("fs");
 router.get("/", async (req, res) => {
   try {
     const data = await TrayItem.find({}, "plantId").exec();
-    if (data) {
-      const tray = await Promise.all(
-        data.map(async (plant, id) => {
-          const inputPlant = await Plant.findById(plant.plantId);
+    
+
+    const tray = await Promise.all(
+      data.map(async (plant) => {
+        let result;
+        await Plant.findById(plant.plantId).then((inputPlant) => {
           let start;
-          if (inputPlant.actions[0]) {
+          if (inputPlant?.actions.length > 0) {
             start = inputPlant.actions[0].date.toDateString();
           } else {
             start = "none";
           }
-          const result = {
+          result = {
             id: inputPlant._id,
             strain: inputPlant.strain,
             pheno: inputPlant.pheno,
             type: inputPlant.type,
-            start,
+            start
           };
-          return result;
-        })
-      );
-      res.json({ tray });
-    } else {
-      res.json({});
-    }
+        });
+
+        return result;
+      })
+    );
+    res.json({ tray });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -45,7 +46,7 @@ router.post("/print", async (req, res) => {
       data.map(async (plant, id) => {
         const inputPlant = await Plant.findById(plant.plantId);
         let start;
-        if (inputPlant.actions[0]) {
+        if (plant?.actions.length > 0) {
           start = inputPlant.actions[0].date.toDateString();
         } else {
           start = "none";
@@ -68,8 +69,13 @@ router.post("/print", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
+  const plants = [...req.body];
+
   try {
-    await TrayItem.create({ plantId: req.body.plantId });
+    if (plants.length > 0) {
+      const request = plants.map((item) => ({ plantId: item }));
+      await TrayItem.insertMany(request);
+    }
     res.json({ message: "Item is added" });
   } catch (error) {
     return res.status(500).json({ message: error.message });

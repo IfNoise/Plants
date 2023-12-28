@@ -8,9 +8,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     hmr: {
-        host: "192.168.24.215"
+        host: "localhost"
     },
-    host: "192.168.24.215",
+    host: "localhost",
     watch: {
         usePolling: true,
     },

@@ -23,11 +23,13 @@ import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import AddIcon from "@mui/icons-material/Add";
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 import { SnackbarContext } from "../../context/SnackbarContext";
 import { StopFields } from "./StopFields";
 import { NoteFields } from "./NoteFields";
 import { CuttingClonesFields } from "./CuttingClonesFields";
+import { SetGenderFields } from "./SetGenderFields";
 
 const fabStyle = {
   position: "fixed",
@@ -70,6 +72,7 @@ export const NewActionButton = (props) => {
       actions: [
         { text: "Note" },
         { text: "Picking" },
+        { text: "SetGender" },
         { text: "Relocation" },
         { text: "Blooming" },
         { text: "MakeMother" },
@@ -120,6 +123,11 @@ export const NewActionButton = (props) => {
       name: "Relocation",
       icon: <ArrowOutwardIcon />,
       fields: <AddressFields />,
+    },
+    {
+      name: "SetGender",
+      icon: <CheckBoxIcon />,
+      fields: <SetGenderFields />,
     },
     {
       name: "Blooming",
@@ -182,6 +190,7 @@ const actions = states.find((obj) => obj.name == state).actions;
   const newActionFunc = () => {
     const body = { id, action: newAction };
     addAction(body);
+    dispatch(clear())
     setOpen(false);
   };
 

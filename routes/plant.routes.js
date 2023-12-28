@@ -5,43 +5,42 @@ const User = require("../models/User");
 const auth = require("../middlewares/auth.middleware");
 const router = Router();
 const fs = require("fs");
-const { log } = require("console");
 const Strain = require("../models/Strain");
 
 router.post("/new_plant", auth, async (req, res) => {
+  const form=req.body.form
+  const number = form.seedsNumber;
   try {
+    const user = await User.findById(req.user.userId)
     const strain = await Strain.findById(req.body.strain)
-    const form=req.body.form
-    const user = await User.findById(req.user.userId, "username")
-
-    const number = form.seedsNumber;
+    const firstAction = {
+      date: Date.now(),
+      author:user.username,
+      type: "Start",
+      gender:"undefined",
+      source: strain._id,
+    };  
     const start=strain?.lastIdx||1
     const newPlants = [];
-    for (let index = start; index <= number; index) {
+    const newPhenos=[]
+    for (let index = start; index <= number;index++) {
       let pheno=strain.code+'#'+index;
-      let firstAction = {
-        date: Date.now(),
-        author:user.username,
-        type: "Start",
-        gender:"undefunded",
-        source: strain._id,
-      };
+      
       newPlants.push({
         strain: strain.name,
         pheno,
         type: "Seed",
         state: "Germination",
-        group:form?.group||null,
         actions: [firstAction],
       });
-      strain.phenos.create({
+      strain.phenos.push({
         idx:index
       })
     }
 
     await Plant.insertMany(newPlants);
     const currentCounter = strain.counter;
-    const currentLIdx=strain.lastIdx||0;
+    const currentLIdx=strain?.lastIdx||0;
     const newCounter = currentCounter - number;
     strain.set("counter", newCounter);
     strain.set('lastIdx',currentLIdx+number);
@@ -156,6 +155,10 @@ router.post("/new_action", auth, async (req, res) => {
           plant.set("cloneCounter", 0);
           break;
         }
+        case "SetGender" :{
+          plant.set("gender",data.gender)
+          break;
+        }
         case "CuttingClones": {
           const number = data.clonesNumber;
           console.log(number);
@@ -171,6 +174,7 @@ router.post("/new_action", auth, async (req, res) => {
             newClones.push({
               strain: plant.strain,
               pheno: plant.pheno,
+              gender:plant?.gender||"undefined",
               type: "Clone",
               state: "Cloning",
               currentAddress: data.newAddress,

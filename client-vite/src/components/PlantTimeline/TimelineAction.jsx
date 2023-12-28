@@ -10,6 +10,7 @@ const actionData={
   Start:{color:'success',text:'Start'},
   Picking:{color:'secondary',text:'Picking'},
   Relocation:{color:'info',text:'Relocation'},
+  SetGender:{color:'success',text:'Set Gender'},
   MakeMother:{color:'primary',text:'Make Mother'},
   Note:{color:'info',text:'Note'},
   CuttingClones:{color:'warning',text:'Cutting Clones'},
@@ -53,7 +54,13 @@ export default function TimelineAction({ action }) {
           <Typography variant="caption">{action.userReason}</Typography>
         }
         {action.note?.type && 
-          <Typography variant="caption">{action.note.type}</Typography>
+          <Typography variant="caption">{action.note.type} </Typography>
+        }
+        {action.note?.variant && 
+          <Typography variant="caption">{action.note.variant} </Typography>
+        }
+        {action.note?.item && 
+          <Typography variant="caption" component="span">{action.note.item} </Typography>
         }
          {action?.clonesNumber && 
           <Typography variant="caption">Cut {action.clonesNumber} clones</Typography>

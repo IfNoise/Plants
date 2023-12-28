@@ -38,8 +38,11 @@ export const PlantDetailPage = () => {
               <Typography gutterBottom variant="h7" component="div">
                 {plant.pheno}
               </Typography>
+              <Typography gutterBottom variant="h7" sx={{color:'green'}}component="div">
+                Gender: {plant?.gender||'undefined'}
+              </Typography>
               <Typography variant="body2" color="text.secondary">
-                {plant.state}
+                State: {plant.state}
               </Typography>
               {plant.state === "MotherPlant" && (
                 <Typography variant="caption" color="text.secondary">

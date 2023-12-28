@@ -64,7 +64,7 @@ router.post(
         return res.status(400).json({ message: "Passwords dont match" });
       }
       const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
-        expiresIn: "12h",
+        expiresIn: "72h",
       });
       res.json({ token, user: user.id });
     } catch (error) {

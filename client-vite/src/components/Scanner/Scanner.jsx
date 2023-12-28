@@ -13,14 +13,14 @@ export default function Scanner() {
   const navigate = useNavigate();
   const [scanResult, setScanResult] = useState(null);
   const [addToTray] = useAddToTrayMutation();
-
+  const store =new Set()
   const addToTrayHandler = () => {
     console.log(scanResult);
-    addToTray({ plantId: scanResult });
+    addToTray([scanResult]);
     handlerNext()
   };
   
-  async function close() {
+  function close() {
     setOpen(false)
     qrScanner?.stop();
     qrScanner?.destroy();
@@ -45,11 +45,11 @@ export default function Scanner() {
     }
   }
   function handleScan(result) {
-    console.log(result);
-    setScanResult(result.data);
-    qrScanner?.stop();
-    qrScanner?.destroy();
-    setQrScanner(undefined);
+    const data=result.data
+    if(!store.has(data)){
+    setScanResult(data);
+    store.add(result.data)
+    console.log(store);}
   }
   const toggleScan=()=>{
     setOpen((prev)=>(!prev))

@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Alert,CircularProgress} from "@mui/material";
+import { Alert,CircularProgress, Fab} from "@mui/material";
 import { DataGrid,GridToolbar,} from "@mui/x-data-grid";
 import { useGetStrainsQuery } from "../store/strainApi";
 import { NewStrainButton } from "../components/NewStrainButton/NewStrainButton";
-
-
 function getRowId(row) {
   return row._id;
 }
@@ -36,13 +34,12 @@ const columns = [
 ];
 export const StrainsPage = () => {
   const navigate = useNavigate();
-  const {isLoading,isError,error,data}=useGetStrainsQuery({})
+  const {isLoading,isError,error,data,refetch}=useGetStrainsQuery({})
   
 
   const plantDetails = (id) => {
     navigate(`/strain/${id}`)
   };
-  
   return (
     <>
       {isError&& <Alert severity="error">{error.message}</Alert>}
@@ -59,6 +56,7 @@ export const StrainsPage = () => {
         onCellDoubleClick={(params)=>{plantDetails(params.row._id)}}
       />}
       <NewStrainButton/>
+      <Fab onClick={refetch}></Fab>
     </>
   );
 };

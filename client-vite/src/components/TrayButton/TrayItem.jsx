@@ -1,5 +1,5 @@
 import LocalFloristIcon from '@mui/icons-material/LocalFlorist';
-import { Button, Typography } from '@mui/material';
+import { Button, Card, Typography } from '@mui/material';
 
 
 
@@ -9,9 +9,9 @@ export const TrayItem=({plant})=>{
   return(
 
     <>
-    <Button variant="outlined" sx={{m:'1px',maxWidth:"80px"}}color="success" startIcon={<LocalFloristIcon />}>
-      <Typography variant='button_text'>plant?.pheno</Typography>
-    </Button>
+    <Card  display="block" sx={{m:"2px",p:'1px',maxWidth:"60px",backgroundColor:'lightseagreen'}} >
+      <Typography display="block" sx={{mb:0,p:0,fontSize:9}} variant='overline'>{plant?.pheno}</Typography>
+    </Card>
     
     </>
 
