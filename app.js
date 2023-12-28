@@ -32,10 +32,10 @@ app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
 app.use('/api/strain',require('./routes/strain.routes.js'))
 if (process.env.NODE_ENV === 'production') {
-  app.use('/', express.static(path.join(__dirname, 'client', 'build')))
+  app.use('/', express.static(path.join(__dirname, 'vite-client', 'dist')))
 
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+    res.sendFile(path.resolve(__dirname, 'vite-client', 'dist', 'index.html'))
   })
 }
 
