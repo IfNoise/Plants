@@ -29,9 +29,9 @@ export const TrayButton = () => {
         color="inherit"
         onClick={buttonHandler}
       >
-        <Badge badgeContent={data?.tray.length||'0'} color="error">
+        {data&&<Badge badgeContent={data?.tray.length||'0'} color="error">
           <FolderSpecialIcon />
-        </Badge>
+        </Badge>}
       </IconButton>
       <Popover        
         id="action_popover"
