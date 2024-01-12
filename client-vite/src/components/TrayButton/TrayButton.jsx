@@ -49,7 +49,7 @@ export const TrayButton = () => {
       >
         {isError && <Alert severity="error">Error</Alert>}
         {isLoading && <CircularProgress />}
-        {data?.tray.map((plant, i) => (
+        {data?.tray?.map((plant, i) => (
           <TrayItem key={i} plant={plant}/>
         ))||'0'}
         <Stack direction="row" spacing={1}>
