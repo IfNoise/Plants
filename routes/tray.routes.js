@@ -61,7 +61,7 @@ router.post("/print", async (req, res) => {
         return result;
       })
     );
-    fs.writeFileSync("/srv/data.json", JSON.stringify(tray));
+    fs.writeFileSync("~/tray/data.json", JSON.stringify(tray));
     res.json({ tray });
   } catch (error) {
     return res.status(500).json({ message: error.message });
