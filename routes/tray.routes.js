@@ -46,7 +46,7 @@ router.post("/print", async (req, res) => {
       data.map(async (plant, id) => {
         const inputPlant = await Plant.findById(plant.plantId);
         let start;
-        if (plant?.actions.length > 0) {
+        if (plant?.actions?.length > 0) {
           start = inputPlant.actions[0].date.toDateString();
         } else {
           start = "none";
