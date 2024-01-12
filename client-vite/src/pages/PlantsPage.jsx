@@ -69,14 +69,14 @@ export const PlantsPage = () => {
     <>
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {data && (
+      {data?.length && (
         <DataGrid
           getRowId={getRowId}
           checkboxSelection
           rows={data?.map((plant)=>{
             return {
               ...plant,
-              start:new Date(plant.actions[0].date).toDateString(),
+              start:new Date(plant.actions[0]?.date||'0').toDateString(),
             }
           })}
           sx={{ width: "100%" }}
