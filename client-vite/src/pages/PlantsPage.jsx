@@ -73,7 +73,7 @@ export const PlantsPage = () => {
         <DataGrid
           getRowId={getRowId}
           checkboxSelection
-          rows={data.map((plant)=>{
+          rows={data?.map((plant)=>{
             return {
               ...plant,
               start:new Date(plant.actions[0].date).toDateString(),
