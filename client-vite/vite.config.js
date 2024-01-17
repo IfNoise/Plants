@@ -15,8 +15,8 @@ export default defineConfig({
         usePolling: true,
     },
     https: {
-        key: fs.readFileSync(`/home/noise83/Документы/Projects/node/MERN/ssl/homeserver.key`),
-        cert: fs.readFileSync(`/home/noise83/Документы/Projects/node/MERN/ssl/homeserver.crt`),
+        key: fs.readFileSync(`../ssl/homeserver.key`),
+        cert: fs.readFileSync(`../ssl/homeserver.crt`),
     }
   }
 })
