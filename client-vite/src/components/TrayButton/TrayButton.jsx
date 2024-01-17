@@ -4,7 +4,8 @@ import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PrintIcon from '@mui/icons-material/Print';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useClearTrayMutation, useGetTrayQuery ,usePrintTrayMutation} from "../../store/trayApi";
+import { useClearTrayMutation, useGetTrayQuery } from "../../store/trayApi";
+import { usePrintTrayMutation } from "../../store/printApi";
 import { TrayItem } from "./TrayItem";
 
 export const TrayButton = () => {

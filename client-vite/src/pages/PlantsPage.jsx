@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { useGetPlantsQuery } from "../store/plantsApi";
 import { useAddToTrayMutation } from "../store/trayApi";
+import { NewActionButton } from "../components/NewActionButton/NewActionButton";
 function getRowId(row) {
   return row._id;
 }
@@ -91,6 +92,7 @@ export const PlantsPage = () => {
           }}
         />
       )}
+      
       <Fab
         sx={fabStyle}
         onClick={() => {
