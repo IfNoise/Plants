@@ -10,7 +10,7 @@ export const printApi = createApi({
     printTray: build.mutation({
       query() {
         return {
-          url: `/`,
+          url: ``,
           method: "POST",
         };
       }
