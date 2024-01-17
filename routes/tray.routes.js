@@ -4,7 +4,6 @@ const Plant = require("../models/Plant");
 const auth = require("../middlewares/auth.middleware");
 const router = Router();
 const fs = require("fs");
-const PDFDocument = require("pdfkit");
 const { Image,createCanvas } = require('canvas')
 const cups = require("node-cups");
 const QRCode = require("qrcode");
@@ -69,21 +68,6 @@ router.post("/print", async (req, res) => {
       const qrCodeImagePath ="./qr/"+ id+".png";
       await QRCode.toFile(qrCodeImagePath,id,{width:85,height:85,margin:2});
     }) )
-    // const doc = new PDFDocument({autoFirstPage: false});
-    // doc.pipe(fs.createWriteStream("label.pdf"));
-    //   tray.forEach((plant) => {
-    //     const id=plant.id.toString()
-    //     const qrCodeImagePath = id+".png";
-    //     doc.addPage({size:[142,85],layout:"portrait"})
-    //     doc.text(plant.pheno,0,75).font('Times-Roman', 8);
-    //     doc.image(qrCodeImagePath, { width: 50, height: 50});
-    //     // doc.circle(10, 10, 5)
-    //     // // doc.roundedRect(1, 1, 139,81, 4)
-    //     // doc.stroke()
-        
-    //   })
-    
-    // doc.end();
     const myPDFcanvas = createCanvas(142, 85, 'pdf')
     const ctx = myPDFcanvas.getContext('2d')
       tray.forEach((plant) => {
