@@ -72,9 +72,13 @@ export const AddressFields = () => {
         <Select
           labelId="building-label"
           value={id}
+          sx={{m:1}}
           name="building"
           label="Building"
           onChange={handlerBuilding}
+          InputLabelProps={{
+            shrink: true,
+          }}
         >
           {buildRooms.map((obj, index) => {
             return (
@@ -92,6 +96,9 @@ export const AddressFields = () => {
           value={newAction.address?.room  ?? ''}
           label="Room"
           onChange={handlerRoom}
+          InputLabelProps={{
+            shrink: true,
+          }}
         >
           {buildRooms[id].rooms.map((text, index) => {
             return (

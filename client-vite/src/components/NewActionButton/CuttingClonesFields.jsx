@@ -17,7 +17,7 @@ export const CuttingClonesFields=()=>{
   }
   return (
     <>
-        <TextField
+      <TextField
       id="clones-number"
       label="Number"
       type="number"

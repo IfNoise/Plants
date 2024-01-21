@@ -41,6 +41,7 @@ export const NewActionButton = (props) => {
   //const theme = useTheme();
   const { setSnack } = useContext(SnackbarContext);
   const id = props.id;
+  const getIds=props?.getIds
   const state = props.state;
   const dispatch = useDispatch();
   const currentUser = useSelector((state)=>(state.auth.username))
@@ -188,7 +189,13 @@ const actions = states.find((obj) => obj.name == state).actions;
     setOpen(false);
   };
   const newActionFunc = () => {
-    const body = { id, action: newAction };
+    let plants;
+    if(getIds){
+      plants=getIds()
+    }else if(id){
+      plants=id
+    }
+    const body = { plants, action: newAction };
     addAction(body);
     dispatch(clear())
     setOpen(false);
@@ -217,8 +224,8 @@ const actions = states.find((obj) => obj.name == state).actions;
         <Typography sx={{ p: 2 }} gutterBottom variant="h5" component="div">
           New Action
         </Typography>
-        <Stack sx={{ p: 2, width: 300 }} spacing={2}>
-          <FormControl variant="outlined" sx={{ m: 2, minWidth: 200 }}>
+        <Stack sx={{ p: 2, width: 300 }} spacing={3}>
+          <FormControl variant="outlined" sx={{ m: 2, width: '25ch'}}>
             <InputLabel id="action-label">Action Type</InputLabel>
             <Select
               labelId="action-label"
@@ -252,4 +259,5 @@ const actions = states.find((obj) => obj.name == state).actions;
 NewActionButton.propTypes = {
   id: PropTypes.array,
   state: PropTypes.string,
+  getIds: PropTypes.func
 };

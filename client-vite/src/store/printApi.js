@@ -10,12 +10,21 @@ export const printApi = createApi({
     printTray: build.mutation({
       query() {
         return {
-          url: ``,
+          url: `/print_tray`,
           method: "POST",
+        };
+      }
+    }),
+    printPlants: build.mutation({
+      query(body) {
+        return {
+          url: `/print_plants`,
+          method: "POST",
+          body
         };
       }
     })
   }),
 });
 
-export const { usePrintTrayMutation } = printApi;
+export const { usePrintTrayMutation,usePrintPlantsMutation } = printApi;

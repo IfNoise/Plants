@@ -6,6 +6,7 @@ import { Button,IconButton,Popover,Stack, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 
+
 export default function Scanner() {
   const [open,setOpen]=useState(false)
   const video = createRef(null);
@@ -63,7 +64,7 @@ export default function Scanner() {
     <>
       <IconButton onClick={toggleScan}><QrCode2Icon/></IconButton>
       <Popover open={open} onClose={close} sx={{
-        width: '500px',
+        width: "400px",
         pt: '100%',
     }}>
         <video  ref={video} style={{width:"100%",height:"auto"}}></video>
