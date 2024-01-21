@@ -40,13 +40,14 @@ const fabStyle = {
 export const NewActionButton = (props) => {
   //const theme = useTheme();
   const { setSnack } = useContext(SnackbarContext);
-  const id = props.id;
-  const getIds=props?.getIds
-  const state = props.state;
+  const getPlants=props.getPlants
+  
+
   const dispatch = useDispatch();
   const currentUser = useSelector((state)=>(state.auth.username))
   const newAction = useSelector((state) => state.newAction);
   const [addAction, { isSuccess, isError}] = useAddActionMutation();
+  const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
   const [anchor,setAnchor]=useState(null)
   const states = [
@@ -153,12 +154,13 @@ export const NewActionButton = (props) => {
       fields: <CuttingClonesFields />,
     },
   ];
-const actions = states.find((obj) => obj.name == state).actions;
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
       dispatch(addAuthor(currentUser));
+      
     }
+
   }, []);
   
   useEffect(() => {
@@ -182,6 +184,10 @@ const actions = states.find((obj) => obj.name == state).actions;
   };
   const handleOpen=(e)=>{
     setAnchor(e.target)
+    const plants=getPlants()
+    const state=plants[0].state
+    setActions(states.find((obj) => obj.name == state).actions)
+    console.log(state);
     setOpen(true)
   }
   const handleCancel = () => {
@@ -189,13 +195,11 @@ const actions = states.find((obj) => obj.name == state).actions;
     setOpen(false);
   };
   const newActionFunc = () => {
-    let plants;
-    if(getIds){
-      plants=getIds()
-    }else if(id){
-      plants=id
-    }
-    const body = { plants, action: newAction };
+    const plants=getPlants()
+    console.log(plants);
+    const id =plants.map((plant)=>(plant._id))
+    console.log(id);
+    const body = { id, action: newAction };
     addAction(body);
     dispatch(clear())
     setOpen(false);
@@ -233,7 +237,7 @@ const actions = states.find((obj) => obj.name == state).actions;
               label="Action Type"
               onChange={handleActionType}
             >
-              {actions.map((obj, index) => {
+              {actions?.map((obj, index) => {
                 return (
                   <MenuItem key={index} value={obj.text}>
                     {obj.text}
@@ -257,7 +261,5 @@ const actions = states.find((obj) => obj.name == state).actions;
   );
 };
 NewActionButton.propTypes = {
-  id: PropTypes.array,
-  state: PropTypes.string,
-  getIds: PropTypes.func
+  getPlants: PropTypes.func
 };

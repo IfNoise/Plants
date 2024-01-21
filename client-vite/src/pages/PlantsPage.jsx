@@ -68,23 +68,32 @@ export const PlantsPage = () => {
   const navigate = useNavigate();
   const { isLoading, isError, error, data } = useGetPlantsQuery({});
   const apiRef = useGridApiRef(null);
-  const [selected,setSelected]=useState([])
-  const [selState,setSelState]=useState('Growing')
+  const [apiIsLoaded,setApiIsLoaded]=useState(false)
+  const [sel,setSel]=useState(false)
   const [addToTray] = useAddToTrayMutation();
   const [printPlants]=usePrintPlantsMutation()
   const plantDetails = (id) => {
     navigate(`/plant/${id}`);
   };
-  //let  selected=[]
   const getSelected=()=>{
     return Array.from(apiRef.current.getSelectedRows().keys())
   }
+
+  const getSelectedPlants=()=>{
+    if(!apiRef.current) {
+      return []
+    }
+    return Array.from(apiRef.current.getSelectedRows().values())
+  }
+
   const checkboxSelectionHandler=(params,event,details)=>{
-    setSelected(getSelected)
-    console.log(apiRef.current.getSelectedRows().get(getSelected()[0]))
+    setSel(getSelected().length<1)
+    console.log(params);
   } 
+
   useEffect(()=>{
     console.log(apiRef);
+    setApiIsLoaded(true)
     apiRef.current.subscribeEvent(
       'rowSelectionCheckboxChange',
       checkboxSelectionHandler,
@@ -120,7 +129,7 @@ export const PlantsPage = () => {
       )}
 
       <Fab
-        disabled={selected.length<1}
+        disabled={sel}
         sx={printFabStyle}
         onClick={() => {
           const plants=getSelected()
@@ -130,7 +139,7 @@ export const PlantsPage = () => {
         <PrintIcon />
       </Fab>
       <Fab
-        disabled={selected.length<1}
+        disabled={sel}
         sx={fabStyle}
         onClick={() => {
           const plants=getSelected()
@@ -139,6 +148,8 @@ export const PlantsPage = () => {
       >
         <CreateNewFolderIcon />
       </Fab>
+      {!apiIsLoaded ||< NewActionButton getPlants={getSelectedPlants}/>
+      }
     </>
   );
 };

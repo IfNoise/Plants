@@ -23,7 +23,7 @@ export const PlantDetailPage = () => {
       setPlant(data[0]);
     }
   }, [data]);
-
+  const getPlant=()=>([plant])
   return (
     <Box>
       {isError && <Alert severity="error">{error.message}</Alert>}
@@ -52,7 +52,7 @@ export const PlantDetailPage = () => {
               <PlantTimeline actions={plant.actions} />
             </CardContent>
           </Card>
-          {plant?.state&&<NewActionButton id={[id]} state={plant.state} />}
+          {plant?.state&&<NewActionButton getPlants={getPlant} />}
         </>
       )}
     </Box>
