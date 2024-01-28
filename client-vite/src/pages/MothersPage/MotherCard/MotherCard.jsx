@@ -13,7 +13,7 @@ export const MotherCard = (props) => {
     navigate(`/plant/${id}`)
   };
   return (
-    <Card sx={{ width: 345 ,p:2,m:2,backgroundColor:'#c8e6c9',boxShadow:4}}>
+    <Card sx={{ width: 345 ,p:2,m:2,boxShadow:4}}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {props.plant.strain}

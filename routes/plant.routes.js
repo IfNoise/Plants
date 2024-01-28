@@ -77,26 +77,11 @@ router.get("/strains", auth, async (req, res) => {
   }
 });
 
-router.get("/mothers", auth, async (req, res) => {
-  try {
-    const plant = await Plant.find({ state: "MotherPlant" });
-    res.json(plant);
-  } catch (error) {
-    return res.status(500).json({ message: "Something wants wrong3" });
-  }
-});
-router.get("/clones", auth, async (req, res) => {
-  try {
-    const plant = await Plant.find({ state: "Cloning" });
-    res.json(plant);
-  } catch (error) {
-    return res.status(500).json({ message: "Something wants wrong4" });
-  }
-});
 router.get("/plants", auth, async (req, res) => {
   try {
     const filter = JSON.parse(req.query.filter);
-
+    console.log('filter',filter)
+    
     const plants = await Plant.find(filter);
     res.json(plants);
   } catch (error) {

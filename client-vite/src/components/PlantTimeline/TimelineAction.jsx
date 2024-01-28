@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineConnector from "@mui/lab/TimelineConnector";
@@ -14,7 +15,7 @@ const actionData={
   MakeMother:{color:'primary',text:'Make Mother'},
   Note:{color:'info',text:'Note'},
   CuttingClones:{color:'warning',text:'Cutting Clones'},
-  Blooming:{color:'success',text:'Bluming Start'},
+  Blooming:{color:'success',text:'Blooming Start'},
   Stop:{color:'error',text:'Stop'},
   Harvest:{color:'success',text:'Harvest'},
 }
@@ -69,3 +70,8 @@ export default function TimelineAction({ action }) {
     </TimelineItem>
   );
 }
+
+
+TimelineAction.propTypes = {
+  action: PropTypes.object,
+};
