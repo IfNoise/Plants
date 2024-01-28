@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Alert, CircularProgress, Container, Fab} from "@mui/material";
+import { Alert, CircularProgress, Fab } from "@mui/material";
+import { useCallback } from "react";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import PrintIcon from '@mui/icons-material/Print';
+import PrintIcon from "@mui/icons-material/Print";
 import { useGetPlantsQuery } from "../store/plantsApi";
 import { useAddToTrayMutation } from "../store/trayApi";
 import { NewActionButton } from "../components/NewActionButton/NewActionButton";
@@ -23,7 +24,10 @@ const printFabStyle = {
 };
 
 const columns = [
-  { field: "strain", headerName: "Strain", width: 250 },
+  { field: "strain",
+   headerName: "Strain",
+    width: 250 
+  },
   {
     field: "pheno",
     headerName: "Pheno",
@@ -35,7 +39,7 @@ const columns = [
     headerName: "Type",
     width: 100,
     editable: false,
-    color:'green'
+    color: "green",
   },
   {
     field: "gender",
@@ -61,59 +65,63 @@ const columns = [
     width: 150,
     editable: false,
   },
-
 ];
 
 export const PlantsPage = () => {
   const navigate = useNavigate();
   const { isLoading, isError, error, data } = useGetPlantsQuery({});
   const apiRef = useGridApiRef(null);
-  const [apiIsLoaded,setApiIsLoaded]=useState(false)
-  const [sel,setSel]=useState(false)
+  const [apiIsLoaded, setApiIsLoaded] = useState(false);
+  const [sel, setSel] = useState(false);
   const [addToTray] = useAddToTrayMutation();
-  const [printPlants]=usePrintPlantsMutation()
+  const [printPlants] = usePrintPlantsMutation();
   const plantDetails = (id) => {
     navigate(`/plant/${id}`);
   };
-  const getSelected=()=>{
-    return Array.from(apiRef.current.getSelectedRows().keys())
-  }
-
-  const getSelectedPlants=()=>{
-    if(!apiRef.current) {
-      return []
-    }
-    return Array.from(apiRef.current.getSelectedRows().values())
-  }
-
-  const checkboxSelectionHandler=(params,event,details)=>{
-    setSel(getSelected().length<1)
-    console.log(params);
-  } 
-
-  useEffect(()=>{
-    console.log(apiRef);
-    setApiIsLoaded(true)
-    apiRef.current.subscribeEvent(
-      'rowSelectionCheckboxChange',
-      checkboxSelectionHandler,
-    );
-  },[apiRef])
   
+
+  const getSelected = useCallback(() => {
+    if (!apiRef.current) {
+      return [];
+    }
+    return Array.from(apiRef.current.getSelectedRows().keys());
+  }, [apiRef]);
+
+  const getSelectedPlants = useCallback(() => {
+    if (!apiRef.current) {
+      return [];
+    }
+    return Array.from(apiRef.current.getSelectedRows().values());
+  },[apiRef]);
+
+  const checkboxSelectionHandler = (params, event, details) => {
+    setSel(getSelected().length < 1);
+    console.log(params);
+  };
+
+  useEffect(() => {
+    console.log(apiRef);
+
+    setApiIsLoaded(true);
+    apiRef.current.subscribeEvent(
+      "rowSelectionCheckboxChange",
+      checkboxSelectionHandler
+    );
+  }, [apiRef]);
+
   return (
     <>
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
       {data?.length && (
-        
         <DataGrid
           getRowId={getRowId}
           checkboxSelection
-          rows={data?.map((plant)=>{
+          rows={data?.map((plant) => {
             return {
               ...plant,
-              start:new Date(plant.actions[0]?.date||'0').toDateString(),
-            }
+              start: new Date(plant.actions[0]?.date || "0").toDateString(),
+            };
           })}
           sx={{ width: "100%" }}
           apiRef={apiRef}
@@ -127,29 +135,33 @@ export const PlantsPage = () => {
           }}
         />
       )}
-
-      <Fab
-        disabled={sel}
+     
+      {apiIsLoaded&& <>
+        <Fab
+        disabled={getSelected().length === 0}
         sx={printFabStyle}
         onClick={() => {
-          const plants=getSelected()
-          printPlants({plants})
+          const plants = getSelected();
+          printPlants({ plants });
         }}
       >
         <PrintIcon />
       </Fab>
       <Fab
-        disabled={sel}
+        disabled={getSelected().length === 0}
         sx={fabStyle}
         onClick={() => {
-          const plants=getSelected()
+          const plants = getSelected();
           addToTray(plants);
         }}
       >
         <CreateNewFolderIcon />
       </Fab>
-      {!apiIsLoaded ||< NewActionButton getPlants={getSelectedPlants}/>
-      }
+       <NewActionButton 
+       disabled={getSelected().length === 0}
+       getPlants={getSelectedPlants} />
+       </>
+       }
     </>
   );
 };

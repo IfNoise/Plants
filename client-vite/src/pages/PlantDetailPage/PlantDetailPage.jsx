@@ -2,8 +2,8 @@ import { useEffect } from "react";
 
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { Card, Box, Alert, CircularProgress } from "@mui/material";
-
+import { Card, Alert, CircularProgress } from "@mui/material";
+import Box from "@mui/material/Box";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 
@@ -16,14 +16,16 @@ export const PlantDetailPage = () => {
 
   const { isLoading, isError, error, data } = useGetPlantsQuery({ _id: id });
 
-  const [plant, setPlant] = useState({
-  });
+  const [plant, setPlant] = useState({});
   useEffect(() => {
     if (data) {
       setPlant(data[0]);
     }
   }, [data]);
-  const getPlant=()=>([plant])
+  const getPlant = () => [plant];
+
+  const { strain, pheno, gender, state, cloneCounter, actions } = plant;
+
   return (
     <Box>
       {isError && <Alert severity="error">{error.message}</Alert>}
@@ -33,26 +35,31 @@ export const PlantDetailPage = () => {
           <Card sx={{ width: 640 }}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                {plant.strain}
+                {strain}
               </Typography>
               <Typography gutterBottom variant="h7" component="div">
-                {plant.pheno}
+                {pheno}
               </Typography>
-              <Typography gutterBottom variant="h7" sx={{color:'green'}}component="div">
-                Gender: {plant?.gender||'undefined'}
+              <Typography
+                gutterBottom
+                variant="h7"
+                sx={{ color: "green" }}
+                component="div"
+              >
+                Gender: {gender ?? "undefined"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                State: {plant.state}
+                State: {state ?? "undefined"}
               </Typography>
-              {plant.state === "MotherPlant" && (
+              {state === "MotherPlant" && (
                 <Typography variant="caption" color="text.secondary">
-                  Clones Counter:{plant.cloneCounter ?? "0"}
+                  Clones Counter:{cloneCounter ?? "0"}
                 </Typography>
               )}
-              <PlantTimeline actions={plant.actions} />
+              <PlantTimeline actions={actions} />
             </CardContent>
           </Card>
-          {plant?.state&&<NewActionButton getPlants={getPlant} />}
+          {state && <NewActionButton getPlants={getPlant} />}
         </>
       )}
     </Box>

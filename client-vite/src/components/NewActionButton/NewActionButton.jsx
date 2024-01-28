@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect} from "react";
 import { AddressFields } from "./AddressFields";
 import { PickingFields } from "./PickingFields";
+import { useMediaQuery, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 import { addType, addAuthor, clear } from "../../store/newActionSlice";
 import { useAddActionMutation } from "../../store/plantsApi";
@@ -38,7 +39,8 @@ const fabStyle = {
 };
 
 export const NewActionButton = (props) => {
-  //const theme = useTheme();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { setSnack } = useContext(SnackbarContext);
   const getPlants=props.getPlants
   
@@ -154,6 +156,15 @@ export const NewActionButton = (props) => {
       fields: <CuttingClonesFields />,
     },
   ];
+  const popoverStyle = isSmallScreen ? {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    overflow: 'auto',
+  } : {};
+  
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
@@ -208,6 +219,7 @@ export const NewActionButton = (props) => {
   return (
     <>
       <Fab
+        {...props} 
         id="action_button"
         onClick={handleOpen}
         sx={fabStyle}
@@ -217,6 +229,7 @@ export const NewActionButton = (props) => {
         <AddIcon />
       </Fab>
       <Popover
+        style={popoverStyle}
         id="action_popover"
         open={open}
         anchorEl={anchor}
