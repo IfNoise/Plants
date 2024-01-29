@@ -101,7 +101,7 @@ export const PlantsPage = () => {
     return Array.from(apiRef.current.getSelectedRows().values());
   },[apiRef]);
 
-  const checkboxSelectionHandler = (params, event, details) => {
+  const checkboxSelectionHandler = () => {
     setSel(getSelected().length < 1);
   };
 
@@ -152,7 +152,6 @@ export const PlantsPage = () => {
      
        {apiIsLoaded && isLarge && <>
         <Fab
-        display={isSmall ? "none" : "block"}
         disabled={getSelected().length === 0}
         sx={printFabStyle}
         onClick={() => {
@@ -163,7 +162,6 @@ export const PlantsPage = () => {
         <PrintIcon />
        </Fab>
        <Fab
-        display={isSmall ? "none" : "block"}
         disabled={getSelected().length === 0}
         sx={fabStyle}
         onClick={() => {
