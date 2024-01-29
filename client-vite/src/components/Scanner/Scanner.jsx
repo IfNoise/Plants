@@ -5,9 +5,11 @@ import QrScanner from "qr-scanner";
 import { Button,IconButton,Popover,Stack, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import QrCode2Icon from '@mui/icons-material/QrCode2';
-
+import { useMediaQuery } from "@mui/material";
 
 export default function Scanner() {
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  
   const [open,setOpen]=useState(false)
   const video = createRef(null);
   const [qrScanner, setQrScanner] = useState(null);
@@ -59,14 +61,14 @@ export default function Scanner() {
   useEffect(() => {
     initScanner()
   }, []);
-
+  const style={
+    width:  isSmall ? "100%" :"400px",
+    pt: '100%',
+  }
   return (
     <>
       <IconButton onClick={toggleScan}><QrCode2Icon/></IconButton>
-      <Popover open={open} onClose={close} sx={{
-        width: "400px",
-        pt: '100%',
-    }}>
+      <Popover open={open} onClose={close} style={style}>
         <video  ref={video} style={{width:"100%",height:"auto"}}></video>
         <Typography variant="caption">{scanResult??""}</Typography>
         <Stack sx={{m:1}} direction="row" spacing={1}>

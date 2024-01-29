@@ -33,7 +33,7 @@ export const PlantDetailPage = () => {
       {data && (
         <>
         <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
-          <Card sx={{ width: 640 }}>
+          <Card sx={{ width: "100%" }}>
             <CardContent>
               <Grid container>
                 <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}> 

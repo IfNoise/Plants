@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineConnector from "@mui/lab/TimelineConnector";
@@ -26,7 +26,7 @@ export default function TimelineAction({ action }) {
       <TimelineOppositeContent
         sx={{ m: "auto 0" }}
         align="center"
-        variant="body2"
+        variant="caption"
         color="text.secondary"
       >
         {new Date(action.date).toDateString()}
@@ -36,8 +36,8 @@ export default function TimelineAction({ action }) {
         <TimelineDot color={actionData[action.type]?.color}></TimelineDot>
         <TimelineConnector />
       </TimelineSeparator>
-      <TimelineContent sx={{ py: "12px", px: 2 }}>
-        <Typography variant="h6">{actionData[action.type]?.text}</Typography>
+      <TimelineContent >
+        <Typography variant="subtitle2">{actionData[action.type]?.text}</Typography>
         {action?.oldAddress && (
           <Typography variant="caption">
             {action.oldAddress.building}
