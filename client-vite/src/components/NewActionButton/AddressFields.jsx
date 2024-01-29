@@ -70,7 +70,7 @@ export const AddressFields = () => {
     dispatch(addBuilding(buildRooms[id].text));
   }, []);
   return (
-    <>  <FormControl variant="outlined" component='div' sx={{ m: 1, width: '280px'}}>
+    <>  <FormControl variant="outlined" sx={{ m: 1, width: '280px'}}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
           labelId="building-label"
@@ -91,7 +91,7 @@ export const AddressFields = () => {
           })}
         </Select>
         </FormControl>
-        <FormControl variant="outlined" component='div' sx={{ m:1,width: '280px'}}>
+        <FormControl variant="outlined"  sx={{ m:1,width: '280px'}}>
         <InputLabel id="room-label">Room</InputLabel>
         <Select
           labelId="room-label"
@@ -141,8 +141,8 @@ export const AddressFields = () => {
       )}
       
       {newAction.address?.room == "Laboratory" && (
-        <div>
-
+        
+        <>
             <TextField
               id="outlined-number"
               sx={{ m: 1,width: '150px'}}
@@ -163,10 +163,10 @@ export const AddressFields = () => {
                 shrink: true,
               }}
             />
-
-        </div>
+        </>
+        
       )}
-      <div>
+      
         <TextField
           id="outlined-number"
           sx={{ m: 1,width: '120px'}}
@@ -177,7 +177,7 @@ export const AddressFields = () => {
             shrink: true,
           }}
         />
-</div>
+
     </>
   );
 };
