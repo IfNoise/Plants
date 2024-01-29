@@ -264,7 +264,7 @@ export const NewActionButton = (props) => {
             {newAction.actionType &&
               actionFields.find((res) => res.name === newAction.actionType)
                 .fields}
-          <Stack sx={{ width: 280 }} spacing={3}>
+          <Stack sx={{m:1, width: 280 }} spacing={3}>
           <Button onClick={newActionFunc} disabled={!newAction.actionType}>
             Ok
           </Button>

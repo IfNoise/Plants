@@ -13,7 +13,8 @@ import { NewActionButton } from "../../components/NewActionButton/NewActionButto
 export const PlantDetailPage = () => {
   const id = useParams().id;
 
-  const { isLoading, isError, error, data } = useGetPlantsQuery({ _id: id });
+  const { isLoading, isError, error, data } = useGetPlantsQuery({ _id: id },{ refetchOnMountOrArgChange: true, refetchOnFocus: true }
+    );
 
   const [plant, setPlant] = useState({});
   useEffect(() => {
