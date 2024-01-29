@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { Card, Alert, CircularProgress } from "@mui/material";
+import { Card, Alert, CircularProgress, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -27,19 +27,26 @@ export const PlantDetailPage = () => {
   const { strain, pheno, gender, state, cloneCounter, actions } = plant;
 
   return (
-    <Box>
+    <Grid container>
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
       {data && (
         <>
+        <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
           <Card sx={{ width: 640 }}>
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+              <Grid container>
+                <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}> 
+              <Typography gutterBottom variant="h4" component="div">
                 {strain}
               </Typography>
+              </Grid>
+              <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
               <Typography gutterBottom variant="h7" component="div">
                 {pheno}
               </Typography>
+              </Grid>
+              <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
               <Typography
                 gutterBottom
                 variant="h7"
@@ -48,20 +55,32 @@ export const PlantDetailPage = () => {
               >
                 Gender: {gender ?? "undefined"}
               </Typography>
+              </Grid>
+              <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
               <Typography variant="body2" color="text.secondary">
                 State: {state ?? "undefined"}
               </Typography>
-              {state === "MotherPlant" && (
+              </Grid>
+
+              {state === "MotherPlant" && 
+                <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
                 <Typography variant="caption" color="text.secondary">
                   Clones Counter:{cloneCounter ?? "0"}
                 </Typography>
-              )}
-              <PlantTimeline actions={actions} />
+                </Grid>
+              }
+             </Grid> 
             </CardContent>
           </Card>
+          </Grid>
+          <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
+          <PlantTimeline actions={actions} />
+          </Grid>
+          <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
           {state && <NewActionButton getPlants={getPlant} />}
+          </Grid>
         </>
       )}
-    </Box>
+    </Grid>
   );
 };
