@@ -10,8 +10,6 @@ import {
   addShelf,
 } from "../../store/newActionSlice";
 import {
-  Box,
-  FormControl,
   InputLabel,
   Select,
   MenuItem,
@@ -26,6 +24,10 @@ const buildRooms = [
   {
     text: "Hangar 2",
     rooms: ["Main room", "Small Room"],
+  },
+  {
+    text: "Outdoor",
+    rooms: ["Backyard"],
   },
 ];
 
