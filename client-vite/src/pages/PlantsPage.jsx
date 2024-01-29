@@ -137,7 +137,7 @@ export const PlantsPage = () => {
               start: new Date(plant.actions[0]?.date || "0").toDateString(),
             };
           })}
-          sx={{ width: "100%" ,height: '500px'}}
+          sx={{ width: "100%" ,height: '90%'}}
           apiRef={apiRef}
           columns={columns}
           initialState={{}}

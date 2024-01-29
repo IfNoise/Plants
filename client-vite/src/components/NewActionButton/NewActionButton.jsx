@@ -156,14 +156,14 @@ export const NewActionButton = (props) => {
       fields: <CuttingClonesFields />,
     },
   ];
-  const popoverStyle = isSmallScreen ? {
-    maxWidth: '100%',
-    maxHeight: '100%',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    overflow: 'auto',
-  } : {};
+  // const popoverStyle = isSmallScreen ? {
+  //   maxWidth: '100%',
+  //   maxHeight: '100%',
+  //   top: '50%',
+  //   left: '50%',
+  //   transform: 'translate(-50%, -50%)',
+  //   overflow: 'auto',
+  // } : {};
   
   useEffect(() => {
     if (newAction) {
@@ -229,7 +229,7 @@ export const NewActionButton = (props) => {
         <AddIcon />
       </Fab>
       <Popover
-        style={popoverStyle}
+       
         id="action_popover"
         open={open}
         anchorEl={anchor}
