@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Card, Alert, CircularProgress, Grid } from "@mui/material";
-import Box from "@mui/material/Box";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 

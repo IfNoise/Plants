@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
   TextField,
+  FormControl,
 } from "@mui/material";
 
 const buildRooms = [
@@ -69,12 +70,11 @@ export const AddressFields = () => {
     dispatch(addBuilding(buildRooms[id].text));
   }, []);
   return (
-    <>
+    <>  <FormControl variant="outlined" component='div' sx={{ m: 1, width: '280px'}}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
           labelId="building-label"
           value={id}
-          sx={{m:1}}
           name="building"
           label="Building"
           onChange={handlerBuilding}
@@ -90,7 +90,8 @@ export const AddressFields = () => {
             );
           })}
         </Select>
-
+        </FormControl>
+        <FormControl variant="outlined" component='div' sx={{ m:1,width: '280px'}}>
         <InputLabel id="room-label">Room</InputLabel>
         <Select
           labelId="room-label"
@@ -110,11 +111,13 @@ export const AddressFields = () => {
             );
           })}
         </Select>
+        </FormControl>
       {newAction.address?.room != "Laboratory" && (
-        <>
+        < >
 
             <TextField
               id="outlined-number"
+              sx={{ m: 1,width: '200px'}}
               label="Row"
               type="number"
               onChange={handlerRow}
@@ -125,6 +128,7 @@ export const AddressFields = () => {
 
             <TextField
               id="outlined-number"
+              sx={{ m: 1,width: '200px'}}
               label="Tray"
               type="number"
               onChange={handlerTray}
@@ -135,11 +139,13 @@ export const AddressFields = () => {
 
         </>
       )}
+      
       {newAction.address?.room == "Laboratory" && (
-        <>
+        <div>
 
             <TextField
               id="outlined-number"
+              sx={{ m: 1,width: '150px'}}
               label="Rack"
               type="number"
               onChange={handlerRack}
@@ -149,6 +155,7 @@ export const AddressFields = () => {
             />
             <TextField
               id="outlined-number"
+              sx={{ mx: 1,width: '150px'}}
               label="Shelf"
               type="number"
               onChange={handlerShelf}
@@ -157,11 +164,12 @@ export const AddressFields = () => {
               }}
             />
 
-        </>
+        </div>
       )}
-
+      <div>
         <TextField
           id="outlined-number"
+          sx={{ m: 1,width: '120px'}}
           label="Number"
           type="number"
           onChange={handlerNumber}
@@ -169,6 +177,7 @@ export const AddressFields = () => {
             shrink: true,
           }}
         />
+</div>
     </>
   );
 };

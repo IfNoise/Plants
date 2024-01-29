@@ -4,6 +4,7 @@ import {
   addClonesNumber,
 } from "../../store/newActionSlice";
 import {
+  FormControl,
   TextField,
 } from "@mui/material";
 import { AddressFields } from "./AddressFields";
@@ -17,7 +18,9 @@ export const CuttingClonesFields=()=>{
   }
   return (
     <>
+    <FormControl variant="outlined" >
       <TextField
+      sx={{ m: 1,width:'280px'}}
       id="clones-number"
       label="Number"
       type="number"
@@ -26,6 +29,7 @@ export const CuttingClonesFields=()=>{
         shrink: true,
       }}
     />
+    </FormControl>
     <AddressFields/>
     </>
   )

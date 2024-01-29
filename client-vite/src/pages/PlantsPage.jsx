@@ -76,7 +76,8 @@ export const PlantsPage = () => {
   const isMedium = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isLarge = useMediaQuery((theme) => theme.breakpoints.up("md"))
   const [filter, setFilter] = useState({})
-  const { isLoading, isError, error, data } = useGetPlantsQuery(filter);
+  const { isLoading, isError, error, data } = useGetPlantsQuery(filter,    {refetchOnMountOrArgChange: true,
+    refetchOnFocus: true},);
   const apiRef = useGridApiRef(null);
   const [apiIsLoaded, setApiIsLoaded] = useState(false);
   const [sel, setSel] = useState(false);
@@ -127,6 +128,7 @@ export const PlantsPage = () => {
       {data?.length>0 && isLarge && 
       
         <DataGrid
+        autoPageSize
           display={ isSmall ? "none" : "block"}
           getRowId={getRowId}
           autoHeight={false}

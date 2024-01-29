@@ -229,20 +229,21 @@ export const NewActionButton = (props) => {
         <AddIcon />
       </Fab>
       <Popover
-       
+        sx={{pl:3,}}
+        
         id="action_popover"
         open={open}
         anchorEl={anchor}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "left",
         }}
       >
-        <Typography sx={{ p: 2 }} gutterBottom variant="h5" component="div">
+        <Typography sx={{ m:1 }} gutterBottom variant="h5" component="div">
           New Action
         </Typography>
-        <Stack sx={{ p: 2, width: 300 }} spacing={3}>
-          <FormControl variant="outlined" sx={{ m: 2, width: '25ch'}}>
+        <FormControl variant="outlined" sx={{ mx: 1,width:'280px'}}>
+          
             <InputLabel id="action-label">Action Type</InputLabel>
             <Select
               labelId="action-label"
@@ -259,11 +260,11 @@ export const NewActionButton = (props) => {
                 );
               })}
             </Select>
-
+            </FormControl>
             {newAction.actionType &&
               actionFields.find((res) => res.name === newAction.actionType)
                 .fields}
-          </FormControl>
+          <Stack sx={{ p: 2, width: 300 }} spacing={3}>
           <Button onClick={newActionFunc} disabled={!newAction.actionType}>
             Ok
           </Button>
