@@ -61,6 +61,7 @@ export default function Scanner() {
   useEffect(() => {
     initScanner()
   }, []);
+  
   const style={
     width:  isSmall ? "100%" :"400px",
     pt: '100%',

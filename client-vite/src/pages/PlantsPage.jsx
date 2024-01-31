@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Alert, CircularProgress, Fab, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Alert, Box, CircularProgress, Fab, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { useCallback } from "react";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
@@ -126,12 +126,9 @@ export const PlantsPage = () => {
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
       {data?.length>0 && isLarge && 
-      
+      <Box sx={{ height: 470, width: "100%" }}>
         <DataGrid
-        autoPageSize
-          display={ isSmall ? "none" : "block"}
           getRowId={getRowId}
-          autoHeight={false}
           checkboxSelection
           rows={data?.map((plant) => {
             return {
@@ -139,7 +136,7 @@ export const PlantsPage = () => {
               start: new Date(plant.actions[0]?.date || "0").toDateString(),
             };
           })}
-          sx={{ width: "100%" ,height: '90%'}}
+          sx={{ width: "100%"}}
           apiRef={apiRef}
           columns={columns}
           initialState={{}}
@@ -150,6 +147,7 @@ export const PlantsPage = () => {
             plantDetails(params.row._id);
           }}
         />
+      </Box>
       }
      
        {apiIsLoaded && isLarge && <>
