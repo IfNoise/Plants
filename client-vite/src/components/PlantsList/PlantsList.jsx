@@ -1,29 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Box, CircularProgress, Fab, Grid, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress,Grid, useMediaQuery } from "@mui/material";
 import { useCallback } from "react";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
-import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import PrintIcon from "@mui/icons-material/Print";
-import { NewActionButton } from "../../components/NewActionButton/NewActionButton";
-import { usePrintPlantsMutation } from "../../store/printApi";
 import { useEffect, useState } from "react";
 import PlantCard from "../../components/PlantCard/PlantCard";
-import { useAddToTrayMutation } from "../../store/trayApi";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 function getRowId(row) {
   return row._id;
 }
-const fabStyle = {
-  position: "fixed",
-  bottom: 80,
-  right: 16,
-};
-const printFabStyle = {
-  position: "fixed",
-  bottom: 160,
-  right: 16,
-};
+
 
 const columns = [
   { field: "strain", headerName: "Strain", width: 250 },
