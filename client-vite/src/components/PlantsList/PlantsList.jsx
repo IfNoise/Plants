@@ -55,7 +55,7 @@ const columns = [
     editable: false,
   },
   {
-    field: "startDate",
+    field: "start",
     headerName: "Started",
     width: 200,
     editable: false,
@@ -126,7 +126,12 @@ export const PlantsList = (props) => {
           getRowId={getRowId}
           checkboxSelection
           disableRowSelectionOnClick
-          rows={plants}
+          rows={plants?.map((plant) => {
+            return {
+              ...plant,
+              start: new Date(new Date(plant?.startDate)||'0').toDateString(),
+            };
+          })}
           sx={{ height:"100%",width: "100%"}}
           apiRef={apiRef}
           columns={columns}

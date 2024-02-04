@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
             pheno: inputPlant.pheno,
             type: inputPlant.type,
             group: inputPlant.group,
-            start,
+            startDate: start,
           };
         });
 
