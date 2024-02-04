@@ -192,7 +192,7 @@ export default function PlantSpeedDial(props) {
     }
     dispatch(addType(value));
   };
-  const handleOpen=(e)=>{
+  const handleOpen=()=>{
     const plants=getPlants()
     if(plants.length<1){
       setSnack({ open: true, severity: "error", message: "No plants selected" });
