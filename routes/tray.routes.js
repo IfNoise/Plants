@@ -25,6 +25,8 @@ router.get("/", async (req, res) => {
           result = {
             _id: inputPlant._id,
             strain: inputPlant.strain,
+            state: inputPlant.state,
+            gender: inputPlant.gender,
             pheno: inputPlant.pheno,
             type: inputPlant.type,
             group: inputPlant.group,
