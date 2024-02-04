@@ -8,7 +8,6 @@ import { useState } from "react";
 
 import { useGetPlantsQuery } from "../../store/plantsApi";
 import PlantTimeline from "../../components/PlantTimeline/PlantTimeline";
-import { NewActionButton } from "../../components/NewActionButton/NewActionButton";
 import PlantSpeedDial from "../../components/PlantSpeedDial/PlantSpeedDial";
 
 export const PlantDetailPage = () => {
