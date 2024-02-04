@@ -1,20 +1,22 @@
 import { Alert, CircularProgress} from "@mui/material";
-import { useGetPlantsQuery } from "../store/plantsApi";
 import {  useState } from "react";
 import { FilterBar } from "../components/FilterBar/FilterBar";
 import { PlantsList } from "../components/PlantsList/PlantsList";
+import { useGetTrayQuery } from "../store/trayApi";
 
 
-export const PlantsPage = () => {
+export const TrayPage = () => {
   const [filter, setFilter] = useState({})
-  const { isLoading, isError, error, data } = useGetPlantsQuery(filter,{refetchOnMountOrArgChange: true,
+  const { isLoading:isLoading, isError:isError,error, data} = useGetTrayQuery({refetchOnMountOrArgChange: true,
     refetchOnFocus: true});
+
+  
   return (
     <>
       <FilterBar setOutputFilter={setFilter} />
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {data&&<PlantsList plants={data} />}
+      {data?.tray&&<PlantsList plants={data?.tray} />}
     </>
   )
 };

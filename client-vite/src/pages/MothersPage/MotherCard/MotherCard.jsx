@@ -21,7 +21,7 @@ export const MotherCard = (props) => {
         <Typography gutterBottom variant="h7" component="div">
           {props.plant.pheno}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" component="div">
           Clone counter:{props.plant.cloneCounter??'0'}clones
         </Typography>
       </CardContent>

@@ -11,6 +11,7 @@ import { StrainDetailPage} from "./pages/StrainDetailPage";
 import { Layout } from "./pages/Layout";
 import { PlantDetailPage } from "./pages/PlantDetailPage/PlantDetailPage";
 import { AuthPage } from "./pages/AuthPage";
+import { TrayPage } from "./pages/TrayPage";
 
 
 export const Router = createBrowserRouter(
@@ -27,6 +28,8 @@ export const Router = createBrowserRouter(
       <Route path="mothers" element={<MothersPage />} />
 
       <Route path="plants" element={<PlantsPage />} />
+
+      <Route path="tray" element={<TrayPage />} />
 
       <Route path="plant/:id" element={<PlantDetailPage />} />
 

@@ -7,8 +7,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useClearTrayMutation, useGetTrayQuery } from "../../store/trayApi";
 import { usePrintTrayMutation } from "../../store/printApi";
 import { TrayItem } from "./TrayItem";
+import { useNavigate } from "react-router-dom";
+
 
 export const TrayButton = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [ancorEl, setAncorEl] = useState(null);
   const { isLoading, isError, data } = useGetTrayQuery();
@@ -16,6 +19,9 @@ export const TrayButton = () => {
   const [printTray]=usePrintTrayMutation()
   const toggleOpen = () => {
     setOpen((prev) => !prev);
+  };
+  const trayPage = () => {
+    navigate(`/tray`);
   };
   const buttonHandler = (event) => {
     setAncorEl(event.currentTarget);
@@ -29,6 +35,7 @@ export const TrayButton = () => {
         aria-label="show 4 new mails"
         color="inherit"
         onClick={buttonHandler}
+        onDoubleClick={trayPage}
       >
         <Badge badgeContent={data?.tray?.length||'0'} color="error">
           <FolderSpecialIcon />
@@ -66,6 +73,9 @@ export const TrayButton = () => {
         </IconButton>
         <IconButton onClick={printTray}>
           <PrintIcon />
+        </IconButton>
+        <IconButton onClick={trayPage}>
+          
         </IconButton>
         </Stack>
       </Popover>

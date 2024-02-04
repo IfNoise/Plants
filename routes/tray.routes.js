@@ -23,10 +23,11 @@ router.get("/", async (req, res) => {
             start = "none";
           }
           result = {
-            id: inputPlant._id,
+            _id: inputPlant._id,
             strain: inputPlant.strain,
             pheno: inputPlant.pheno,
             type: inputPlant.type,
+            group: inputPlant.group,
             start,
           };
         });
