@@ -178,13 +178,13 @@ export const NewActionButton = (props) => {
     if (isError) {
       setSnack({ open: true, severity: "error", message: 'error'});
     }
-  }, [isError,setSnack]);
+  }, [isError]);
 
   useEffect(() => {
     if (isSuccess) {
       setSnack({ open: true, severity: "success", message: "Action is added" });
     }
-  }, [isSuccess,setSnack]);
+  }, [isSuccess]);
 
   const handleActionType = (e) => {
     const { value } = e.target;

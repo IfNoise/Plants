@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useGetPlantsQuery } from "../../store/plantsApi";
 import PlantTimeline from "../../components/PlantTimeline/PlantTimeline";
 import { NewActionButton } from "../../components/NewActionButton/NewActionButton";
+import PlantSpeedDial from "../../components/PlantSpeedDial/PlantSpeedDial";
 
 export const PlantDetailPage = () => {
   const id = useParams().id;
@@ -77,7 +78,12 @@ export const PlantDetailPage = () => {
           <PlantTimeline actions={actions} />
           </Grid>
           <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
-          {state && <NewActionButton getPlants={getPlant} />}
+          {state && <PlantSpeedDial
+            getPlants={getPlant}
+            addAction
+            addToTray
+            print
+          />}
           </Grid>
         </>
       )}

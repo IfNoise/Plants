@@ -14,7 +14,11 @@ export const PlantsPage = () => {
       <FilterBar setOutputFilter={setFilter} />
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {data&&<PlantsList plants={data} />}
+      {data&&<PlantsList plants={data}
+                  addAction
+                  addToTray
+                  print
+      />}
     </>
   )
 };
