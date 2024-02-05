@@ -73,7 +73,7 @@ export const PlantsList = (props) => {
   }, [apiRef]);
 
   const getSelectedPlants = useCallback(() => {
-    if (Object.keys(apiRef.current).length === 0) {
+    if (Object.keys(apiRef?.current||{}).length === 0) {
       return [];
     }
     return Array.from(apiRef.current.getSelectedRows().values());
@@ -100,7 +100,7 @@ export const PlantsList = (props) => {
     <>
       {plants?.length < 0 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
-        <Box sx={{ height: "80hv", width: "100wv" }}>
+        <div style={{ height: "700px", width: "100%" }}>
           <DataGrid
             getRowId={getRowId}
             checkboxSelection
@@ -113,7 +113,6 @@ export const PlantsList = (props) => {
                 ).toDateString(),
               };
             })}
-            sx={{ height: "100%", width: "100%" }}
             apiRef={apiRef}
             columns={columns}
             initialState={{}}
@@ -124,7 +123,7 @@ export const PlantsList = (props) => {
               plantDetails(params.row._id);
             }}
           />
-        </Box>
+        </div>
       )}
 
       {apiIsLoaded && isLarge && (

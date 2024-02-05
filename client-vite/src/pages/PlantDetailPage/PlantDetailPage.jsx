@@ -22,7 +22,7 @@ export const PlantDetailPage = () => {
       setPlant(data[0]);
     }
   }, [data]);
-  const getPlant = () => [plant];
+  const getPlant = () => [plant?._id];
 
   const { strain, pheno, gender, state, cloneCounter, actions } = plant;
 
