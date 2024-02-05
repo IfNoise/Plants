@@ -8,10 +8,7 @@ export const TrayPage = () => {
     isError: isError,
     error,
     data,
-  } = useGetTrayQuery({
-    refetchOnMountOrArgChange: true,
-    refetchOnFocus: true,
-  });
+  } = useGetTrayQuery({ refetchOnMountOrArgChange: true, refetchOnFocus: true , pollingInterval: 5000 });
 
   return (
     <>
