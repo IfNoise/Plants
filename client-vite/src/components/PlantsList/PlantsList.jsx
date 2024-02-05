@@ -97,6 +97,10 @@ export const PlantsList = (props) => {
       "rowSelectionCheckboxChange",
       checkboxSelectionHandler
     );
+    apiRef.current.subscribeEvent(
+      'headerSelectionCheckboxChange',
+      checkboxSelectionHandler,
+    );
   }, [apiRef]);
 
   return (
