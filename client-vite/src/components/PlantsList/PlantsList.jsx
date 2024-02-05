@@ -73,7 +73,10 @@ export const PlantsList = (props) => {
   }, [apiRef]);
 
   const getSelectedPlants = useCallback(() => {
-    if (Object.keys(apiRef?.current||{}).length === 0) {
+    if(!apiRef.current){
+    return []
+    }   
+    if (Object.keys(apiRef.current).length === 0) {
       return [];
     }
     return Array.from(apiRef.current.getSelectedRows().values());
