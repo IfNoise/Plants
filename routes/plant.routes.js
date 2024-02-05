@@ -7,7 +7,7 @@ const router = Router();
 const fs = require("fs");
 const Strain = require("../models/Strain");
 
-router.post("/new_plant", auth, async (req, res) => {
+router.post("/new_plant", async (req, res) => {
   const form=req.body.form
   const number = form.seedsNumber;
   try {
@@ -51,7 +51,7 @@ router.post("/new_plant", auth, async (req, res) => {
   }
 });
 
-router.get("/strains", auth, async (req, res) => {
+router.get("/strains", async (req, res) => {
   try {
     const pipeline = [
       {
@@ -77,7 +77,7 @@ router.get("/strains", auth, async (req, res) => {
   }
 });
 
-router.get("/plants", auth, async (req, res) => {
+router.get("/plants", async (req, res) => {
   try {
     const filter = JSON.parse(req.query.filter);
     console.log('filter',filter)
@@ -89,7 +89,7 @@ router.get("/plants", auth, async (req, res) => {
   }
 });
 
-router.post("/new_action", auth, async (req, res) => {
+router.post("/new_action", async (req, res) => {
   try {
     const user = await User.findById(req.user.userId)
     const data = req.body.action;

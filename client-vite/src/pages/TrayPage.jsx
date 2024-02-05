@@ -8,7 +8,12 @@ export const TrayPage = () => {
     isError: isError,
     error,
     data,
-  } = useGetTrayQuery({ refetchOnMountOrArgChange: true, refetchOnFocus: true , pollingInterval: 5000 });
+  } = useGetTrayQuery({ 
+    refetchOnMountOrArgChange: true, 
+    refetchOnFocus: true , 
+    pollingInterval: 5000 ,
+    selectFromResult: (result) => result.tray,
+  });
 
   return (
     <>
@@ -16,7 +21,7 @@ export const TrayPage = () => {
       {isLoading && <CircularProgress />}
       {data?.tray && (
         <PlantsList
-          plants={data?.tray}
+          plants={data}
           show
           addAction
           addToTray

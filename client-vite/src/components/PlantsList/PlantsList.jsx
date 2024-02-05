@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Box, CircularProgress,Grid, useMediaQuery } from "@mui/material";
+import { CircularProgress,Grid, useMediaQuery } from "@mui/material";
 import { useCallback } from "react";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -115,9 +115,8 @@ export const PlantsList = (props) => {
             rows={plants?.map((plant) => {
               return {
                 ...plant,
-                start: new Date(
-                  new Date(plant?.startDate) || "0"
-                ).toDateString(),
+                start: 
+                  new Date(plant?.startDate).toDateString()||"undefined",
               };
             })}
             apiRef={apiRef}

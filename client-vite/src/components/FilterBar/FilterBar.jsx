@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { InputLabel } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { useGetStrainsQuery } from "../../store/plantsApi";
 import { Alert } from "@mui/material";
@@ -45,7 +45,7 @@ export const FilterBar = (props) => {
   const { setOutputFilter } = props; 
   const [filter, setFilter] = useState({});
   const [phenos, setPhenos] = useState([]);
-
+  const phenoSelect=useRef(null);
   const [startDate, setStartDate] = useState('');
 
   const { isSuccess, isLoading, isError, error, data } = useGetStrainsQuery({
@@ -53,7 +53,7 @@ export const FilterBar = (props) => {
     refetchOnFocus: true,
   });
 
-  const strains = data?.strains;
+  const {strains} = data ?? {strains:[]};
 
   useEffect(() => {
     if (!filter.strain) { return }
@@ -69,6 +69,17 @@ export const FilterBar = (props) => {
   }, [filter]);
 
   const handleChange = (event) => {
+    
+    if(event.target.name == 'strain'){
+      console.log(phenoSelect.current);
+      setFilter((prevfilter) =>{
+        return{
+          state: prevfilter.state ?? [],
+          strain: event.target.value,
+          }
+      });
+      setPhenos([]);
+    }
     setFilter({
       ...filter,
       [event.target.name]: event.target.value,
@@ -105,7 +116,7 @@ export const FilterBar = (props) => {
             return (
               <MenuItem key={id} value={state}>
                 <Checkbox checked={filter.state?.indexOf(state) > -1}>
-                  {" "}
+                  {state}
                 </Checkbox>
                 <ListItemText primary={state} />
               </MenuItem>
@@ -125,7 +136,6 @@ export const FilterBar = (props) => {
             name="strain"
             value={filter.strain ?? ''}
             input={<OutlinedInput label="Strain" />}
-            MenuProps={MenuProps}
           >
             {strains.map((strain, id) => {
               return (
@@ -145,10 +155,13 @@ export const FilterBar = (props) => {
             labelId="phenos-multiple-checkbox-label"
             id="phenos-multiple-checkbox"
             name="pheno"
+            ref={phenoSelect}
             multiple
-            value={filter.pheno ?? []}
+            value={filter?.pheno || []}
             input={<OutlinedInput label="Phenotypes" />}
-            renderValue={(selected) => selected.join(", ")}
+            renderValue={(selected) => {
+              return selected.join(", ");
+            }}
             MenuProps={MenuProps}
           >
             {phenos.map((pheno, id) => {

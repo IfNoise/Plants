@@ -7,14 +7,16 @@ import { PlantsList } from "../components/PlantsList/PlantsList";
 
 export const PlantsPage = () => {
   const [filter, setFilter] = useState({})
-  const { isLoading, isError, error, data } = useGetPlantsQuery(filter,{refetchOnMountOrArgChange: true,
-    refetchOnFocus: true});
+  const { isLoading, isError, error, data:plants=[] } = useGetPlantsQuery(filter,{
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true
+  });
   return (
     <>
       <FilterBar setOutputFilter={setFilter} />
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {data&&<PlantsList plants={data}
+      {plants.length>0 &&<PlantsList plants={plants}
                   addAction
                   addToTray
                   print
