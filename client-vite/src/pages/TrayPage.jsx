@@ -4,24 +4,22 @@ import { useGetTrayQuery } from "../store/trayApi";
 
 export const TrayPage = () => {
   const {
-    isLoading: isLoading,
-    isError: isError,
+    isLoading,
+    isError,
     error,
     data,
   } = useGetTrayQuery({ 
     refetchOnMountOrArgChange: true, 
-    refetchOnFocus: true , 
-    pollingInterval: 5000 ,
-    selectFromResult: (result) => result.tray,
+    refetchOnFocus: true ,
   });
 
   return (
     <>
-      {isError && <Alert severity="error">{error.message}</Alert>}
+      {isError && <Alert severity="error">{error?.message||'error'}</Alert>}
       {isLoading && <CircularProgress />}
-      {data?.tray && (
+      {data?.tray.length>0 &&
         <PlantsList
-          plants={data}
+          plants={data.tray}
           show
           addAction
           addToTray
@@ -29,7 +27,7 @@ export const TrayPage = () => {
           print
           clearTray
         />
-      )}
+      }
     </>
   );
 };

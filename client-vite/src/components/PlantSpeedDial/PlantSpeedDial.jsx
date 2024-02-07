@@ -162,7 +162,8 @@ export default function PlantSpeedDial(props) {
   const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
   const {getPlants}=props
-
+  const plants=getPlants()
+  
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
@@ -193,7 +194,6 @@ export default function PlantSpeedDial(props) {
     dispatch(addType(value));
   };
   const handleOpen=()=>{
-    const plants=getPlants()
     if(plants.length<1){
       setSnack({ open: true, severity: "error", message: "No plants selected" });
       return
@@ -208,8 +208,6 @@ export default function PlantSpeedDial(props) {
     setOpen(false);
   };
   const newActionFunc = () => {
-    const plants=getPlants()
-    console.log(plants);
     const id =plants.map((plant)=>(plant._id))
     console.log(id);
     const body = { id, action: newAction };
@@ -293,7 +291,7 @@ export default function PlantSpeedDial(props) {
       >
         <DialogTitle>Subscribe</DialogTitle>
         <DialogContent>
-          <FormControl variant="outlined" sx={{ mx: 1, width: "280px" }}>
+          <FormControl variant="outlined" sx={{ mx: 1, width: "300px" }}>
             <InputLabel id="action-label">Action Type</InputLabel>
             <Select
               labelId="action-label"

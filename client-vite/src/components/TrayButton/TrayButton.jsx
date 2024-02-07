@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export const TrayButton = () => {
   const navigate = useNavigate();
-  const { data } = useGetTrayQuery({},{ refetchOnMountOrArgChange: true, refetchOnFocus: true , pollingInterval: 5000 } );
+  const { data } = useGetTrayQuery({},{ refetchOnMountOrArgChange: true, refetchOnFocus: true } );
   const trayPage = () => {
     navigate(`/tray`);
   };

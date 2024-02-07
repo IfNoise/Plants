@@ -11,16 +11,20 @@ export const PlantsPage = () => {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true
   });
+  const getData = () => plants;
   return (
     <>
-      <FilterBar setOutputFilter={setFilter} />
+      
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {plants.length>0 &&<PlantsList plants={plants}
+      {plants.length>0 &&
+      <>
+      <FilterBar setOutputFilter={setFilter} getData={getData} />
+      <PlantsList plants={plants}
                   addAction
                   addToTray
                   print
-      />}
+      /></>}
     </>
   )
 };
