@@ -91,11 +91,9 @@ router.get("/plants", async (req, res) => {
 
 router.post("/new_action", async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId)
     const data = req.body.action;
     const id = req.body.id;
     const action = {};
-    action.author=user.username;
     id.map(async (idx) => {
       const plant = await Plant.findById(idx);
       action.type = data.actionType;
