@@ -43,9 +43,8 @@ import { AddressFields } from "./AddressFields";
 import { useState,useEffect } from "react";
 import { addType, addAuthor, clear } from "../../store/newActionSlice";
 
-const states = [
-  {
-    name: "Germination",
+const states = {
+  Germination :{
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -53,8 +52,7 @@ const states = [
       { text: "Stop" },
     ],
   },
-  {
-    name: "Cloning",
+  Cloning:{
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -62,8 +60,7 @@ const states = [
       { text: "Stop" },
     ],
   },
-  {
-    name: "Growing",
+  Growing:{
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -74,8 +71,7 @@ const states = [
       { text: "Stop" },
     ],
   },
-  {
-    name: "Blooming",
+  Blooming:{
     actions: [
       { text: "Note" },
       { text: "Relocation" },
@@ -83,16 +79,13 @@ const states = [
       { text: "Harvest" },
     ],
   },
-  {
-    name: "Stopped",
+  Stopped:{
     actions: [{ text: "Note" }],
   },
-  {
-    name: "Harvested",
+  Harvested:{
     actions: [{ text: "Note" }],
   },
-  {
-    name: "MotherPlant",
+  MotherPlant:{
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -102,51 +95,51 @@ const states = [
       { text: "Stop" },
     ],
   },
-];
-const actionFields = [
-  {
+};
+const actionFields = {
+  Note:{
     name: "Note",
     icon: <NoteAddIcon />,
     fields: <NoteFields />,
   },
-  {
+  Picking:{
     name: "Picking",
     icon: <NoteAddIcon />,
     fields: <PickingFields />,
   },
-  {
+  Relocation:{
     name: "Relocation",
     icon: <ArrowOutwardIcon />,
     fields: <AddressFields />,
   },
-  {
+  SetGender:{
     name: "SetGender",
     icon: <CheckBoxIcon />,
     fields: <SetGenderFields />,
   },
-  {
+  Blooming:{
     name: "Blooming",
     icon: <LocalFloristIcon />,
   },
-  {
+  Stop:{
     name: "Stop",
     icon: <CancelIcon color="error" />,
     fields: <StopFields />,
   },
-  {
+  Harvest:{
     name: "Harvest",
     icon: <ArrowOutwardIcon />,
   },
-  {
+  MakeMother:{
     name: "MakeMother",
     icon: <ArrowOutwardIcon />,
   },
-  {
+  CuttingClones:{
     name: "CuttingClones",
     icon: <ContentCutIcon />,
     fields: <CuttingClonesFields />,
   },
-];
+};
 
 export default function PlantSpeedDial(props) {
   const { setSnack } = useContext(SnackbarContext);
@@ -159,11 +152,16 @@ export default function PlantSpeedDial(props) {
   const [clearTray]=useClearTrayMutation()
   const [printTray]=usePrintTrayMutation()
 
-  const [actions,setActions]=useState([])
+  //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
-  const {getPlants}=props
-  const plants=getPlants()
-  
+  const plants=props?.plants||[]
+  const getPlants=props?.getPlants||(()=>plants)
+  console.log(plants);
+  const state=plants[0]?.state||'Cloning'
+  console.log(state);
+  const actions=states[state].actions
+  const id =plants.map((plant)=>(plant._id))
+
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
@@ -198,18 +196,15 @@ export default function PlantSpeedDial(props) {
       setSnack({ open: true, severity: "error", message: "No plants selected" });
       return
     }
-    const state=plants[0].state
-    setActions(states.find((obj) => obj.name == state).actions)
-    console.log(state);
     setOpen(true)
   }
+
   const handleCancel = () => {
     dispatch(clear());
     setOpen(false);
   };
+
   const newActionFunc = () => {
-    const id =plants.map((plant)=>(plant._id))
-    console.log(id);
     const body = { id, action: newAction };
     addAction(body);
     dispatch(clear())
@@ -219,7 +214,7 @@ export default function PlantSpeedDial(props) {
     <>
       <SpeedDial
         ariaLabel="Plant Action SpeedDial"
-        hidden={(!props.show)&&getPlants().length === 0}
+        hidden={(!props.show)&& getPlants().length === 0}
         sx={{ position: "fixed", bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
       >
@@ -237,7 +232,7 @@ export default function PlantSpeedDial(props) {
             icon={<PrintIcon />}
             tooltipTitle="Print"
             onClick={() => {
-              const plants = getPlants();
+              const plants = props.getPlants();
               if(plants.length<1){
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
@@ -252,12 +247,11 @@ export default function PlantSpeedDial(props) {
             icon={<CreateNewFolderIcon />}
             tooltipTitle="Add to tray"
             onClick={() => {
-              const plants = getPlants();
+            const plants = getPlants()
               if(plants.length<1){
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              const id = plants.map((plant) => plant._id);
               addToTray(id);
             }}
           />
@@ -299,19 +293,17 @@ export default function PlantSpeedDial(props) {
               label="Action Type"
               onChange={handleActionType}
             >
-              {actions?.map((obj, index) => {
+              {actions.map((obj, index) => {
                 return (
                   <MenuItem key={index} value={obj.text}>
                     {obj.text}
-                    {actionFields.find((res) => res.name === obj.text).icon}
+                    {actionFields[obj.text].icon}
                   </MenuItem>
                 );
               })}
             </Select>
           </FormControl>
-          {newAction.actionType &&
-            actionFields.find((res) => res.name === newAction.actionType)
-              .fields}
+          {newAction.actionType && actionFields[newAction.actionType].fields}
         </DialogContent>
         <DialogActions>
           <Button onClick={newActionFunc} disabled={!newAction.actionType}>
@@ -325,6 +317,7 @@ export default function PlantSpeedDial(props) {
 }
 PlantSpeedDial.propTypes = {
   getPlants: PropTypes.func,
+  plants: PropTypes.array,
   show: PropTypes.bool,
   addAction: PropTypes.bool,
   print: PropTypes.bool,

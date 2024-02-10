@@ -25,18 +25,13 @@ const states = [
   "MotherPlant",
 ];
 
-function MyListSubheader(props) {
-  return <ListSubheader {...props} />;
-}
-MyListSubheader.muiSkipListHighlight = true;
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 36;
+const ITEM_PADDING_TOP = 2;
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 200,
     },
   },
 };
@@ -91,7 +86,10 @@ export const FilterBar = (props) =>{
     });
 }
   const handleChangeState = (event) => {
-    
+     if(event.target.value.length<1){
+       setFilter({});
+       return
+     }
       setFilter({
         state: event.target.value,
       });
@@ -112,11 +110,11 @@ export const FilterBar = (props) =>{
     <>
       {}
 
-      <FormControl sx={{ m: 1, width: 200 }}>
+      <FormControl sx={{ m: 0, width: 200 }}>
         <InputLabel id="state-multiple-checkbox-label">State</InputLabel>
         <Select
           onChange={handleChangeState}
-          sx={{ width: 200} }
+          sx={{ p:0} }
           labelId="state-multiple-checkbox-label"
           id="state-multiple-checkbox"
           multiple
@@ -124,7 +122,12 @@ export const FilterBar = (props) =>{
           value={filter.state ?? []}
           input={<OutlinedInput label="State" />}
           renderValue={(selected) => selected.join(", ")}
-          MenuProps={MenuProps}
+          MenuProps={{ PaperProps: {
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+              width: 150,
+            },
+          },}}
         >
           {states.map((state, id) => {
             return (
@@ -140,7 +143,7 @@ export const FilterBar = (props) =>{
       </FormControl>
 
       {strains && (
-        <FormControl sx={{ m: 1, width: 260 }}>
+        <FormControl sx={{ m: 0, width: 260 }}>
           <InputLabel id="strain-multiple-checkbox-label">Strain</InputLabel>
           <Select
             onChange={handleChangeStrain}
@@ -149,6 +152,12 @@ export const FilterBar = (props) =>{
             name="strain"
             value={filter.strain ?? ''}
             input={<OutlinedInput label="Strain" />}
+            MenuProps={{ PaperProps: {
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: 150,
+              },
+            },}}
           >
             {strains.map((strain, id) => {
               return (
@@ -161,7 +170,7 @@ export const FilterBar = (props) =>{
         </FormControl>
       )}
       {phenos.length > 0 && (
-        <FormControl sx={{ m: 1, width: 130 }}>
+        <FormControl sx={{ width: 130 }}>
           <InputLabel id="phenos-multiple-checkbox-label">Phenotype</InputLabel>
           <Select
             onChange={handleChangePheno}
@@ -175,7 +184,14 @@ export const FilterBar = (props) =>{
             renderValue={(selected) => {
               return selected.join(", ");
             }}
-            MenuProps={MenuProps}
+            MenuProps={
+             { PaperProps: {
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                  width: 120,
+                },
+              },}
+            }
           >
             {phenos.map((pheno, id) => {
               return (
@@ -192,12 +208,26 @@ export const FilterBar = (props) =>{
       )}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker 
-      sx={{ m: 1, width: 300 }}
+      sx={{ m: 0, width: 300 }}
       disableFuture
       closeOnSelect
       value={startDate} 
       label="Start Date" 
       onChange={handleChangeStart}
+      slotProps={{
+        layout: {
+          sx: {
+            '.MuiDateCalendar-root': {
+              color: '#1565c0',
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: '#2196f3',
+              border: '1px solid',
+              backgroundColor: '#bbdefb',
+            }
+          }
+        }
+      }}
       />
       </LocalizationProvider>
     </>

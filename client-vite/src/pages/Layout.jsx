@@ -22,7 +22,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SnackBar from "../components/SnackBar/SnackBar";
 import { useAuth } from "../hooks/auth.hook";
 import { TrayButton } from "../components/TrayButton/TrayButton";
-import { InputBase, Paper } from "@mui/material";
+import { InputBase, Paper, useMediaQuery } from "@mui/material";
 import Scanner from "../components/Scanner/Scanner";
 
 function PrivateOutlet() {
@@ -51,7 +51,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
+      marginLeft: `${drawerWidth}px`,
     }),
   })
 );
@@ -85,6 +85,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export const Layout = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -96,8 +97,8 @@ export const Layout = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <CssBaseline />drawerWidth
+      <AppBar position="fixed"  open={open}>
         <Toolbar sx={{width:'100%'}}>
           <Paper
             component="form"
@@ -139,18 +140,19 @@ export const Layout = () => {
             boxSizing: "border-box",
           },
         }}
-        variant="persistent"
+        variant={isSmall?"temporary":"persistent"}
         anchor="left"
         open={open}
       >
         <DrawerHeader>
+          {isSmall && 
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
             ) : (
               <ChevronRightIcon />
             )}
-          </IconButton>
+          </IconButton>}
         </DrawerHeader>
         <Divider />
         <List>
@@ -180,7 +182,10 @@ export const Layout = () => {
         </List>
         <Divider />
       </Drawer>
-      <Main open={open}>
+      <Main 
+      open={open}
+      //sx={{marginLeft:{md: `${drawerWidth}px`},width:{md: `calc(100% - ${drawerWidth}px)`}  }}
+      >
         <DrawerHeader />
         <PrivateOutlet />
         <SnackBar />

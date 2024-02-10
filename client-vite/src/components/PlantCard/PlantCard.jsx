@@ -12,29 +12,30 @@ const PlantCard = ({ plant }) => {
   return (
     <Card className="plant-card">
       <CardContent>
-        {plant.strain && (
-          <Typography variant="h6" color="text.secondary" >
+      {plant?.pheno && (
+          <Typography variant="h5" color="text.secondary" >
+            {plant.pheno}
+          </Typography>
+        )}
+        {plant?.strain && (
+          <Typography variant="body2" color="text.secondary" >
             Strain: {plant.strain}
           </Typography>
         )}
-        {plant.pheno && (
-          <Typography variant="body2" color="text.secondary" >
-            Pheno: {plant.pheno}
-          </Typography>
-        )}
-        {plant.state && (
+     
+        {plant?.state && (
           <Typography variant="body2" color="text.secondary">
-            State: {plant.state}
+            State: {plant?.state}
           </Typography>
         )}
-        {plant.type && (
+        {plant?.type && (
           <Typography variant="boby2" color="text.success">
             Type: {plant.type}
           </Typography>
         )}
-        {plant.startDate && (
+        {plant?.startDate && (
           <Typography variant="caption" color="text.secondary">
-            Start Date: {plant.startDate}
+          Start Date: {plant.startDate}
           </Typography>
         )}
         <Button variant="contained" onClick={handleDetailsClick}>

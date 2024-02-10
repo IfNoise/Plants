@@ -12,25 +12,30 @@ import PlantSpeedDial from "../../components/PlantSpeedDial/PlantSpeedDial";
 
 export const PlantDetailPage = () => {
   const id = useParams().id;
-
+  const [plant, setPlant] = useState({});
   const { isLoading, isError, error, data } = useGetPlantsQuery({ _id: id },{ refetchOnMountOrArgChange: true, refetchOnFocus: true }
     );
 
-  const [plant, setPlant] = useState({});
+
   useEffect(() => {
-    if (data) {
+    if (data?.length > 0) {
       setPlant(data[0]);
     }
   }, [data]);
-  const getPlant = () => [plant?._id];
 
-  const { strain, pheno, gender, state, cloneCounter, actions } = plant;
+  const getPlant = () => {
+    if (data?.length < 0) {
+      return []
+    }
+    return [data[0]];
+  };
 
+  const {strain,pheno,gender,state,actions,cloneCounter} = plant;
   return (
     <Grid container>
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {data && (
+      {data?.length>0 && (
         <>
         <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
           <Card sx={{ width: "100%" }}>
@@ -38,12 +43,12 @@ export const PlantDetailPage = () => {
               <Grid container>
                 <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}> 
               <Typography gutterBottom variant="h4" component="div">
-                {strain}
+                {strain ?? "undefined"}
               </Typography>
               </Grid>
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
               <Typography gutterBottom variant="h7" component="div">
-                {pheno}
+                {pheno ?? "undefined"}
               </Typography>
               </Grid>
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
@@ -74,11 +79,12 @@ export const PlantDetailPage = () => {
           </Card>
           </Grid>
           <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
-          <PlantTimeline actions={actions} />
+          <PlantTimeline actions={actions ?? []} />
           </Grid>
           <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
           {state && <PlantSpeedDial
-            getPlants={getPlant}
+            //getPlants={getPlant}
+            plants={[plant]}
             addAction
             addToTray
             print

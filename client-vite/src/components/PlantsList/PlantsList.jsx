@@ -53,7 +53,7 @@ const columns = [
 ];
 
 export const PlantsList = (props) => {
-  const plants = props.plants;
+  const plants = props?.plants||[];
 
   const navigate = useNavigate();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -105,7 +105,7 @@ export const PlantsList = (props) => {
 
   return (
     <>
-      {plants?.length < 0 && <CircularProgress />}
+      {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
         <div style={{ height: "700px", width: "100%" }}>
           <DataGrid
@@ -132,7 +132,7 @@ export const PlantsList = (props) => {
         </div>
       )}
 
-      {apiIsLoaded && isLarge && (
+      {plants?.length > 0 && apiIsLoaded && isLarge && (
         <>
           <PlantSpeedDial
             getPlants={getSelectedPlants}
@@ -143,7 +143,7 @@ export const PlantsList = (props) => {
       {plants?.length > 0 && isSmall && (
         <>
           <Grid container spacing={1}>
-            {plants?.map((obj) => {
+            {plants.map((obj) => {
               return (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={obj._id}>
                   <PlantCard plant={obj} />
