@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
         let result;
         await Plant.findById(plant.plantId).then((inputPlant) => {
           let start;
-          if (inputPlant.actions.length > 0) {
+          if (inputPlant?.actions.length > 0) {
             start = inputPlant.actions[0].date.toDateString();
           } else {
             start = "none";
