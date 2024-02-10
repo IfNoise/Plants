@@ -37,7 +37,7 @@ export default function TimelineAction({ action }) {
         <TimelineConnector />
       </TimelineSeparator>
       <TimelineContent >
-        <Typography variant="subtitle2">{actionData[action.type]?.text}</Typography>
+        <Typography variant="h5">{actionData[action.type]?.text}</Typography>
         {action?.oldAddress && (
           <Typography variant="caption">
             {action.oldAddress.building}

@@ -27,7 +27,6 @@ export const MotherCard = (props) => {
       </CardContent>
       <CardActions>
         <Button size="small" onClick={()=>{plantDetails(props.plant._id)}}>Details</Button>
-        <Button size="small">Cut clones</Button>
       </CardActions>
     </Card>
   );

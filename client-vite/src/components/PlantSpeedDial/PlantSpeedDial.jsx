@@ -8,6 +8,8 @@ import {
   Select,
   Button,
   MenuItem,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useContext } from "react";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
@@ -147,6 +149,8 @@ export default function PlantSpeedDial(props) {
   const currentUser = useSelector((state)=>(state.auth.username))
   const newAction = useSelector((state) => state.newAction);
   const [addAction, { isSuccess, isError}] = useAddActionMutation();
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const [addToTray] = useAddToTrayMutation();
   const [printPlants] = usePrintPlantsMutation();
   const [clearTray]=useClearTrayMutation()
@@ -278,14 +282,17 @@ export default function PlantSpeedDial(props) {
         )}
       </SpeedDial>
       <Dialog
-        sx={{ ml: 3 }}
+        sx={{ width:{md:"30%"},justifyContent:'center'}}
         id="action_popover"
+        fullScreen={isSmall} 
+        fullWidth={true}
+        maxWidth="md"
         open={open}
         onClose={handleCancel}
       >
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle sx={{mb:"2px"}}>New Action</DialogTitle>
         <DialogContent>
-          <FormControl variant="outlined" sx={{ mx: 1, width: "300px" }}>
+          <FormControl variant="outlined" sx={{m:'3px', width: "98%" }}>
             <InputLabel id="action-label">Action Type</InputLabel>
             <Select
               labelId="action-label"
@@ -305,7 +312,7 @@ export default function PlantSpeedDial(props) {
           </FormControl>
           {newAction.actionType && actionFields[newAction.actionType].fields}
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{justifyContent:'center'}}>
           <Button onClick={newActionFunc} disabled={!newAction.actionType}>
             Ok
           </Button>

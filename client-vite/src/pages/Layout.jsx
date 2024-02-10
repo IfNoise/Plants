@@ -40,18 +40,19 @@ const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
+    flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft:{md: `-${drawerWidth}px`},
     ...(open && {
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: `${drawerWidth}px`,
+      marginLeft: 0,
     }),
   })
 );
@@ -65,7 +66,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
+    marginLeft: {xs:`${drawerWidth}px`},
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -84,20 +85,20 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export const Layout = () => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+  const [open, setOpen] = React.useState(!isSmall&&true);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setOpen(isSmall?false:true);
   };
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />drawerWidth
+      <CssBaseline />
       <AppBar position="fixed"  open={open}>
         <Toolbar sx={{width:'100%'}}>
           <Paper
@@ -140,7 +141,7 @@ export const Layout = () => {
             boxSizing: "border-box",
           },
         }}
-        variant={isSmall?"temporary":"persistent"}
+        variant={isSmall?"temporary":"permanent"}
         anchor="left"
         open={open}
       >
@@ -171,7 +172,7 @@ export const Layout = () => {
             },
           ].map((obj, index) => (
             <ListItem key={obj.text} disablePadding>
-              <ListItemButton component={Link} to={obj.href} onClick={()=>{setOpen(false)}}>
+              <ListItemButton component={Link} to={obj.href} onClick={()=>{handleDrawerClose}}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -183,8 +184,8 @@ export const Layout = () => {
         <Divider />
       </Drawer>
       <Main 
+       position="fixed"
       open={open}
-      //sx={{marginLeft:{md: `${drawerWidth}px`},width:{md: `calc(100% - ${drawerWidth}px)`}  }}
       >
         <DrawerHeader />
         <PrivateOutlet />

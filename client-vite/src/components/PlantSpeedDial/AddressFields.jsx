@@ -70,7 +70,9 @@ export const AddressFields = () => {
     dispatch(addBuilding(buildRooms[id].text));
   }, []);
   return (
-    <>  <FormControl variant="outlined" sx={{ m: 1, width: '280px'}}>
+    <>
+      {" "}
+      <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
           labelId="building-label"
@@ -90,13 +92,13 @@ export const AddressFields = () => {
             );
           })}
         </Select>
-        </FormControl>
-        <FormControl variant="outlined"  sx={{ m:1,width: '280px'}}>
+      </FormControl>
+      <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
         <InputLabel id="room-label">Room</InputLabel>
         <Select
           labelId="room-label"
           name="room"
-          value={newAction.address?.room  ?? ''}
+          value={newAction.address?.room ?? ""}
           label="Room"
           onChange={handlerRoom}
           InputLabelProps={{
@@ -111,73 +113,66 @@ export const AddressFields = () => {
             );
           })}
         </Select>
-        </FormControl>
+      </FormControl>
       {newAction.address?.room != "Laboratory" && (
-        < >
-
-            <TextField
-              id="outlined-number"
-              sx={{ m: 1,width: '200px'}}
-              label="Row"
-              type="number"
-              onChange={handlerRow}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-
-            <TextField
-              id="outlined-number"
-              sx={{ m: 1,width: '200px'}}
-              label="Tray"
-              type="number"
-              onChange={handlerTray}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-
-        </>
-      )}
-      
-      {newAction.address?.room == "Laboratory" && (
-        
         <>
-            <TextField
-              id="outlined-number"
-              sx={{ m: 1,width: '150px'}}
-              label="Rack"
-              type="number"
-              onChange={handlerRack}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <TextField
-              id="outlined-number"
-              sx={{ mx: 1,width: '150px'}}
-              label="Shelf"
-              type="number"
-              onChange={handlerShelf}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-        </>
-        
-      )}
-      
-        <TextField
-          id="outlined-number"
-          sx={{ m: 1,width: '120px'}}
-          label="Number"
-          type="number"
-          onChange={handlerNumber}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
+          <TextField
+            id="outlined-number"
+            sx={{ m: "2px", width: "98%" }}
+            label="Row"
+            type="number"
+            onChange={handlerRow}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
 
+          <TextField
+            id="outlined-number"
+            sx={{ m: "2px", width: "98%" }}
+            label="Tray"
+            type="number"
+            onChange={handlerTray}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </>
+      )}
+      {newAction.address?.room == "Laboratory" && (
+        <>
+          <TextField
+            id="outlined-number"
+            sx={{ m: "2px", width: "98%" }}
+            label="Rack"
+            type="number"
+            onChange={handlerRack}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            id="outlined-number"
+            sx={{ mx: "2px", width: "98%" }}
+            label="Shelf"
+            type="number"
+            onChange={handlerShelf}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </>
+      )}
+      <TextField
+        id="outlined-number"
+        sx={{ m: "2px", width: "98%" }}
+        label="Number"
+        type="number"
+        onChange={handlerNumber}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
     </>
   );
 };

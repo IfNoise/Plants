@@ -18,7 +18,7 @@ export const PickingFields = () => {
   };
   return (
     <Box>
-      <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+      <FormControl variant="outlined" sx={{ width:"100%"}}>
         <InputLabel id="potsize-label">Pot Size</InputLabel>
         <Select
           labelId="potsize-label"
