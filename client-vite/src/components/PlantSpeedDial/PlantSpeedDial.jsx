@@ -161,10 +161,9 @@ export default function PlantSpeedDial(props) {
   const plants=props?.plants||[]
   const getPlants=props?.getPlants||(()=>plants)
   console.log(plants);
-  const state=plants[0]?.state||'Cloning'
+  const state=getPlants[0]?.state||'Cloning'
   console.log(state);
   const actions=states[state].actions
-  const id =plants.map((plant)=>(plant._id))
 
   useEffect(() => {
     if (newAction) {
@@ -241,7 +240,8 @@ export default function PlantSpeedDial(props) {
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              printPlants( {plants} );
+              const ids = plants.map((plant) => plant._id);
+              printPlants({plants: ids} );
             }}
           />
         )}

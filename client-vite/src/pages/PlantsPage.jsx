@@ -11,7 +11,7 @@ export const PlantsPage = () => {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true
   });
-  const getData = () => plants;
+  const getData = () => plants.map((plant) => plant);
   return (
     <>
       

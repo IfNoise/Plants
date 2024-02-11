@@ -25,16 +25,8 @@ const states = [
   "MotherPlant",
 ];
 
-const ITEM_HEIGHT = 36;
+const ITEM_HEIGHT = 34;
 const ITEM_PADDING_TOP = 2;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 200,
-    },
-  },
-};
 export const FilterBar = (props) =>{
   const { setOutputFilter ,getData} = props; 
   const [filter, setFilter] = useState({});
@@ -108,9 +100,8 @@ export const FilterBar = (props) =>{
 
   return (
     <>
-      {}
-
-      <FormControl sx={{ m: 0, width: 200 }}>
+    
+      <FormControl sx={{ m: '1px', width: 200 }}>
         <InputLabel id="state-multiple-checkbox-label">State</InputLabel>
         <Select
           onChange={handleChangeState}
@@ -143,7 +134,7 @@ export const FilterBar = (props) =>{
       </FormControl>
 
       {strains && (
-        <FormControl sx={{ m: 0, width: 260 }}>
+        <FormControl sx={{ m:'1px', width: 260 }}>
           <InputLabel id="strain-multiple-checkbox-label">Strain</InputLabel>
           <Select
             onChange={handleChangeStrain}
@@ -170,7 +161,7 @@ export const FilterBar = (props) =>{
         </FormControl>
       )}
       {phenos.length > 0 && (
-        <FormControl sx={{ width: 130 }}>
+        <FormControl sx={{ m:'1px',width: 130 }}>
           <InputLabel id="phenos-multiple-checkbox-label">Phenotype</InputLabel>
           <Select
             onChange={handleChangePheno}
@@ -208,9 +199,10 @@ export const FilterBar = (props) =>{
       )}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker 
-      sx={{ m: 0, width: 300 }}
+      sx={{m:'1px',width: 300 }}
       disableFuture
       closeOnSelect
+      size="small"
       value={startDate} 
       label="Start Date" 
       onChange={handleChangeStart}

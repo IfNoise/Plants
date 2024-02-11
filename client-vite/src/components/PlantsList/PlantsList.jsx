@@ -107,7 +107,7 @@ export const PlantsList = (props) => {
     <>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
-        <div style={{ height: "700px", width: "100%" }}>
+        <div style={{ height: {md:"70%"}, width: "100%" }}>
           <DataGrid
             getRowId={getRowId}
             checkboxSelection
@@ -135,7 +135,7 @@ export const PlantsList = (props) => {
       {plants?.length > 0 && apiIsLoaded && isLarge && (
         <>
           <PlantSpeedDial
-            getPlants={getSelectedPlants}
+            getPlants={getSelected}
             {...props}
           />
         </>

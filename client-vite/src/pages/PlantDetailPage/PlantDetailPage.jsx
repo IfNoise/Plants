@@ -23,13 +23,6 @@ export const PlantDetailPage = () => {
     }
   }, [data]);
 
-  const getPlant = () => {
-    if (data?.length < 0) {
-      return []
-    }
-    return [data[0]];
-  };
-
   const {strain,pheno,gender,state,actions,cloneCounter} = plant;
   return (
     <Grid container>
@@ -84,7 +77,7 @@ export const PlantDetailPage = () => {
           <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
           {state && <PlantSpeedDial
             //getPlants={getPlant}
-            plants={[plant]}
+            plants={[id]}
             addAction
             addToTray
             print
