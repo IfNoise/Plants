@@ -78,6 +78,7 @@ export const PlantDetailPage = () => {
           {state && <PlantSpeedDial
             //getPlants={getPlant}
             plants={[id]}
+            state={state}
             addAction
             addToTray
             print

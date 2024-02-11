@@ -43,7 +43,7 @@ import { SetGenderFields } from "./SetGenderFields";
 import { PickingFields } from "./PickingFields";
 import { AddressFields } from "./AddressFields";
 import { useState,useEffect } from "react";
-import { addType, addAuthor, clear } from "../../store/newActionSlice";
+import { addType,clear } from "../../store/newActionSlice";
 
 const states = {
   Germination :{
@@ -146,7 +146,6 @@ const actionFields = {
 export default function PlantSpeedDial(props) {
   const { setSnack } = useContext(SnackbarContext);
   const dispatch = useDispatch();
-  const currentUser = useSelector((state)=>(state.auth.username))
   const newAction = useSelector((state) => state.newAction);
   const [addAction, { isSuccess, isError}] = useAddActionMutation();
   const theme = useTheme();
@@ -161,14 +160,13 @@ export default function PlantSpeedDial(props) {
   const plants=props?.plants||[]
   const getPlants=props?.getPlants||(()=>plants)
   console.log(plants);
-  const state=getPlants[0]?.state||'Cloning'
+  const state=props?.state||"Cloning"
   console.log(state);
   const actions=states[state].actions
 
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
-      dispatch(addAuthor(currentUser));
       
     }
 
@@ -208,7 +206,7 @@ export default function PlantSpeedDial(props) {
   };
 
   const newActionFunc = () => {
-    const body = { plants, action: newAction };
+    const body = { id:plants, action: newAction };
     addAction(body);
     dispatch(clear())
     setOpen(false);
@@ -240,7 +238,7 @@ export default function PlantSpeedDial(props) {
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              printPlants({plants});
+              printPlants([...plants]);
             }}
           />
         )}
@@ -324,6 +322,7 @@ export default function PlantSpeedDial(props) {
 PlantSpeedDial.propTypes = {
   getPlants: PropTypes.func,
   plants: PropTypes.array,
+  state: PropTypes.string,
   show: PropTypes.bool,
   addAction: PropTypes.bool,
   print: PropTypes.bool,

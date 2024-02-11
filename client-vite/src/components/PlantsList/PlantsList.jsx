@@ -135,6 +135,7 @@ export const PlantsList = (props) => {
       {plants?.length > 0 && apiIsLoaded && isLarge && (
         <>
           <PlantSpeedDial
+            state={getSelectedPlants()[0]?.state}
             getPlants={getSelected}
             {...props}
           />
