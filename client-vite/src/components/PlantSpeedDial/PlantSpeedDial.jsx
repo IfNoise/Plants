@@ -208,7 +208,7 @@ export default function PlantSpeedDial(props) {
   };
 
   const newActionFunc = () => {
-    const body = { id, action: newAction };
+    const body = { plants, action: newAction };
     addAction(body);
     dispatch(clear())
     setOpen(false);
@@ -240,8 +240,7 @@ export default function PlantSpeedDial(props) {
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              const ids = plants.map((plant) => plant._id);
-              printPlants({plants: ids} );
+              printPlants({plants});
             }}
           />
         )}
@@ -256,7 +255,7 @@ export default function PlantSpeedDial(props) {
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              addToTray(id);
+              addToTray(plants);
             }}
           />
         )}
