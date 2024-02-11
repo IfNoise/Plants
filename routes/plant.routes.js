@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const Plant = require("../models/Plant");
 const Action = require("../models/Action");
-const User = require("../models/User");
-const auth = require("../middlewares/auth.middleware");
+//const User = require("../models/User");
+//const auth = require("../middlewares/auth.middleware");
 const router = Router();
 const fs = require("fs");
 const Strain = require("../models/Strain");
@@ -11,11 +11,11 @@ router.post("/new_plant", async (req, res) => {
   const form=req.body.form
   const number = form.seedsNumber;
   try {
-    const user = await User.findById(req.user.userId)
+    //const user = await User.findById(req.user.userId)
     const strain = await Strain.findById(req.body.strain)
     const firstAction = {
       date: Date.now(),
-      author:user.username,
+      //author:user.username,
       type: "Start",
       gender:"undefined",
       source: strain._id,
