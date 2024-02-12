@@ -20,9 +20,10 @@ export const TrayButton = () => {
         color="inherit"
         onClick={trayPage}
       >
-        <Badge badgeContent={data?.tray?.length||'0'} color="error">
+        {data&&
+          <Badge badgeContent={data.tray.length} color="error">
           <FolderSpecialIcon />
-        </Badge>
+        </Badge>}
       </IconButton>
     </>
   );
