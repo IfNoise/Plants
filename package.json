@@ -26,7 +26,6 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "express-validators": "^1.0.4",
     "jsonwebtoken": "^9.0.2",
     "materialize-css": "^1.0.0-rc.2",
     "mongodb": "^6.1.0",
@@ -34,7 +33,8 @@
     "node-cups": "^1.2.2",
     "pdfkit": "^0.14.0",
     "qrcode": "^1.5.3",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "workbox-core": "^7.0.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.1",
