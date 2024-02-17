@@ -17,9 +17,9 @@ export const TrayPage = () => {
     <>
       {isError && <Alert severity="error">{error?.message||'error'}</Alert>}
       {isLoading && <CircularProgress />}
-      {data?.tray.length>0 &&
+      {data?.length>0 &&
         <PlantsList
-          plants={data.tray}
+          plants={data}
           show
           addAction
           addToTray

@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
     const data = await TrayItem.find({}).exec();
     const ids = data.map((item) => item.plantId);
     const tray = await Plant.find({_id:ids}).exec()
-    res.json({ tray });
+    res.json([...tray]);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
