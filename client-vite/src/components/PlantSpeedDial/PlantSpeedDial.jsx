@@ -157,7 +157,7 @@ export default function PlantSpeedDial(props) {
 
   //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
-  const getPlants=props?.getPlants||(()=>[])
+  const {getPlants}=props
   const plants = getPlants();
   const state=plants[0]?.state||"Germination"  
   const actions=states[state].actions
@@ -165,7 +165,6 @@ export default function PlantSpeedDial(props) {
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
-      
     }
 
   }, []);

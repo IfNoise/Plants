@@ -75,7 +75,7 @@ export default function Scanner() {
       return;
     }
     initScanner();
-  }, [video.current]);
+  }, [open, video.current]);
 
   useEffect(() => {
     console.log(qrScanner);
@@ -83,12 +83,13 @@ export default function Scanner() {
          qrScanner.start();
         console.log('start');
      }, [qrScanner]);
+     
   const toggleScan = () => {
     setOpen((prev) => !prev);
   };
 
   useEffect(() => {
-    if(data.length<1){
+    if(data?.length<1){
       return
     }
     setPlant(data[0]);

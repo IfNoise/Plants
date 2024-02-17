@@ -22,7 +22,7 @@ export const PickingFields = () => {
         <InputLabel id="potsize-label">Pot Size</InputLabel>
         <Select
           labelId="potsize-label"
-          value={potSize}
+          value={potSize??'0,25 L'}
           label="Pot Size"
           onChange={handleInput}
         >

@@ -21,7 +21,7 @@ export const TrayButton = () => {
         onClick={trayPage}
       >
         {data&&
-          <Badge badgeContent={data.tray.length} color="error">
+          <Badge badgeContent={data.length} color="error">
           <FolderSpecialIcon />
         </Badge>}
       </IconButton>
