@@ -10,6 +10,9 @@ export default defineConfig({
     react(),
     VitePWA({ registerType: 'autoUpdate',
     injectRegister: 'auto',
+    devOptions: {
+      enabled: true
+    },
     manifest: {
       "name": "Plants Database",
       "short_name": "Plants Database",
