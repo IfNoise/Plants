@@ -97,7 +97,7 @@ export default function Scanner() {
         fullScreen={isSmall}
         maxWidth="sm"
       >
-        <Box component='div' style={{ position: "relative" ,bottom:0}}>
+        <Box component='div' style={{ position: "relative",height:"100%"}}>
           <video
             ref={video}
             style={{ width: "100%", height: "auto", display: "block" }}
@@ -132,12 +132,13 @@ export default function Scanner() {
               position: "absolute",
               bottom: 0,
               zIndex: 1,
-              width: "90%",
+              width: "80%",
+              justifyContent: "center",
             }}
           >
             <Button
               variant="outlined"
-              sx={{ borderColor: "red", color: "red" }}
+              sx={{ borderColor: "red",borderWidth:"2px",borderBlockColor:"red", color: "red" }}
               onClick={() => {
                 close();
                 navigate(`/plant/${scanResult}`);
@@ -158,14 +159,14 @@ export default function Scanner() {
               variant="outlined"
               disabled={!scanResult}
               onClick={addToTrayHandler}
-              sx={{ borderColor: "yellow", color: "yellow" }}
+              sx={{ borderColor: "red",borderWidth:"2px",borderBlockColor:"red", color: "red" }}
             >
               ADD
             </Button>
             <Button
               variant="outlined"
               onClick={close}
-              sx={{ borderColor: "yellow", color: "yellow" }}
+              sx={{ borderColor: "red",borderWidth:"2px",borderBlockColor:"red", color: "red" }}
             >
               <CloseIcon />
             </Button>
