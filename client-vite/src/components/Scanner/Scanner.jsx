@@ -71,7 +71,6 @@ export default function Scanner() {
   useEffect(() => {
     console.log(video.current);
     if (!video.current) {
-
       return;
     }
     initScanner();
