@@ -23,7 +23,7 @@ export default function Scanner() {
   const video = useRef(null);
   const [qrScanner, setQrScanner] = useState(null);
   const navigate = useNavigate();
-  const [scanResult, setScanResult] = useState(null);
+  const [scanResult, setScanResult] = useState("");
   const {isLoading,isError,error,data}=useGetPlantsQuery({_id:scanResult})
   const [addToTray] = useAddToTrayMutation();
   const store = new Set();
@@ -36,15 +36,18 @@ export default function Scanner() {
   function close() {
     qrScanner?.stop();
     qrScanner?.destroy();
+    setScanResult(null);
     setQrScanner(null);
+    setPlant(null);
     setOpen(false);
   }
   function handlerNext() {
+    
     if(qrScanner){
-      qrScanner.start()
+      qrScanner?.start()
       console.log('start');
     }else initScanner();
-    setScanResult(null);
+    setPlant(null);
   }
   function handleScan(result) {
     const data = result.data;
@@ -64,37 +67,23 @@ export default function Scanner() {
         maxScansPerSecond: 10,
       });
       setQrScanner(newQrScanner);
-      qrScanner.start();
-      console.log("init");
+      newQrScanner.start();
     }
   };
-  useEffect(() => {
-    console.log(video.current);
-    if (!video.current) {
-      return;
-    }
-    initScanner();
-  }, [open, video.current]);
-
-  useEffect(() => {
-    console.log(qrScanner);
-    if (qrScanner===null)return 
-         qrScanner.start();
-        console.log('start');
-     }, [qrScanner]);
      
   const toggleScan = () => {
     setOpen((prev) => !prev);
   };
 
   useEffect(() => {
-    if(data?.length<1){
-      return
+    if(Array.isArray(data)&&data?.length>0){
+      setPlant(data[0]);
     }
-    setPlant(data[0]);
+    
   }, [data]);
   const style = {
     width: "100%",
+    bottom: 0,
   };
   return (
     <>
@@ -108,7 +97,7 @@ export default function Scanner() {
         fullScreen={isSmall}
         maxWidth="sm"
       >
-        <Box component='div' style={{ position: "relative" }}>
+        <Box component='div' style={{ position: "relative" ,bottom:0}}>
           <video
             ref={video}
             style={{ width: "100%", height: "auto", display: "block" }}
@@ -117,20 +106,22 @@ export default function Scanner() {
           <Box sx={{
               left:30,
               position: "absolute",
-              bottom: 'calc(100% - 50px)',
+              top: 0,
               zIndex: 1,
               width: "90%",
             }} >
-          <Typography variant="caption">{scanResult ?? ""}</Typography>
           {isError && <Typography variant="caption">{error.message}</Typography>}
           {isLoading && <Typography variant="caption">Loading...</Typography>}
           {plant && (
-            <Card variant="outlined" sx={{ p: 2, m: 2, boxShadow: 4 }}>
-            <Typography variant="caption">
+            <Card variant="outlined" sx={{backgroundColor: "transparent",border:"none"}}>
+            <Typography variant="h5">
               {plant.strain} 
               </Typography>
-              <Typography variant="caption">
-              {plant.pheno}
+              <Typography variant="body2" >
+              {plant.pheno} {plant.state}
+            </Typography>
+            <Typography variant="h7" color="fuchsia">
+              {plant._id}
             </Typography>
           </Card>
           )}
