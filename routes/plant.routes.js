@@ -166,12 +166,15 @@ router.post("/new_action", async (req, res) => {
           }
 
           await Plant.insertMany(newClones);
-          const current = plant.cloneCounter || 0;
+          const current = plant?.cloneCounter || 0;
           const newCounter = current + number;
+          const currentMaxClones=plant?.maxClones || 0
+          const maxClones=currentMaxClones<number?number:currentMaxClones
 
           console.log(newCounter);
 
           plant.set("cloneCounter", newCounter);
+          plant.set("maxClones",maxClones)
           break;
         }
         default:
@@ -182,6 +185,22 @@ router.post("/new_action", async (req, res) => {
     });
 
     res.json({ message: "Ok" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+router.get("/test", async (req, res) => {
+  try {
+    const plants = await Plant.find({state:"Stopped","actions.type":"MakeMother"});
+    result=plants.map(async(plant)=>{
+      const res=await Plant.findByIdAndUpdate(
+        plant._id,
+        {  state: "MotherPlant"},
+        { new: true, useFindAndModify: false }
+      )
+      
+    })
+    res.json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

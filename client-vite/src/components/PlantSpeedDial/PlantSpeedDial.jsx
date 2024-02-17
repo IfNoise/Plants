@@ -157,11 +157,9 @@ export default function PlantSpeedDial(props) {
 
   //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
-  const plants=props?.plants||[]
-  const getPlants=props?.getPlants||(()=>plants)
-  console.log(plants);
-  const state=props?.state||"Cloning"
-  console.log(state);
+  const getPlants=props?.getPlants||(()=>[])
+  const plants = getPlants();
+  const state=plants[0]?.state||"Germination"  
   const actions=states[state].actions
 
   useEffect(() => {
@@ -193,7 +191,7 @@ export default function PlantSpeedDial(props) {
     dispatch(addType(value));
   };
   const handleOpen=()=>{
-    if(plants.length<1){
+    if(getPlants()?.length<1){
       setSnack({ open: true, severity: "error", message: "No plants selected" });
       return
     }
@@ -206,7 +204,13 @@ export default function PlantSpeedDial(props) {
   };
 
   const newActionFunc = () => {
-    const body = { id:plants, action: newAction };
+    if(getPlants().length<1){  
+      setSnack({ open: true, severity: "error", message: "No plants selected" });
+      return
+    }
+    const id=plants.map((plant)=>plant._id)
+
+    const body = { id, action: newAction };
     addAction(body);
     dispatch(clear())
     setOpen(false);
@@ -233,12 +237,13 @@ export default function PlantSpeedDial(props) {
             icon={<PrintIcon />}
             tooltipTitle="Print"
             onClick={() => {
-              const plants = props.getPlants();
-              if(plants.length<1){
+              
+              if(getPlants()?.length<1){
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              printPlants([...plants]);
+              const id=getPlants().map((plant)=>plant._id)
+              printPlants(id);
             }}
           />
         )}
@@ -248,12 +253,12 @@ export default function PlantSpeedDial(props) {
             icon={<CreateNewFolderIcon />}
             tooltipTitle="Add to tray"
             onClick={() => {
-            const plants = getPlants()
-              if(plants.length<1){
+              if(getPlants()?.length<1){
                 setSnack({ open: true, severity: "error", message: "No plants selected" });
                 return
               }
-              addToTray(plants);
+              const id = getPlants().map((plant)=>plant._id);
+              addToTray(id);
             }}
           />
         )}
@@ -321,8 +326,6 @@ export default function PlantSpeedDial(props) {
 }
 PlantSpeedDial.propTypes = {
   getPlants: PropTypes.func,
-  plants: PropTypes.array,
-  state: PropTypes.string,
   show: PropTypes.bool,
   addAction: PropTypes.bool,
   print: PropTypes.bool,

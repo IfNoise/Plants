@@ -15,7 +15,10 @@ export const PlantDetailPage = () => {
   const [plant, setPlant] = useState({});
   const { isLoading, isError, error, data } = useGetPlantsQuery({ _id: id },{ refetchOnMountOrArgChange: true, refetchOnFocus: true }
     );
-
+  const getPlant=()=>{
+    if(data?.length<1) return []
+    return [data[0]]
+  };
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -23,12 +26,12 @@ export const PlantDetailPage = () => {
     }
   }, [data]);
 
-  const {strain,pheno,gender,state,actions,cloneCounter} = plant;
+  const {strain,pheno,gender,state,actions,cloneCounter,maxClones} = plant;
   return (
     <Grid container>
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {data?.length>0 && (
+      {data?.length>0 && 
         <>
         <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
           <Card sx={{ width: "100%" }}>
@@ -61,11 +64,18 @@ export const PlantDetailPage = () => {
               </Grid>
 
               {state === "MotherPlant" && 
+              <>
                 <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
                 <Typography variant="caption" color="text.secondary">
                   Clones Counter:{cloneCounter ?? "0"}
                 </Typography>
                 </Grid>
+                <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
+                <Typography variant="caption" color="text.secondary">
+                  Max Clones yeld:{maxClones ?? "0"} clones
+                </Typography>
+                </Grid>
+                </>
               }
              </Grid> 
             </CardContent>
@@ -75,17 +85,15 @@ export const PlantDetailPage = () => {
           <PlantTimeline actions={actions ?? []} />
           </Grid>
           <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}>
-          {state && <PlantSpeedDial
-            //getPlants={getPlant}
-            plants={[id]}
-            state={state}
+          <PlantSpeedDial
+            getPlants={getPlant}
             addAction
             addToTray
             print
-          />}
+          />
           </Grid>
         </>
-      )}
+      }
     </Grid>
   );
 };

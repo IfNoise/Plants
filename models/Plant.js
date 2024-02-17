@@ -30,6 +30,7 @@ const plant = new Schema({
     trim: Number,
     leafs: Number,
   },
+  maxClones: Number,
   //================
   actions: [Action],
 });

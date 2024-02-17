@@ -8,6 +8,7 @@ import { trayApi } from "./trayApi";
 import { localStorageMiddleware, reHydrateStore } from "./localStoreMiddleware";
 import { strainApi } from "./strainApi";
 import { printApi } from "./printApi";
+import { cycleApi } from "./cycleApi";
 
 const reducer = {
   [plantsApi.reducerPath]: plantsApi.reducer,
@@ -15,6 +16,7 @@ const reducer = {
   [trayApi.reducerPath]:trayApi.reducer,
   [strainApi.reducerPath]:strainApi.reducer,
   [printApi.reducerPath]:printApi.reducer,
+  [cycleApi.reducerPath]:cycleApi.reducer,
   newAction: newActionSliceReducer,
   auth: authReducer,
 };
@@ -23,7 +25,7 @@ export const store = configureStore({
   reducer,
   preloadedState: reHydrateStore(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([plantsApi.middleware, authApi.middleware,trayApi.middleware,strainApi.middleware,printApi.middleware,localStorageMiddleware]),
+    getDefaultMiddleware().concat([plantsApi.middleware, authApi.middleware,trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,localStorageMiddleware]),
 });
 
 setupListeners(store.dispatch)

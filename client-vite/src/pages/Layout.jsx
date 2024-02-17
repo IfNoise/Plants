@@ -159,6 +159,10 @@ export const Layout = () => {
         <List>
           {[
             {
+              text: "Cycles",
+              href: "/cycles",
+            },
+            {
               text: "Mothers",
               href: "/mothers",
             },

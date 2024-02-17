@@ -24,6 +24,9 @@ export const MotherCard = (props) => {
         <Typography variant="body2" color="text.secondary" component="div">
           Clone counter:{props.plant.cloneCounter??'0'}clones
         </Typography>
+        <Typography variant="body2" color="text.secondary" component="div">
+          Maximum Clones Yeld:{props.plant.maxClones??'0'}clones
+        </Typography>
       </CardContent>
       <CardActions>
         <Button size="small" onClick={()=>{plantDetails(props.plant._id)}}>Details</Button>
