@@ -163,6 +163,10 @@ export const Layout = () => {
               href: "/cycles",
             },
             {
+              text: "Dashboard",
+              href: "/dashboard",
+            },
+            {
               text: "Mothers",
               href: "/mothers",
             },

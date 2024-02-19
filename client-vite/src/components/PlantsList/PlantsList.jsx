@@ -73,7 +73,7 @@ export const PlantsList = (props) => {
     return Array.from(apiRef.current.getSelectedRows().keys());
   }, [apiRef]);
 
-  const getSelectedPlants = () => {
+  const getSelectedPlants = useCallback(() => {
     if(!apiRef.current){
     return []
     }   
@@ -81,7 +81,7 @@ export const PlantsList = (props) => {
       return [];
     }
     return Array.from(apiRef.current.getSelectedRows().values());
-  };
+  }, [apiRef]);
 
   const checkboxSelectionHandler = () => {
     setSel(getSelected().length < 1);
