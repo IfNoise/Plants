@@ -1,7 +1,11 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 
+
+import { useGetPlantsQuery } from "../../store/plantsApi";
 const Dashboard = () => {
+  const { data: plants } = useGetPlantsQuery({}, { refetchOnMountOrArgChange: true, refetchOnFocus: true });
+ 
   return (
     <Box
       sx={{
@@ -11,6 +15,7 @@ const Dashboard = () => {
         height: "100vh",
       }}>
       <h1>Stat Page</h1>
+      <PieChart />
       </Box>
   );
 };

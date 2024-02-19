@@ -211,7 +211,7 @@ module.exports = router;
 router.get("/plant_counts", async (req, res) => {
   try {
     const plantCounts = await Plant.aggregate([
-      { $group: { _id: "$state", count: { $sum: 1 } } }
+      { $group: { label: "$state", value: { $sum: 1 } } }
     ]);
     res.json(plantCounts);
   } catch (error) {

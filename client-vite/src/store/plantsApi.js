@@ -29,6 +29,11 @@ export const plantsApi = createApi({
         url: "strains"
       })
     }),
+    getPlantCounts: build.query({
+      query: () => ({
+        url: "plant_counts"
+      })
+    }),
     addAction: build.mutation({
       query(body) {
         return {
@@ -52,4 +57,4 @@ export const plantsApi = createApi({
   }),
 });
 
-export const { useGetPlantsQuery,useGetStrainsQuery , useAddActionMutation,useNewPlantMutation, refetch } = plantsApi;
+export const { useGetPlantsQuery,useGetStrainsQuery ,useGetPlantCountsQuery, useAddActionMutation,useNewPlantMutation, refetch } = plantsApi;
