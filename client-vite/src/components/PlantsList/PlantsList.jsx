@@ -61,6 +61,7 @@ export const PlantsList = (props) => {
   const apiRef = useGridApiRef(null);
   const [apiIsLoaded, setApiIsLoaded] = useState(false);
   const [sel, setSel] = useState(false);
+  const [selectedPlants, setSelectedPlants] = useState([]);
   const plantDetails = (id) => {
     navigate(`/plant/${id}`);
   };
@@ -84,6 +85,7 @@ export const PlantsList = (props) => {
 
   const checkboxSelectionHandler = () => {
     setSel(getSelected().length < 1);
+    setSelectedPlants(getSelectedPlants());
   };
 
   useEffect(() => {
