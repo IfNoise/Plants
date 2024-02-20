@@ -29,7 +29,9 @@ const ITEM_HEIGHT = 34;
 const ITEM_PADDING_TOP = 2;
 export const FilterBar = (props) =>{
   const { setOutputFilter ,getData} = props; 
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState({
+    state:["Cloning","Growing"]
+  });
   const [phenos, setPhenos] = useState([]);
   const phenoSelect=useRef(null);
   const [startDate, setStartDate] = useState('');
