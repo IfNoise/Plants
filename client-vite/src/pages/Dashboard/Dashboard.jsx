@@ -5,7 +5,9 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
+  Grid,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { useGetPlantCountsQuery } from "../../store/plantsApi";
@@ -45,19 +47,16 @@ const colors = [
   "#FF8042",
   "#0088FE",
 ];
-const sizing = {
-  margin: { right: 5 },
-  width: 500,
-  height: 500,
-  legend: { hidden: false },
-};
 
 const Dashboard = () => {
   const { isSuccess, data: plants } = useGetPlantCountsQuery({
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
   });
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
+
   const [selectedState, setSelectedState] = useState([]);
+
   const getData = () => {
     console.log(plants);
     if (plants && plants?.length < 1) return [];
@@ -65,10 +64,12 @@ const Dashboard = () => {
       return { label: plant._id, value: plant.count, color: colors[id] };
     });
   };
+
   const getFilteredData = () => {
     if (selectedState.length < 1) return getData();
     return getData().filter((item) => selectedState.indexOf(item.label) > -1);
   };
+
   const TOTAL = getFilteredData()
     ?.map((item) => item.value)
     .reduce((a, b) => a + b, 0);
@@ -85,65 +86,91 @@ const Dashboard = () => {
     const percent = params.value / TOTAL;
     return `${(percent * 100).toFixed(0)}%`;
   };
+  const sizing = {
+    margin: { right: 5 },
+    width: isSmall ? 300 : 600,
+    height: isSmall ? 400 : 700,
+    legend: { hidden: false },
+  };
+
   return (
     <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
+    // sx={{
+    //   display: "flex"
+    // }}
     >
-      <h1>Stat Page</h1>
-      {isSuccess && plants.length>1 && (
+      <Typography variant="h4" gutterBottom component="div">
+        Dashboard
+      </Typography>
+      {isSuccess && plants.length > 1 && (
         <>
-          <Typography
-            variant="h6"
-            gutterBottom
-            component="div"
-          >{`Total: ${TOTAL}`}</Typography>
-          {plants?.map((plant, index) => {
-            <Typography key={index} variant="h6" gutterBottom component="div">
-              {plant._id + ":" + plant.count}
-            </Typography>;
-          })}
-          <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-            <FormLabel component="legend">Assign responsibility</FormLabel>
-            <FormGroup>
-              {states.map((state, index) => {
-                return (
-                  <FormControlLabel
-                    key={index}
-                    control={
-                      <Checkbox
-                        checked={selectedState.indexOf(state) > -1}
-                        onChange={handleChange}
-                        name={state}
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ display: "flex" }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  Total: {TOTAL}
+                </Typography>
+                {getData().map((plant, index) => {
+                  return (
+                    <Typography
+                      key={index}
+                      variant="h6"
+                      component={"div"}
+                    >
+                      {plant.label + ": " + plant.value}
+                    </Typography>
+                  );
+                })}
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={12}>
+              <FormControl
+                sx={{ m: 3,display:"flex", width: "100% "}}
+                fullWidth
+                small
+                component="div"
+                divariant="outlined"
+              >
+                <FormLabel component="legend">States</FormLabel>
+                <FormGroup row>
+                  {states.map((state, index) => {
+                    return (
+                      <FormControlLabel
+                        key={index}
+                        
+                        control={
+                          <Checkbox
+                            checked={selectedState.indexOf(state) > -1}
+                            onChange={handleChange}
+                            name={state}
+                          />
+                        }
+                        label={state}
                       />
-                    }
-                    label={state}
-                  />
-                );
-              })}
-            </FormGroup>
-          </FormControl>
-
-          <PieChart
-            series={[
-              {
-                outerRadius: 200,
-                data: getFilteredData(),
-                arcLabel: getArcLabel,
-              },
-            ]}
-            sx={{
-              [`& .${pieArcLabelClasses.root}`]: {
-                fill: "white",
-                fontSize: 14,
-              },
-            }}
-            {...sizing}
-          />
+                    );
+                  })}
+                </FormGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <PieChart
+                series={[
+                  {
+                    outerRadius: isSmall ? 100 : 200,
+                    data: getFilteredData(),
+                    arcLabel: getArcLabel,
+                  },
+                ]}
+                sx={{
+                  [`& .${pieArcLabelClasses.root}`]: {
+                    fill: "white",
+                    fontSize: 14,
+                  },
+                }}
+                {...sizing}
+              />
+            </Grid>
+          </Grid>
         </>
       )}
     </Box>
