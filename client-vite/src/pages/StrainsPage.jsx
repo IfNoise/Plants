@@ -20,6 +20,12 @@ const columns = [
     editable: false,
   },
   {
+    field: "sourceType",
+    headerName: "Source Type",
+    width: 200,
+    editable: false,
+  },
+  {
     field: "seedType",
     headerName: "Seeds Type",
     width: 200,
