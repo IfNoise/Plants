@@ -106,7 +106,7 @@ const Dashboard = () => {
         <>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Box sx={{ display: "flex" }}>
+              <Box sx={{ display: "block" }}>
                 <Typography variant="h6" gutterBottom component="div">
                   Total: {TOTAL}
                 </Typography>
@@ -122,6 +122,24 @@ const Dashboard = () => {
                   );
                 })}
               </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <PieChart
+                series={[
+                  {
+                    outerRadius: isSmall ? 100 : 200,
+                    data: getFilteredData(),
+                    arcLabel: getArcLabel,
+                  },
+                ]}
+                sx={{
+                  [`& .${pieArcLabelClasses.root}`]: {
+                    fill: "white",
+                    fontSize: 14,
+                  },
+                }}
+                {...sizing}
+              />
             </Grid>
             <Grid item xs={12} sm={6} md={12}>
               <FormControl
@@ -152,24 +170,7 @@ const Dashboard = () => {
                 </FormGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <PieChart
-                series={[
-                  {
-                    outerRadius: isSmall ? 100 : 200,
-                    data: getFilteredData(),
-                    arcLabel: getArcLabel,
-                  },
-                ]}
-                sx={{
-                  [`& .${pieArcLabelClasses.root}`]: {
-                    fill: "white",
-                    fontSize: 14,
-                  },
-                }}
-                {...sizing}
-              />
-            </Grid>
+            
           </Grid>
         </>
       )}

@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { SnackbarContext } from "../../context/SnackbarContext";
 
 import { useAddStrainMutation } from "../../store/strainApi";
+import { useNewPlantMutation } from "../../store/plantsApi";
 
 const fabStyle = {
   position: "fixed",
@@ -28,6 +29,7 @@ export const NewStrainButton = () => {
   //const theme = useTheme();
   const { setSnack } = useContext(SnackbarContext);
   const [addStrain, { isSuccess, isError }] = useAddStrainMutation();
+  const [newPlant]=useNewPlantMutation()
   const [open, setOpen] = useState(false);
   const [anchor, setAnchor] = useState(null);
   const [form, setForm] = useState({});
@@ -58,6 +60,13 @@ export const NewStrainButton = () => {
   };
   const newStrain = () => {
     addStrain(form);
+    if(form.sourceType==='Clone'){
+ 
+    newPlant({
+      strainName:form.name,
+      number:form.number,
+    });
+    }
     setOpen(false);
   };
 
@@ -103,30 +112,47 @@ export const NewStrainButton = () => {
             />
           </FormControl>
           <FormControl>
-            <InputLabel id="seed-label">Seed Type</InputLabel>
+            <InputLabel id="source-label">Source Type</InputLabel>
             <Select
-              labelId="seed-label"
-              name="seedType"
-              label="Seed Type"
-              value={form?.seedType || ""}
+              labelId="source-label"
+              name="sourceType"
+              label="Source Type"
+              value={form?.sourceType || ""}
               onChange={changeHandler}
             >
-              <MenuItem value="Feminised">Feminised</MenuItem>
-              <MenuItem value="Regular">Regular</MenuItem>
+              <MenuItem value="Clone">Clone</MenuItem>
+              <MenuItem value="Seed">Seed</MenuItem>
             </Select>
           </FormControl>
-          <FormControl>
-            <TextField
-              name="description"
-              label="Description"
-              onChange={changeHandler}
-            />
-          </FormControl>
+      {    form?.sourceType === "Seed" &&
+      <>    
+        <FormControl>
+          <InputLabel id="seed-label">Seed Type</InputLabel>
+          <Select
+            labelId="seed-label"
+            name="seedType"
+            label="Seed Type"
+            value={form?.seedType || ""}
+            onChange={changeHandler}
+          >
+            <MenuItem value="Feminised">Feminised</MenuItem>
+            <MenuItem value="Regular">Regular</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl>
+          <TextField
+            name="description"
+            label="Description"
+            onChange={changeHandler}
+          />
+        </FormControl>
+        </>
+        }
           <FormControl>
             <TextField
               name="number"
               type="number"
-              label="Number of seeds"
+              label={"Number of " + form?.sourceType} 
               onChange={changeHandler}
             />
           </FormControl>

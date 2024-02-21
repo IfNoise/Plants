@@ -8,27 +8,42 @@ const fs = require("fs");
 const Strain = require("../models/Strain");
 
 router.post("/new_plant", async (req, res) => {
-  const form=req.body.form
-  const number = form.seedsNumber;
+  const number = req.body.number;
   try {
     //const user = await User.findById(req.user.userId)
-    const strain = await Strain.findById(req.body.strain)
+    let strain;
+    if(req.body?.strain){
+     strain = await Strain.findById(req.body.strain)
+  }else if(req.body?.strainName){
+    strain = await Strain.findOne({name:req.body.strainName})
+  }
+    const newPlants = [];
+    const sourceType = strain.sourceType;
+    const gender = strain.sourceType === "Seed" ? "undefined" : "Female";
     const firstAction = {
       date: Date.now(),
       //author:user.username,
       type: "Start",
-      gender:"undefined",
       source: strain._id,
     };  
+    if(sourceType==="Clone"){
+      for (let index = 0; index < number; index++) {
+        newPlants.push({
+          strain: strain.name,
+          pheno: strain.code,
+          gender,
+          type: "Clone",
+          state: "Cloning",
+        actions: [firstAction],})
+    }}else if(sourceType==="Seed"){
     const start=strain?.lastIdx||1
-    const newPlants = [];
-    const newPhenos=[]
     for (let index = start; index <= number;index++) {
       let pheno=strain.code+'#'+index;
       
       newPlants.push({
         strain: strain.name,
         pheno,
+        gender,
         type: "Seed",
         state: "Germination",
         actions: [firstAction],
@@ -36,7 +51,7 @@ router.post("/new_plant", async (req, res) => {
       strain.phenos.push({
         idx:index
       })
-    }
+    }}
 
     await Plant.insertMany(newPlants);
     const currentCounter = strain.counter;

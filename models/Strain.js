@@ -8,6 +8,7 @@ const strain=new Schema({
   seedBank:{type:String},
   phenos:[Pheno],
   seedType:String,
+  sourceType:String,
   counter:Number,
   lastIdx:Number,
   description:String
