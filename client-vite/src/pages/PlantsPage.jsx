@@ -1,13 +1,14 @@
-import { Alert, CircularProgress} from "@mui/material";
+import { Alert, CircularProgress, Typography} from "@mui/material";
 import { useGetPlantsQuery } from "../store/plantsApi";
-import {  useState } from "react";
 import { FilterBar } from "../components/FilterBar/FilterBar";
 import { PlantsList } from "../components/PlantsList/PlantsList";
-
+import { useSelector } from "react-redux";
 
 export const PlantsPage = () => {
-  const [filter, setFilter] = useState({})
+  const filter = useSelector((state) => state.filter);
+
   const { isLoading, isError, error, data:plants } = useGetPlantsQuery(filter,{
+    refetchOnReconnect:true,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true
   });
@@ -17,10 +18,13 @@ export const PlantsPage = () => {
       
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      {plants?.length>0 &&
+      {plants &&
       <>
-      <FilterBar setOutputFilter={setFilter} getData={getData} />
+      <FilterBar getData={getData} />
+      <Typography variant="h6" component="h1" gutterBottom>{plants.length} Plants</Typography>
+
       <PlantsList plants={plants}
+                  show
                   addAction
                   addToTray
                   print

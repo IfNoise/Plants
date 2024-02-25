@@ -1,4 +1,5 @@
 import { Checkbox, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import PropTypes from 'prop-types';
 
 export default function PlantListItem(props) {
   const [checked, setChecked] = React.useState([1]);
@@ -33,3 +34,8 @@ export default function PlantListItem(props) {
   </ListItemButton>
 </ListItem>)
 }
+PlantListItem.propTypes = {
+  plant: PropTypes.object,
+  onChange: PropTypes.func,
+  checked: PropTypes.bool,
+};

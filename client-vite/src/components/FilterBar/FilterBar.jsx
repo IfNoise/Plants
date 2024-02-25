@@ -1,233 +1,380 @@
 import {
-  Checkbox,
   FormControl,
-  ListItemText,
   Select,
   MenuItem,
-  ListSubheader,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Box,
+  Grid,
+  AccordionActions,
+  TextField,
 } from "@mui/material";
-import PropTypes from 'prop-types';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { InputLabel } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import e from "cors";
-//import { useGetStrainsQuery } from "../../store/plantsApi";
-const states = [
-  "Germination",
-  "Cloning",
-  "Growing",
-  "Blooming",
-  "Stopped",
-  "Harvested",
-  "MotherPlant",
-];
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PropTypes from "prop-types";
 
-const ITEM_HEIGHT = 34;
-const ITEM_PADDING_TOP = 2;
-export const FilterBar = (props) =>{
-  const { setOutputFilter ,getData} = props; 
-  const [filter, setFilter] = useState({
-    state:["Cloning","Growing"]
-  });
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addPheno,
+  addStartDate,
+  addState,
+  addStrain,
+  addAddress,
+  clearFilter,
+} from "../../store/filterSlice";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { InputLabel } from "@mui/material";
+import { useEffect, useState } from "react";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import { buildRooms } from "../../config/config";
+
+export const FilterBar = (props) => {
+  const { getData } = props;
+  const dispatch = useDispatch();
+  const filter = useSelector((state) => state.filter);
+  const [address, setAddress] = useState({});
+
   const [phenos, setPhenos] = useState([]);
-  const phenoSelect=useRef(null);
-  const [startDate, setStartDate] = useState('');
+  const [compare, setCompare] = useState("$gte");
+  const [startDate, setStartDate] = useState("");
+  const [rooms, setRooms] = useState([]);
+
+  
+
+  const handlerBuilding = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, building: value });
+    dispatch(addAddress({...address, building: value}));
+    
+    setRooms(buildRooms[value]);
+  };
+
+  const handlerRoom = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, room: value });
+    dispatch(addAddress({...address, room: value}));
+  };
+
+  const handlerRow = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, row: Number.parseInt(value) });
+    dispatch(addAddress({...address,row:Number.parseInt(value)}));
+  };
+
+  const handlerRack = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, rack: Number.parseInt(value) });
+    dispatch(addAddress({...address,rack:Number.parseInt(value)}));
+  };
+
+  const handlerTray = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, tray: Number.parseInt(value) });
+    dispatch(addAddress({...address,tray:Number.parseInt(value)}));
+  };
+
+  const handlerNumber = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, number: Number.parseInt(value) });
+    dispatch(addAddress({...address,number:Number.parseInt(value)}));
+  };
+
+  const handlerShelf = (e) => {
+    const { value } = e.target;
+
+    dispatch(addAddress({...address,shelf:Number.parseInt(value)}));
+  };
 
   // const { isSuccess, isLoading, isError, error, data } = useGetStrainsQuery({
   //   refetchOnMountOrArgChange: true,
   //   refetchOnFocus: true,
   // });
 
-  const strains=[...new Set(getData().map((obj) => obj.strain))];
-
+  const strains = [...new Set(getData().map((obj) => obj.strain))];
+  const states = [...new Set(getData().map((obj) => obj.state))];
   useEffect(() => {
-    if (!filter.strain) { return }
-    const pheno = getData().filter((plant)=>(plant.strain===filter.strain)).map((obj) => obj.pheno);
-    const uniquePhenos = [...new Set(pheno)];  
+    if (!filter.strain) {
+      return;
+    }
+    const pheno = getData()
+      .filter((plant) => plant.strain === filter.strain)
+      .map((obj) => obj.pheno);
+    const uniquePhenos = [...new Set(pheno)];
     setPhenos(uniquePhenos);
-
-  }, [filter]);
-
-  useEffect(() => {
-    setOutputFilter(filter);
-    console.log(filter);
   }, [filter]);
 
   const handleChangeStrain = (event) => {
-    
-
-      console.log(phenoSelect.current);
-      setFilter((prevfilter) =>{
-        return{
-          state:prevfilter.state,
-          strain: event.target.value,
-          }
-      });
-  }
+    dispatch(addStrain(event.target.value));
+  };
 
   const handleChangePheno = (event) => {
-    
-
-    console.log(phenoSelect.current);
-    setFilter((prevfilter) =>{
-      return{
-        ...prevfilter,
-        pheno: event.target.value,
-        }
-    });
-}
+    dispatch(addPheno(event.target.value));
+  };
   const handleChangeState = (event) => {
-     if(event.target.value.length<1){
-       setFilter({});
-       return
-     }
-      setFilter({
-        state: event.target.value,
-      });
-      setPhenos([]);
-    }
-  
+    dispatch(addState(event.target.value));
+    setPhenos([]);
+  };
 
   const handleChangeStart = (value) => {
-    setStartDate(value);
-    console.log(value);
-    setFilter({
-      ...filter,
-      startDate: { $gt: new Date(value.$d)},
-    });
-  }
+    dispatch(addStartDate({ [compare]: new Date(value.$d) }));
+  };
 
   return (
-    <>
-    
-      <FormControl sx={{ m: '1px', width: 200 }}>
-        <InputLabel id="state-multiple-checkbox-label">State</InputLabel>
-        <Select
-          onChange={handleChangeState}
-          sx={{ p:0} }
-          labelId="state-multiple-checkbox-label"
-          id="state-multiple-checkbox"
-          multiple
-          name="state"
-          value={filter.state ?? []}
-          input={<OutlinedInput label="State" />}
-          renderValue={(selected) => selected.join(", ")}
-          MenuProps={{ PaperProps: {
-            style: {
-              maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-              width: 150,
-            },
-          },}}
-        >
-          {states.map((state, id) => {
-            return (
-              <MenuItem key={id} value={state}>
-                <Checkbox checked={filter.state?.indexOf(state) > -1}>
-                  {state}
-                </Checkbox>
-                <ListItemText primary={state} />
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
+    <Accordion>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel2-content"
+        id="panel2-header"
+        //sx={{display:"flex",justifyContent:"space-between"}}
+      >
+        <Typography variant="h5">Filter</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            <FormControl sx={{ m: "1px", width: "100%" }}>
+              <InputLabel id="state-label">State</InputLabel>
+              <Select
+                onChange={handleChangeState}
+                labelId="state-label"
+                id="state"
+                name="state"
+                value={filter.state ?? ""}
+                input={<OutlinedInput label="State" />}
+              >
+                {states.map((state, id) => {
+                  return (
+                    <MenuItem key={id} value={state}>
+                      {state}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
 
-      {strains && (
-        <FormControl sx={{ m:'1px', width: 260 }}>
-          <InputLabel id="strain-multiple-checkbox-label">Strain</InputLabel>
-          <Select
-            onChange={handleChangeStrain}
-            labelId="strain-multiple-checkbox-label"
-            id="strain-multiple-checkbox"
-            name="strain"
-            value={filter.strain ?? ''}
-            input={<OutlinedInput label="Strain" />}
-            MenuProps={{ PaperProps: {
-              style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: 150,
-              },
-            },}}
-          >
-            {strains.map((strain, id) => {
-              return (
-                <MenuItem key={id} value={strain}>
-                  {strain}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-      )}
-      {phenos.length > 0 && (
-        <FormControl sx={{ m:'1px',width: 130 }}>
-          <InputLabel id="phenos-multiple-checkbox-label">Phenotype</InputLabel>
-          <Select
-            onChange={handleChangePheno}
-            labelId="phenos-multiple-checkbox-label"
-            id="phenos-multiple-checkbox"
-            name="pheno"
-            ref={phenoSelect}
-            multiple
-            value={filter?.pheno || []}
-            input={<OutlinedInput label="Phenotypes" />}
-            renderValue={(selected) => {
-              return selected.join(", ");
-            }}
-            MenuProps={
-             { PaperProps: {
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                  width: 120,
-                },
-              },}
-            }
-          >
-            {phenos.map((pheno, id) => {
-              return (
-                <MenuItem key={id} value={pheno}>
-                  <Checkbox checked={filter.pheno?.indexOf(pheno) > -1}>
-                  </Checkbox>
-                  <ListItemText primary={pheno} />
-                </MenuItem>
-
-              );
-            })}
-          </Select>
-        </FormControl>
-      )}
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DatePicker 
-      sx={{m:'1px',width: 300 }}
-      disableFuture
-      closeOnSelect
-      size="small"
-      value={startDate} 
-      label="Start Date" 
-      onChange={handleChangeStart}
-      slotProps={{
-        layout: {
-          sx: {
-            '.MuiDateCalendar-root': {
-              color: '#1565c0',
-              borderRadius: 4,
-              borderWidth: 1,
-              borderColor: '#2196f3',
-              border: '1px solid',
-              backgroundColor: '#bbdefb',
-            }
-          }
-        }
-      }}
-      />
-      </LocalizationProvider>
-    </>
+          {strains && (
+            <Grid item xs={12} sm={6} md={4} lg={2}>
+              <FormControl sx={{ m: "1px", width: "100%" }}>
+                <InputLabel id="strain-multiple-checkbox-label">
+                  Strain
+                </InputLabel>
+                <Select
+                  onChange={handleChangeStrain}
+                  labelId="strain-multiple-checkbox-label"
+                  id="strain-multiple-checkbox"
+                  name="strain"
+                  value={filter.strain ?? ""}
+                  input={<OutlinedInput label="Strain" />}
+                >
+                  {strains.map((strain, id) => {
+                    return (
+                      <MenuItem key={id} value={strain}>
+                        {strain}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          {phenos.length > 0 && (
+            <Grid item xs={12} sm={6} md={4} lg={2}>
+              <FormControl sx={{ width: "100%" }}>
+                <InputLabel id="phenos-multiple-checkbox-label">
+                  Phenotype
+                </InputLabel>
+                <Select
+                  onChange={handleChangePheno}
+                  labelId="phenos-multiple-checkbox-label"
+                  id="phenos-multiple-checkbox"
+                  name="pheno"
+                  value={filter.pheno ?? ""}
+                  input={<OutlinedInput label="Phenotypes" />}
+                >
+                  {phenos.map((pheno, id) => {
+                    return (
+                      <MenuItem key={id} value={pheno}>
+                        {pheno}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          <Grid item xs={12} sm={12} md={4} lg={3}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ m: "1px" }}
+                disableFuture
+                closeOnSelect
+                size="small"
+                value={startDate}
+                label="Start Date"
+                onChange={handleChangeStart}
+                slotProps={{
+                  layout: {
+                    sx: {
+                      ".MuiDateCalendar-root": {
+                        color: "#1565c0",
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        borderColor: "#2196f3",
+                        border: "1px solid",
+                        backgroundColor: "#bbdefb",
+                      },
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+            <FormControl>
+              <RadioGroup
+                sx={{
+                  m: "1px",
+                }}
+                aria-labelledby="Equal start date"
+                defaultValue={compare}
+                row
+                value={compare}
+                name="radio-buttons-group"
+                onChange={(e) => {
+                  setCompare(e.target.value);
+                  dispatch(addStartDate({ [e.target.value]: startDate }));
+                }}
+              >
+                <FormControlLabel
+                  value="$gte"
+                  control={<Radio />}
+                  label="After"
+                />
+                <FormControlLabel
+                  value="$lte"
+                  control={<Radio />}
+                  label="Before"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <>
+            <Grid item xs={12} sm={6} md={4} lg={2}>
+              <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
+                <InputLabel id="building-label">Building</InputLabel>
+                <Select
+                  labelId="building-label"
+                  value={address.building ?? ""}
+                  name="building"
+                  label="Building"
+                  onChange={handlerBuilding}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                >
+                  {Object.keys(buildRooms).map((obj, index) => {
+                    return (
+                      <MenuItem key={index} value={obj}>
+                        {obj}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} lg={2}>
+              <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
+                <InputLabel id="room-label">Room</InputLabel>
+                <Select
+                  labelId="room-label"
+                  name="room"
+                  value={address.room ?? ""}
+                  label="Room"
+                  onChange={handlerRoom}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                >
+                  {rooms.map((text, index) => {
+                    return (
+                      <MenuItem key={index} value={text}>
+                        {text}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            {address?.room != "Laboratory" && (
+              <>
+                <Grid item xs={12} sm={6} md={4} lg={2}>
+                  <TextField
+                    id="outlined-number"
+                    sx={{ m: "2px", width: "98%" }}
+                    label="Row"
+                    type="number"
+                    onChange={handlerRow}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2}>
+                  <TextField
+                    id="outlined-number"
+                    sx={{ m: "2px", width: "98%" }}
+                    label="Tray"
+                    type="number"
+                    onChange={handlerTray}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+              </>
+            )}
+            {filter.address?.room == "Laboratory" && (
+                <Grid item xs={12} sm={4} md={4} lg={2}>
+                  <TextField
+                    id="outlined-number"
+                    sx={{ m: "2px", width: "98%" }}
+                    label="Rack"
+                    type="number"
+                    onChange={handlerRack}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <TextField
+                    id="outlined-number"
+                    sx={{ mx: "2px", width: "98%" }}
+                    label="Shelf"
+                    type="number"
+                    onChange={handlerShelf}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+            )}
+          </>
+        </Grid>
+      </AccordionDetails>
+      <AccordionActions>
+        <Button variant="outlined" onClick={() => dispatch(clearFilter())}>
+          Clear
+        </Button>
+      </AccordionActions>
+    </Accordion>
   );
 };
-
 
 FilterBar.propTypes = {
   setOutputFilter: PropTypes.func,

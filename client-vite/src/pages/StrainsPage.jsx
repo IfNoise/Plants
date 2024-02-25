@@ -22,7 +22,7 @@ const columns = [
   {
     field: "sourceType",
     headerName: "Source Type",
-    width: 200,
+    width: 100,
     editable: false,
   },
   {

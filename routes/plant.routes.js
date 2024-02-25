@@ -32,6 +32,7 @@ router.post("/new_plant", async (req, res) => {
           strain: strain.name,
           pheno: strain.code,
           gender,
+          currentAddress:{building:"Hangar1",room:"Laboratory",row:0,shelf:0,rack:0,tray:0,number:0},
           type: "Clone",
           state: "Cloning",
         actions: [firstAction],})
@@ -175,7 +176,7 @@ router.post("/new_action", async (req, res) => {
               gender:plant?.gender||"undefined",
               type: "Clone",
               state: "Cloning",
-              currentAddress: data.newAddress,
+              currentAddress: data.address,
               actions: [firstAction],
             });
           }

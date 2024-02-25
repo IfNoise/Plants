@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { plantsApi } from "./plantsApi";
 import { authApi } from "./authApi";
 import newActionSliceReducer from "./newActionSlice";
+import filterSliceReducer from "./filterSlice";
 import authReducer from "./authSlice";
 import { trayApi } from "./trayApi"; 
 import { localStorageMiddleware, reHydrateStore } from "./localStoreMiddleware";
@@ -18,6 +19,7 @@ const reducer = {
   [printApi.reducerPath]:printApi.reducer,
   [cycleApi.reducerPath]:cycleApi.reducer,
   newAction: newActionSliceReducer,
+  filter: filterSliceReducer,
   auth: authReducer,
 };
 

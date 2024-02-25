@@ -54,7 +54,7 @@ const columns = [
 
 export const PlantsList = (props) => {
   const plants = props?.plants||[];
-
+  
   const navigate = useNavigate();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isLarge = useMediaQuery((theme) => theme.breakpoints.up("md"));

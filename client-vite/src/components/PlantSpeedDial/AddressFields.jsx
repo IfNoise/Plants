@@ -17,66 +17,64 @@ import {
   FormControl,
 } from "@mui/material";
 
-const buildRooms = [
-  {
-    text: "Hangar 1",
-    rooms: ["Main room", "Laboratory"],
-  },
-  {
-    text: "Hangar 2",
-    rooms: ["Main room", "Small Room"],
-  },
-  {
-    text: "Outdoor",
-    rooms: ["Backyard"],
-  },
-];
+import { buildRooms } from "../../config/config";
+
+
 
 export const AddressFields = () => {
   const dispatch = useDispatch();
   const newAction = useSelector((state) => state.newAction);
-  const [id, setId] = useState(0);
-
+  const [rooms, setRooms] = useState([]);
+  
   const handlerBuilding = (e) => {
     const { value } = e.target;
-    setId(value);
-    dispatch(addBuilding(buildRooms[value].text));
+    dispatch(addBuilding(value));
+    setRooms(buildRooms[value]);
   };
+
   const handlerRoom = (e) => {
     const { value } = e.target;
     dispatch(addRoom(value));
   };
+
   const handlerRow = (e) => {
     const { value } = e.target;
     dispatch(addRow(Number.parseInt(value)));
   };
+
   const handlerRack = (e) => {
     const { value } = e.target;
     dispatch(addRack(Number.parseInt(value)));
   };
+
   const handlerTray = (e) => {
     const { value } = e.target;
     dispatch(addTray(Number.parseInt(value)));
   };
+
   const handlerNumber = (e) => {
     const { value } = e.target;
     dispatch(addNumber(Number.parseInt(value)));
   };
+
   const handlerShelf = (e) => {
     const { value } = e.target;
     dispatch(addShelf(Number.parseInt(value)));
   };
+
   useEffect(() => {
-    dispatch(addBuilding(buildRooms[id].text));
+    dispatch(addBuilding("Hangar1"));
+    setRooms(buildRooms[newAction.address?.building ?? "Hangar1"]);
   }, []);
+
   return (
     <>
-      {" "}
+     
       <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
           labelId="building-label"
-          value={id}
+          value={newAction.address?.building ?? ""}
           name="building"
           label="Building"
           onChange={handlerBuilding}
@@ -84,10 +82,10 @@ export const AddressFields = () => {
             shrink: true,
           }}
         >
-          {buildRooms.map((obj, index) => {
+          {Object.keys(buildRooms).map((obj, index) => {
             return (
-              <MenuItem key={index} value={index}>
-                {obj.text}
+              <MenuItem key={index} value={obj}>
+                {obj}
               </MenuItem>
             );
           })}
@@ -105,7 +103,7 @@ export const AddressFields = () => {
             shrink: true,
           }}
         >
-          {buildRooms[id].rooms.map((text, index) => {
+          {rooms.map((text, index) => {
             return (
               <MenuItem key={index} value={text}>
                 {text}
