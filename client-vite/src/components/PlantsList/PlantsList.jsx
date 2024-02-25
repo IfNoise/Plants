@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { CircularProgress,Grid, useMediaQuery } from "@mui/material";
+import { CircularProgress, Grid, List, useMediaQuery } from "@mui/material";
 import { useCallback } from "react";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import PlantCard from "../../components/PlantCard/PlantCard";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
+import PlantListItem from "../PlantListItem/PlantListItem";
 function getRowId(row) {
   return row._id;
 }
-
 
 const columns = [
   { field: "strain", headerName: "Strain", width: 250 },
@@ -53,8 +53,8 @@ const columns = [
 ];
 
 export const PlantsList = (props) => {
-  const plants = props?.plants||[];
-  
+  const plants = props?.plants || [];
+
   const navigate = useNavigate();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isLarge = useMediaQuery((theme) => theme.breakpoints.up("md"));
@@ -74,9 +74,9 @@ export const PlantsList = (props) => {
   }, [apiRef]);
 
   const getSelectedPlants = useCallback(() => {
-    if(!apiRef.current){
-    return []
-    }   
+    if (!apiRef.current) {
+      return [];
+    }
     if (Object.keys(apiRef.current).length === 0) {
       return [];
     }
@@ -85,7 +85,7 @@ export const PlantsList = (props) => {
 
   const checkboxSelectionHandler = () => {
     setSel(getSelected().length < 1);
-    setSelectedPlants(getSelectedPlants());
+    setSelectedPlants(getSelected());
   };
 
   useEffect(() => {
@@ -100,8 +100,8 @@ export const PlantsList = (props) => {
       checkboxSelectionHandler
     );
     apiRef.current.subscribeEvent(
-      'headerSelectionCheckboxChange',
-      checkboxSelectionHandler,
+      "headerSelectionCheckboxChange",
+      checkboxSelectionHandler
     );
   }, [apiRef]);
 
@@ -109,7 +109,7 @@ export const PlantsList = (props) => {
     <>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
-        <div style={{ height: {md:"70%"}, width: "100%" }}>
+        <div style={{ height: { md: "70%" }, width: "100%" }}>
           <DataGrid
             getRowId={getRowId}
             checkboxSelection
@@ -117,8 +117,7 @@ export const PlantsList = (props) => {
             rows={plants?.map((plant) => {
               return {
                 ...plant,
-                start: 
-                  new Date(plant?.startDate).toDateString()||"undefined",
+                start: new Date(plant?.startDate).toDateString() || "undefined",
               };
             })}
             apiRef={apiRef}
@@ -136,25 +135,27 @@ export const PlantsList = (props) => {
 
       {plants?.length > 0 && apiIsLoaded && isLarge && (
         <>
-          <PlantSpeedDial
-            getPlants={getSelectedPlants}
-            {...props}
-          />
+          <PlantSpeedDial getPlants={getSelectedPlants} {...props} />
         </>
       )}
-      {plants?.length > 0 && isSmall && (
+      {plants?.length > 0 && isSmall && 
         <>
-          <Grid container spacing={1}>
+          <List>
             {plants.map((obj) => {
-              return (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={obj._id}>
-                  <PlantCard plant={obj} />
-                </Grid>
-              );
+              return <PlantListItem key={obj._id} plant={obj} checked={selectedPlants.indexOf(obj)!==-1} onChange={(plant)=>{
+                setSelectedPlants((prev)=>{
+                  if(prev.indexOf(plant)===-1){
+                    return [...prev,plant]
+                  }
+                  return prev.filter((item)=>item!==plant)
+                })
+              }} />;
             })}
-          </Grid>
+          </List>
+          {selectedPlants.length > 0 &&
+          <PlantSpeedDial getPlants={()=>(selectedPlants)} {...props} />}
         </>
-      )}
+      }
     </>
   );
 };

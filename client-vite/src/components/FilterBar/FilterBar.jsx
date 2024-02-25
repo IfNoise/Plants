@@ -10,10 +10,13 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Box,
   Grid,
   AccordionActions,
   TextField,
+  Divider,
+  Chip,
+  Stack,
+
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
@@ -41,7 +44,7 @@ export const FilterBar = (props) => {
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter);
   const [address, setAddress] = useState({});
-
+  const [values, setValues] = useState([...Object.values(filter)]);
   const [phenos, setPhenos] = useState([]);
   const [compare, setCompare] = useState("$gte");
   const [startDate, setStartDate] = useState("");
@@ -93,11 +96,6 @@ export const FilterBar = (props) => {
     dispatch(addAddress({...address,shelf:Number.parseInt(value)}));
   };
 
-  // const { isSuccess, isLoading, isError, error, data } = useGetStrainsQuery({
-  //   refetchOnMountOrArgChange: true,
-  //   refetchOnFocus: true,
-  // });
-
   const strains = [...new Set(getData().map((obj) => obj.strain))];
   const states = [...new Set(getData().map((obj) => obj.state))];
   useEffect(() => {
@@ -109,6 +107,7 @@ export const FilterBar = (props) => {
       .map((obj) => obj.pheno);
     const uniquePhenos = [...new Set(pheno)];
     setPhenos(uniquePhenos);
+    setValues(()=>[...Object.values(filter)]);
   }, [filter]);
 
   const handleChangeStrain = (event) => {
@@ -125,6 +124,7 @@ export const FilterBar = (props) => {
 
   const handleChangeStart = (value) => {
     dispatch(addStartDate({ [compare]: new Date(value.$d) }));
+    setStartDate(new Date(value.$d));
   };
 
   return (
@@ -135,9 +135,18 @@ export const FilterBar = (props) => {
         id="panel2-header"
         //sx={{display:"flex",justifyContent:"space-between"}}
       >
-        <Typography variant="h5">Filter</Typography>
+        <Typography variant="h5" mr={5}>Filter</Typography>
+        <Stack direction="row" spacing={1}>
+          {values.map((value, index) => {
+          if(typeof value === "object"){
+            return <Chip color="primary" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + Object.values(value)[0].toDateString()} />
+          }
+          return <Chip color="primary" key={index} label={value} />
+          })}
+        </Stack>
       </AccordionSummary>
       <AccordionDetails>
+        <Stack direction="column" spacing={1} divider={<Divider orientation="horizontal" flexItem />}>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6} md={4} lg={2}>
             <FormControl sx={{ m: "1px", width: "100%" }}>
@@ -265,7 +274,8 @@ export const FilterBar = (props) => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <>
+        </Grid>
+          <Grid container spacing={1}>
             <Grid item xs={12} sm={6} md={4} lg={2}>
               <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
                 <InputLabel id="building-label">Building</InputLabel>
@@ -340,8 +350,8 @@ export const FilterBar = (props) => {
                 </Grid>
               </>
             )}
-            {filter.address?.room == "Laboratory" && (
-                <Grid item xs={12} sm={4} md={4} lg={2}>
+            {address?.room == "Laboratory" && (
+                <><Grid item xs={12} sm={4} md={4} lg={2}>
                   <TextField
                     id="outlined-number"
                     sx={{ m: "2px", width: "98%" }}
@@ -352,6 +362,8 @@ export const FilterBar = (props) => {
                       shrink: true,
                     }}
                   />
+                  </Grid>
+                  <Grid item xs={12} sm={4} md={4} lg={2}>
                   <TextField
                     id="outlined-number"
                     sx={{ mx: "2px", width: "98%" }}
@@ -363,12 +375,18 @@ export const FilterBar = (props) => {
                     }}
                   />
                 </Grid>
+                </>
             )}
-          </>
+          
         </Grid>
+        </Stack>
       </AccordionDetails>
       <AccordionActions>
-        <Button variant="outlined" onClick={() => dispatch(clearFilter())}>
+        <Button variant="outlined" onClick={() => {
+          dispatch(clearFilter())
+          setValues([])
+          setStartDate("")
+          }}>
           Clear
         </Button>
       </AccordionActions>

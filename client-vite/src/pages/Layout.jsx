@@ -92,6 +92,12 @@ export const Layout = () => {
     setOpen(true);
   };
 
+React.useEffect(()=>{
+  if(isSmall){
+  setOpen(false)
+  }
+},[isSmall])
+
   const handleDrawerClose = () => {
     setOpen(isSmall?false:true);
   };

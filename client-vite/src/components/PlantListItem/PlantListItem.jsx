@@ -1,38 +1,89 @@
-import { Checkbox, ListItem, ListItemButton, ListItemText } from "@mui/material";
-import PropTypes from 'prop-types';
+import {
+  Avatar,
+  Checkbox,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import PropTypes from "prop-types";
 
-export default function PlantListItem(props) {
-  const [checked, setChecked] = React.useState([1]);
+function stringToColor(string) {
+  let hash = 0;
+  let i;
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
+  let color = "#";
 
-    setChecked(newChecked);
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children:
+      name.split(" ").length > 1
+        ? `${name.split(" ").reduce((a, b) => a + b[0],"").toUpperCase()}`
+        : `${name.split(" ")[0][0]}${name.split(" ")[0][1]}`,
   };
+}
+export default function PlantListItem(props) {
+  const plant = props.plant;
 
   return (
-  <ListItem
-  secondaryAction={
-    <Checkbox
-      edge="end"
-      onChange={props.onChange}
-      checked={props.checked}
-      inputProps={{ 'aria-labelledby': labelId }}
-    />
-  }
-  disablePadding
->
-  <ListItemButton>
-    <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-  </ListItemButton>
-</ListItem>)
+    <>
+      {plant && (
+        <ListItem
+          secondaryAction={
+            <Checkbox
+              edge="end"
+              onChange={()=>{ props?.onChange(plant)}}
+              checked={props?.checked || false}
+            />
+          }
+          disablePadding
+        >
+          <ListItemButton>
+            <ListItemAvatar>
+              <Avatar {...stringAvatar(plant.strain)} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={plant.pheno}
+              secondary={
+                <>
+                  <Typography mr='5px' component='span' variant="body2" color="text.secondary">
+                    {plant.strain}
+                  </Typography>
+                  <Typography component="span" variant="h7" color="green">
+                   {plant.state}
+                  </Typography>
+                  <Typography component='div' variant="caption" color="text.secondary">
+                   Start date: {new Date(plant.startDate).toLocaleDateString()}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                   Id: {plant._id}
+                  </Typography>
+                </>
+              }
+            />
+          </ListItemButton>
+        </ListItem>
+      )}
+    </>
+  );
 }
 PlantListItem.propTypes = {
   plant: PropTypes.object,
