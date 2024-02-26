@@ -116,7 +116,7 @@ export const PlantsList = (props) => {
   }, [apiRef]);
   const plantsPerPage = 100;
   return (
-    <Box sx={{ display: "flow" }}>
+    <Box sx={{ display: "flow",height:"100%" }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
         <div style={{ height: { md: "70%" }, width: "100%" }}>
@@ -164,8 +164,8 @@ export const PlantsList = (props) => {
               bgcolor: "background.paper",
               position: "relative",
               overflow: "auto",
-              maxHeight: 450,
               ml: 0,
+              maxHeight:"70vh",
               "& ul": { padding: 0 },
             }}
           >
