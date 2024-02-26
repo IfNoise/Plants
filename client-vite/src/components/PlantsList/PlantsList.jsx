@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { CircularProgress, Grid, List, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  List,
+  Pagination,
+  useMediaQuery,
+} from "@mui/material";
 import { useCallback } from "react";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import PlantCard from "../../components/PlantCard/PlantCard";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 import PlantListItem from "../PlantListItem/PlantListItem";
 function getRowId(row) {
@@ -51,6 +56,10 @@ const columns = [
     editable: false,
   },
 ];
+function paginate(array, page_size, page_number) {
+  // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice((page_number - 1) * page_size, page_number * page_size);
+}
 
 export const PlantsList = (props) => {
   const plants = props?.plants || [];
@@ -61,6 +70,7 @@ export const PlantsList = (props) => {
   const apiRef = useGridApiRef(null);
   const [apiIsLoaded, setApiIsLoaded] = useState(false);
   const [sel, setSel] = useState(false);
+  const [page, setPage] = useState(1);
   const [selectedPlants, setSelectedPlants] = useState([]);
   const plantDetails = (id) => {
     navigate(`/plant/${id}`);
@@ -104,9 +114,9 @@ export const PlantsList = (props) => {
       checkboxSelectionHandler
     );
   }, [apiRef]);
-
+  const plantsPerPage = 100;
   return (
-    <>
+    <Box sx={{ display: "flow" }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
         <div style={{ height: { md: "70%" }, width: "100%" }}>
@@ -138,25 +148,52 @@ export const PlantsList = (props) => {
           <PlantSpeedDial getPlants={getSelectedPlants} {...props} />
         </>
       )}
-      {plants?.length > 0 && isSmall && 
+      {plants?.length > 0 && isSmall && (
         <>
-          <List>
-            {plants.map((obj) => {
-              return <PlantListItem key={obj._id} plant={obj} checked={selectedPlants.indexOf(obj)!==-1} onChange={(plant)=>{
-                setSelectedPlants((prev)=>{
-                  if(prev.indexOf(plant)===-1){
-                    return [...prev,plant]
-                  }
-                  return prev.filter((item)=>item!==plant)
-                })
-              }} />;
+          <Pagination
+            count={Math.floor(plants.length / plantsPerPage) + 1}
+            page={page}
+            sx={{ top: 180, position: "revert",m:1 }}
+            onChange={(e,value) => {
+              setPage(value);
+            }}
+          /> 
+          <List
+            sx={{
+              width: "98%",
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 450,
+              ml: 0,
+              "& ul": { padding: 0 },
+            }}
+          >
+            {paginate(plants, plantsPerPage, page).map((obj) => {
+              return (
+                <PlantListItem
+                  key={obj._id}
+                  plant={obj}
+                  checked={selectedPlants.indexOf(obj) !== -1}
+                  onClick={plantDetails}
+                  onChange={(plant) => {
+                    setSelectedPlants((prev) => {
+                      if (prev.indexOf(plant) === -1) {
+                        return [...prev, plant];
+                      }
+                      return prev.filter((item) => item !== plant);
+                    });
+                  }}
+                />
+              );
             })}
           </List>
-          {selectedPlants.length > 0 &&
-          <PlantSpeedDial getPlants={()=>(selectedPlants)} {...props} />}
+          {selectedPlants.length > 0 && (
+            <PlantSpeedDial getPlants={() => selectedPlants} {...props} />
+          )}
         </>
-      }
-    </>
+      )}
+    </Box>
   );
 };
 PlantsList.propTypes = {

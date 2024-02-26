@@ -42,7 +42,6 @@ function stringAvatar(name) {
 }
 export default function PlantListItem(props) {
   const plant = props.plant;
-
   return (
     <>
       {plant && (
@@ -56,7 +55,7 @@ export default function PlantListItem(props) {
           }
           disablePadding
         >
-          <ListItemButton>
+          <ListItemButton onClick={()=>{props?.onClick(plant._id)}}>
             <ListItemAvatar>
               <Avatar {...stringAvatar(plant.strain)} />
             </ListItemAvatar>
@@ -88,5 +87,6 @@ export default function PlantListItem(props) {
 PlantListItem.propTypes = {
   plant: PropTypes.object,
   onChange: PropTypes.func,
+  onClick: PropTypes.func,
   checked: PropTypes.bool,
 };

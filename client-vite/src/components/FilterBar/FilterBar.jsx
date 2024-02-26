@@ -133,13 +133,13 @@ export const FilterBar = (props) => {
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel2-content"
         id="panel2-header"
-        //sx={{display:"flex",justifyContent:"space-between"}}
+        
       >
         <Typography variant="h5" mr={5}>Filter</Typography>
         <Stack direction="row" spacing={1}>
           {values.map((value, index) => {
-          if(typeof value === "object"){
-            return <Chip color="primary" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + Object.values(value)[0].toDateString()} />
+          if(typeof value === "object" && value !== null && value !== undefined && !Array.isArray(value)){
+            return <Chip color="primary" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + new Date(Object.values(value)[0]).toDateString()} />
           }
           return <Chip color="primary" key={index} label={value} />
           })}
