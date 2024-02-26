@@ -17,7 +17,8 @@ export default defineConfig({
     manifest: {
       "name": "Plants Database",
       "short_name": "Plants Database",
-      "start_url": "/",
+      "start_url": "index.html?fullscreen=true",
+      "display": "fullscreen",
       "theme_color": "#ffffff",
       "background_color": "#ffffff",
       "icons": [
