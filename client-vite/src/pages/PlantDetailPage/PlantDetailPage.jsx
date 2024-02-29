@@ -44,7 +44,7 @@ export const PlantDetailPage = () => {
               </Grid>
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
               <Typography variant="body2" color="text.secondary">
-                Start Date: {new Date(startDate||"").toDateString() ?? "undefined"}
+                Start Date: {new Date(startDate).toDateString() ?? "undefined"}
               </Typography>
               </Grid>
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
