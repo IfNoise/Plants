@@ -38,10 +38,11 @@ export const Router = createBrowserRouter(
       <Route path="plant/:id" element={<PlantDetailPage />} />
       <Route path="map" element={<MapPage />} />
       <Route path="strain/:id" element={<StrainDetailPage />} />
-      <Route path="auth" element={<AuthPage />} />
+
+
       
     </Route>
-     
+    <Route path="auth" element={<AuthPage />} /> 
     </>
   )
 );

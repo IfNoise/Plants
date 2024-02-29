@@ -49,7 +49,7 @@ export const AuthPage = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{display:"flex",justifyContent:"center"}} >
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
