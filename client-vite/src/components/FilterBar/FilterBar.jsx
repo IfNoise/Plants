@@ -136,7 +136,7 @@ export const FilterBar = (props) => {
         
       >
         <Typography variant="h5" mr={5}>Filter</Typography>
-        <Stack direction="row" spacing={1}>
+        <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap">
           {values.map((value, index) => {
           if(typeof value === "object" && value !== null && value !== undefined && !Array.isArray(value)){
             return <Chip color="primary" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + new Date(Object.values(value)[0]).toDateString()} />

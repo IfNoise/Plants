@@ -14,7 +14,7 @@ export const PlantsPage = () => {
   });
   const getData = () => plants.map((plant) => plant);
   return (
-    <Box sx={{display:"flex"}}>
+    <Box sx={{display:"flow"}}>
       
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}

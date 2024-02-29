@@ -173,6 +173,10 @@ React.useEffect(()=>{
               href: "/dashboard",
             },
             {
+              text: "Map",
+              href: "/map",
+            },
+            {
               text: "Mothers",
               href: "/mothers",
             },
