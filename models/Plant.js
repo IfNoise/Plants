@@ -4,7 +4,7 @@ const Action=require('./Action')
 
 //============================================================================================================
 const plant = new Schema({
-  startDate: { type: Date, required: true, default: Date.now },
+  startDate: { type: Date, required: true},
   strain: { type: String, required: true },
   pheno: { type: String, required: true },
   type: { type: String }, //Seed,Clone

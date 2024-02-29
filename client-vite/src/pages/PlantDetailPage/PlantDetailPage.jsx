@@ -26,7 +26,7 @@ export const PlantDetailPage = () => {
     }
   }, [data]);
 
-  const {strain,pheno,gender,state,actions,cloneCounter,maxClones} = plant;
+  const {strain,pheno,gender,state,startDate,actions,cloneCounter,maxClones} = plant;
   return (
     <Grid container>
       {isError && <Alert severity="error">{error.message}</Alert>}
@@ -40,6 +40,11 @@ export const PlantDetailPage = () => {
                 <Grid item xs={12} sx={{display:'flex',justifyContent:'center'}}> 
               <Typography gutterBottom variant="h4" component="div">
                 {strain ?? "undefined"}
+              </Typography>
+              </Grid>
+              <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
+              <Typography variant="body2" color="text.secondary">
+                Start Date: {new Date(startDate||"").toDateString() ?? "undefined"}
               </Typography>
               </Grid>
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
