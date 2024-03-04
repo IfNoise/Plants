@@ -190,9 +190,6 @@ router.post("/new_action", async (req, res) => {
           const newCounter = current + number;
           const currentMaxClones=plant?.maxClones || 0
           const maxClones=currentMaxClones<number?number:currentMaxClones
-
-          console.log(newCounter);
-
           plant.set("cloneCounter", newCounter);
           plant.set("maxClones",maxClones)
           break;

@@ -109,7 +109,22 @@ export default function Scanner() {
               top: 0,
               zIndex: 1,
               width: "90%",
-            }} >
+            }} >              
+               <IconButton
+              variant="outlined"
+              onClick={close}
+              size="small"
+              sx={{
+              right: 0,
+              position: "absolute",
+              borderColor: "red",
+              borderWidth:"2px",
+              borderBlockColor:"red",
+               color: "red"
+               }}
+            >
+              <CloseIcon fontSize="medium"/>
+            </IconButton>
           {isError && <Typography variant="caption">{error.message}</Typography>}
           {isLoading && <Typography variant="caption">Loading...</Typography>}
           {plant && (
@@ -147,7 +162,15 @@ export default function Scanner() {
             >
               Details
             </Button>
-
+            <Button
+              variant="outlined"
+              disabled={!scanResult}
+              onClick={addToTrayHandler}
+              sx={{ borderColor: "red",borderWidth:"2px",borderBlockColor:"red", color: "red",
+              height:"100px" ,width:"100px",borderRadius:"50%"}}
+            >
+              ADD
+            </Button>
             <Button
               variant="outlined"
               onClick={handlerNext}
@@ -155,21 +178,8 @@ export default function Scanner() {
             >
               Next
             </Button>
-            <Button
-              variant="outlined"
-              disabled={!scanResult}
-              onClick={addToTrayHandler}
-              sx={{ borderColor: "red",borderWidth:"2px",borderBlockColor:"red", color: "red" }}
-            >
-              ADD
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={close}
-              sx={{ borderColor: "red",borderWidth:"2px",borderBlockColor:"red", color: "red" }}
-            >
-              <CloseIcon />
-            </Button>
+
+
           </DialogActions>
         </Box>
       </Dialog>

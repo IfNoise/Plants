@@ -149,6 +149,7 @@ React.useEffect(()=>{
         }}
         variant={isSmall?"temporary":"permanent"}
         anchor="left"
+        onClose={handleDrawerClose}
         open={open}
       >
         <DrawerHeader>
@@ -162,7 +163,8 @@ React.useEffect(()=>{
           </IconButton>}
         </DrawerHeader>
         <Divider />
-        <List>
+        <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerClose}>
+        <List >
           {[
             {
               text: "Cycles",
@@ -190,7 +192,7 @@ React.useEffect(()=>{
             },
           ].map((obj, index) => (
             <ListItem key={obj.text} disablePadding>
-              <ListItemButton component={Link} to={obj.href} onClick={()=>{handleDrawerClose}}>
+              <ListItemButton component={Link} to={obj.href} >
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -199,6 +201,7 @@ React.useEffect(()=>{
             </ListItem>
           ))}
         </List>
+        </Box>
         <Divider />
       </Drawer>
       <Main 
