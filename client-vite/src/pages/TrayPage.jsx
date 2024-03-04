@@ -1,6 +1,7 @@
 import { Alert, CircularProgress} from "@mui/material";
 import { PlantsList } from "../components/PlantsList/PlantsList";
 import { useGetTrayQuery } from "../store/trayApi";
+import { useEffect } from "react";
 
 export const TrayPage = () => {
   const {
@@ -8,11 +9,16 @@ export const TrayPage = () => {
     isError,
     error,
     data,
+    refetch
+    
   } = useGetTrayQuery({ 
     refetchOnMountOrArgChange: true, 
     refetchOnFocus: true ,
   });
-
+  useEffect(() => {
+    refetch();
+  }
+  , [refetch]);
   return (
     <>
       {isError && <Alert severity="error">{error?.message||'error'}</Alert>}

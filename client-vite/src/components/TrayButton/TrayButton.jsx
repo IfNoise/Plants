@@ -4,14 +4,14 @@ import PrintIcon from "@mui/icons-material/Print";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useGetTrayQuery } from "../../store/trayApi";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useClearTrayMutation } from "../../store/trayApi";
 import { usePrintTrayMutation } from "../../store/printApi";
 
 
 export const TrayButton = () => {
   const navigate = useNavigate();
-  const { data } = useGetTrayQuery(
+  const { data,refetch } = useGetTrayQuery(
     {},
     { refetchOnMountOrArgChange: true, refetchOnFocus: true }
   );
@@ -33,6 +33,9 @@ export const TrayButton = () => {
         : null
     );
   };
+  useEffect(() => { 
+    refetch();
+  } , [refetch]);
 
   const handleClose = () => {
     setContextMenu(null);
@@ -49,7 +52,7 @@ export const TrayButton = () => {
         onContextMenu={handleContextMenu}
       >
         
-          <Badge badgeContent={data?.length??"0"} color="error">
+          <Badge badgeContent={data?.length} color="error">
             <FolderSpecialIcon />
           </Badge>
       
