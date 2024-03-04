@@ -190,7 +190,7 @@ export const PlantsList = (props) => {
             })}
           </List>
           {selectedPlants.length > 0 && (
-            <PlantSpeedDial getPlants={() => [...selectedPlants]} {...props} />
+            <PlantSpeedDial getPlants={() => (selectedPlants)} {...props} />
           )}
         </>
       )}
