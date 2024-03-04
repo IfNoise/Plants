@@ -12,7 +12,6 @@ import { usePrintTrayMutation } from "../../store/printApi";
 export const TrayButton = () => {
   const navigate = useNavigate();
   const { data,refetch } = useGetTrayQuery(
-    {},
     { refetchOnMountOrArgChange: true, refetchOnFocus: true }
   );
   const [number, setNumber] = useState(0);
@@ -54,10 +53,14 @@ export const TrayButton = () => {
         onClick={trayPage}
         onContextMenu={handleContextMenu}
       >
-        
+        {data?.length > 0 &&
           <Badge badgeContent={number.toString()} color="error">
             <FolderSpecialIcon />
           </Badge>
+          }
+        {data?.length === 0 && <Badge badgeContent={0} color="error">
+            <FolderSpecialIcon />
+          </Badge>}
       
       </IconButton>
       {data?.length > 0 && (
@@ -74,6 +77,7 @@ export const TrayButton = () => {
           <MenuItem
             onClick={() => {
               clearTray();
+              refetch();
               handleClose();
             }}
           >

@@ -5,13 +5,7 @@ export const trayApi = createApi({
   reducerPath: "tray/api",
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl+"/tray",
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
+    
   }),
   endpoints: (build) => ({
     getTray: build.query({
@@ -61,4 +55,4 @@ export const trayApi = createApi({
   }),
 });
 
-export const { useGetTrayQuery, useAddToTrayMutation,useRemoveFromTrayMutation,useClearTrayMutation,usePrintTrayMutation } = trayApi;
+export const {  useGetTrayQuery, useAddToTrayMutation,useRemoveFromTrayMutation,useClearTrayMutation,usePrintTrayMutation } = trayApi;
