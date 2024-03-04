@@ -49,7 +49,7 @@ export const TrayButton = () => {
         onContextMenu={handleContextMenu}
       >
         {data && (
-          <Badge badgeContent={data.length} color="error">
+          <Badge badgeContent={data.length??"0"} color="error">
             <FolderSpecialIcon />
           </Badge>
         )}
