@@ -177,7 +177,7 @@ router.post("/new_action", async (req, res) => {
               pheno: plant.pheno,
               gender:plant?.gender||"undefined",
               type: "Clone",
-              source: id,
+              source: plant.id,
               startDate: Date.now(),
               state: "Cloning",
               currentAddress: data.address,

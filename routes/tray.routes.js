@@ -26,10 +26,21 @@ router.post("/add", async (req, res) => {
 
   try {
     if (plants.length > 0) {
-      const request = plants.map((item) => ({ plantId: item }));
+      const data = await TrayItem.find({}).exec();
+      const ids =new Set( data.map((item) => item.plantId));
+      const request=plants.map((id)=>{
+        if(!ids.has(id)){
+          ids.add(id);
+          return {plantId:id}
+        }else{
+          return null;
+        }
+      })      
       await TrayItem.insertMany(request);
+      res.json({ message: "Items is added" });
+    }else{
+      res.json({ message: "Items is empty" });
     }
-    res.json({ message: "Item is added" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
