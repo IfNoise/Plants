@@ -15,6 +15,7 @@ export const TrayButton = () => {
     {},
     { refetchOnMountOrArgChange: true, refetchOnFocus: true }
   );
+  const [number, setNumber] = useState(0);
   const [contextMenu, setContextMenu] = useState(null);
   const [clearTray] = useClearTrayMutation();
   const [printTray] = usePrintTrayMutation();
@@ -36,7 +37,9 @@ export const TrayButton = () => {
   useEffect(() => { 
     refetch();
   } , [refetch]);
-
+  useEffect(() => {
+    setNumber(data?.length || 0);
+  }, [data]);
   const handleClose = () => {
     setContextMenu(null);
   };
@@ -52,7 +55,7 @@ export const TrayButton = () => {
         onContextMenu={handleContextMenu}
       >
         
-          <Badge badgeContent={data?.length} color="error">
+          <Badge badgeContent={number.toString()} color="error">
             <FolderSpecialIcon />
           </Badge>
       
