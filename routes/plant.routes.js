@@ -111,10 +111,10 @@ router.post("/new_action", async (req, res) => {
   try {
     const data = req.body.action;
     const id = req.body.id;
-    const action = {};
+    const action = {type:data.actionType,date:Date.now()};
     id.map(async (idx) => {
       const plant = await Plant.findById(idx);
-      action.type = data.actionType;
+      
       switch (action.type) {
         case "Note": {
           if (data.note) action.note = data.note;
@@ -139,7 +139,7 @@ router.post("/new_action", async (req, res) => {
         }
         case "Stop": {
           plant.set("state", "Stopped");
-          if (data?.reason == "Other") {
+          if (data?.reason === "Other") {
             action.userReason = data.userReason;
           }
 
@@ -170,14 +170,14 @@ router.post("/new_action", async (req, res) => {
             let firstAction = {
               date: Date.now(),
               type: "Start",
-              source: plant.id,
+              source: plant._id,
             };
             newClones.push({
               strain: plant.strain,
               pheno: plant.pheno,
               gender:plant?.gender||"undefined",
               type: "Clone",
-              source: plant.id,
+              source: plant._id,
               startDate: Date.now(),
               state: "Cloning",
               currentAddress: data.address,
@@ -197,14 +197,15 @@ router.post("/new_action", async (req, res) => {
           plant.set("maxClones",maxClones)
           break;
         }
-        default:
-          break;
+        default:{
+          return res.json({ message: "Wrong action type" });
+        }
       }
       plant.actions.push(action);
       await plant.save();
     });
 
-    res.json({ message: "Ok" });
+    return res.json({ message: "Ok" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
