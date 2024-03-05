@@ -16,6 +16,7 @@ import {
   Divider,
   Chip,
   Stack,
+  Box,
 
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -84,11 +85,11 @@ export const FilterBar = (props) => {
     dispatch(addAddress({...address,tray:Number.parseInt(value)}));
   };
 
-  const handlerNumber = (e) => {
-    const { value } = e.target;
-    setAddress({ ...address, number: Number.parseInt(value) });
-    dispatch(addAddress({...address,number:Number.parseInt(value)}));
-  };
+  // const handlerNumber = (e) => {
+  //   const { value } = e.target;
+  //   setAddress({ ...address, number: Number.parseInt(value) });
+  //   dispatch(addAddress({...address,number:Number.parseInt(value)}));
+  // };
 
   const handlerShelf = (e) => {
     const { value } = e.target;
@@ -146,10 +147,11 @@ export const FilterBar = (props) => {
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
+        <Box sx={{ width: "100%",height:"65vh",overflowY:"auto",overflowX:"hidden" }} >
         <Stack direction="column" spacing={1} divider={<Divider orientation="horizontal" flexItem />}>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6} md={4} lg={2}>
-            <FormControl sx={{ m: "1px", width: "100%" }}>
+            <FormControl sx={{ m: "1px", width: "95%" }}>
               <InputLabel id="state-label">State</InputLabel>
               <Select
                 onChange={handleChangeState}
@@ -172,7 +174,7 @@ export const FilterBar = (props) => {
 
           {strains && (
             <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl sx={{ m: "1px", width: "100%" }}>
+              <FormControl sx={{ m: "1px", width: "95%" }}>
                 <InputLabel id="strain-multiple-checkbox-label">
                   Strain
                 </InputLabel>
@@ -197,7 +199,7 @@ export const FilterBar = (props) => {
           )}
           {phenos.length > 0 && (
             <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl sx={{ width: "100%" }}>
+              <FormControl sx={{ width: "95%" }}>
                 <InputLabel id="phenos-multiple-checkbox-label">
                   Phenotype
                 </InputLabel>
@@ -277,7 +279,7 @@ export const FilterBar = (props) => {
         </Grid>
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
+              <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
                 <InputLabel id="building-label">Building</InputLabel>
                 <Select
                   labelId="building-label"
@@ -300,7 +302,7 @@ export const FilterBar = (props) => {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
+              <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
                 <InputLabel id="room-label">Room</InputLabel>
                 <Select
                   labelId="room-label"
@@ -327,7 +329,7 @@ export const FilterBar = (props) => {
                 <Grid item xs={12} sm={6} md={4} lg={2}>
                   <TextField
                     id="outlined-number"
-                    sx={{ m: "2px", width: "98%" }}
+                    sx={{ m: "2px", width: "95%" }}
                     label="Row"
                     type="number"
                     onChange={handlerRow}
@@ -339,7 +341,7 @@ export const FilterBar = (props) => {
                 <Grid item xs={12} sm={6} md={4} lg={2}>
                   <TextField
                     id="outlined-number"
-                    sx={{ m: "2px", width: "98%" }}
+                    sx={{ m: "2px", width: "95%" }}
                     label="Tray"
                     type="number"
                     onChange={handlerTray}
@@ -354,7 +356,7 @@ export const FilterBar = (props) => {
                 <><Grid item xs={12} sm={4} md={4} lg={2}>
                   <TextField
                     id="outlined-number"
-                    sx={{ m: "2px", width: "98%" }}
+                    sx={{ m: "2px", width: "95%" }}
                     label="Rack"
                     type="number"
                     onChange={handlerRack}
@@ -366,7 +368,7 @@ export const FilterBar = (props) => {
                   <Grid item xs={12} sm={4} md={4} lg={2}>
                   <TextField
                     id="outlined-number"
-                    sx={{ mx: "2px", width: "98%" }}
+                    sx={{ mx: "2px", width: "95%" }}
                     label="Shelf"
                     type="number"
                     onChange={handlerShelf}
@@ -380,9 +382,12 @@ export const FilterBar = (props) => {
           
         </Grid>
         </Stack>
+        </Box>
       </AccordionDetails>
       <AccordionActions>
-        <Button variant="outlined" onClick={() => {
+        <Button variant="outlined" 
+          sx={{position:"static",bottom:0}}
+          onClick={() => {
           dispatch(clearFilter())
           setValues([])
           setStartDate("")
