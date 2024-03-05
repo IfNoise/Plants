@@ -129,7 +129,8 @@ export const FilterBar = (props) => {
   };
 
   return (
-    <Accordion>
+    <Accordion >
+      
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel2-content"
@@ -140,14 +141,15 @@ export const FilterBar = (props) => {
         <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap">
           {values.map((value, index) => {
           if(typeof value === "object" && value !== null && value !== undefined && !Array.isArray(value)){
-            return <Chip color="primary" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + new Date(Object.values(value)[0]).toDateString()} />
+            return <Chip color="primary" size="small" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + new Date(Object.values(value)[0]).toDateString()} />
           }
-          return <Chip color="primary" key={index} label={value} />
+          return <Chip color="primary" size="small" key={index} label={value} />
           })}
         </Stack>
       </AccordionSummary>
+      <Box sx={{ width: "100%",height:{xs:"50vh",sm:"80vh",md:"50vh",lg:"40vh"},overflowY:"auto",overflowX:"hidden" }} >
       <AccordionDetails>
-        <Box sx={{ width: "100%",height:"65vh",overflowY:"auto",overflowX:"hidden" }} >
+        
         <Stack direction="column" spacing={1} divider={<Divider orientation="horizontal" flexItem />}>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6} md={4} lg={2}>
@@ -382,11 +384,12 @@ export const FilterBar = (props) => {
           
         </Grid>
         </Stack>
-        </Box>
+        
       </AccordionDetails>
+      </Box>
       <AccordionActions>
         <Button variant="outlined" 
-          sx={{position:"static",bottom:0}}
+          
           onClick={() => {
           dispatch(clearFilter())
           setValues([])
