@@ -13,8 +13,9 @@ import {
   Stack,
   Box,
   Drawer,
+  Fab,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TuneIcon from '@mui/icons-material/Tune';
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -124,7 +125,11 @@ export const FilterBar = (props) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(!open)} endIcon={<ExpandMoreIcon />}/>
+      <Fab
+        onClick={() => setOpen(!open)}
+        sx={{position:"fixed",top:75,right:10}}
+        ><TuneIcon/>
+        </Fab>
       <Drawer
         open={open}
         anchor="right"
