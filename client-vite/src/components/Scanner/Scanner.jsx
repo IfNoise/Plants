@@ -129,10 +129,10 @@ export default function Scanner() {
           {isLoading && <Typography variant="caption">Loading...</Typography>}
           {plant && (
             <Card variant="outlined" sx={{backgroundColor: "transparent",border:"none"}}>
-            <Typography variant="h5">
+            <Typography variant="h2" color="yellow">
               {plant.strain} 
               </Typography>
-              <Typography variant="body2" >
+              <Typography variant="h5" color="yellow">
               {plant.pheno} {plant.state}
             </Typography>
             <Typography variant="h7" color="fuchsia">
