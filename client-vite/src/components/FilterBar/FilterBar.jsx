@@ -3,21 +3,16 @@ import {
   Select,
   MenuItem,
   Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Typography,
   RadioGroup,
   FormControlLabel,
   Radio,
-  Grid,
-  AccordionActions,
   TextField,
   Divider,
   Chip,
   Stack,
   Box,
-
+  Drawer,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
@@ -50,51 +45,50 @@ export const FilterBar = (props) => {
   const [compare, setCompare] = useState("$gte");
   const [startDate, setStartDate] = useState("");
   const [rooms, setRooms] = useState([]);
-
-  
+  const [open, setOpen] = useState(false);  
 
   const handlerBuilding = (e) => {
     const { value } = e.target;
     setAddress({ ...address, building: value });
-    dispatch(addAddress({...address, building: value}));
-    
+    dispatch(addAddress({ ...address, building: value }));
+
     setRooms(buildRooms[value]);
   };
 
   const handlerRoom = (e) => {
     const { value } = e.target;
     setAddress({ ...address, room: value });
-    dispatch(addAddress({...address, room: value}));
+    dispatch(addAddress({ ...address, room: value }));
   };
 
   const handlerRow = (e) => {
     const { value } = e.target;
     setAddress({ ...address, row: Number.parseInt(value) });
-    dispatch(addAddress({...address,row:Number.parseInt(value)}));
+    dispatch(addAddress({ ...address, row: Number.parseInt(value) }));
   };
 
   const handlerRack = (e) => {
     const { value } = e.target;
     setAddress({ ...address, rack: Number.parseInt(value) });
-    dispatch(addAddress({...address,rack:Number.parseInt(value)}));
+    dispatch(addAddress({ ...address, rack: Number.parseInt(value) }));
   };
 
   const handlerTray = (e) => {
     const { value } = e.target;
     setAddress({ ...address, tray: Number.parseInt(value) });
-    dispatch(addAddress({...address,tray:Number.parseInt(value)}));
+    dispatch(addAddress({ ...address, tray: Number.parseInt(value) }));
   };
 
-  // const handlerNumber = (e) => {
-  //   const { value } = e.target;
-  //   setAddress({ ...address, number: Number.parseInt(value) });
-  //   dispatch(addAddress({...address,number:Number.parseInt(value)}));
-  // };
+  const handlerNumber = (e) => {
+    const { value } = e.target;
+    setAddress({ ...address, number: Number.parseInt(value) });
+    dispatch(addAddress({...address,number:Number.parseInt(value)}));
+  };
 
   const handlerShelf = (e) => {
     const { value } = e.target;
 
-    dispatch(addAddress({...address,shelf:Number.parseInt(value)}));
+    dispatch(addAddress({ ...address, shelf: Number.parseInt(value) }));
   };
 
   const strains = [...new Set(getData().map((obj) => obj.strain))];
@@ -108,7 +102,7 @@ export const FilterBar = (props) => {
       .map((obj) => obj.pheno);
     const uniquePhenos = [...new Set(pheno)];
     setPhenos(uniquePhenos);
-    setValues(()=>[...Object.values(filter)]);
+    setValues(() => [...Object.values(filter)]);
   }, [filter]);
 
   const handleChangeStrain = (event) => {
@@ -129,276 +123,334 @@ export const FilterBar = (props) => {
   };
 
   return (
-    <Accordion >
-      
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel2-content"
-        id="panel2-header"
-        
+    <>
+      <Button onClick={() => setOpen(!open)} endIcon={<ExpandMoreIcon />}/>
+      <Drawer
+        open={open}
+        anchor="right"
+        sx={{
+          width: {xs:"100%" ,sm:"100%",md: "20%"},
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          m:2,
+          p:2,
+        }}
       >
-        <Typography variant="h5" mr={5}>Filter</Typography>
-        <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap">
-          {values.map((value, index) => {
-          if(typeof value === "object" && value !== null && value !== undefined && !Array.isArray(value)){
-            return <Chip color="primary" size="small" key={index} label={Object.keys(value)[0]==="$gte"?"After":"Before" + " " + new Date(Object.values(value)[0]).toDateString()} />
-          }
-          return <Chip color="primary" size="small" key={index} label={value} />
-          })}
-        </Stack>
-      </AccordionSummary>
-      <Box sx={{ width: "100%",height:{xs:"50vh",sm:"80vh",md:"50vh",lg:"40vh"},overflowY:"auto",overflowX:"hidden" }} >
-      <AccordionDetails>
-        
-        <Stack direction="column" spacing={1} divider={<Divider orientation="horizontal" flexItem />}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={6} md={4} lg={2}>
-            <FormControl sx={{ m: "1px", width: "95%" }}>
-              <InputLabel id="state-label">State</InputLabel>
-              <Select
-                onChange={handleChangeState}
-                labelId="state-label"
-                id="state"
-                name="state"
-                value={filter.state ?? ""}
-                input={<OutlinedInput label="State" />}
-              >
-                {states.map((state, id) => {
-                  return (
-                    <MenuItem key={id} value={state}>
-                      {state}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          {strains && (
-            <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl sx={{ m: "1px", width: "95%" }}>
-                <InputLabel id="strain-multiple-checkbox-label">
-                  Strain
-                </InputLabel>
-                <Select
-                  onChange={handleChangeStrain}
-                  labelId="strain-multiple-checkbox-label"
-                  id="strain-multiple-checkbox"
-                  name="strain"
-                  value={filter.strain ?? ""}
-                  input={<OutlinedInput label="Strain" />}
-                >
-                  {strains.map((strain, id) => {
-                    return (
-                      <MenuItem key={id} value={strain}>
-                        {strain}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-          )}
-          {phenos.length > 0 && (
-            <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl sx={{ width: "95%" }}>
-                <InputLabel id="phenos-multiple-checkbox-label">
-                  Phenotype
-                </InputLabel>
-                <Select
-                  onChange={handleChangePheno}
-                  labelId="phenos-multiple-checkbox-label"
-                  id="phenos-multiple-checkbox"
-                  name="pheno"
-                  value={filter.pheno ?? ""}
-                  input={<OutlinedInput label="Phenotypes" />}
-                >
-                  {phenos.map((pheno, id) => {
-                    return (
-                      <MenuItem key={id} value={pheno}>
-                        {pheno}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-          )}
-          <Grid item xs={12} sm={12} md={4} lg={3}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                sx={{ m: "1px" }}
-                disableFuture
-                closeOnSelect
-                size="small"
-                value={startDate}
-                label="Start Date"
-                onChange={handleChangeStart}
-                slotProps={{
-                  layout: {
-                    sx: {
-                      ".MuiDateCalendar-root": {
-                        color: "#1565c0",
-                        borderRadius: 4,
-                        borderWidth: 1,
-                        borderColor: "#2196f3",
-                        border: "1px solid",
-                        backgroundColor: "#bbdefb",
-                      },
-                    },
-                  },
-                }}
-              />
-            </LocalizationProvider>
-            <FormControl>
-              <RadioGroup
-                sx={{
-                  m: "1px",
-                }}
-                aria-labelledby="Equal start date"
-                defaultValue={compare}
-                row
-                value={compare}
-                name="radio-buttons-group"
-                onChange={(e) => {
-                  setCompare(e.target.value);
-                  dispatch(addStartDate({ [e.target.value]: startDate }));
-                }}
-              >
-                <FormControlLabel
-                  value="$gte"
-                  control={<Radio />}
-                  label="After"
-                />
-                <FormControlLabel
-                  value="$lte"
-                  control={<Radio />}
-                  label="Before"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
-        </Grid>
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
-                <InputLabel id="building-label">Building</InputLabel>
-                <Select
-                  labelId="building-label"
-                  value={address.building ?? ""}
-                  name="building"
-                  label="Building"
-                  onChange={handlerBuilding}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                >
-                  {Object.keys(buildRooms).map((obj, index) => {
-                    return (
-                      <MenuItem key={index} value={obj}>
-                        {obj}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={2}>
-              <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
-                <InputLabel id="room-label">Room</InputLabel>
-                <Select
-                  labelId="room-label"
-                  name="room"
-                  value={address.room ?? ""}
-                  label="Room"
-                  onChange={handlerRoom}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                >
-                  {rooms.map((text, index) => {
-                    return (
-                      <MenuItem key={index} value={text}>
-                        {text}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-            {address?.room != "Laboratory" && (
-              <>
-                <Grid item xs={12} sm={6} md={4} lg={2}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ m: "2px", width: "95%" }}
-                    label="Row"
-                    type="number"
-                    onChange={handlerRow}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={2}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ m: "2px", width: "95%" }}
-                    label="Tray"
-                    type="number"
-                    onChange={handlerTray}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-              </>
-            )}
-            {address?.room == "Laboratory" && (
-                <><Grid item xs={12} sm={4} md={4} lg={2}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ m: "2px", width: "95%" }}
-                    label="Rack"
-                    type="number"
-                    onChange={handlerRack}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4} lg={2}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ mx: "2px", width: "95%" }}
-                    label="Shelf"
-                    type="number"
-                    onChange={handlerShelf}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                </>
-            )}
-          
-        </Grid>
-        </Stack>
-        
-      </AccordionDetails>
-      </Box>
-      <AccordionActions>
-        <Button variant="outlined" 
-          
+        <Box sx={{m:1}}>
+        <Typography variant="h5" mr={5}>
+          Filter
+        </Typography>
+        <Stack spacing={2} direction="row" justifyContent="center">
+        <Button
+          variant="outlined"
           onClick={() => {
-          dispatch(clearFilter())
-          setValues([])
-          setStartDate("")
-          }}>
+            setOpen(false);
+          }}
+        >
+          Ok
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            dispatch(clearFilter());
+            setValues([]);
+            setStartDate("");
+          }}
+        >
           Clear
         </Button>
-      </AccordionActions>
-    </Accordion>
+        </Stack>
+        <Stack
+          
+          spacing={{ xs: 1, sm: 2 }}
+          direction="row"
+          useFlexGap
+          flexWrap="wrap"
+          width="100%"
+        >
+          {values.map((value, index) => {
+            if (
+              typeof value === "object" &&
+              value !== null &&
+              value !== undefined &&
+              !Array.isArray(value)
+            ) {
+              return (
+                <Chip
+                  color="primary"
+                  size="small"
+                  key={index}
+                  label={
+                    Object.keys(value)[0] === "$gte"
+                      ? "After"
+                      : "Before" +
+                        " " +
+                        new Date(Object.values(value)[0]).toDateString()
+                  }
+                />
+              );
+            }
+            return (
+              <Chip color="primary" size="small" key={index} label={value} />
+            );
+          })}
+        </Stack>
+        <Box
+          sx={{
+            p: 2,
+            width: "100%",
+            height: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+        >
+          <Stack
+            direction="column"
+            sx={{ m: "1px" }}
+            spacing={1}
+            divider={<Divider orientation="horizontal" flexItem />}
+          >
+                <FormControl sx={{ m: "1px", width: "95%" }}>
+                  <InputLabel id="state-label">State</InputLabel>
+                  <Select
+                    onChange={handleChangeState}
+                    labelId="state-label"
+                    id="state"
+                    name="state"
+                    value={filter.state ?? ""}
+                    input={<OutlinedInput label="State" />}
+                  >
+                    {states.map((state, id) => {
+                      return (
+                        <MenuItem key={id} value={state}>
+                          {state}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+
+              {strains && (
+                  <FormControl sx={{ m: "1px", width: "95%" }}>
+                    <InputLabel id="strain-multiple-checkbox-label">
+                      Strain
+                    </InputLabel>
+                    <Select
+                      onChange={handleChangeStrain}
+                      labelId="strain-multiple-checkbox-label"
+                      id="strain-multiple-checkbox"
+                      name="strain"
+                      value={filter.strain ?? ""}
+                      input={<OutlinedInput label="Strain" />}
+                    >
+                      {strains.map((strain, id) => {
+                        return (
+                          <MenuItem key={id} value={strain}>
+                            {strain}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+
+              )}
+              {phenos.length > 0 && (
+
+                  <FormControl sx={{ width: "95%" }}>
+                    <InputLabel id="phenos-multiple-checkbox-label">
+                      Phenotype
+                    </InputLabel>
+                    <Select
+                      onChange={handleChangePheno}
+                      labelId="phenos-multiple-checkbox-label"
+                      id="phenos-multiple-checkbox"
+                      name="pheno"
+                      value={filter.pheno ?? ""}
+                      input={<OutlinedInput label="Phenotypes" />}
+                    >
+                      {phenos.map((pheno, id) => {
+                        return (
+                          <MenuItem key={id} value={pheno}>
+                            {pheno}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+
+              )}
+            <Box>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    sx={{ m: "1px" }}
+                    disableFuture
+                    closeOnSelect
+                    size="small"
+                    value={startDate}
+                    label="Start Date"
+                    onChange={handleChangeStart}
+                    slotProps={{
+                      layout: {
+                        sx: {
+                          ".MuiDateCalendar-root": {
+                            color: "#1565c0",
+                            borderRadius: 4,
+                            borderWidth: 1,
+                            borderColor: "#2196f3",
+                            border: "1px solid",
+                            backgroundColor: "#bbdefb",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+                <FormControl>
+                  <RadioGroup
+                    sx={{
+                      m: "1px",
+                    }}
+                    aria-labelledby="Equal start date"
+                    defaultValue={compare}
+                    row
+                    value={compare}
+                    name="radio-buttons-group"
+                    onChange={(e) => {
+                      setCompare(e.target.value);
+                      dispatch(addStartDate({ [e.target.value]: startDate }));
+                    }}
+                  >
+                    <FormControlLabel
+                      value="$gte"
+                      control={<Radio />}
+                      label="After"
+                    />
+                    <FormControlLabel
+                      value="$lte"
+                      control={<Radio />}
+                      label="Before"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                </Box>
+
+                <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
+                  <InputLabel id="building-label">Building</InputLabel>
+                  <Select
+                    labelId="building-label"
+                    value={address.building ?? ""}
+                    name="building"
+                    label="Building"
+                    onChange={handlerBuilding}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  >
+                    {Object.keys(buildRooms).map((obj, index) => {
+                      return (
+                        <MenuItem key={index} value={obj}>
+                          {obj}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
+                  <InputLabel id="room-label">Room</InputLabel>
+                  <Select
+                    labelId="room-label"
+                    name="room"
+                    value={address.room ?? ""}
+                    label="Room"
+                    onChange={handlerRoom}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  >
+                    {rooms.map((text, index) => {
+                      return (
+                        <MenuItem key={index} value={text}>
+                          {text}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              {address?.room != "Laboratory" && (
+                <>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ m: "2px", width: "95%" }}
+                      label="Row"
+                      type="number"
+                      onChange={handlerRow}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      id="outlined-number"
+                      sx={{ m: "2px", width: "95%" }}
+                      label="Tray"
+                      type="number"
+                      onChange={handlerTray}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      id="outlined-number"
+                      sx={{ mx: "2px", width: "95%" }}
+                      label="Number"
+                      type="number"
+                      onChange={handlerNumber}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                </>
+              )}
+              {address?.room == "Laboratory" && (
+                <>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ m: "2px", width: "95%" }}
+                      label="Rack"
+                      type="number"
+                      onChange={handlerRack}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      id="outlined-number"
+                      sx={{ mx: "2px", width: "95%" }}
+                      label="Shelf"
+                      type="number"
+                      onChange={handlerShelf}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      id="outlined-number"
+                      sx={{ mx: "2px", width: "95%" }}
+                      label="Number"
+                      type="number"
+                      onChange={handlerNumber}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                </>
+              )}
+
+          </Stack>
+        </Box>
+        </Box>
+      </Drawer>
+    </>
   );
 };
 

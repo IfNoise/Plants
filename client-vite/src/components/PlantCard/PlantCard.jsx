@@ -13,7 +13,7 @@ const PlantCard = ({ plant }) => {
     <Card className="plant-card">
       <CardContent>
       {plant?.pheno && (
-          <Typography variant="h5" color="text.secondary" >
+          <Typography variant={{md:"h5",lg:"h1"}} color="text.secondary" >
             {plant.pheno}
           </Typography>
         )}

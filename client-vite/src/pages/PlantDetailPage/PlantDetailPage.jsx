@@ -26,7 +26,7 @@ export const PlantDetailPage = () => {
     }
   }, [data]);
 
-  const {strain,pheno,gender,state,startDate,actions,cloneCounter,maxClones} = plant;
+  const {strain,pheno,gender,state,startDate,actions,cloneCounter,maxClones,} = plant;
   return (
     <Grid container>
       {isError && <Alert severity="error">{error.message}</Alert>}
@@ -52,6 +52,15 @@ export const PlantDetailPage = () => {
                 {pheno ?? "undefined"}
               </Typography>
               </Grid>
+              {/* <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
+              <Typography gutterBottom variant="h7" component="div">
+                {currentAddress?.bulding ?? "undefined"}
+                {currentAddress?.room ?? "undefined"}
+                {currentAddress?.row ?? "undefined"}
+                {currentAddress?.tray ?? "undefined"}
+                {currentAddress?.number ?? "undefined"}
+              </Typography>
+              </Grid> */}
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
               <Typography
                 gutterBottom
@@ -63,7 +72,7 @@ export const PlantDetailPage = () => {
               </Typography>
               </Grid>
               <Grid item xs={12} sx={{display:'flex',justifyContent:'left'}}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="h5" color="text.secondary">
                 State: {state ?? "undefined"}
               </Typography>
               </Grid>

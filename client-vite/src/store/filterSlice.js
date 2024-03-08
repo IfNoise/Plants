@@ -6,15 +6,27 @@ export const filterSlice=createSlice({
   initialState:{},
   reducers:{
     addState: (state,action)=>{
+      if(action.payload===null) {
+        delete state.state
+      }else
       state.state=action.payload
     },
     addStrain: (state,action)=>{
+      if(action.payload===null) {
+        delete state.strain
+      }else
       state.strain=action.payload
     },
     addPheno: (state,action)=>{
+      if(action.payload===null) {
+        delete state.pheno
+      }else 
       state.pheno=action.payload
     },
     addAddress:(state,action)=>{
+      if(action.payload===null) {
+        delete state.currentAddress
+      }else
        Object.keys(action.payload).forEach(key=>{
       
        state['currentAddress.'+key] = action.payload[key]
@@ -24,6 +36,10 @@ export const filterSlice=createSlice({
       state.gender=action.payload
     },
     addStartDate:(state,action)=>{
+      if(action.payload===null) {
+        delete state.startDate
+        return state
+      }else
       state.startDate=action.payload
     },
     clearFilter: ()=>{
