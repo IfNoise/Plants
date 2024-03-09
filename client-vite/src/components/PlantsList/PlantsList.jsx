@@ -98,6 +98,10 @@ export const PlantsList = (props) => {
     setSelectedPlants(getSelected());
   };
 
+  const selectAll = () => {
+    
+  }
+
   useEffect(() => {
     console.log(apiRef);
     if (Object.keys(apiRef.current).length === 0) {

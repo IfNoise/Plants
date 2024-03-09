@@ -35,6 +35,9 @@ export const filterSlice=createSlice({
     addGender:(state,action)=>{
       state.gender=action.payload
     },
+    addPotSize:(state,action)=>{
+      state.potSize=action.payload
+    },
     addStartDate:(state,action)=>{
       if(action.payload===null) {
         delete state.startDate
@@ -49,6 +52,6 @@ export const filterSlice=createSlice({
 })
 
 
-export const {addState,addStrain,addPheno,addAddress,addStartDate,addGender, clearFilter}=filterSlice.actions
+export const {addState,addStrain,addPheno,addAddress,addStartDate,addPotSize,addGender, clearFilter}=filterSlice.actions
 
 export default filterSlice.reducer

@@ -14,8 +14,10 @@ import {
   Box,
   Drawer,
   Fab,
+  useTheme,
 } from "@mui/material";
 import TuneIcon from '@mui/icons-material/Tune';
+import CancelIcon from '@mui/icons-material/Cancel';
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +26,7 @@ import {
   addStartDate,
   addState,
   addStrain,
+  addPotSize,
   addAddress,
   clearFilter,
 } from "../../store/filterSlice";
@@ -34,7 +37,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { buildRooms } from "../../config/config";
+import { buildRooms,pots } from "../../config/config";
+
 
 export const FilterBar = (props) => {
   const { getData } = props;
@@ -47,6 +51,7 @@ export const FilterBar = (props) => {
   const [startDate, setStartDate] = useState("");
   const [rooms, setRooms] = useState([]);
   const [open, setOpen] = useState(false);  
+  const theme=useTheme()
 
   const handlerBuilding = (e) => {
     const { value } = e.target;
@@ -109,6 +114,9 @@ export const FilterBar = (props) => {
   const handleChangeStrain = (event) => {
     dispatch(addStrain(event.target.value));
   };
+  const handleChangePotSize = (event) => {
+    dispatch(addPotSize(event.target.value));
+  };
 
   const handleChangePheno = (event) => {
     dispatch(addPheno(event.target.value));
@@ -148,7 +156,8 @@ export const FilterBar = (props) => {
         </Typography>
         <Stack spacing={2} direction="row" justifyContent="center">
         <Button
-          variant="outlined"
+          sx={{borderRadius:5,backgroundColor:theme.palette.primary.main}}
+          variant="filled"
           onClick={() => {
             setOpen(false);
           }}
@@ -156,7 +165,8 @@ export const FilterBar = (props) => {
           Ok
         </Button>
         <Button
-          variant="outlined"
+          variant="filled"
+          sx={{borderRadius:5,backgroundColor:theme.palette.primary.main}}
           onClick={() => {
             dispatch(clearFilter());
             setValues([]);
@@ -234,6 +244,9 @@ export const FilterBar = (props) => {
                       );
                     })}
                   </Select>
+                  <Button 
+                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.state?"block":"none"}}
+                  onClick={() => dispatch(addState(null))}><CancelIcon small /></Button>
                 </FormControl>
 
               {strains && (
@@ -257,6 +270,9 @@ export const FilterBar = (props) => {
                         );
                       })}
                     </Select>
+                    <Button 
+                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.strain?"block":"none"}}
+                  onClick={() => dispatch(addStrain(null))}><CancelIcon small /></Button>
                   </FormControl>
 
               )}
@@ -287,6 +303,7 @@ export const FilterBar = (props) => {
               )}
             <Box>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
+
                   <DatePicker
                     sx={{ m: "1px" }}
                     disableFuture
@@ -310,6 +327,7 @@ export const FilterBar = (props) => {
                       },
                     }}
                   />
+                  
                 </LocalizationProvider>
                 <FormControl>
                   <RadioGroup
@@ -337,9 +355,36 @@ export const FilterBar = (props) => {
                       label="Before"
                     />
                   </RadioGroup>
+                  <Button 
+                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.startDate?"block":"none"}}
+                  onClick={() => dispatch(addStartDate(null))}><CancelIcon small /></Button>
                 </FormControl>
                 </Box>
+                <FormControl component="span" variant="outlined" sx={{ m: "2px", width: "85%" }}>
+                  <InputLabel id="potsize-label">Pot Size</InputLabel>
+                  <Select
+                    labelId="potsize-label"
+                    value={filter.potSize ?? ""}
+                    label="Pot Size"
+                    onChange={handleChangePotSize}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  > 
+                    {pots.map((text, index) => {
+                      return (
+                        <MenuItem key={index} value={text}>
+                          {text}
+                        </MenuItem>
+                      );
+                    }
+                    )}
 
+                  </Select>
+                  <Button 
+                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.potSize?"block":"none"}}
+                  onClick={() => dispatch(addPotSize(null))}><CancelIcon small /></Button>
+                </FormControl>
                 <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
                   <InputLabel id="building-label">Building</InputLabel>
                   <Select
