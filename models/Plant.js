@@ -16,7 +16,7 @@ const plant = new Schema({
   //================
   motherPlant: { type: Types.ObjectId, ref: "Plant" },
   //================
-  potSize: Number,
+  potSize: String,
 
   //================
   currentAddress: {

@@ -360,7 +360,7 @@ export const FilterBar = (props) => {
                   onClick={() => dispatch(addStartDate(null))}><CancelIcon small /></Button>
                 </FormControl>
                 </Box>
-                <FormControl component="span" variant="outlined" sx={{ m: "2px", width: "85%" }}>
+                <FormControl component="span" variant="outlined" sx={{ m: "2px", width: "85%" ,position:"relative"}}>
                   <InputLabel id="potsize-label">Pot Size</InputLabel>
                   <Select
                     labelId="potsize-label"
@@ -382,7 +382,15 @@ export const FilterBar = (props) => {
 
                   </Select>
                   <Button 
-                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.potSize?"block":"none"}}
+                  sx={{
+                    width:"20px",
+                    height:"20px",
+                    position:"absolute",
+                    right:0,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    display:filter.potSize?"block":"none"
+                  }}
                   onClick={() => dispatch(addPotSize(null))}><CancelIcon small /></Button>
                 </FormControl>
                 <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
