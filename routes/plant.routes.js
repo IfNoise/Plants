@@ -6,6 +6,7 @@ const Action = require("../models/Action");
 const router = Router();
 const fs = require("fs");
 const Strain = require("../models/Strain");
+const { log } = require("console");
 
 router.post("/new_plant", async (req, res) => {
   const number = req.body.number;
@@ -133,7 +134,9 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         case "Picking": {
-          if (plant?.potSize&&plant.potSize === data.potSize) {
+          if (plant?.potSize && plant.potSize === data.potSize) {
+            console.log('same pot size')
+            
             action = null;
             break;
           }
@@ -141,7 +144,7 @@ router.post("/new_action", async (req, res) => {
             plant.set("state", "Growing");
           }
           action.potSize = data.potSize;
-          Plant.set("potSize", data.potSize);
+          plant.set("potSize", data.potSize);
           break;
         }
         case "Relocation": {
