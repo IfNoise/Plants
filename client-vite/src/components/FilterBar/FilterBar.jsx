@@ -133,7 +133,7 @@ export const FilterBar = (props) => {
     <>
       <Fab
         onClick={() => setOpen(!open)}
-        sx={{ position: "fixed", top: 75, right: 10 }}
+        sx={{ position: "fixed", top: 65, right: 10 }}
       >
         <TuneIcon />
       </Fab>
@@ -141,7 +141,7 @@ export const FilterBar = (props) => {
         open={open}
         anchor="right"
         sx={{
-          width: { xs: "100%", sm: "100%", md: "20%" },
+          width: { xs: "100vw", sm: "100vw", md: "20vw" },
           height: "100%",
           display: "flex",
           flexDirection: "column",
@@ -256,19 +256,19 @@ export const FilterBar = (props) => {
                   }}
                   onClick={() => dispatch(addState(null))}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
               </Stack>
               {strains && (
                 <Stack direction="row" spacing={1}>
                   <FormControl sx={{ m: "1px", width: "95%" }}>
-                    <InputLabel id="strain-multiple-checkbox-label">
+                    <InputLabel id="strain-checkbox-label">
                       Strain
                     </InputLabel>
                     <Select
                       onChange={handleChangeStrain}
-                      labelId="strain-multiple-checkbox-label"
-                      id="strain-multiple-checkbox"
+                      labelId="strain-checkbox-label"
+                      id="strain-checkbox"
                       name="strain"
                       value={filter.strain ?? ""}
                       input={<OutlinedInput label="Strain" />}
@@ -288,7 +288,7 @@ export const FilterBar = (props) => {
                     }}
                     onClick={() => dispatch(addStrain(null))}
                   >
-                    <CancelIcon small />
+                    <CancelIcon fontSize="small" />
                   </Button>
                 </Stack>
               )}
@@ -320,7 +320,7 @@ export const FilterBar = (props) => {
                     onClick={() => dispatch(addPheno(null))}
                   >
                     {" "}
-                    <CancelIcon small />{" "}
+                    <CancelIcon fontSize="small"/>{" "}
                   </Button>
                 </Stack>
               )}
@@ -384,7 +384,7 @@ export const FilterBar = (props) => {
                     }}
                     onClick={() => dispatch(addStartDate(null))}
                   >
-                    <CancelIcon small />
+                    <CancelIcon fontSize="small" />
                   </Button>
                 </Stack>
               </Box>
@@ -399,9 +399,6 @@ export const FilterBar = (props) => {
                     value={filter.potSize ?? ""}
                     label="Pot Size"
                     onChange={handleChangePotSize}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   >
                     {pots.map((text, index) => {
                       return (
@@ -418,7 +415,7 @@ export const FilterBar = (props) => {
                   }}
                   onClick={() => dispatch(addPotSize(null))}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
               </Stack>
               <Stack direction="row" spacing={1}>
@@ -430,9 +427,6 @@ export const FilterBar = (props) => {
                     name="building"
                     label="Building"
                     onChange={handlerBuilding}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   >
                     {Object.keys(buildRooms).map((obj, index) => {
                       return (
@@ -455,7 +449,7 @@ export const FilterBar = (props) => {
 
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
               </Stack>
               <Stack direction="row" spacing={1}>
@@ -467,9 +461,7 @@ export const FilterBar = (props) => {
                   value={address.room ?? ""}
                   label="Room"
                   onChange={handlerRoom}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
+
                 >
                   {rooms.map((text, index) => {
                     return (
@@ -489,7 +481,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
               </Stack>
               {address?.room != "Laboratory" && (
@@ -502,9 +494,6 @@ export const FilterBar = (props) => {
                     value={address?.row ?? 0}
                     type="number"
                     onChange={handlerRow}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                   <Button
                   sx={{ display: address?.row ? "block" : "none" }}
@@ -515,7 +504,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
                 </Stack>
                 <Stack direction="row" spacing={1}>
@@ -526,9 +515,6 @@ export const FilterBar = (props) => {
                     type="number"
                     value={address?.tray ?? 0}
                     onChange={handlerTray}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                 <Button
                   sx={{ display: address?.tray ? "block" : "none" }}
@@ -539,7 +525,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
                 </Stack>
                 <Stack direction="row" spacing={1}>
@@ -550,9 +536,6 @@ export const FilterBar = (props) => {
                     type="number"
                     value={address?.number ?? 0}
                     onChange={handlerNumber}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                                     <Button
                   sx={{ display: address?.number ? "block" : "none" }}
@@ -563,7 +546,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
                 </Stack>
                 </>
@@ -578,9 +561,6 @@ export const FilterBar = (props) => {
                     type="number"
                     value={address?.rack ?? 0}
                     onChange={handlerRack}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                                     <Button
                   sx={{ display: address?.rack ? "block" : "none" }}
@@ -591,7 +571,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
                 </Stack>
                 <Stack direction="row" spacing={1}>
@@ -602,9 +582,6 @@ export const FilterBar = (props) => {
                     type="number"
                     value={address?.shelf ?? 0}
                     onChange={handlerShelf}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                                     <Button
                   sx={{ display: address?.shelf ? "block" : "none" }}
@@ -615,7 +592,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
                 </Stack>
                 <Stack direction="row" spacing={1}>
@@ -626,9 +603,6 @@ export const FilterBar = (props) => {
                     type="number"
                     value={address?.number ?? 0}
                     onChange={handlerNumber}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                   />
                    <Button
                   sx={{ display: address?.number ? "block" : "none" }}
@@ -639,7 +613,7 @@ export const FilterBar = (props) => {
                     dispatch(addAddress(tmp))
                   }}
                 >
-                  <CancelIcon small />
+                  <CancelIcon fontSize="small" />
                 </Button>
                 </Stack>
                 </>
