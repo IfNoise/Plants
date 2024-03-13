@@ -16,8 +16,8 @@ import {
   Fab,
   useTheme,
 } from "@mui/material";
-import TuneIcon from '@mui/icons-material/Tune';
-import CancelIcon from '@mui/icons-material/Cancel';
+import TuneIcon from "@mui/icons-material/Tune";
+import CancelIcon from "@mui/icons-material/Cancel";
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -37,8 +37,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { buildRooms,pots } from "../../config/config";
-
+import { buildRooms, pots } from "../../config/config";
 
 export const FilterBar = (props) => {
   const { getData } = props;
@@ -50,14 +49,13 @@ export const FilterBar = (props) => {
   const [compare, setCompare] = useState("$gte");
   const [startDate, setStartDate] = useState("");
   const [rooms, setRooms] = useState([]);
-  const [open, setOpen] = useState(false);  
-  const theme=useTheme()
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
 
   const handlerBuilding = (e) => {
     const { value } = e.target;
     setAddress({ ...address, building: value });
     dispatch(addAddress({ ...address, building: value }));
-
     setRooms(buildRooms[value]);
   };
 
@@ -88,7 +86,7 @@ export const FilterBar = (props) => {
   const handlerNumber = (e) => {
     const { value } = e.target;
     setAddress({ ...address, number: Number.parseInt(value) });
-    dispatch(addAddress({...address,number:Number.parseInt(value)}));
+    dispatch(addAddress({ ...address, number: Number.parseInt(value) }));
   };
 
   const handlerShelf = (e) => {
@@ -135,97 +133,104 @@ export const FilterBar = (props) => {
     <>
       <Fab
         onClick={() => setOpen(!open)}
-        sx={{position:"fixed",top:75,right:10}}
-        ><TuneIcon/>
-        </Fab>
+        sx={{ position: "fixed", top: 75, right: 10 }}
+      >
+        <TuneIcon />
+      </Fab>
       <Drawer
         open={open}
         anchor="right"
         sx={{
-          width: {xs:"100%" ,sm:"100%",md: "20%"},
+          width: { xs: "100%", sm: "100%", md: "20%" },
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          m:2,
-          p:2,
+          m: 2,
+          p: 2,
         }}
       >
-        <Box sx={{m:1}}>
-        <Typography variant="h5" mr={5}>
-          Filter
-        </Typography>
-        <Stack spacing={2} direction="row" justifyContent="center">
-        <Button
-          sx={{borderRadius:5,backgroundColor:theme.palette.primary.main}}
-          variant="filled"
-          onClick={() => {
-            setOpen(false);
-          }}
-        >
-          Ok
-        </Button>
-        <Button
-          variant="filled"
-          sx={{borderRadius:5,backgroundColor:theme.palette.primary.main}}
-          onClick={() => {
-            dispatch(clearFilter());
-            setValues([]);
-            setStartDate("");
-          }}
-        >
-          Clear
-        </Button>
-        </Stack>
-        <Stack
-          
-          spacing={{ xs: 1, sm: 2 }}
-          direction="row"
-          useFlexGap
-          flexWrap="wrap"
-          width="100%"
-        >
-          {values.map((value, index) => {
-            if (
-              typeof value === "object" &&
-              value !== null &&
-              value !== undefined &&
-              !Array.isArray(value)
-            ) {
-              return (
-                <Chip
-                  color="primary"
-                  size="small"
-                  key={index}
-                  label={
-                    Object.keys(value)[0] === "$gte"
-                      ? "After"
-                      : "Before" +
-                        " " +
-                        new Date(Object.values(value)[0]).toDateString()
-                  }
-                />
-              );
-            }
-            return (
-              <Chip color="primary" size="small" key={index} label={value} />
-            );
-          })}
-        </Stack>
-        <Box
-          sx={{
-            p: 2,
-            width: "100%",
-            height: "100%",
-            overflowY: "auto",
-            overflowX: "hidden",
-          }}
-        >
+        <Box sx={{ m: 1 }}>
+          <Typography variant="h5" mr={5}>
+            Filter
+          </Typography>
+          <Stack spacing={2} direction="row" justifyContent="center">
+            <Button
+              sx={{
+                borderRadius: 5,
+                backgroundColor: theme.palette.primary.main,
+              }}
+              variant="filled"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              Ok
+            </Button>
+            <Button
+              variant="filled"
+              sx={{
+                borderRadius: 5,
+                backgroundColor: theme.palette.primary.main,
+              }}
+              onClick={() => {
+                dispatch(clearFilter());
+                setValues([]);
+                setStartDate("");
+              }}
+            >
+              Clear
+            </Button>
+          </Stack>
           <Stack
-            direction="column"
-            sx={{ m: "1px" }}
-            spacing={1}
-            divider={<Divider orientation="horizontal" flexItem />}
+            spacing={{ xs: 1, sm: 2 }}
+            direction="row"
+            useFlexGap
+            flexWrap="wrap"
+            width="100%"
           >
+            {values.map((value, index) => {
+              if (
+                typeof value === "object" &&
+                value !== null &&
+                value !== undefined &&
+                !Array.isArray(value)
+              ) {
+                return (
+                  <Chip
+                    color="primary"
+                    size="small"
+                    key={index}
+                    label={
+                      Object.keys(value)[0] === "$gte"
+                        ? "After"
+                        : "Before" +
+                          " " +
+                          new Date(Object.values(value)[0]).toDateString()
+                    }
+                  />
+                );
+              }
+              return (
+                <Chip color="primary" size="small" key={index} label={value} />
+              );
+            })}
+          </Stack>
+          <Box
+            sx={{
+              p: 2,
+              width: "100%",
+              height: "100%",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+          >
+            <Stack
+              direction="column"
+              sx={{ m: "1px" }}
+              spacing={1}
+              divider={<Divider orientation="horizontal" flexItem />}
+            >
+              <Stack direction="row" spacing={1}>
                 <FormControl sx={{ m: "1px", width: "95%" }}>
                   <InputLabel id="state-label">State</InputLabel>
                   <Select
@@ -244,12 +249,18 @@ export const FilterBar = (props) => {
                       );
                     })}
                   </Select>
-                  <Button 
-                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.state?"block":"none"}}
-                  onClick={() => dispatch(addState(null))}><CancelIcon small /></Button>
                 </FormControl>
-
+                <Button
+                  sx={{
+                    display: filter.state ? "block" : "none",
+                  }}
+                  onClick={() => dispatch(addState(null))}
+                >
+                  <CancelIcon small />
+                </Button>
+              </Stack>
               {strains && (
+                <Stack direction="row" spacing={1}>
                   <FormControl sx={{ m: "1px", width: "95%" }}>
                     <InputLabel id="strain-multiple-checkbox-label">
                       Strain
@@ -270,14 +281,19 @@ export const FilterBar = (props) => {
                         );
                       })}
                     </Select>
-                    <Button 
-                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.strain?"block":"none"}}
-                  onClick={() => dispatch(addStrain(null))}><CancelIcon small /></Button>
                   </FormControl>
-
+                  <Button
+                    sx={{
+                      display: filter.strain ? "block" : "none",
+                    }}
+                    onClick={() => dispatch(addStrain(null))}
+                  >
+                    <CancelIcon small />
+                  </Button>
+                </Stack>
               )}
               {phenos.length > 0 && (
-
+                <Stack direction="row" spacing={1}>
                   <FormControl sx={{ width: "95%" }}>
                     <InputLabel id="phenos-multiple-checkbox-label">
                       Phenotype
@@ -299,68 +315,84 @@ export const FilterBar = (props) => {
                       })}
                     </Select>
                   </FormControl>
-
+                  <Button
+                    sx={{ display: filter.pheno ? "block" : "none" }}
+                    onClick={() => dispatch(addPheno(null))}
+                  >
+                    {" "}
+                    <CancelIcon small />{" "}
+                  </Button>
+                </Stack>
               )}
-            <Box>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-
-                  <DatePicker
-                    sx={{ m: "1px" }}
-                    disableFuture
-                    closeOnSelect
-                    size="small"
-                    value={startDate}
-                    label="Start Date"
-                    onChange={handleChangeStart}
-                    slotProps={{
-                      layout: {
-                        sx: {
-                          ".MuiDateCalendar-root": {
-                            color: "#1565c0",
-                            borderRadius: 4,
-                            borderWidth: 1,
-                            borderColor: "#2196f3",
-                            border: "1px solid",
-                            backgroundColor: "#bbdefb",
+              <Box>
+                <Stack direction="row" spacing={1}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      sx={{ m: "1px" }}
+                      disableFuture
+                      closeOnSelect
+                      size="small"
+                      value={startDate}
+                      label="Start Date"
+                      onChange={handleChangeStart}
+                      slotProps={{
+                        layout: {
+                          sx: {
+                            ".MuiDateCalendar-root": {
+                              color: "#1565c0",
+                              borderRadius: 4,
+                              borderWidth: 1,
+                              borderColor: "#2196f3",
+                              border: "1px solid",
+                              backgroundColor: "#bbdefb",
+                            },
                           },
                         },
-                      },
-                    }}
-                  />
-                  
-                </LocalizationProvider>
-                <FormControl>
-                  <RadioGroup
+                      }}
+                    />
+                  </LocalizationProvider>
+                  <FormControl>
+                    <RadioGroup
+                      sx={{
+                        m: "1px",
+                      }}
+                      aria-labelledby="Equal start date"
+                      defaultValue={compare}
+                      row
+                      value={compare}
+                      name="radio-buttons-group"
+                      onChange={(e) => {
+                        setCompare(e.target.value);
+                        dispatch(addStartDate({ [e.target.value]: startDate }));
+                      }}
+                    >
+                      <FormControlLabel
+                        value="$gte"
+                        control={<Radio />}
+                        label="After"
+                      />
+                      <FormControlLabel
+                        value="$lte"
+                        control={<Radio />}
+                        label="Before"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  <Button
                     sx={{
-                      m: "1px",
+                      display: filter.startDate ? "block" : "none",
                     }}
-                    aria-labelledby="Equal start date"
-                    defaultValue={compare}
-                    row
-                    value={compare}
-                    name="radio-buttons-group"
-                    onChange={(e) => {
-                      setCompare(e.target.value);
-                      dispatch(addStartDate({ [e.target.value]: startDate }));
-                    }}
+                    onClick={() => dispatch(addStartDate(null))}
                   >
-                    <FormControlLabel
-                      value="$gte"
-                      control={<Radio />}
-                      label="After"
-                    />
-                    <FormControlLabel
-                      value="$lte"
-                      control={<Radio />}
-                      label="Before"
-                    />
-                  </RadioGroup>
-                  <Button 
-                  sx={{width:"20px",heigth:"20px",position:"absolute" ,right:0,display:filter.startDate?"block":"none"}}
-                  onClick={() => dispatch(addStartDate(null))}><CancelIcon small /></Button>
-                </FormControl>
-                </Box>
-                <FormControl component="span" variant="outlined" sx={{ m: "2px", width: "85%" ,position:"relative"}}>
+                    <CancelIcon small />
+                  </Button>
+                </Stack>
+              </Box>
+              <Stack direction="row" spacing={1}>
+                <FormControl
+                  variant="outlined"
+                  sx={{ m: "2px", width: "90%" }}
+                >
                   <InputLabel id="potsize-label">Pot Size</InputLabel>
                   <Select
                     labelId="potsize-label"
@@ -370,29 +402,26 @@ export const FilterBar = (props) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                  > 
+                  >
                     {pots.map((text, index) => {
                       return (
                         <MenuItem key={index} value={text}>
                           {text}
                         </MenuItem>
                       );
-                    }
-                    )}
-
+                    })}
                   </Select>
-                  <Button 
-                  sx={{
-                    width:"20px",
-                    height:"20px",
-                    position:"absolute",
-                    right:0,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    display:filter.potSize?"block":"none"
-                  }}
-                  onClick={() => dispatch(addPotSize(null))}><CancelIcon small /></Button>
                 </FormControl>
+                <Button
+                  sx={{
+                    display: filter.potSize ? "block" : "none",
+                  }}
+                  onClick={() => dispatch(addPotSize(null))}
+                >
+                  <CancelIcon small />
+                </Button>
+              </Stack>
+              <Stack direction="row" spacing={1}>
                 <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
                   <InputLabel id="building-label">Building</InputLabel>
                   <Select
@@ -414,98 +443,110 @@ export const FilterBar = (props) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
-                  <InputLabel id="room-label">Room</InputLabel>
-                  <Select
-                    labelId="room-label"
-                    name="room"
-                    value={address.room ?? ""}
-                    label="Room"
-                    onChange={handlerRoom}
+                <Button
+                  sx={{ display: address?.building ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.building;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                    setRooms([]);
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+              </Stack>
+              <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
+                <InputLabel id="room-label">Room</InputLabel>
+                <Select
+                  labelId="room-label"
+                  name="room"
+                  value={address.room ?? ""}
+                  label="Room"
+                  onChange={handlerRoom}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                >
+                  {rooms.map((text, index) => {
+                    return (
+                      <MenuItem key={index} value={text}>
+                        {text}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              {address?.room != "Laboratory" && (
+                <>
+                  <TextField
+                    id="outlined-number"
+                    sx={{ m: "2px", width: "95%" }}
+                    label="Row"
+                    type="number"
+                    onChange={handlerRow}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                  >
-                    {rooms.map((text, index) => {
-                      return (
-                        <MenuItem key={index} value={text}>
-                          {text}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              {address?.room != "Laboratory" && (
-                <>
-                    <TextField
-                      id="outlined-number"
-                      sx={{ m: "2px", width: "95%" }}
-                      label="Row"
-                      type="number"
-                      onChange={handlerRow}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                    <TextField
-                      id="outlined-number"
-                      sx={{ m: "2px", width: "95%" }}
-                      label="Tray"
-                      type="number"
-                      onChange={handlerTray}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                    <TextField
-                      id="outlined-number"
-                      sx={{ mx: "2px", width: "95%" }}
-                      label="Number"
-                      type="number"
-                      onChange={handlerNumber}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
+                  />
+                  <TextField
+                    id="outlined-number"
+                    sx={{ m: "2px", width: "95%" }}
+                    label="Tray"
+                    type="number"
+                    onChange={handlerTray}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <TextField
+                    id="outlined-number"
+                    sx={{ mx: "2px", width: "95%" }}
+                    label="Number"
+                    type="number"
+                    onChange={handlerNumber}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
                 </>
               )}
               {address?.room == "Laboratory" && (
                 <>
-                    <TextField
-                      id="outlined-number"
-                      sx={{ m: "2px", width: "95%" }}
-                      label="Rack"
-                      type="number"
-                      onChange={handlerRack}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                    <TextField
-                      id="outlined-number"
-                      sx={{ mx: "2px", width: "95%" }}
-                      label="Shelf"
-                      type="number"
-                      onChange={handlerShelf}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                    <TextField
-                      id="outlined-number"
-                      sx={{ mx: "2px", width: "95%" }}
-                      label="Number"
-                      type="number"
-                      onChange={handlerNumber}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
+                  <TextField
+                    id="outlined-number"
+                    sx={{ m: "2px", width: "95%" }}
+                    label="Rack"
+                    type="number"
+                    onChange={handlerRack}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <TextField
+                    id="outlined-number"
+                    sx={{ mx: "2px", width: "95%" }}
+                    label="Shelf"
+                    type="number"
+                    onChange={handlerShelf}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <TextField
+                    id="outlined-number"
+                    sx={{ mx: "2px", width: "95%" }}
+                    label="Number"
+                    type="number"
+                    onChange={handlerNumber}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
                 </>
               )}
-
-          </Stack>
-        </Box>
+            </Stack>
+          </Box>
         </Box>
       </Drawer>
     </>

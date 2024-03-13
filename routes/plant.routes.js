@@ -133,7 +133,7 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         case "Picking": {
-          if (plant?.potSize === data.potSize) {
+          if (plant?.potSize&&plant.potSize === data.potSize) {
             action = null;
             break;
           }
