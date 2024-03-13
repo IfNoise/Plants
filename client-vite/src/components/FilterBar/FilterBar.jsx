@@ -54,26 +54,26 @@ export const FilterBar = (props) => {
 
   const handlerBuilding = (e) => {
     const { value } = e.target;
-    setAddress({ ...address, building: value });
+    setAddress((prev)=>{return { ...prev, building: value }});
     dispatch(addAddress({ ...address, building: value }));
-    setRooms(buildRooms[value]);
+    setRooms(()=>[...buildRooms[value]]);
   };
 
   const handlerRoom = (e) => {
     const { value } = e.target;
-    setAddress({ ...address, room: value });
+    setAddress((prev)=>({ ...prev, room: value }));
     dispatch(addAddress({ ...address, room: value }));
   };
 
   const handlerRow = (e) => {
     const { value } = e.target;
-    setAddress({ ...address, row: Number.parseInt(value) });
+    setAddress((prev)=>({ ...prev, row: Number.parseInt(value) }));
     dispatch(addAddress({ ...address, row: Number.parseInt(value) }));
   };
 
   const handlerRack = (e) => {
     const { value } = e.target;
-    setAddress({ ...address, rack: Number.parseInt(value) });
+    setAddress((prev)=>({ ...prev, rack: Number.parseInt(value) }));
     dispatch(addAddress({ ...address, rack: Number.parseInt(value) }));
   };
 
@@ -426,7 +426,7 @@ export const FilterBar = (props) => {
                   <InputLabel id="building-label">Building</InputLabel>
                   <Select
                     labelId="building-label"
-                    value={address.building ?? ""}
+                    value={address?.building ?? ""}
                     name="building"
                     label="Building"
                     onChange={handlerBuilding}
@@ -448,14 +448,17 @@ export const FilterBar = (props) => {
                   onClick={() => {
                     const tmp = { ...address };
                     delete tmp.building;
+                    if(tmp.room) delete tmp.room;
                     setAddress({ ...tmp });   
                     dispatch(addAddress(tmp))
                     setRooms([]);
+
                   }}
                 >
                   <CancelIcon small />
                 </Button>
               </Stack>
+              <Stack direction="row" spacing={1}>
               <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
                 <InputLabel id="room-label">Room</InputLabel>
                 <Select
@@ -477,72 +480,168 @@ export const FilterBar = (props) => {
                   })}
                 </Select>
               </FormControl>
+              <Button
+                  sx={{ display: address?.room ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.room;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+              </Stack>
               {address?.room != "Laboratory" && (
                 <>
+                <Stack direction="row" spacing={1}>
                   <TextField
                     id="outlined-number"
                     sx={{ m: "2px", width: "95%" }}
                     label="Row"
+                    value={address?.row ?? 0}
                     type="number"
                     onChange={handlerRow}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
+                  <Button
+                  sx={{ display: address?.row ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.row;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+                </Stack>
+                <Stack direction="row" spacing={1}>
                   <TextField
                     id="outlined-number"
                     sx={{ m: "2px", width: "95%" }}
                     label="Tray"
                     type="number"
+                    value={address?.tray ?? 0}
                     onChange={handlerTray}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
+                <Button
+                  sx={{ display: address?.tray ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.tray;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+                </Stack>
+                <Stack direction="row" spacing={1}>
                   <TextField
                     id="outlined-number"
                     sx={{ mx: "2px", width: "95%" }}
                     label="Number"
                     type="number"
+                    value={address?.number ?? 0}
                     onChange={handlerNumber}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
+                                    <Button
+                  sx={{ display: address?.number ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.number;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+                </Stack>
                 </>
               )}
               {address?.room == "Laboratory" && (
                 <>
+                <Stack direction="row" spacing={1}>
                   <TextField
                     id="outlined-number"
                     sx={{ m: "2px", width: "95%" }}
                     label="Rack"
                     type="number"
+                    value={address?.rack ?? 0}
                     onChange={handlerRack}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
+                                    <Button
+                  sx={{ display: address?.rack ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.rack;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+                </Stack>
+                <Stack direction="row" spacing={1}>
                   <TextField
                     id="outlined-number"
                     sx={{ mx: "2px", width: "95%" }}
                     label="Shelf"
                     type="number"
+                    value={address?.shelf ?? 0}
                     onChange={handlerShelf}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
+                                    <Button
+                  sx={{ display: address?.shelf ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.shelf;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+                </Stack>
+                <Stack direction="row" spacing={1}>
                   <TextField
                     id="outlined-number"
                     sx={{ mx: "2px", width: "95%" }}
                     label="Number"
                     type="number"
+                    value={address?.number ?? 0}
                     onChange={handlerNumber}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
+                   <Button
+                  sx={{ display: address?.number ? "block" : "none" }}
+                  onClick={() => {
+                    const tmp = { ...address };
+                    delete tmp.number;
+                    setAddress({ ...tmp });   
+                    dispatch(addAddress(tmp))
+                  }}
+                >
+                  <CancelIcon small />
+                </Button>
+                </Stack>
                 </>
               )}
             </Stack>

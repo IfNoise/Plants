@@ -2,9 +2,12 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   Box,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
   List,
   Pagination,
+  Stack,
   useMediaQuery,
 } from "@mui/material";
 import { useCallback } from "react";
@@ -69,11 +72,17 @@ export const PlantsList = (props) => {
   const isLarge = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const apiRef = useGridApiRef(null);
   const [apiIsLoaded, setApiIsLoaded] = useState(false);
+  const [allSelected, setAllSelected] = useState(false);
   const [sel, setSel] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedPlants, setSelectedPlants] = useState([]);
   const plantDetails = (id) => {
     navigate(`/plant/${id}`);
+  };
+  const selectAll = () => {
+    const ids = plants.map((plant) => plant._id);
+    setAllSelected(true);
+    setSelectedPlants(()=>[...ids]);
   };
 
   const getSelected = useCallback(() => {
@@ -98,10 +107,6 @@ export const PlantsList = (props) => {
     setSelectedPlants(getSelected());
   };
 
-  const selectAll = () => {
-    
-  }
-
   useEffect(() => {
     console.log(apiRef);
     if (Object.keys(apiRef.current).length === 0) {
@@ -120,14 +125,14 @@ export const PlantsList = (props) => {
   }, [apiRef]);
   const plantsPerPage = 100;
   return (
-    <Box sx={{ display: "flow",height:"100%" }}>
+    <Box sx={{ display: "flow", height: "100%", width: "98vw",position:'relative',ml:0,pl:0  }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
-        <Box sx={{ height:{md: "60vh",lg:"78vh"}, width: "100%" }}>
+        <Box sx={{ height: { md: "60vh", lg: "78vh" },}}>
           <DataGrid
             getRowId={getRowId}
             checkboxSelection
-            maxHeight="100%"//{{md:"70%",lg:"80%"}}
+            maxHeight="100%" //{{md:"70%",lg:"80%"}}
             disableRowSelectionOnClick
             rows={plants?.map((plant) => {
               return {
@@ -155,23 +160,43 @@ export const PlantsList = (props) => {
       )}
       {plants?.length > 0 && isSmall && (
         <>
-          <Pagination
-            count={Math.floor(plants.length / plantsPerPage) + 1}
-            page={page}
-            sx={{ top: 180, position: "revert",m:1 }}
-            onChange={(e,value) => {
-              setPage(value);
-            }}
-          /> 
+          <Stack direction="row" spacing={2}>
+            <Pagination
+              count={Math.floor(plants.length / plantsPerPage) + 1}
+              page={page}
+              sx={{ top: 180, position: "revert", m: 1 }}
+              onChange={(e, value) => {
+                setPage(value);
+              }}
+            />
+            <FormControlLabel
+              label="Select All"
+              labelPlacement="start"
+              control={
+                <Checkbox
+                  checked={allSelected}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    if (checked) {
+                      selectAll();
+                    } else {
+                      setSelectedPlants(() => []);
+                      setAllSelected(false);
+                    }
+                  }}
+                />
+              }
+            />
+          </Stack>
           <List
             sx={{
-              width: "98%",
+              //width: "100%",
               bgcolor: "background.paper",
-              position: "relative",
+              //position: "relative",
               overflow: "auto",
               ml: 0,
-              maxHeight:"70vh",
-              "& ul": { padding: 0 },
+              mr: 0,
+              maxHeight: "70vh",
             }}
           >
             {paginate(plants, plantsPerPage, page).map((obj) => {
@@ -179,7 +204,7 @@ export const PlantsList = (props) => {
                 <PlantListItem
                   key={obj._id}
                   plant={obj}
-                  checked={selectedPlants.indexOf(obj) !== -1}
+                  checked={selectedPlants.indexOf(obj) !== -1||allSelected}
                   onClick={plantDetails}
                   onChange={(plant) => {
                     setSelectedPlants((prev) => {
@@ -194,7 +219,7 @@ export const PlantsList = (props) => {
             })}
           </List>
           {selectedPlants.length > 0 && (
-            <PlantSpeedDial getPlants={() => (selectedPlants)} {...props} />
+            <PlantSpeedDial getPlants={() => selectedPlants} {...props} />
           )}
         </>
       )}

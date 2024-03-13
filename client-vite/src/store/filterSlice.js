@@ -31,25 +31,30 @@ export const filterSlice = createSlice({
       ];
       keys.forEach((key) => {
         if (
-          state.includes("currentAddress." + key) &&
-          !action.payload.includes(key)
+          Object.keys(state).includes("currentAddress." + key) &&
+          !Object.keys(action.payload).includes(key)
         ) {
           delete state["currentAddress." + key];
-        }else if(action.payload.includes(key)) {
+        }else if(Object.keys(action.payload).includes(key)) {
           state["currentAddress." + key] = action.payload[key];
         }
       });
     },
     addGender: (state, action) => {
+      if (action.payload === null) {
+        delete state.gender;
+      } else
       state.gender = action.payload;
     },
     addPotSize: (state, action) => {
+      if (action.payload === null) {
+        delete state.potSize;
+      } else
       state.potSize = action.payload;
     },
     addStartDate: (state, action) => {
       if (action.payload === null) {
         delete state.startDate;
-        return state;
       } else state.startDate = action.payload;
     },
     clearFilter: () => {
