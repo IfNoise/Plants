@@ -16,6 +16,31 @@ import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { useMediaQuery } from "@mui/material";
 import { useGetPlantsQuery } from "../../store/plantsApi";
 
+var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+
+//All arguments are optional:
+
+//duration of the tone in milliseconds. Default is 500
+//frequency of the tone in hertz. default is 440
+//volume of the tone. Default is 1, off is 0.
+//type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
+//callback to use on end of tone
+function beep(duration, frequency, volume, type, callback) {
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    if (volume){gainNode.gain.value = volume;}
+    if (frequency){oscillator.frequency.value = frequency;}
+    if (type){oscillator.type = type;}
+    if (callback){oscillator.onended = callback;}
+    
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+}
+
 export default function Scanner() {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null);//
@@ -30,6 +55,7 @@ export default function Scanner() {
   const addToTrayHandler = () => {
     console.log(scanResult);
     addToTray([scanResult]);
+    beep(120, 60, 0.4, "square")
     handlerNext();
   };
 
@@ -55,8 +81,10 @@ export default function Scanner() {
       setScanResult(data);
       store.add(result.data);
       console.log(store);
-    }
-  }
+      beep(100, 580, 0.7, "sine", () => {
+        console.log("beep");
+      });
+    }}
   const initScanner=()=> {
     
     if (Object.keys(video.current).length !== 0) {
