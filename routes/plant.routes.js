@@ -1,12 +1,8 @@
 const { Router } = require("express");
 const Plant = require("../models/Plant");
-const Action = require("../models/Action");
-//const User = require("../models/User");
-//const auth = require("../middlewares/auth.middleware");
+
 const router = Router();
-const fs = require("fs");
 const Strain = require("../models/Strain");
-const { log } = require("console");
 
 router.post("/new_plant", async (req, res) => {
   const number = req.body.number;

@@ -44,6 +44,7 @@ import { PickingFields } from "./PickingFields";
 import { AddressFields } from "./AddressFields";
 import { useState,useEffect } from "react";
 import { addType,clear } from "../../store/newActionSlice";
+import { PrinterContext } from "../../context/PrinterContext";
 
 const states = {
   Germination :{
@@ -154,7 +155,7 @@ export default function PlantSpeedDial(props) {
   const [printPlants] = usePrintPlantsMutation();
   const [clearTray]=useClearTrayMutation()
   const [printTray]=usePrintTrayMutation()
-
+ const {setPrintDialog} = useContext(PrinterContext);
   //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
   const {getPlants}=props
@@ -242,7 +243,9 @@ export default function PlantSpeedDial(props) {
                 return
               }
               const id=getPlants().map((plant)=>plant._id)
-              printPlants(id);
+              setPrintDialog({ 
+                onChange:(printer)=>{printPlants({printer,id})},
+                 open: true });
             }}
           />
         )}
@@ -267,7 +270,9 @@ export default function PlantSpeedDial(props) {
             icon={<PrintIcon />}
             tooltipTitle="Print tray items"
             onClick={() => {
-              printTray();  
+              setPrintDialog({ 
+                onChange:(printer)=>{printTray({printer})},
+                 open: true }); 
             }}
           />
         )}

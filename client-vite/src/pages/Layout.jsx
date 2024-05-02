@@ -24,6 +24,7 @@ import { useAuth } from "../hooks/auth.hook";
 import { TrayButton } from "../components/TrayButton/TrayButton";
 import { InputBase, Paper, useMediaQuery } from "@mui/material";
 import Scanner from "../components/Scanner/Scanner";
+import PrintDialog from "../components/PrintDialog";
 
 function PrivateOutlet() {
   const { isAuth } = useAuth();
@@ -211,6 +212,7 @@ React.useEffect(()=>{
         <DrawerHeader />
         <PrivateOutlet />
         <SnackBar />
+        <PrintDialog/>
       </Main>
     </Box>
   );

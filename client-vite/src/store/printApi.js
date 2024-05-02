@@ -7,15 +7,24 @@ export const printApi = createApi({
     baseUrl: printerUrl
   }),
   endpoints: (build) => ({
-    printTray: build.mutation({
+    getPrinters: build.query({
       query() {
         return {
-          url: `/print_tray`,
-          method: "POST",
+          url: `/printers`,
+          method: "GET",
         };
       }
     }),
-    
+    printTray: build.mutation({
+      query(body) {
+        return {
+          url: `/print_tray`,
+          method: "POST",
+          body
+        };
+      }
+    }),
+  
     printPlants: build.mutation({
       query(body) {
         return {
@@ -28,4 +37,4 @@ export const printApi = createApi({
   }),
 });
 
-export const { usePrintTrayMutation,usePrintPlantsMutation } = printApi;
+export const { usePrintTrayMutation,usePrintPlantsMutation, useGetPrintersQuery } = printApi;

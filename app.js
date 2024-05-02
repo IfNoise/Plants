@@ -1,6 +1,6 @@
 const express=require("express")
-const https = require('https');
-const fs = require('fs');
+// const https = require('https');
+// const fs = require('fs');
 const config=require("config")
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
@@ -11,19 +11,19 @@ const path=require('path')
 const PORT=config.get("port")||5000
 
 const app=express()
-let options
-if(process.env.NODE_ENV==='development'){
-options = {
+// let options
+// if(process.env.NODE_ENV==='development'){
+// options = {
 
-  key: fs.readFileSync(__dirname + '/ssl/homeserver.key', 'utf8'),
- cert: fs.readFileSync(__dirname + '/ssl/homeserver.crt', 'utf8')
-};}else{
-  options = {
+//   key: fs.readFileSync(__dirname + '/ssl/homeserver.key', 'utf8'),
+//  cert: fs.readFileSync(__dirname + '/ssl/homeserver.crt', 'utf8')
+// };}else{
+//   options = {
 
-    key: fs.readFileSync(__dirname + '/ssl/labserver.key', 'utf8'),
-   cert: fs.readFileSync(__dirname + '/ssl/labserver.crt', 'utf8')
-}}
-const server=https.createServer(options,app)
+//     key: fs.readFileSync(__dirname + '/ssl/labserver.key', 'utf8'),
+//    cert: fs.readFileSync(__dirname + '/ssl/labserver.crt', 'utf8')
+// }}
+// const server=https.createServer(options,app)
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json({extended:true}))
@@ -48,7 +48,7 @@ async function start(){
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
-    server.listen(PORT,()=>console.log(`Server has been started at ${PORT}`)
+    app.listen(PORT,()=>console.log(`Server has been started at ${PORT}`)
     )
   } catch (error) {
     console.log('SErver error',error.message)
