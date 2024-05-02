@@ -246,7 +246,7 @@ export default function PlantSpeedDial(props) {
               const id=getPlants().map((plant)=>plant._id)
               setPrintDialog({ 
                 onChange:(printer)=>{printPlants({printer,id})},
-                 open: true });
+                open: true });
             }}
           />
         )}

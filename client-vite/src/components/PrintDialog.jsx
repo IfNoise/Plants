@@ -6,12 +6,17 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Select, Menu
 
 export default function PrintDialog() {
   const { printDialog,setPrintDialog} = useContext(PrinterContext);
-  const { data } = useGetPrintersQuery({refetchOnMountOrArgChange: true, refetchOnFocus: true});
+  const { data ,refetch} = useGetPrintersQuery({refetchOnMountOrArgChange: true, refetchOnFocus: true});
   const [selectedPrinter, setSelectedPrinter] = useState("");
   const [printers, setPrinters] = useState([]);
+  useEffect(()=>{
+    refetch()
   
+  },[])
+
   useEffect(() => {
     if (data) {
+      console.log(data)
       setPrinters(data);
     }
   }, [data]);
@@ -21,13 +26,13 @@ export default function PrintDialog() {
     <Dialog fullScreen open={printDialog.open}>
       <DialogTitle>Select Printer</DialogTitle>
       <DialogContent>
-        {data&&<Select
+        {printers.length>0 &&<Select
           value={selectedPrinter}
           onChange={(e) => setSelectedPrinter(e.target.value)}
         >
-          {printers.map((printer) => (
-            <MenuItem key={printer.name} value={printer.name}>
-              {printer.name}
+          {printers.map((printer,i) => (
+            <MenuItem key={i} value={printer}>
+              {printer}
             </MenuItem>
           ))}
         </Select>}
@@ -36,7 +41,7 @@ export default function PrintDialog() {
         <Button onClick={()=>{
           setPrintDialog({ onChange:()=>{}, open: false });
           }}>Cancel</Button>
-        <Button disabled={selectedPrinter!==""} onClick={()=>{
+        <Button disabled={selectedPrinter===""} onClick={()=>{
           printDialog.onChange(selectedPrinter)
         }}>Print</Button>
       </DialogActions>

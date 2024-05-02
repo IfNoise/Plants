@@ -37,4 +37,4 @@ export const printApi = createApi({
   }),
 });
 
-export const { usePrintTrayMutation,usePrintPlantsMutation, useGetPrintersQuery } = printApi;
+export const { usePrintTrayMutation,usePrintPlantsMutation, useGetPrintersQuery ,refetch} = printApi;

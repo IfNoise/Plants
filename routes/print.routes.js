@@ -115,6 +115,7 @@ const printPlants = async (plants,printer) => {
 
       console.log("created label.pdf");
     });
+    console.log(printer)
     cups.printFile("label.pdf", options, (err, jobID) => {
       if (err) {
         console.error(err);
