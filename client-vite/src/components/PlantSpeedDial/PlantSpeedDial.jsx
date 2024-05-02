@@ -45,6 +45,7 @@ import { AddressFields } from "./AddressFields";
 import { useState,useEffect } from "react";
 import { addType,clear } from "../../store/newActionSlice";
 import { PrinterContext } from "../../context/PrinterContext";
+import PrintDialog from "../PrintDialog";
 
 const states = {
   Germination :{
@@ -325,6 +326,7 @@ export default function PlantSpeedDial(props) {
           <Button onClick={handleCancel}>Cancel</Button>
         </DialogActions>
       </Dialog>
+      <PrintDialog/>
     </>
   );
 }

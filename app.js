@@ -32,6 +32,7 @@ app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
 app.use('/api/strain',require('./routes/strain.routes.js'))
 app.use('/api/cycle',require('./routes/cycle.routes.js'))
+app.use('/api/printer',require('./routes/print.routes.js'))
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client-vite', 'dist')))
 

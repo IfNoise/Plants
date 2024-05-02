@@ -6,8 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Select, Menu
 
 export default function PrintDialog() {
   const { printDialog,setPrintDialog} = useContext(PrinterContext);
-  const [open, setOpen] = useState(printDialog.open);
-  const { data } = useGetPrintersQuery();
+  const { data } = useGetPrintersQuery({refetchOnMountOrArgChange: true, refetchOnFocus: true});
   const [selectedPrinter, setSelectedPrinter] = useState("");
   const [printers, setPrinters] = useState([]);
   
@@ -19,10 +18,10 @@ export default function PrintDialog() {
   
   
   return (
-    <Dialog open={open}>
+    <Dialog fullScreen open={printDialog.open}>
       <DialogTitle>Select Printer</DialogTitle>
       <DialogContent>
-        <Select
+        {data&&<Select
           value={selectedPrinter}
           onChange={(e) => setSelectedPrinter(e.target.value)}
         >
@@ -31,11 +30,10 @@ export default function PrintDialog() {
               {printer.name}
             </MenuItem>
           ))}
-        </Select>
+        </Select>}
       </DialogContent>
       <DialogActions>
         <Button onClick={()=>{
-          setOpen(false)
           setPrintDialog({ onChange:()=>{}, open: false });
           }}>Cancel</Button>
         <Button disabled={selectedPrinter!==""} onClick={()=>{
