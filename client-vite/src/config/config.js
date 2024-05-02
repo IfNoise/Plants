@@ -1,5 +1,5 @@
-export const baseUrl = "https://192.168.31.250/api";
-export const printerUrl = "https://192.168.31.250/api/printer";
+export const baseUrl = "https://lab-server.lan/api";
+export const printerUrl = "https://lab-server.lan/api/printer";
 export const buildRooms = 
   {
     Hangar1: ["Main room", "Laboratory"],
