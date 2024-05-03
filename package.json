@@ -14,11 +14,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.16",
-    "@mui/styled-engine": "^5.14.16",
-    "@mui/x-data-grid": "^6.17.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "canvas": "^2.11.2",
@@ -27,11 +22,9 @@
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
-    "materialize-css": "^1.0.0-rc.2",
     "mongodb": "^6.1.0",
     "mongoose": "^7.6.0",
     "node-cups": "^1.2.2",
-    "pdfkit": "^0.14.0",
     "qrcode": "^1.5.3",
     "querystring": "^0.2.1",
     "workbox-core": "^7.0.0"
