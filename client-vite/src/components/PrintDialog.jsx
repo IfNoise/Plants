@@ -23,10 +23,14 @@ export default function PrintDialog() {
   
   
   return (
-    <Dialog fullScreen open={printDialog.open}>
+    <Dialog 
+    sx={{textAlign:"center"}}
+    open={printDialog.open}>
       <DialogTitle>Select Printer</DialogTitle>
       <DialogContent>
-        {printers.length>0 &&<Select
+        {printers.length>0 &&
+        <Select
+          sx={{ width: "200pt" }}
           value={selectedPrinter}
           onChange={(e) => setSelectedPrinter(e.target.value)}
         >
@@ -37,12 +41,13 @@ export default function PrintDialog() {
           ))}
         </Select>}
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{alignContent:"center"}}>
         <Button onClick={()=>{
           setPrintDialog({ onChange:()=>{}, open: false });
           }}>Cancel</Button>
         <Button disabled={selectedPrinter===""} onClick={()=>{
           printDialog.onChange(selectedPrinter)
+          setPrintDialog({ onChange:()=>{}, open: false });
         }}>Print</Button>
       </DialogActions>
     </Dialog>
