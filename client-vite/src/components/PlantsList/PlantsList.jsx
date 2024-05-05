@@ -15,6 +15,7 @@ import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 import PlantListItem from "../PlantListItem/PlantListItem";
+import { set } from "mongoose";
 function getRowId(row) {
   return row._id;
 }
@@ -80,9 +81,8 @@ export const PlantsList = (props) => {
     navigate(`/plant/${id}`);
   };
   const selectAll = () => {
-    const ids = plants.map((plant) => plant._id);
     setAllSelected(true);
-    setSelectedPlants(()=>[...ids]);
+    setSelectedPlants([...plants]);
   };
 
   const getSelected = useCallback(() => {
@@ -125,7 +125,7 @@ export const PlantsList = (props) => {
   }, [apiRef]);
   const plantsPerPage = 100;
   return (
-    <Box sx={{ display: "flow", height: "100%", width:{sm: "98vw",md:"80vw"},position:'relative',ml:0,pl:0  }}>
+    <Box sx={{ display: "flow", height: "100%", left:0,right:0,position:'fixed',ml:0,pl:0  }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
         <Box sx={{ height: { md: "60vh", lg: "78vh" },}}>
@@ -180,7 +180,7 @@ export const PlantsList = (props) => {
                     if (checked) {
                       selectAll();
                     } else {
-                      setSelectedPlants(() => []);
+                      setSelectedPlants([]);
                       setAllSelected(false);
                     }
                   }}
@@ -190,7 +190,7 @@ export const PlantsList = (props) => {
           </Stack>
           <List
             sx={{
-              //width: "100%",
+              width: "100%",
               bgcolor: "background.paper",
               //position: "relative",
               overflow: "auto",
@@ -199,27 +199,37 @@ export const PlantsList = (props) => {
               maxHeight: "70vh",
             }}
           >
-            {paginate(plants, plantsPerPage, page).map((obj) => {
+            {paginate(plants, plantsPerPage, page).map((obj,i) => {
               return (
                 <PlantListItem
-                  key={obj._id}
+                  key={i}
                   plant={obj}
-                  checked={selectedPlants.indexOf(obj) !== -1||allSelected}
+                  checked={selectedPlants.indexOf(obj) !== -1}
                   onClick={plantDetails}
-                  onChange={(plant) => {
-                    setSelectedPlants((prev) => {
-                      if (prev.indexOf(plant) === -1) {
-                        return [...prev, plant];
-                      }
-                      return prev.filter((item) => item !== plant);
-                    });
+                  onChange={(checked) => {
+                    if (checked) {
+                      setSelectedPlants((prev) => {
+                        if (prev.indexOf(obj) === -1) {
+                          return [...prev, obj];
+                        }
+                        return prev;
+                      });
+                    } else {
+                      setSelectedPlants((prev) => {
+                        return prev.filter((item) => item !== obj);
+                      });
+                      setAllSelected(false);
+                    }
+                    
                   }}
                 />
               );
             })}
           </List>
           {selectedPlants.length > 0 && (
-            <PlantSpeedDial getPlants={() => selectedPlants} {...props} />
+            <PlantSpeedDial getPlants={()=>{
+              return selectedPlants;
+            }} {...props} />
           )}
         </>
       )}

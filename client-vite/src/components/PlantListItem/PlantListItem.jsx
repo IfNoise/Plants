@@ -49,7 +49,7 @@ export default function PlantListItem(props) {
           secondaryAction={
             <Checkbox
               edge="end"
-              onChange={()=>{ props?.onChange(plant)}}
+              onChange={(e)=>{ props?.onChange(e.target.checked)}}
               checked={props?.checked || false}
             />
           }
