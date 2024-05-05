@@ -14,7 +14,7 @@ import {
 import { useContext } from "react";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import PrintIcon from "@mui/icons-material/Print";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -25,14 +25,14 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { usePrintPlantsMutation } from "../../store/printApi";
 import { useAddActionMutation } from "../../store/plantsApi";
 
 import { useAddToTrayMutation } from "../../store/trayApi";
 import { useClearTrayMutation } from "../../store/trayApi";
-import { usePrintTrayMutation } from "../../store/printApi"
+import { usePrintTrayMutation } from "../../store/printApi";
 
 import { useDispatch, useSelector } from "react-redux";
 import { SnackbarContext } from "../../context/SnackbarContext";
@@ -42,13 +42,12 @@ import { CuttingClonesFields } from "./CuttingClonesFields";
 import { SetGenderFields } from "./SetGenderFields";
 import { PickingFields } from "./PickingFields";
 import { AddressFields } from "./AddressFields";
-import { useState,useEffect } from "react";
-import { addType,clear } from "../../store/newActionSlice";
+import { useState, useEffect } from "react";
+import { addType, clear } from "../../store/newActionSlice";
 import { PrinterContext } from "../../context/PrinterContext";
-import PrintDialog from "../PrintDialog";
 
 const states = {
-  Germination :{
+  Germination: {
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -56,7 +55,7 @@ const states = {
       { text: "Stop" },
     ],
   },
-  Cloning:{
+  Cloning: {
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -64,7 +63,7 @@ const states = {
       { text: "Stop" },
     ],
   },
-  Growing:{
+  Growing: {
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -75,7 +74,7 @@ const states = {
       { text: "Stop" },
     ],
   },
-  Blooming:{
+  Blooming: {
     actions: [
       { text: "Note" },
       { text: "Relocation" },
@@ -83,13 +82,13 @@ const states = {
       { text: "Harvest" },
     ],
   },
-  Stopped:{
+  Stopped: {
     actions: [{ text: "Note" }],
   },
-  Harvested:{
+  Harvested: {
     actions: [{ text: "Note" }],
   },
-  MotherPlant:{
+  MotherPlant: {
     actions: [
       { text: "Note" },
       { text: "Picking" },
@@ -101,44 +100,44 @@ const states = {
   },
 };
 const actionFields = {
-  Note:{
+  Note: {
     name: "Note",
     icon: <NoteAddIcon />,
     fields: <NoteFields />,
   },
-  Picking:{
+  Picking: {
     name: "Picking",
     icon: <NoteAddIcon />,
     fields: <PickingFields />,
   },
-  Relocation:{
+  Relocation: {
     name: "Relocation",
     icon: <ArrowOutwardIcon />,
     fields: <AddressFields />,
   },
-  SetGender:{
+  SetGender: {
     name: "SetGender",
     icon: <CheckBoxIcon />,
     fields: <SetGenderFields />,
   },
-  Blooming:{
+  Blooming: {
     name: "Blooming",
     icon: <LocalFloristIcon />,
   },
-  Stop:{
+  Stop: {
     name: "Stop",
     icon: <CancelIcon color="error" />,
     fields: <StopFields />,
   },
-  Harvest:{
+  Harvest: {
     name: "Harvest",
     icon: <ArrowOutwardIcon />,
   },
-  MakeMother:{
+  MakeMother: {
     name: "MakeMother",
     icon: <ArrowOutwardIcon />,
   },
-  CuttingClones:{
+  CuttingClones: {
     name: "CuttingClones",
     icon: <ContentCutIcon />,
     fields: <CuttingClonesFields />,
@@ -149,31 +148,30 @@ export default function PlantSpeedDial(props) {
   const { setSnack } = useContext(SnackbarContext);
   const dispatch = useDispatch();
   const newAction = useSelector((state) => state.newAction);
-  const [addAction, { isSuccess, isError}] = useAddActionMutation();
+  const [addAction, { isSuccess, isError }] = useAddActionMutation();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const [addToTray] = useAddToTrayMutation();
   const [printPlants] = usePrintPlantsMutation();
-  const [clearTray]=useClearTrayMutation()
-  const [printTray]=usePrintTrayMutation()
- const {setPrintDialog} = useContext(PrinterContext);
+  const [clearTray] = useClearTrayMutation();
+  const [printTray] = usePrintTrayMutation();
+  const { setPrintDialog } = useContext(PrinterContext);
   //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
-  const {getPlants}=props
+  const { getPlants } = props;
   const plants = getPlants();
-  const state=plants[0]?.state||"Germination"  
-  const actions=states[state].actions
+  const state = plants[0]?.state || "Germination";
+  const actions = states[state].actions;
 
   useEffect(() => {
     if (newAction) {
       dispatch(clear());
     }
-
   }, []);
-  
+
   useEffect(() => {
     if (isError) {
-      setSnack({ open: true, severity: "error", message: 'error'});
+      setSnack({ open: true, severity: "error", message: "error" });
     }
   }, [isError]);
 
@@ -183,7 +181,6 @@ export default function PlantSpeedDial(props) {
     }
   }, [isSuccess]);
 
-
   const handleActionType = (e) => {
     const { value } = e.target;
     if (newAction) {
@@ -191,13 +188,17 @@ export default function PlantSpeedDial(props) {
     }
     dispatch(addType(value));
   };
-  const handleOpen=()=>{
-    if(getPlants()?.length<1){
-      setSnack({ open: true, severity: "error", message: "No plants selected" });
-      return
+  const handleOpen = () => {
+    if (getPlants()?.length < 1) {
+      setSnack({
+        open: true,
+        severity: "error",
+        message: "No plants selected",
+      });
+      return;
     }
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleCancel = () => {
     dispatch(clear());
@@ -205,22 +206,26 @@ export default function PlantSpeedDial(props) {
   };
 
   const newActionFunc = () => {
-    if(getPlants().length<1){  
-      setSnack({ open: true, severity: "error", message: "No plants selected" });
-      return
+    if (getPlants().length < 1) {
+      setSnack({
+        open: true,
+        severity: "error",
+        message: "No plants selected",
+      });
+      return;
     }
-    const id=plants.map((plant)=>plant._id)
+    const id = plants.map((plant) => plant._id);
 
     const body = { id, action: newAction };
     addAction(body);
-    dispatch(clear())
+    dispatch(clear());
     setOpen(false);
   };
   return (
     <>
       <SpeedDial
         ariaLabel="Plant Action SpeedDial"
-        hidden={(!props.show)&& getPlants().length === 0}
+        hidden={!props.show && getPlants().length === 0}
         sx={{ position: "fixed", bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
       >
@@ -238,15 +243,21 @@ export default function PlantSpeedDial(props) {
             icon={<PrintIcon />}
             tooltipTitle="Print"
             onClick={() => {
-              
-              if(getPlants()?.length<1){
-                setSnack({ open: true, severity: "error", message: "No plants selected" });
-                return
+              if (getPlants()?.length < 1) {
+                setSnack({
+                  open: true,
+                  severity: "error",
+                  message: "No plants selected",
+                });
+                return;
               }
-              const id=getPlants().map((plant)=>plant._id)
-              setPrintDialog({ 
-                onChange:(printer)=>{printPlants({printer,id})},
-                open: true });
+              const id = getPlants().map((plant) => plant._id);
+              setPrintDialog({
+                onChange: (printer) => {
+                  printPlants({ printer, id });
+                },
+                open: true,
+              });
             }}
           />
         )}
@@ -256,11 +267,15 @@ export default function PlantSpeedDial(props) {
             icon={<CreateNewFolderIcon />}
             tooltipTitle="Add to tray"
             onClick={() => {
-              if(getPlants()?.length<1){
-                setSnack({ open: true, severity: "error", message: "No plants selected" });
-                return
+              if (getPlants()?.length < 1) {
+                setSnack({
+                  open: true,
+                  severity: "error",
+                  message: "No plants selected",
+                });
+                return;
               }
-              const id = getPlants().map((plant)=>plant._id);
+              const id = getPlants().map((plant) => plant._id);
               addToTray(id);
             }}
           />
@@ -271,9 +286,12 @@ export default function PlantSpeedDial(props) {
             icon={<PrintIcon />}
             tooltipTitle="Print tray items"
             onClick={() => {
-              setPrintDialog({ 
-                onChange:(printer)=>{printTray({printer})},
-                 open: true }); 
+              setPrintDialog({
+                onChange: (printer) => {
+                  printTray({ printer });
+                },
+                open: true,
+              });
             }}
           />
         )}
@@ -283,23 +301,23 @@ export default function PlantSpeedDial(props) {
             icon={<DeleteIcon />}
             tooltipTitle=" Clear tray"
             onClick={() => {
-              clearTray();  
+              clearTray();
             }}
           />
         )}
       </SpeedDial>
       <Dialog
-        sx={{ width:{md:"30%"},justifyContent:'center'}}
+        sx={{ width: { md: "30%" }, justifyContent: "center" }}
         id="action_popover"
-        fullScreen={isSmall} 
+        fullScreen={isSmall}
         fullWidth={true}
         maxWidth="md"
         open={open}
         onClose={handleCancel}
       >
-        <DialogTitle sx={{mb:"2px"}}>New Action</DialogTitle>
+        <DialogTitle sx={{ mb: "2px" }}>New Action</DialogTitle>
         <DialogContent>
-          <FormControl variant="outlined" sx={{m:'3px', width: "98%" }}>
+          <FormControl variant="outlined" sx={{ m: "3px", width: "98%" }}>
             <InputLabel id="action-label">Action Type</InputLabel>
             <Select
               labelId="action-label"
@@ -319,14 +337,13 @@ export default function PlantSpeedDial(props) {
           </FormControl>
           {newAction.actionType && actionFields[newAction.actionType].fields}
         </DialogContent>
-        <DialogActions sx={{justifyContent:'center'}}>
+        <DialogActions sx={{ justifyContent: "center" }}>
           <Button onClick={newActionFunc} disabled={!newAction.actionType}>
             Ok
           </Button>
           <Button onClick={handleCancel}>Cancel</Button>
         </DialogActions>
       </Dialog>
-      <PrintDialog/>
     </>
   );
 }

@@ -7,13 +7,16 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useClearTrayMutation } from "../../store/trayApi";
 import { usePrintTrayMutation } from "../../store/printApi";
-
+import { useContext } from "react";
+import { PrinterContext } from "../../context/PrinterContext";
 
 export const TrayButton = () => {
+  const { setPrintDialog } = useContext(PrinterContext);
   const navigate = useNavigate();
-  const { data,refetch } = useGetTrayQuery(
-    { refetchOnMountOrArgChange: true, refetchOnFocus: true }
-  );
+  const { data, refetch } = useGetTrayQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
   const [number, setNumber] = useState(0);
   const [contextMenu, setContextMenu] = useState(null);
   const [clearTray] = useClearTrayMutation();
@@ -33,9 +36,9 @@ export const TrayButton = () => {
         : null
     );
   };
-  useEffect(() => { 
+  useEffect(() => {
     refetch();
-  } , [refetch]);
+  }, [refetch]);
   useEffect(() => {
     setNumber(data?.length || 0);
   }, [data]);
@@ -53,15 +56,16 @@ export const TrayButton = () => {
         onClick={trayPage}
         onContextMenu={handleContextMenu}
       >
-        {data?.length > 0 &&
+        {data?.length > 0 && (
           <Badge badgeContent={number.toString()} color="error">
             <FolderSpecialIcon />
           </Badge>
-          }
-        {data?.length === 0 && <Badge badgeContent={0} color="error">
+        )}
+        {data?.length === 0 && (
+          <Badge badgeContent={0} color="error">
             <FolderSpecialIcon />
-          </Badge>}
-      
+          </Badge>
+        )}
       </IconButton>
       {data?.length > 0 && (
         <Menu
@@ -86,8 +90,13 @@ export const TrayButton = () => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              printTray();
-              handleClose;
+              setPrintDialog({
+                onChange: (printer) => {
+                  printTray({ printer });
+                },
+                open: true,
+              });
+              handleClose();
             }}
           >
             <PrintIcon />

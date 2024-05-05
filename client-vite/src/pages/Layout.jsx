@@ -212,7 +212,7 @@ React.useEffect(()=>{
         <DrawerHeader />
         <PrivateOutlet />
         <SnackBar />
-
+        <PrintDialog />
       </Main>
     </Box>
   );
