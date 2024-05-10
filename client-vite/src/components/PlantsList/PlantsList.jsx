@@ -15,7 +15,6 @@ import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 import PlantListItem from "../PlantListItem/PlantListItem";
-import { set } from "mongoose";
 function getRowId(row) {
   return row._id;
 }
@@ -125,7 +124,7 @@ export const PlantsList = (props) => {
   }, [apiRef]);
   const plantsPerPage = 100;
   return (
-    <Box sx={{ display: "flow", height: "100%", left:0,right:0,position:'fixed',ml:0,pl:0  }}>
+    <Box sx={{ display: "flow", height: "100%",right:0,position:'fixed',ml:0,pl:0  }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
         <Box sx={{ height: { md: "60vh", lg: "78vh" },}}>

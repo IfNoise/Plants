@@ -141,7 +141,6 @@ React.useEffect(()=>{
       </AppBar>
       <Drawer
         sx={{
-          width: drawerWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
@@ -206,7 +205,8 @@ React.useEffect(()=>{
         <Divider />
       </Drawer>
       <Main 
-       position="fixed"
+        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+      
       open={open}
       >
         <DrawerHeader />
