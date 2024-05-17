@@ -37,12 +37,12 @@ export const PlantDetailPage = () => {
     cloneCounter,
     maxClones,
   } = plant;
-  const startDate =new Date(actions.find((action) => action.type === "Start")?.date);
+  const startDate =new Date(actions?.find((action) => action.type === "Start")?.date);
   const plantAge=Math.floor((new Date()-new Date(startDate))/86400000);
   const now=new Date();
-  const vegStartDate = new Date(actions.find((action)=>action.type==="Picking"&&action.potSize==="1 L")?.date);
-  const bloomStartDate = new Date(actions.find((action)=>action.type==="Blooming")?.date)
-  const harvestDate = new Date(actions.find((action)=>action.type==="Harvest")?.date)  
+  const vegStartDate = new Date(actions?.find((action)=>action.type==="Picking"&&action.potSize==="1 L")?.date);
+  const bloomStartDate = new Date(actions?.find((action)=>action.type==="Blooming")?.date)
+  const harvestDate = new Date(actions?.find((action)=>action.type==="Harvest")?.date)  
   const cloningStage =state==="Cloning"? Math.floor((now-startDate)/86400000): Math.floor((vegStartDate-startDate)/86400000);
   const vegStage = state ==="Growing" ? Math.floor((now-vegStartDate)/86400000) : state==="Blooming"?Math.floor((bloomStartDate-vegStartDate)/86400000):0;
   const bloomStage = state==="Blooming"? Math.floor((now-bloomStartDate)/86400000):state==="Harvest"?Math.floor((now-harvestDate)/86400000):0;
