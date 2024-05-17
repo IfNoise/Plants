@@ -179,6 +179,7 @@ router.post("/new_action", async (req, res) => {
         }
         case "Harvest": {
           plant.set("state", "Harvested");
+          plant.set("currentAddress", {});
           break;
         }
         case "MakeMother": {
@@ -253,12 +254,11 @@ router.get("/test", async (req, res) => {
   try {
     const plants = await Plant.find({
       state: "Stopped",
-      "actions.type": "MakeMother",
     });
     result = plants.map(async (plant) => {
       const res = await Plant.findByIdAndUpdate(
         plant._id,
-        { state: "MotherPlant" },
+        { currentAddress: {} },
         { new: true, useFindAndModify: false }
       );
     });
