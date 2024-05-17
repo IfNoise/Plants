@@ -14,13 +14,13 @@ export const PlantsPage = () => {
   });
   const getData = () => plants.map((plant) => plant);
   return (
-    <Box sx={{display:"flow"}}>
+    <Box >
       
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
       {plants &&
       <>
-      <Box sx={{position:"fixed"}} >
+      <Box sx={{}} >
       <FilterBar getData={getData} />
       <Typography variant="h6" component="h1" gutterBottom>{plants.length} Plants</Typography>
 

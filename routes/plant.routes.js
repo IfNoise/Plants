@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const Plant = require("../models/Plant");
-
+const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
 
@@ -8,6 +8,7 @@ router.post("/new_plant", async (req, res) => {
   const number = req.body.number;
   try {
     //const user = await User.findById(req.user.userId)
+    const group = crypto.randomBytes(8).toString("hex");
     let strain;
     if (req.body?.strain) {
       strain = await Strain.findById(req.body.strain);
@@ -53,6 +54,7 @@ router.post("/new_plant", async (req, res) => {
           strain: strain.name,
           pheno,
           gender,
+          group,
           startDate: Date.now(),
           type: "Seed",
           state: "Germination",
@@ -199,7 +201,7 @@ router.post("/new_action", async (req, res) => {
         case "CuttingClones": {
           const number = data.clonesNumber;
           console.log(number);
-
+          const group = crypto.randomBytes(8).toString("hex");
           action.clonesNumber = number;
           const newClones = [];
           for (let index = 0; index < number; index++) {
@@ -213,6 +215,7 @@ router.post("/new_action", async (req, res) => {
               pheno: plant.pheno,
               gender: plant?.gender || "undefined",
               type: "Clone",
+              group,
               motherPlant: plant._id,
               startDate: Date.now(),
               state: "Cloning",

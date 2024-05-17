@@ -19,6 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import SnackBar from "../components/SnackBar/SnackBar";
 import { useAuth } from "../hooks/auth.hook";
 import { TrayButton } from "../components/TrayButton/TrayButton";
@@ -39,41 +40,42 @@ function PrivateOutlet() {
 
 const drawerWidth = 240;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     flexGrow: 1,
-    padding: theme.spacing(1),
-    transition: theme.transitions.create("margin", {
+    padding: theme.spacing(3),
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft:{md: `-${drawerWidth}px`},
+    marginLeft: `-${drawerWidth}px`,
     ...(open && {
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
     }),
-  })
+  }),
 );
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
+  transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: {xs:`${drawerWidth}px`},
-    transition: theme.transitions.create(["margin", "width"], {
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
+
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -86,131 +88,114 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export const Layout = () => {
   const theme = useTheme();
-  
+
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const [open, setOpen] = React.useState(!isSmall&&true);
+  const [open, setOpen] = React.useState(!isSmall && true);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
-React.useEffect(()=>{
-  if(isSmall){
-  setOpen(false)
-  }
-},[isSmall])
+  React.useEffect(() => {
+    if (isSmall) {
+      setOpen(false);
+    }
+  }, [isSmall]);
 
   const handleDrawerClose = () => {
-    setOpen(isSmall?false:true);
+    setOpen(isSmall ? false : true);
   };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed"  open={open}>
-        <Toolbar sx={{width:'100%'}}>
-          <Paper
-            component="form"
-            sx={{
-              p: "2px",
-              display: "flex",
-              alignItems: "center",
-              width: 400,
-            }}
+      <AppBar position="fixed" open={open}>
+        <Toolbar sx={{ width: "100%" }}>
+          <IconButton
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ p: "10px", ml: 2, mr: 2, ...(open && { display: "none" }) }}
           >
-            <IconButton
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ p: "10px", ml: 2,mr:2, ...(open && { display: "none" }) }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <InputBase
-              sx={{ ml: 1, flex: 2, }}
-              placeholder="Search"
-              inputProps={{ "aria-label": "search" }}
-            />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-            <Scanner />
-          </Paper>
+            <MenuIcon />
+          </IconButton>
+          <Scanner />
           <TrayButton />
         </Toolbar>
       </AppBar>
       <Drawer
-        sx={{
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-        variant={isSmall?"temporary":"permanent"}
+  sx={{
+    width: drawerWidth,
+    flexShrink: 0,
+    '& .MuiDrawer-paper': {
+      width: drawerWidth,
+      boxSizing: 'border-box',
+    },
+  }}
+        variant={isSmall ? "temporary" : "persistent"}
         anchor="left"
         onClose={handleDrawerClose}
         open={open}
       >
         <DrawerHeader>
-          {isSmall && 
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>}
+          {isSmall && (
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "ltr" ? (
+                <ChevronLeftIcon />
+              ) : (
+                <ChevronRightIcon />
+              )}
+            </IconButton>
+          )}
         </DrawerHeader>
         <Divider />
-        <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerClose}>
-        <List >
-          {[
-            {
-              text: "Cycles",
-              href: "/cycles",
-            },
-            {
-              text: "Dashboard",
-              href: "/dashboard",
-            },
-            {
-              text: "Map",
-              href: "/map",
-            },
-            {
-              text: "Mothers",
-              href: "/mothers",
-            },
-            {
-              text: "Plants",
-              href: "/plants",
-            },
-            {
-              text: "Strains",
-              href: "/strains",
-            },
-          ].map((obj, index) => (
-            <ListItem key={obj.text} disablePadding>
-              <ListItemButton component={Link} to={obj.href} >
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={obj.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <Box role="presentation" onClick={handleDrawerClose}>
+          <List>
+            {[
+              {
+                text: "Cycles",
+                href: "/cycles",
+                icon: <SearchIcon />,
+              },
+              {
+                text: "Dashboard",
+                href: "/dashboard",
+                icon: <DashboardIcon />,
+              },
+              {
+                text: "Map",
+                href: "/map",
+                icon: <InboxIcon />,
+              },
+              {
+                text: "Mothers",
+                href: "/mothers",
+                icon: <MailIcon />,
+              },
+              {
+                text: "Plants",
+                href: "/plants",
+                icon: <InboxIcon />,
+              },
+              {
+                text: "Strains",
+                href: "/strains",
+                icon: <MailIcon />,
+              },
+            ].map((obj) => (
+              <ListItem key={obj.text} disablePadding>
+                <ListItemButton component={Link} to={obj.href}>
+                  <ListItemIcon>{obj.icon}</ListItemIcon>
+                  <ListItemText primary={obj.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
         </Box>
         <Divider />
       </Drawer>
-      <Main 
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-      
-      open={open}
-      >
-        <DrawerHeader />
-        <PrivateOutlet />
+      <Main open={open}>
+        {/* <DrawerHeader /> */}
+        <Outlet />
         <SnackBar />
         <PrintDialog />
       </Main>
