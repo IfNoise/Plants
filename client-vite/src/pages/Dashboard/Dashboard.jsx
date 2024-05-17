@@ -11,10 +11,10 @@ const Dashboard = () => {
     return <Alert severity="info">No devices found</Alert>;
   }
   return (
-    <Box sx={{mt:"180px"}}>
+    <Box >
       {!data && <CircularProgress /> }
       {data?.length === 0 && <Alert severity="info">No devices found</Alert>}
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" useFlexGap flexWrap="wrap" spacing={2}>
       {data && data.map((device) => (
         <DeviceCard key={device.id} device={device} />
       ))}

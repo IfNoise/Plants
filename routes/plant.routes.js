@@ -172,7 +172,7 @@ router.post("/new_action", async (req, res) => {
           if (data?.reason === "Other") {
             action.userReason = data.userReason;
           }
-
+          plant.set("currentAddress", {});
           action.reason = data.reason;
 
           break;
