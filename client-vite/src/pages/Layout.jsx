@@ -43,12 +43,13 @@ const drawerWidth = 240;
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     flexGrow: 1,
+    marginTop: "64px",
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft:{md: `-${drawerWidth}px`,sm:0},
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
@@ -131,7 +132,7 @@ export const Layout = () => {
       boxSizing: 'border-box',
     },
   }}
-        variant={isSmall ? "temporary" : "persistent"}
+        variant={isSmall ? "temporary" : "permanent"}
         anchor="left"
         onClose={handleDrawerClose}
         open={open}

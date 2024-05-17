@@ -124,7 +124,7 @@ export const PlantsList = (props) => {
   }, [apiRef]);
   const plantsPerPage = 100;
   return (
-    <Box sx={{ display: "flow", height: "100%",right:0,position:'fixed',ml:0,pl:0  }}>
+    <Box sx={{ display: "flow", height: "100%",right:0,ml:0,pl:0  }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
         <Box sx={{ height: { md: "60vh", lg: "78vh" },}}>
