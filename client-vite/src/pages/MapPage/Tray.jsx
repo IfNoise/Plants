@@ -1,18 +1,52 @@
-import { Box } from "@mui/material";
-import PropTypes from "prop-types"; 
-export  default function Tray(props){
-  const {size, plants} = props;
-  const width = size==="4x4"?100:200
-  const height = size==="4x4"?100:50  
+import { Box, Stack, Typography } from "@mui/material";
+import PropTypes from "prop-types";
+import Plant from "./Plant";
+export default function Tray({size, plants}) {
+  const height = size === "4x4" ? 140 : 282;
+  const width = 111;
+  const plantCount = plants.length;
   return (
-    <Box sx={{width,height,borderColor:"green",borderRadius:3,backgroundColor:"greenyellow"}}>
-      {plants?.map((plant)=>(
-        <Pla
-     ) )}
+    <Box
+      sx={{
+        width,
+        height,
+        borderColor: "green",
+        borderRadius: 1,
+        backgroundColor: "greenyellow",
+        border: "1px solid green",
+        margin: 1,
+      }}
+    >
+      <Box
+        sx={{
+          borderColor: "green",
+          borderRadius: "5px",
+          //border: "1px solid green",
+          backgroundColor: "#f0f0f0",
+          p:"1px",
+          m:"3px",
+          height:"25px",
+          contentAlign:"center",
+        }}
+      >
+        <Typography 
+        sx={{
+          fontSize: "9px",
+          fontWeight: "bold",
+          color: "black",
+        }}
+        variant="caption"
+        >Total:{plantCount}plants</Typography>
+      </Box>
+      <Stack direction="row" useFlexGap flexWrap="wrap" spacing={0.2} margin="1px">
+      {plants?.map((plant,i) => (
+        <Plant key={i} plant={plant} />
+      ))}
+      </Stack>
     </Box>
   );
 }
 Tray.propTypes = {
- size: PropTypes.string ,
- plants: PropTypes.array,
-}
+  size: PropTypes.string,
+  plants: PropTypes.array,
+};

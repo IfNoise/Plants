@@ -12,6 +12,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -23,7 +25,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import SnackBar from "../components/SnackBar/SnackBar";
 import { useAuth } from "../hooks/auth.hook";
 import { TrayButton } from "../components/TrayButton/TrayButton";
-import { InputBase, Paper, useMediaQuery } from "@mui/material";
+import { Collapse, useMediaQuery } from "@mui/material";
 import Scanner from "../components/Scanner/Scanner";
 import PrintDialog from "../components/PrintDialog";
 
@@ -38,45 +40,83 @@ function PrivateOutlet() {
   );
 }
 
+const CollapseList = ({ obj }) => {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <ListItem>
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText primary={obj.text} />
+        <IconButton onClick={() => setOpen(!open)}>
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </IconButton>
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div">
+          {obj.collapsed.map((obj,i) =>{ 
+            if (obj.collapsed) {
+            return <CollapseList key={i} obj={obj} />
+          } else {
+            return <ListItem key={obj.text} sx={{
+              pl: "60px",
+            }} disablePadding>
+              <ListItemButton component={Link} to={obj.href}>
+                <ListItemText primary={obj.text} />
+              </ListItemButton>
+            </ListItem>
+          }}
+
+          )}
+          
+
+        </List>
+      </Collapse>
+    </>
+  );
+};
+
+        
+
 const drawerWidth = 240;
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
     marginTop: "64px",
     padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft:{md: `-${drawerWidth}px`,sm:0},
+    marginLeft: { md: `-${drawerWidth}px`, sm: 0 },
     ...(open && {
-      transition: theme.transitions.create('margin', {
+      transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
     }),
-  }),
+  })
 );
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
+  transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
-
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -91,6 +131,7 @@ export const Layout = () => {
   const theme = useTheme();
 
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const [openMap, setOpenMap] = React.useState(false);
   const [open, setOpen] = React.useState(!isSmall && true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -102,6 +143,9 @@ export const Layout = () => {
     }
   }, [isSmall]);
 
+  const handleOpenMap = () => {
+    setOpenMap(!openMap);
+  };
   const handleDrawerClose = () => {
     setOpen(isSmall ? false : true);
   };
@@ -124,14 +168,14 @@ export const Layout = () => {
         </Toolbar>
       </AppBar>
       <Drawer
-  sx={{
-    width: drawerWidth,
-    flexShrink: 0,
-    '& .MuiDrawer-paper': {
-      width: drawerWidth,
-      boxSizing: 'border-box',
-    },
-  }}
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
+        }}
         variant={isSmall ? "temporary" : "permanent"}
         anchor="left"
         onClose={handleDrawerClose}
@@ -164,8 +208,41 @@ export const Layout = () => {
               },
               {
                 text: "Map",
-                href: "/map",
                 icon: <InboxIcon />,
+                collapsed: [
+                  {
+                    text: "Hangar1",
+                    icon: <InboxIcon />,
+                    collapsed: [
+                      {
+                        text: "Main room",
+                        href: "/map/Hangar1/Main_room",
+                        icon: <InboxIcon />,
+                      },
+                      {
+                        text: "Laboratory",
+                        href: "/map/Hangar1/Laboratory",
+                        icon: <InboxIcon />,
+                      },
+                    ],
+                  },
+                  {
+                    text: "Hangar2",
+                    icon: <InboxIcon />,
+                    collapsed: [
+                      {
+                        text: "Main room",
+                        href: "/map/Hangar2/Main_room",
+                        icon: <InboxIcon />,
+                      },
+                      {
+                        text: "Small room",
+                        href: "/map/Hangar2/Small_Room",
+                        icon: <InboxIcon />,
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 text: "Mothers",
@@ -182,14 +259,23 @@ export const Layout = () => {
                 href: "/strains",
                 icon: <MailIcon />,
               },
-            ].map((obj) => (
-              <ListItem key={obj.text} disablePadding>
-                <ListItemButton component={Link} to={obj.href}>
-                  <ListItemIcon>{obj.icon}</ListItemIcon>
-                  <ListItemText primary={obj.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            ].map((obj, i) => {
+              if (obj.collapsed) {
+
+                          return <CollapseList key={i} obj={obj}/> } else {
+                return (
+                  <ListItem key={obj.text} disablePadding>
+                    <ListItemButton component={Link} to={obj.href}>
+                      <ListItemIcon>{obj.icon}</ListItemIcon>
+                      <ListItemText primary={obj.text} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              }
+            }
+            )
+            }
+
           </List>
         </Box>
         <Divider />

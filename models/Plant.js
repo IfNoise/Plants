@@ -15,6 +15,7 @@ const plant = new Schema({
   state: { type: String, required: true, default: "Cloning" }, //new,Germination,Cloning,Growing,Blooming,Stopped,Harvested,MotherPlant
   //================
   motherPlant: { type: Types.ObjectId, ref: "Plant" },
+  source:{ type: Types.ObjectId, ref: "Strain" },
   //================
   potSize: String,
 

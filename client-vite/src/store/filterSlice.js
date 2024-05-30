@@ -57,6 +57,14 @@ export const filterSlice = createSlice({
         delete state.startDate;
       } else state.startDate = action.payload;
     },
+    addGroup: (state, action) => {
+      if (action.payload === null) {
+        delete state.group;
+      } else state.group = action.payload;
+    },
+    setFilter: (state, action) => {
+      return action.payload;
+    },
     clearFilter: () => {
       return {};
     },
@@ -71,6 +79,8 @@ export const {
   addStartDate,
   addPotSize,
   addGender,
+  addGroup,
+  setFilter,
   clearFilter,
 } = filterSlice.actions;
 

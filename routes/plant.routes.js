@@ -3,6 +3,7 @@ const Plant = require("../models/Plant");
 const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
+const { type } = require("os");
 
 router.post("/new_plant", async (req, res) => {
   const number = req.body.number;
@@ -250,23 +251,27 @@ router.post("/new_action", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-router.get("/test", async (req, res) => {
-  try {
-    const plants = await Plant.find({
-      state: "Stopped",
-    });
-    result = plants.map(async (plant) => {
-      const res = await Plant.findByIdAndUpdate(
-        plant._id,
-        { currentAddress: {} },
-        { new: true, useFindAndModify: false }
-      );
-    });
-    res.json(result);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
+// router.get("/test", async (req, res) => {
+//   try {
+//     // const plants = await Plant.find({
+//     //   state: "Stopped",
+//     // });
+//     // result = plants.map(async (plant) => {
+//     //   const result = await Plant.findByIdAndUpdate(
+//     //     "65ead409974c3784d01228a0",
+//     //     { state: "Growing",
+//     //      $pull: { actions: { type: "Stop" } }
+
+//     //      },
+
+//     //     { new: true, useFindAndModify: false }
+//     //   );
+//     // //});
+//     res.json(result);
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// });
 
 module.exports = router;
 

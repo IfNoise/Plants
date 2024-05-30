@@ -36,7 +36,7 @@ export const Router = createBrowserRouter(
       <Route path="tray" element={<TrayPage />} />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="plant/:id" element={<PlantDetailPage />} />
-      <Route path="map" element={<MapPage />} />
+      <Route path="map/:building/:room" element={<MapPage />} />
       <Route path="strain/:id" element={<StrainDetailPage />} />
 
 

@@ -3,12 +3,86 @@ import { useEffect } from "react";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Card, Alert, CircularProgress, Grid } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Link,useParams } from "react-router-dom";
 import { useState } from "react";
+import FemaleIcon from '@mui/icons-material/Female';
+import MaleIcon from '@mui/icons-material/Male';
 
 import { useGetPlantsQuery } from "../../store/plantsApi";
 import PlantTimeline from "../../components/PlantTimeline/PlantTimeline";
 import PlantSpeedDial from "../../components/PlantSpeedDial/PlantSpeedDial";
+import propsTypes from "prop-types";
+
+const PlantGroup=({group})=>{
+return <div 
+  style={{
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor:"green",
+    color:"white",
+    borderRadius:"5px",
+    padding:"5px",
+    margin:"5px"
+  }}
+>
+{group&&
+<Link to={`/plants?${new URLSearchParams({group})}`} >Group</Link>}
+{!group&&
+<Typography variant="caption" color="text.secondary">No Group</Typography>}
+</div>
+}
+PlantGroup.propTypes={
+  group:propsTypes.string.isRequired
+}
+
+const PlantSource=({plant})=>{
+ const {type,source,motherPlant}=plant;
+return (<div 
+style={{
+  display:"flex",
+  justifyContent:"center",
+  alignItems:"center",
+  backgroundColor:"green",
+  color:"white",
+  borderRadius:"5px",
+  padding:"5px",
+  margin:"5px"
+}}
+>
+  {type==="Seed"&&source&&
+    <Link to={`/strains/${source}`}>Source Strain</Link>
+  }
+  {type==="Clone"&&motherPlant&&
+    <Link to={`/plant/${motherPlant}`}>Mother Plant</Link>
+  }
+  {source||motherPlant?null:
+    <Typography variant="caption" color="text.secondary">No Source</Typography>
+  }
+</div>)
+
+}
+PlantSource.propTypes={
+  plant:propsTypes.object.isRequired
+}
+
+const PlantGender=({gender})=>{
+  if(gender==="Female"){
+    return <FemaleIcon
+    fontSize="large"
+    
+    />
+  }else if(gender==="Male"){
+    return <MaleIcon 
+    fontSize="large"
+    
+    />
+  }else{
+    return <Typography variant="caption" color="text.secondary">Undefined</Typography>
+  }
+}
+
+
 
 export const PlantDetailPage = () => {
   const id = useParams().id;
@@ -29,6 +103,7 @@ export const PlantDetailPage = () => {
   }, [data]);
 
   const {
+    type,
     strain,
     pheno,
     gender,
@@ -36,6 +111,9 @@ export const PlantDetailPage = () => {
     actions,
     cloneCounter,
     maxClones,
+    potSize,
+    currentAddress,
+    group
   } = plant;
   const startDate =new Date(actions?.find((action) => action.type === "Start")?.date);
   const plantAge=Math.floor((new Date()-new Date(startDate))/86400000);
@@ -44,7 +122,7 @@ export const PlantDetailPage = () => {
   const bloomStartDate = new Date(actions?.find((action)=>action.type==="Blooming")?.date)
   const harvestDate = new Date(actions?.find((action)=>action.type==="Harvest")?.date)  
   const cloningStage =state==="Cloning"? Math.floor((now-startDate)/86400000): Math.floor((vegStartDate-startDate)/86400000);
-  const vegStage = state ==="Growing" ? Math.floor((now-vegStartDate)/86400000) : state==="Blooming"?Math.floor((bloomStartDate-vegStartDate)/86400000):0;
+  const vegStage = state ==="Growing" ? Math.floor((now-vegStartDate)/86400000) : state==="Blooming"?Math.floor((bloomStartDate-vegStartDate)/86400000):state==="MotherPlant"?Math.floor((now-vegStartDate)/86400000):0;
   const bloomStage = state==="Blooming"? Math.floor((now-bloomStartDate)/86400000):state==="Harvest"?Math.floor((now-harvestDate)/86400000):0;
   return (
     <Grid container>
@@ -61,49 +139,22 @@ export const PlantDetailPage = () => {
                     xs={12}
                     sx={{ display: "flex", justifyContent: "center" }}
                   >
+                    <Typography variant="h6" color="green">{type ?? ""}</Typography>
                     <Typography gutterBottom variant="h4">
                       {strain ?? "undefined"}
                     </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
                     <Typography variant="h6" color="text.secondary">
                       {plantAge} days old
                     </Typography>
+                    <PlantGender gender={gender}/>
                   </Grid>
                   <Grid
                     item
                     xs={12}
                     sx={{ display: "flex", justifyContent: "left" }}
                   >
-                    <Typography variant="body2" color="text.secondary">
-                      Start Date:{" "}
-                      {new Date(startDate).toDateString() ?? "undefined"}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
-                    <Typography gutterBottom variant="h7">
-                      {pheno ?? "undefined"}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
-                    <Typography
-                      gutterBottom
-                      variant="h7"
-                      sx={{ color: "green" }}
-                    >
-                      Gender: {gender ?? "undefined"}
+                    <Typography gutterBottom variant="h6">
+                      Pheno.:{pheno ?? "undefined"}
                     </Typography>
                   </Grid>
                   <Grid
@@ -115,6 +166,54 @@ export const PlantDetailPage = () => {
                       State: {state ?? "undefined"}
                     </Typography>
                   </Grid>
+                  <Grid
+                        item
+                        xs={12}
+                        sx={{ display: "flex", justifyContent: "left" }}
+                      >
+                        <PlantGroup group={group}/><PlantSource plant={plant}/>
+                      </Grid>
+
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <Typography variant="h6" color="text.secondary">
+                      Pot Size: {potSize ?? state==="Cloning"?"Cloner":""}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "left" }}  
+                  >
+                    <Typography variant="body2" color="text.secondary" display="block">
+                      {`Building: ${currentAddress?.building ?? "undefined"} 
+                            Room:${currentAddress?.room ?? " "} 
+                            ${currentAddress?.room==="Laboratory"?` 
+                                Rack: ${currentAddress?.rack}`:` 
+                                  Row: ${currentAddress?.row??""}`} 
+                                  ${currentAddress?.room==="Laboratory"?` 
+                                    Shelf: ${currentAddress?.shelf}`:` 
+                                    Tray: ${currentAddress?.tray??""}`}
+                                        Number:  ${currentAddress?.number??""}
+                                        `}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "left" }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      Start Date:{" "}
+                      {new Date(startDate).toDateString() ?? "undefined"}
+                    </Typography>
+                  </Grid>
+                  
                   {state === "Cloning" && (
                     
                     <Grid
@@ -129,15 +228,6 @@ export const PlantDetailPage = () => {
                   )}
                   {state === "Growing" && (
                     <>
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", justifyContent: "left" }}
-                    >
-                      <Typography variant="caption" color="text.secondary">
-                        Cloning Stage: {cloningStage} days
-                      </Typography>
-                    </Grid>
                     <Grid
                       item
                       xs={12}
@@ -169,10 +259,14 @@ export const PlantDetailPage = () => {
                         xs={12}
                         sx={{ display: "flex", justifyContent: "left" }}
                       >
+                        <Typography variant="body" color="text.secondary">
+                      Cloning Stage: {cloningStage}days    Veg Stage: {vegStage}days 
+                      </Typography>
                         <Typography variant="caption" color="text.secondary">
                           Clones Counter:{cloneCounter ?? "0"}
                         </Typography>
                       </Grid>
+                      
                       <Grid
                         item
                         xs={12}
