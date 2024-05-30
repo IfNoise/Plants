@@ -151,7 +151,7 @@ router.post("/new_action", async (req, res) => {
             action = null;
             break;
           }
-          action.oldAddress = plant.currentAddress;
+          action.address = plant.currentAddress;
 
           plant.set("currentAddress", data.address);
           break;
@@ -211,6 +211,7 @@ router.post("/new_action", async (req, res) => {
               date: Date.now(),
               type: "Start",
               source: plant._id,
+              address: data.address,
             };
             newClones.push({
               strain: plant.strain,
