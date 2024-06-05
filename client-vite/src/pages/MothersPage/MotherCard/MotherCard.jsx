@@ -24,7 +24,7 @@ export const MotherCard = (props) => {
         <Typography variant="body2" color="text.secondary" component="div">
           Clone counter:{props.plant.cloneCounter??'0'}clones
         </Typography>
-        <Typography variant="body2" color="text.secondary" component="div">
+        <Typography variant="h5" color="text.secondary" component="div">
           Maximum Clones Yeld:{props.plant.maxClones??'0'}clones
         </Typography>
       </CardContent>

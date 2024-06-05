@@ -2,8 +2,8 @@ import { useEffect } from "react";
 
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { Card, Alert, CircularProgress, Grid } from "@mui/material";
-import { Link,useParams } from "react-router-dom";
+import { Card, Alert, CircularProgress, Grid, Link } from "@mui/material";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
@@ -14,6 +14,7 @@ import PlantSpeedDial from "../../components/PlantSpeedDial/PlantSpeedDial";
 import propsTypes from "prop-types";
 
 const PlantGroup=({group})=>{
+const params=new URLSearchParams({group});
 return <div 
   style={{
     display:"flex",
@@ -27,7 +28,7 @@ return <div
   }}
 >
 {group&&
-<Link to={`/plants?${new URLSearchParams({group})}`} >Group</Link>}
+<Link href={`/plants?${params}`} >Group</Link>}
 {!group&&
 <Typography variant="caption" color="text.secondary">No Group</Typography>}
 </div>
@@ -54,7 +55,7 @@ style={{
     <Link to={`/strains/${source}`}>Source Strain</Link>
   }
   {type==="Clone"&&motherPlant&&
-    <Link to={`/plant/${motherPlant}`}>Mother Plant</Link>
+    <Link href={`/plant/${motherPlant}`}>Mother Plant</Link>
   }
   {source||motherPlant?null:
     <Typography variant="caption" color="text.secondary">No Source</Typography>
@@ -81,7 +82,9 @@ const PlantGender=({gender})=>{
     return <Typography variant="caption" color="text.secondary">Undefined</Typography>
   }
 }
-
+PlantGender.propTypes={
+    gender:propsTypes.string
+}
 
 
 export const PlantDetailPage = () => {
@@ -190,7 +193,7 @@ export const PlantDetailPage = () => {
                     sx={{ display: "flex", justifyContent: "left" }}  
                   >
                     <Typography variant="body2" color="text.secondary" display="block">
-                      {`Building: ${currentAddress?.building ?? "undefined"} 
+                      {currentAddress&&`Building: ${currentAddress?.building ?? "undefined"} 
                             Room:${currentAddress?.room ?? " "} 
                             ${currentAddress?.room==="Laboratory"?` 
                                 Rack: ${currentAddress?.rack}`:` 

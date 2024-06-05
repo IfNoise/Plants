@@ -254,25 +254,45 @@ router.post("/new_action", async (req, res) => {
 });
 // router.get("/test", async (req, res) => {
 //   try {
-//     // const plants = await Plant.find({
-//     //   state: "Stopped",
-//     // });
-//     // result = plants.map(async (plant) => {
-//     //   const result = await Plant.findByIdAndUpdate(
-//     //     "65ead409974c3784d01228a0",
-//     //     { state: "Growing",
-//     //      $pull: { actions: { type: "Stop" } }
-
-//     //      },
-
-//     //     { new: true, useFindAndModify: false }
-//     //   );
-//     // //});
+//     const plant = await Plant.findById(
+//       {$or: [
+//         {
+//           $and: [
+//             { "actions.type": "Relocation" },
+//             { "actions.address.building": "desired_building" },
+//             { "actions.address.room": "desired_room" },
+//             { "actions.date": { $lte: desired_date } },
+//             { "actions.type": { $ne: "Harvest" } },
+//             { "actions.type": { $ne: "Stop" } }
+//           ]
+//         },
+//         {
+//           $and: [
+//             { state: { $in: ["Harvested", "Stopped"] } },
+//             { "actions.type": "Relocation" },
+//             { "actions.address.building": "desired_building" },
+//             { "actions.address.room": "desired_room" },
+//             { "actions.date": { $lte: desired_date } },
+//             { "actions.type": { $in: ["Harvest", "Stop"] } }
+//           ]
+//         }
+//       ]
+//       }
+//     );
+    
+//       const result = await Plant.findByIdAndUpdate(
+//         "65db14f8fd04c5823aafabc0",
+//         { state: "Growing", $pull: { actions: { type: "Stop" } } },
+//         { new: true, useFindAndModify: false }
+//       );
+    
 //     res.json(result);
 //   } catch (error) {
 //     return res.status(500).json({ message: error.message });
 //   }
-// });
+// }
+// );
+
 
 module.exports = router;
 

@@ -46,7 +46,7 @@ export const deviceApi = createApi({
           body,
         };
       },
-      invalidatesTags: ["State"],
+      invalidatesTags: ["State","Config"],
     }),
     setConfig: build.mutation({
       query({deviceId, params}) {

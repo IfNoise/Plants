@@ -1,31 +1,36 @@
 import { Alert, Box, CircularProgress, Typography} from "@mui/material";
-import { useGetPlantsQuery } from "../store/plantsApi";
+import { useGetPlantsQuery} from "../store/plantsApi";
 import { FilterBar } from "../components/FilterBar/FilterBar";
 import { PlantsList } from "../components/PlantsList/PlantsList";
 import { useSelector } from "react-redux";
 import { useLocation} from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setFilter } from "../store/filterSlice";
+import { addGroup } from "../store/filterSlice";
+import { useEffect } from "react";
 
 
 
 export const PlantsPage = () => {
   const location = useLocation();
-  const pFilter = Object.fromEntries( new URLSearchParams(location.search));
-  console.log(pFilter);
   const dispatch = useDispatch();
-  if (Object.keys(pFilter).length > 0) {
-    dispatch(setFilter(pFilter));
-  }
-
   const sFilter = useSelector((state) => state.filter);
-  
-  
+  const params = new URLSearchParams(location.search);
+  console.log(params);
+
+  const pFilter = Object.fromEntries(params)
+  console.log(pFilter);
+
   const { isLoading, isError, error, data:plants } = useGetPlantsQuery(sFilter,{
     refetchOnReconnect:true,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true
   });
+  useEffect(() => {
+    if (pFilter['group']) {
+      dispatch(addGroup(pFilter['group']));
+    }
+  },[])
+ 
   const getData = () => plants.map((plant) => plant);
   return (
     <Box >

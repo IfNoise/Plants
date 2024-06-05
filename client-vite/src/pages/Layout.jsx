@@ -28,6 +28,7 @@ import { TrayButton } from "../components/TrayButton/TrayButton";
 import { Collapse, useMediaQuery } from "@mui/material";
 import Scanner from "../components/Scanner/Scanner";
 import PrintDialog from "../components/PrintDialog";
+import PropTypes from 'prop-types';
 
 function PrivateOutlet() {
   const { isAuth } = useAuth();
@@ -75,6 +76,11 @@ const CollapseList = ({ obj }) => {
       </Collapse>
     </>
   );
+};
+
+
+CollapseList.propTypes = {
+  obj: PropTypes.object,
 };
 
         
@@ -131,7 +137,6 @@ export const Layout = () => {
   const theme = useTheme();
 
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const [openMap, setOpenMap] = React.useState(false);
   const [open, setOpen] = React.useState(!isSmall && true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -143,9 +148,6 @@ export const Layout = () => {
     }
   }, [isSmall]);
 
-  const handleOpenMap = () => {
-    setOpenMap(!openMap);
-  };
   const handleDrawerClose = () => {
     setOpen(isSmall ? false : true);
   };

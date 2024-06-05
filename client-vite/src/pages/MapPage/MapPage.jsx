@@ -15,6 +15,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x4" },
           ],
+          numeration: "Up",
         },
         {
           trays: [
@@ -23,6 +24,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x4" },
           ],
+          numeration: "Up",
         },
         {
           trays: [
@@ -31,6 +33,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x4" },
           ],
+          numeration: "Up",
         },
         {
           trays: [
@@ -39,6 +42,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x4" },
           ],
+          numeration: "Up",
         },
         {
           trays: [
@@ -47,6 +51,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x4" },
           ],
+          numeration: "Up",
         },
         {
           trays: [
@@ -56,6 +61,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
           ],
+          numeration: "Down",
         },
         {
           trays: [
@@ -65,14 +71,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
           ],
-        },
-        {
-          trays: [
-            { plants: [], size: "4x4" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-          ],
+          numeration: "Down",
         },
         {
           trays: [
@@ -81,6 +80,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
           ],
+          numeration: "Down",
         },
         {
           trays: [
@@ -89,64 +89,133 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
           ],
+          numeration: "Down",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x4" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+          ],
+          numeration: "Down",
         },
       ],
-      columns: 2,
+      columns: 5,
     },
     Laboratory: {},
   },
   Hangar2: {
-    Main_room:{rows: [
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-      {
-        trays: [
-          { plants: [], size: "4x8" },
-          { plants: [], size: "4x8" },
-        ],
-      },
-    ],
-    columns: 2,},
+    Main_room: {
+      rows: [
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" }
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" }
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" }
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" }
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" }
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x4" }
+          ],
+          numeration: "Down",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x4" }
+          ],
+          numeration: "Down",
+        },
+        {
+          trays: [
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+
+          ],
+          numeration: "Down",
+        },
+      ],
+      columns: 6,
+    },
     Small_Room: {
       rows: [
         {
@@ -158,6 +227,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x4" },
           ],
+          numeration: "Down",
         },
         {
           trays: [
@@ -168,6 +238,7 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
           ],
+          numeration: "Down",
         },
         {
           trays: [
@@ -178,9 +249,10 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
           ],
+          numeration: "Down",
         },
       ],
-      columns: 1,
+      columns: 3,
     },
   },
 };
@@ -206,21 +278,19 @@ export const MapPage = () => {
     }
   }, [data]);
   useEffect(() => {
+    const rows = map[building][room]?.rows;
     plants.map((plant) => {
       if (!plant.currentAddress) return;
-      if (plant.currentAddress.row < 6) {
-        const row = plant.currentAddress.row - 1;
-        const trayNum = 4 - plant.currentAddress?.tray;
 
-        const tray = map[building][room].rows[row]?.trays[trayNum];
-        tray?.plants.push(plant);
+      const row = plant.currentAddress.row - 1;
+      let trayNum;
+      if (rows[row].numeration === "Up") {
+        trayNum = rows[row].trays.length - plant.currentAddress?.tray;
       } else {
-        const row = 10 - plant.currentAddress.row + 5;
-        const trayNum = plant.currentAddress?.tray - 1;
-
-        const tray = map[building][room].rows[row]?.trays[trayNum];
-        tray?.plants.push(plant);
+        trayNum = plant.currentAddress?.tray - 1;
       }
+      const tray = rows[row]?.trays[trayNum];
+      tray?.plants.push(plant);
     });
   }, [plants]);
   const totalPlants = plants.length;
@@ -238,7 +308,7 @@ export const MapPage = () => {
       <Box>
         <Box
           sx={{
-            width: "620px",
+            width: `${map[building][room].columns * 130}px`,
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
@@ -246,7 +316,7 @@ export const MapPage = () => {
           }}
         >
           {map[building][room].rows.map((row, index) => (
-            <Row key={index} trays={row.trays} />
+            <Row key={index} index={index} trays={row.trays} direction={row.numeration} />
           ))}
         </Box>
       </Box>
