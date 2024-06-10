@@ -205,6 +205,7 @@ router.post("/new_action", async (req, res) => {
           console.log(number);
           const group = crypto.randomBytes(8).toString("hex");
           action.clonesNumber = number;
+          action.group = group;
           const newClones = [];
           for (let index = 0; index < number; index++) {
             let firstAction = {
@@ -252,10 +253,11 @@ router.post("/new_action", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-// router.get("/test", async (req, res) => {
-//   try {
-//     const plant = await Plant.findById(
-//       {$or: [
+router.get("/test", async (req, res) => {
+  try {
+    const plant = await Plant.find(
+     {
+  //$or: [
 //         {
 //           $and: [
 //             { "actions.type": "Relocation" },
@@ -277,21 +279,21 @@ router.post("/new_action", async (req, res) => {
 //           ]
 //         }
 //       ]
-//       }
-//     );
+      }
+    );
     
-//       const result = await Plant.findByIdAndUpdate(
-//         "65db14f8fd04c5823aafabc0",
-//         { state: "Growing", $pull: { actions: { type: "Stop" } } },
-//         { new: true, useFindAndModify: false }
-//       );
+      const result = await Plant.findByIdAndUpdate(
+        "65db14f8fd04c5823aafabc0",
+        { state: "Growing", $pull: { actions: { type: "Stop" } } },
+        { new: true, useFindAndModify: false }
+      );
     
-//     res.json(result);
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// }
-// );
+    res.json(result);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+);
 
 
 module.exports = router;

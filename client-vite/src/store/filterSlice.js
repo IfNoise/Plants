@@ -60,7 +60,7 @@ export const filterSlice = createSlice({
     addGroup: (state, action) => {
       if (action.payload === null) {
         delete state.group;
-      } else state.group = action.payload;
+      } else return {group:action.payload};
     },
     setFilter: (state, action) => {
       return action.payload;

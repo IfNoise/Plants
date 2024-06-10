@@ -5,7 +5,7 @@ import { PlantsList } from "../components/PlantsList/PlantsList";
 import { useSelector } from "react-redux";
 import { useLocation} from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addGroup } from "../store/filterSlice";
+import { addGroup ,clearFilter} from "../store/filterSlice";
 import { useEffect } from "react";
 
 
@@ -20,14 +20,18 @@ export const PlantsPage = () => {
   const pFilter = Object.fromEntries(params)
   console.log(pFilter);
 
-  const { isLoading, isError, error, data:plants } = useGetPlantsQuery(sFilter,{
+  const { isLoading, isError, error, data:plants} = useGetPlantsQuery({...sFilter},{
     refetchOnReconnect:true,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true
   });
   useEffect(() => {
+    //dispatch(clearFilter());
     if (pFilter['group']) {
+      
       dispatch(addGroup(pFilter['group']));
+    }else{
+      dispatch(clearFilter());
     }
   },[])
  

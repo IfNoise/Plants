@@ -3,6 +3,7 @@ import { Row } from "./Row";
 import { useGetPlantsQuery } from "../../store/plantsApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Rack } from "./Rack";
 
 const map = {
   Hangar1: {
@@ -103,7 +104,150 @@ const map = {
       ],
       columns: 5,
     },
-    Laboratory: {},
+    Laboratory: {
+      racks:[
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            },
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        },
+        {
+          shelfs:[
+            {
+              plants:[]
+            },
+            {
+              plants:[]
+            }
+          ]
+        }
+      ],
+      rows:[
+        {
+          trays:[
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x4" },
+          ],
+          numeration: "Up",
+
+        }
+      ]
+    },
   },
   Hangar2: {
     Main_room: {
@@ -278,20 +422,32 @@ export const MapPage = () => {
     }
   }, [data]);
   useEffect(() => {
-    const rows = map[building][room]?.rows;
+    if(room==="Laboratory"){
+    const racks = map[building][room]?.racks;
     plants.map((plant) => {
       if (!plant.currentAddress) return;
 
-      const row = plant.currentAddress.row - 1;
-      let trayNum;
-      if (rows[row].numeration === "Up") {
-        trayNum = rows[row].trays.length - plant.currentAddress?.tray;
-      } else {
-        trayNum = plant.currentAddress?.tray - 1;
-      }
-      const tray = rows[row]?.trays[trayNum];
-      tray?.plants.push(plant);
-    });
+      const rack = plant.currentAddress.rack - 1;
+      let shelfNum= racks[rack]?.shelfs.length - plant.currentAddress?.shelf;
+      const shelf = racks[rack]?.shelfs[shelfNum];
+      shelf?.plants.push(plant);
+    })}else{
+      plants.map((plant) => {
+        if (!plant.currentAddress) return;
+        if (plant.currentAddress.row < 6) {
+          const row = plant.currentAddress.row - 1;
+          const trayNum = 4 - plant.currentAddress?.tray;
+  
+          const tray = map[building][room].rows[row]?.trays[trayNum];
+          tray?.plants.push(plant);
+        } else {
+          const row = 10 - plant.currentAddress.row + 5;
+          const trayNum = plant.currentAddress?.tray - 1;
+  
+          const tray = map[building][room].rows[row]?.trays[trayNum];
+          tray?.plants.push(plant);
+        }
+      })}
   }, [plants]);
   const totalPlants = plants.length;
   if (isError) return <Box>Error: {error.message}</Box>;
@@ -308,14 +464,19 @@ export const MapPage = () => {
       <Box>
         <Box
           sx={{
-            width: `${map[building][room].columns * 130}px`,
+            width: "100%",
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
             flex: "0 0 0",
+            verticalAlign:""
+
           }}
         >
-          {map[building][room].rows.map((row, index) => (
+          {map[building][room]?.racks && map[building][room].racks.map((rack, index) => (
+            <Rack key={index} index={index} shelfs={rack.shelfs} />
+          ))}
+          {map[building][room]?.rows &&  map[building][room].rows.map((row, index) => (
             <Row key={index} index={index} trays={row.trays} direction={row.numeration} />
           ))}
         </Box>

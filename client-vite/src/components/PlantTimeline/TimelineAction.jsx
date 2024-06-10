@@ -40,9 +40,10 @@ export default function TimelineAction({ action }) {
         <Typography variant="h5">{actionData[action.type]?.text}</Typography>
         {action?.oldAddress && (
           <Typography variant="caption">
-            {action.oldAddress.building}
-
-            {action.oldAddress.room}
+            Building:{action.oldAddress?.building}
+            Room:{action.oldAddress?.room}
+            Row:{action.oldAddress?.row}
+            Tray{action.oldAddress?.tray}
           </Typography>
         )}
         {action?.potSize && (

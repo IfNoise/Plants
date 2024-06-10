@@ -266,8 +266,8 @@ export const Layout = () => {
 
                           return <CollapseList key={i} obj={obj}/> } else {
                 return (
-                  <ListItem key={obj.text} disablePadding>
-                    <ListItemButton component={Link} to={obj.href}>
+                  <ListItem key={obj.text} disablePadding >
+                    <ListItemButton component={Link} to={obj.href}  >
                       <ListItemIcon>{obj.icon}</ListItemIcon>
                       <ListItemText primary={obj.text} />
                     </ListItemButton>
