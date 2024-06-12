@@ -51,7 +51,7 @@ router.post("/new_plant", async (req, res) => {
       }
     } else if (sourceType === "Seed") {
       const start = strain?.lastIdx || 1;
-      for (let index = 0; index <= number; index++) {
+      for (let index = 1; index <= number; index++) {
         let pheno = strain.code + "#" + (index+start).toString();
 
         newPlants.push({
