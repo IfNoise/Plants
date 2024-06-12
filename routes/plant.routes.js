@@ -80,6 +80,7 @@ router.post("/new_plant", async (req, res) => {
     if(result.length===0){
       return res.status(500).json({ message: "Error while creating plants" });
     }else if( result.length===number ){ 
+      console.log("Plants created successfully")
     const currentCounter = strain.counter;
     const currentLIdx = strain?.lastIdx || 0;
     const newCounter = currentCounter - number;
