@@ -76,13 +76,13 @@ router.post("/new_plant", async (req, res) => {
         });
       }
     }
-    const result = Promise.all( Plant.insertMany(newPlants));
+    const result = await Plant.insertMany(newPlants);
     if(result.length===0){
       return res.status(500).json({ message: "Error while creating plants" });
     }else if( result.length===number ){ 
       console.log("Plants created successfully")
     const currentCounter = strain.counter;
-    const currentLIdx = strain?.lastIdx || 0;
+    const currentLIdx = strain?.lastIdx || 0; 
     const newCounter = currentCounter - number;
     strain.set("counter", newCounter);
     strain.set("lastIdx", currentLIdx + number);
