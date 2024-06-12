@@ -11,6 +11,7 @@ router.post("/new_plant", async (req, res) => {
   try {
     //const user = await User.findById(req.user.userId)
     const group = crypto.randomBytes(8).toString("hex");
+    startDate = Date.now();
     let strain;
     if (req.body?.strain) {
       strain = await Strain.findById(req.body.strain);
@@ -33,7 +34,7 @@ router.post("/new_plant", async (req, res) => {
           strain: strain.name,
           pheno: strain.code,
           gender,
-          startDate: Date.now(),
+          startDate,
           currentAddress: {
             building: "Hangar1",
             room: "Laboratory",
@@ -58,7 +59,7 @@ router.post("/new_plant", async (req, res) => {
           pheno,
           gender,
           group,
-          startDate: Date.now(),
+          startDate,
           currentAddress: {
             building: "Hangar1",
             room: "Laboratory",
