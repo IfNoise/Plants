@@ -55,11 +55,12 @@ router.post("/new_plant", async (req, res) => {
         let pheno = strain.code + "#" + index;
 
         newPlants.push({
+          startDate,
           strain: strain.name,
           pheno,
           gender,
           group,
-          startDate,
+          
           currentAddress: {
             building: "Hangar1",
             room: "Laboratory",
