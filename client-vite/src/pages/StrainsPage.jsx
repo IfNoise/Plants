@@ -40,7 +40,12 @@ const columns = [
 ];
 export const StrainsPage = () => {
   const navigate = useNavigate();
-  const {isLoading,isError,error,data,refetch}=useGetStrainsQuery({})
+  const {isLoading,isError,error,data,refetch}=useGetStrainsQuery({},{
+    refetchOnReconnect:true,
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true
+  }
+  )
   
 
   const plantDetails = (id) => {
