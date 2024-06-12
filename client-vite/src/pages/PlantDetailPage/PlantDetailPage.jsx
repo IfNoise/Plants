@@ -183,7 +183,7 @@ export const PlantDetailPage = () => {
                     sx={{ display: "flex", justifyContent: "center" }}
                   >
                     <Typography variant="h6" color="text.secondary">
-                      Pot Size: {potSize ?? state==="Cloning"?"Cloner":""}
+                      Pot Size: {potSize||"undefined"}
                     </Typography>
                   </Grid>
                   <Grid
