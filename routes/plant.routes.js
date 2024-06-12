@@ -4,9 +4,11 @@ const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
 const { type } = require("os");
+const c = require("config");
 
 router.post("/new_plant", async (req, res) => {
   const number = parseInt(req.body.form.seedsNumber);
+  console.log(req.body);
   try {
     //const user = await User.findById(req.user.userId)
     const group = crypto.randomBytes(8).toString("hex");
@@ -16,6 +18,7 @@ router.post("/new_plant", async (req, res) => {
     } else if (req.body?.strainName) {
       strain = await Strain.findOne({ name: req.body.strainName });
     }
+    console.log(strain);
     const newPlants = [];
     const sourceType = strain.sourceType;
     const gender = strain.sourceType === "Seed" ? "undefined" : "Female";
