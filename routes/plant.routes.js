@@ -272,7 +272,7 @@ router.get("/test", async (req, res) => {
     
       const result = await Strain.findByIdAndUpdate(
         "658c353dee324cc5b4b3776c",
-        { counter: 7,lastIdx: 5},
+        { counter: 7,lastIdx: 5,sourceType: "Seed"},
         { new: true, useFindAndModify: false }
       );
     
