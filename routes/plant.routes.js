@@ -6,7 +6,7 @@ const Strain = require("../models/Strain");
 const { type } = require("os");
 
 router.post("/new_plant", async (req, res) => {
-  const number = parseInt(req.body.number);
+  const number = parseInt(req.body.form.seedsNumber);
   try {
     //const user = await User.findById(req.user.userId)
     const group = crypto.randomBytes(8).toString("hex");
