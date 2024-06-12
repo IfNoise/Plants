@@ -268,36 +268,10 @@ router.post("/new_action", async (req, res) => {
 });
 router.get("/test", async (req, res) => {
   try {
-    const plant = await Plant.find(
-     {
-  //$or: [
-//         {
-//           $and: [
-//             { "actions.type": "Relocation" },
-//             { "actions.address.building": "desired_building" },
-//             { "actions.address.room": "desired_room" },
-//             { "actions.date": { $lte: desired_date } },
-//             { "actions.type": { $ne: "Harvest" } },
-//             { "actions.type": { $ne: "Stop" } }
-//           ]
-//         },
-//         {
-//           $and: [
-//             { state: { $in: ["Harvested", "Stopped"] } },
-//             { "actions.type": "Relocation" },
-//             { "actions.address.building": "desired_building" },
-//             { "actions.address.room": "desired_room" },
-//             { "actions.date": { $lte: desired_date } },
-//             { "actions.type": { $in: ["Harvest", "Stop"] } }
-//           ]
-//         }
-//       ]
-      }
-    );
     
-      const result = await Plant.findByIdAndUpdate(
-        "65db14f8fd04c5823aafabc0",
-        { state: "Growing", $pull: { actions: { type: "Stop" } } },
+      const result = await Strain.findByIdAndUpdate(
+        "658c353dee324cc5b4b3776c",
+        { counter: 7,lastIdx: 5},
         { new: true, useFindAndModify: false }
       );
     
