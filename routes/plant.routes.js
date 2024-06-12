@@ -7,7 +7,7 @@ const c = require("config");
 
 router.post("/new_plant", async (req, res) => {
   const number = parseInt(req.body.form.seedsNumber);
-  console.log(req.body);
+  console.log(number);
   try {
     //const user = await User.findById(req.user.userId)
     const group = crypto.randomBytes(8).toString("hex");
