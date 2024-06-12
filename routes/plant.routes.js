@@ -3,8 +3,6 @@ const Plant = require("../models/Plant");
 const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
-const { type } = require("os");
-const c = require("config");
 
 router.post("/new_plant", async (req, res) => {
   const number = parseInt(req.body.form.seedsNumber);
@@ -78,8 +76,10 @@ router.post("/new_plant", async (req, res) => {
         });
       }
     }
-
-    await Plant.insertMany(newPlants);
+    const result = await Plant.insertMany(newPlants);
+    if(result.length===0){
+      return res.status(500).json({ message: "Error while creating plants" });
+    }else if( result.length===number ){ 
     const currentCounter = strain.counter;
     const currentLIdx = strain?.lastIdx || 0;
     const newCounter = currentCounter - number;
@@ -87,6 +87,7 @@ router.post("/new_plant", async (req, res) => {
     strain.set("lastIdx", currentLIdx + number);
     await strain.save();
     res.status(201).json(strain);
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
