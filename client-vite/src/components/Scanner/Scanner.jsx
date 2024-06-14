@@ -141,7 +141,7 @@ export default function Scanner() {
                <IconButton
               variant="outlined"
               onClick={close}
-              size="small"
+              size="large"
               sx={{
               right: 0,
               position: "absolute",

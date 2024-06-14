@@ -8,7 +8,7 @@ const Dashboard = () => {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true});
   if (data?.length === 0) {
-    return <Alert severity="info">No devices found</Alert>;
+    return <Alert severity="info">No devices found{error}</Alert>;
   }
   return (
     <Box >

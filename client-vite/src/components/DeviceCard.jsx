@@ -39,6 +39,8 @@ const timeToSec = (time) => {
   return time.hour() * 3600 + time.minute() * 60 + time.second();
 };
 const modes = ["Off", "Manual", "Auto"];
+
+
 const Status = ({ status }) => {
   switch (status) {
     case "connected":
@@ -54,6 +56,8 @@ const Status = ({ status }) => {
 Status.propTypes = {
   status: PropTypes.string.isRequired,
 };
+
+
 const Outputs = ({ deviceId, updateInterval }) => {
   const { isLoading, isError, data } = useGetStateQuery(deviceId, {
     pollingInterval: updateInterval,
@@ -283,14 +287,14 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           name="Start"
           value={config.start}
           onChange={(e) => {
-            onSave({ [name]: { start: timeToSec(e) } }, true);
+            onSave({ [name]: { start: timeToSec(e) } }, false);
           }}
         />
         <TimeField
           name="Stop"
           value={config.stop}
           onChange={(e) => {
-            onSave({ [name]: { stop: timeToSec(e) } }, true);
+            onSave({ [name]: { stop: timeToSec(e) } }, false);
           }}
         />
 
@@ -302,7 +306,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           type="number"
           value={config.win}
           onChange={(event) => {
-            onSave({ [name]: { win: parseInt(event.target.value) } }, true);
+            onSave({ [name]: { win: parseInt(event.target.value) } }, false);
           }}
         />
         <TextField
@@ -313,7 +317,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           type="number"
           value={config.num}
           onChange={(event) => {
-            onSave({ [name]: { num: parseInt(event.target.value) } }, true);
+            onSave({ [name]: { num: parseInt(event.target.value) } }, false);
           }}
         />
         <Button onClick={handleClose}>Close</Button>
@@ -388,14 +392,14 @@ const LightTimerCard = ({ name, config, onSave }) => {
           name="Start"
           value={config.start}
           onChange={(e) => {
-            onSave({ [name]: { start: timeToSec(e) } }, true);
+            onSave({ [name]: { start: timeToSec(e) } }, false);
           }}
         />
         <TimeField
           name="Stop"
           value={config.stop}
           onChange={(e) => {
-            onSave({ [name]: { stop: timeToSec(e) } }, true);
+            onSave({ [name]: { stop: timeToSec(e) } }, false);
           }}
         />
         <Button onClick={handleClose}>Close</Button>

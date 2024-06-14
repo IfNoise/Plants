@@ -274,12 +274,13 @@ router.post("/new_action", async (req, res) => {
 });
 router.get("/test", async (req, res) => {
   try {
-    
-      const result = await Strain.findByIdAndUpdate(
-        "658c353dee324cc5b4b3776c",
-        { counter: 7,lastIdx: 5,sourceType: "Seed"},
-        { new: true, useFindAndModify: false }
-      );
+      const plants = await Plant.find({
+        state: "Harvested", 
+      });
+      const result=plants.map(async (plant) => {
+        plant.set("currentAddress", {});
+        return await plant.save();
+      });
     
     res.json(result);
   } catch (error) {

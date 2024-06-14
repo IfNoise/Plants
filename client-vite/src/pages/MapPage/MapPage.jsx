@@ -8,6 +8,7 @@ import { Rack } from "./Rack";
 const map = {
   Hangar1: {
     Main_room: {
+      width:`650px`,
       rows: [
         {
           trays: [
@@ -105,6 +106,7 @@ const map = {
       columns: 5,
     },
     Laboratory: {
+      width:"100%",
       racks:[
         {
           shelfs:[
@@ -222,7 +224,10 @@ const map = {
             },
             {
               plants:[]
-            }
+            },
+            {
+              plants:[]
+            },
           ]
         },
         {
@@ -232,7 +237,10 @@ const map = {
             },
             {
               plants:[]
-            }
+            },
+            {
+              plants:[]
+            },
           ]
         }
       ],
@@ -251,6 +259,7 @@ const map = {
   },
   Hangar2: {
     Main_room: {
+      width:`780px`,
       rows: [
         {
           trays: [
@@ -361,6 +370,7 @@ const map = {
       columns: 6,
     },
     Small_Room: {
+      width:`390px`,
       rows: [
         {
           trays: [
@@ -426,29 +436,27 @@ export const MapPage = () => {
     const racks = map[building][room]?.racks;
     plants.map((plant) => {
       if (!plant.currentAddress) return;
-
       const rack = plant.currentAddress.rack - 1;
       let shelfNum= racks[rack]?.shelfs.length - plant.currentAddress?.shelf;
       const shelf = racks[rack]?.shelfs[shelfNum];
       shelf?.plants.push(plant);
     })}else{
+      const rows = map[building][room]?.rows;
       plants.map((plant) => {
         if (!plant.currentAddress) return;
-        if (plant.currentAddress.row < 6) {
-          const row = plant.currentAddress.row - 1;
-          const trayNum = 4 - plant.currentAddress?.tray;
-  
-          const tray = map[building][room].rows[row]?.trays[trayNum];
-          tray?.plants.push(plant);
+        const row = plant.currentAddress.row - 1;
+        let trayNum;
+        if (rows[row].numeration === "Up") {
+          trayNum = rows[row].trays.length - plant.currentAddress?.tray;
         } else {
-          const row = 10 - plant.currentAddress.row + 5;
-          const trayNum = plant.currentAddress?.tray - 1;
-  
-          const tray = map[building][room].rows[row]?.trays[trayNum];
-          tray?.plants.push(plant);
+          trayNum = plant.currentAddress?.tray - 1;
         }
-      })}
-  }, [plants]);
+        const tray = rows[row]?.trays[trayNum];
+        tray?.plants.push(plant);
+      });
+    }
+  }
+  , [plants,building,room]);
   const totalPlants = plants.length;
   if (isError) return <Box>Error: {error.message}</Box>;
   if (isLoading) return <Box>Loading...</Box>;
@@ -464,7 +472,7 @@ export const MapPage = () => {
       <Box>
         <Box
           sx={{
-            width: "100%",
+            width: map[building][room]?.width,
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
