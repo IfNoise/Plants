@@ -14,6 +14,7 @@ export default function Tray({size, plants}) {
         borderRadius: 1,
         backgroundColor: "greenyellow",
         border: "1px solid green",
+
         margin: 1,
       }}
     >
@@ -26,7 +27,7 @@ export default function Tray({size, plants}) {
           p:"1px",
           m:"3px",
           height:"25px",
-          contentAlign:"center",
+          justifyContent:"flex-start"
         }}
       >
         <Typography 
@@ -38,7 +39,13 @@ export default function Tray({size, plants}) {
         variant="caption"
         >Total:{plantCount}plants</Typography>
       </Box>
-      <Stack direction="row" useFlexGap flexWrap="wrap" spacing={0.2} margin="1px">
+      <Stack direction="row" useFlexGap flexWrap="wrap" spacing={"5"} margin="1px"
+      sx={{
+        display: "flex",
+        justifyContent: "space-around",
+        height:"100%",
+      }}
+      >
       {plants?.map((plant,i) => (
         <Plant key={i} plant={plant} />
       ))}

@@ -3,6 +3,27 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+function stringToColor(string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = ((hash >> (i * 8))+75 )& 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+
 export default function Plant({ plant }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
@@ -23,7 +44,7 @@ export default function Plant({ plant }) {
         height: "34px",
         border: "1px solid green",
         borderRadius: "2px",
-        backgroundColor: "greenyellow",
+        backgroundColor: stringToColor(plant.strain),
         p: "1px",
         cursor: "pointer",
       }}
@@ -59,16 +80,16 @@ export default function Plant({ plant }) {
         anc
         onClose={() => {}}
       >
-        <Typography variant="caption" gutterBottom display="block" sx={{fontSize:"12px",fontWeight:"bold"}}>
+        <Typography  gutterBottom display="block" sx={{fontSize:"16px",fontWeight:"bold"}}>
           {plant.strain}
         </Typography>
-        <Typography variant="caption" gutterBottom display="block">
+        <Typography sx={{fontSize:"10px",fontWeight:"bold"}} gutterBottom display="block">
           {plant.pheno}
         </Typography>
-        <Typography variant="caption" gutterBottom display="block">
+        <Typography sx={{fontSize:"10px",fontWeight:"bold"}} gutterBottom display="block">
           {plant.state}
         </Typography>
-        <Typography variant="caption" gutterBottom display="block">
+        <Typography sx={{fontSize:"10px",fontWeight:"bold"}} gutterBottom display="block">
           {plant.potSize || ""}
         </Typography>
       </Popper>

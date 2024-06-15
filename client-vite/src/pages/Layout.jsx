@@ -1,4 +1,4 @@
-import { Outlet, Link, Navigate, useLocation } from "react-router-dom";
+import { Outlet, Link, Navigate, useLocation,useNavigate } from "react-router-dom";
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -135,7 +135,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export const Layout = () => {
   const theme = useTheme();
-
+  const navigate = useNavigate();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const [open, setOpen] = React.useState(!isSmall && true);
   const handleDrawerOpen = () => {
@@ -157,6 +157,10 @@ export const Layout = () => {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ width: "100%" }}>
+          <IconButton
+            aria-label="back"
+            onClick={() => navigate(-1)}
+            ><ChevronLeftIcon/></IconButton>
           <IconButton
             aria-label="open drawer"
             onClick={handleDrawerOpen}
