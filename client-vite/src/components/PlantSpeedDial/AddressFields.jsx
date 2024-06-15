@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 
 import { buildRooms } from "../../config/config";
+import AddressScanner from "../AddressScanner/AddressScanner";
 
 
 
@@ -26,6 +27,31 @@ export const AddressFields = () => {
   const newAction = useSelector((state) => state.newAction);
   const [rooms, setRooms] = useState([]);
   
+  const setAddress = (address) => {
+    Object.keys(address).forEach((key) => {
+      if (key === "building") {
+        dispatch(addBuilding(address[key]));
+        setRooms(buildRooms[address[key]]);
+      }else if (key === "room") {
+        dispatch(addRoom(address[key]));
+      }else if (key === "row") {
+        dispatch(addRow(address[key]));
+      }
+      else if (key === "rack") {
+        dispatch(addRack(address[key]));
+      }
+      else if (key === "tray") {
+        dispatch(addTray(address[key]));
+      }
+      else if (key === "number") {
+        dispatch(addNumber(address[key]));
+      }
+      else if (key === "shelf") {
+        dispatch(addShelf(address[key]));
+      }
+
+  
+  })}
   const handlerBuilding = (e) => {
     const { value } = e.target;
     dispatch(addBuilding(value));
@@ -69,7 +95,7 @@ export const AddressFields = () => {
 
   return (
     <>
-     
+      <AddressScanner setOutput={setAddress} /> 
       <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
@@ -172,5 +198,5 @@ export const AddressFields = () => {
         }}
       />
     </>
-  );
-};
+  )
+}
