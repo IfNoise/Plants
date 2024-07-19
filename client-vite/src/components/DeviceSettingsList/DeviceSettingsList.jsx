@@ -207,40 +207,46 @@ ChapterField.propTypes = {
   value: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
 };
-const DeviceSettingsList = ({ deviceId,onCancel }) => {
+const DeviceSettingsList = ({ deviceId, onCancel }) => {
   const [changes, setChanges] = useState({});
   //const [config,setConfig]=useState({});
-  const {isSuccess,isLoading,data,refetch}=useGetConfigQuery(deviceId,{refetchOnReconnect:true,
+  const { isSuccess, isLoading, data, refetch } = useGetConfigQuery(deviceId, {
+    refetchOnReconnect: true,
     refetchOnMountOrArgChange: true,
-    refetchOnFocus: true})
-  const[setConfig]=useSetConfigMutation();
+    refetchOnFocus: true,
+  });
+  const [setConfig] = useSetConfigMutation();
   const [newConfig, setNewConfig] = useState({});
-  const [reboot,setReboot]=useState(false);
+  const [reboot, setReboot] = useState(false);
   const handleSave = () => {
     console.log("Save", changes);
-    setConfig({deviceId,params:{reboot:reboot||false,params:changes}});
+    setConfig({
+      deviceId,
+      params: { reboot: reboot || false, params: changes },
+    });
     setChanges({});
     refetch();
-    setNewConfig(JSON.parse(JSON.stringify(data)))
+    setNewConfig(JSON.parse(JSON.stringify(data)));
+    setReboot(false);
   };
   const handleChange = (path, value) => {
     setChanges((prev) => {
-      let next ={...prev};
+      let next = { ...prev };
       setKey(next, path, value);
       return next;
     });
     setNewConfig((prev) => {
-      let next  = { ...prev}
+      let next = { ...prev };
       setKey(next, path, value);
       return next;
     });
   };
-  useEffect(()=>{
-    if(isSuccess&&data){
+  useEffect(() => {
+    if (isSuccess && data) {
       //setConfig(JSON.parse(JSON.stringify(data)))
-      setNewConfig(JSON.parse(JSON.stringify(data)))
+      setNewConfig(JSON.parse(JSON.stringify(data)));
     }
-  },[isSuccess,data])
+  }, [isSuccess, data]);
 
   const setKey = function (obj, key, val) {
     var parts = key.split(".");
@@ -253,56 +259,78 @@ const DeviceSettingsList = ({ deviceId,onCancel }) => {
       }
     }
   };
-  if(isLoading|| Object.keys(data).length <1)return(<CircularProgress/>)
+  if (isLoading) return <CircularProgress />;
   return (
     <>
-      <Box sx={{height:"70%",overflowY:"scroll"}}>
-
-        {isSuccess&&
-        <ChapterField
-        name="Settings"
-        path=""
-        value={newConfig}
-        onChange={handleChange}
-      />}
-      </Box>
-      <Box sx={{alignContent:"center",position: "fixed",bottom: 0,left: 0}}>
-      <Typography sx={{}} variant="caption" component="div">{JSON.stringify(changes)}</Typography>
-      
-      <Button
-        variant="outlined"
-        disabled={Object.keys(changes).length === 0}
-        onClick={handleSave}
-      >
-        Save
-      </Button>
-      <Button
-        variant="outlined"
-        //disabled={Object.keys(changes).length === 0}
-        onClick={() => {
-          setNewConfig(JSON.parse(JSON.stringify(data)))
-          setChanges({});
-        }} >Reset</Button>
-      <FormControlLabel
-      label="Reboot"
-      control={
-        <Checkbox
-          checked={reboot}
-          onChange={(event) => {
-            setReboot(event.target.checked);
-          }}
-        />
-      }
-    />
-      <Button
-        variant="outlined"
-        onClick={() => {
-          onCancel();
+      <Box
+        sx={{
+          height: "70%",
+          overflowY: "scroll",
+          p: "20px",
+          m: "20px",
+          borderBottom: "1px solid #ccc",
         }}
       >
-        Ok
-      </Button>
-    </Box>
+        <Typography variant="h6" component="h1" gutterBottom>
+          Device Settings
+        </Typography>
+        {isSuccess && (
+          <ChapterField
+            name="Settings"
+            path=""
+            value={newConfig}
+            onChange={handleChange}
+          />
+        )}
+      </Box>
+      <Box
+        sx={{ alignContent: "center", position: "relative", bottom: 0, left: 0, p: "20px",m:"20px",border: "1px solid #ccc",width:"calc(100% - 40px)"}}
+      >
+        <Typography sx={{}} variant="caption" component="div">
+          {JSON.stringify(changes)}
+        </Typography>
+
+        <Button
+          sx={{ margin: "10px" }}
+          variant="outlined"
+          disabled={Object.keys(changes).length === 0}
+          onClick={handleSave}
+        >
+          Save
+        </Button>
+        <Button
+          sx={{ margin: "10px" }}
+          variant="outlined"
+          //disabled={Object.keys(changes).length === 0}
+          onClick={() => {
+            setNewConfig(JSON.parse(JSON.stringify(data)));
+            setChanges({});
+          }}
+        >
+          Reset
+        </Button>
+        <FormControlLabel
+          sx={{ margin: "10px" }}
+          label="Reboot"
+          control={
+            <Checkbox
+              checked={reboot}
+              onChange={(event) => {
+                setReboot(event.target.checked);
+              }}
+            />
+          }
+        />
+        <Button
+          sx={{ margin: "10px" }}
+          variant="outlined"
+          onClick={() => {
+            onCancel();
+          }}
+        >
+          Ok
+        </Button>
+      </Box>
     </>
   );
 };

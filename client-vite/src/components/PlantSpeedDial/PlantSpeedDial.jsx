@@ -43,8 +43,10 @@ import { SetGenderFields } from "./SetGenderFields";
 import { PickingFields } from "./PickingFields";
 import { AddressFields } from "./AddressFields";
 import { useState, useEffect } from "react";
-import { addType, clear } from "../../store/newActionSlice";
+import { addDate, addType, clear } from "../../store/newActionSlice";
 import { PrinterContext } from "../../context/PrinterContext";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const states = {
   Germination: {
@@ -155,6 +157,7 @@ export default function PlantSpeedDial(props) {
   const [printPlants] = usePrintPlantsMutation();
   const [clearTray] = useClearTrayMutation();
   const [printTray] = usePrintTrayMutation();
+  const [date, setDate] = useState(null);
   const { setPrintDialog } = useContext(PrinterContext);
   //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
@@ -162,11 +165,11 @@ export default function PlantSpeedDial(props) {
   const plants = getPlants();
   const state = plants[0]?.state || "Germination";
   const actions = states[state].actions;
+  const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
-    if (newAction) {
       dispatch(clear());
-    }
+      console.log(newAction)
   }, []);
 
   useEffect(() => {
@@ -181,6 +184,10 @@ export default function PlantSpeedDial(props) {
     }
   }, [isSuccess]);
 
+  const handleChangeDate = (value) => {
+    dispatch(addDate(new Date(value.$d)));
+    setDate(new Date(value.$d));
+  };
   const handleActionType = (e) => {
     const { value } = e.target;
     if (newAction) {
@@ -335,7 +342,49 @@ export default function PlantSpeedDial(props) {
               })}
             </Select>
           </FormControl>
-          {newAction.actionType && actionFields[newAction.actionType].fields}
+          <FormControl variant="outlined" sx={{ m: "3px", width: "98%" }}>
+            <InputLabel id="date-label">Action Date</InputLabel>
+            <Select
+              labelId="date-label"
+              value={showPicker}
+              label="Action Date"
+              onChange={
+                (e) => setShowPicker(e.target.value)
+                //setShowPicker(e.target.value)
+              }
+            >
+              <MenuItem value={false}>Current Date</MenuItem>
+
+              <MenuItem value={true}>Custom Date</MenuItem>
+            </Select>
+          </FormControl>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              sx={{ m: "1px" }}
+              hidden={!showPicker}
+              disableFuture
+              closeOnSelect
+              size="small"
+              value={date}
+              label="Start Date"
+              onChange={handleChangeDate}
+              slotProps={{
+                layout: {
+                  sx: {
+                    ".MuiDateCalendar-root": {
+                      color: "#1565c0",
+                      borderRadius: 4,
+                      borderWidth: 1,
+                      borderColor: "#2196f3",
+                      border: "1px solid",
+                      backgroundColor: "#bbdefb",
+                    },
+                  },
+                },
+              }}
+            />
+          </LocalizationProvider>
+          {newAction?.actionType && actionFields[newAction.actionType]?.fields}
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button onClick={newActionFunc} disabled={!newAction.actionType}>

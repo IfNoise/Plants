@@ -143,7 +143,7 @@ router.post("/new_action", async (req, res) => {
     const id = req.body.id;
     let action;
     id.map(async (idx) => {
-      action = { type: data.actionType, date: Date.now() };
+      action = { type: data.actionType, date: data?.date||Date.now() };
       const plant = await Plant.findById(idx);
 
       switch (action.type) {
@@ -274,15 +274,18 @@ router.post("/new_action", async (req, res) => {
 });
 router.get("/test", async (req, res) => {
   try {
-      const plants = await Plant.find({
-        state: "Harvested", 
+      const plant = await Plant.findById("65ead409974c3784d01228a0");
+      plant.actions.pop();
+      plant.set("state","MotherPlant");
+      plant.set("currentAddress",{
+        building: "Hangar1",
+        room: "Laboratory",
+        row: 1,
+        tray: 1,
       });
-      const result=plants.map(async (plant) => {
-        plant.set("currentAddress", {});
-        return await plant.save();
-      });
+      await plant.save();
     
-    res.json(result);
+    res.json({ message: "Ok" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

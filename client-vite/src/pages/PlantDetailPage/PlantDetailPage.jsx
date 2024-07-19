@@ -169,13 +169,13 @@ export const PlantDetailPage = () => {
                       State: {state ?? "undefined"}
                     </Typography>
                   </Grid>
-                  <Grid
+                  {group&&<Grid
                         item
                         xs={12}
                         sx={{ display: "flex", justifyContent: "left" }}
                       >
                         <PlantGroup group={group}/><PlantSource plant={plant}/>
-                      </Grid>
+                      </Grid>}
 
                   <Grid
                     item

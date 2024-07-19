@@ -20,6 +20,15 @@ import {
 import { buildRooms } from "../../config/config";
 import AddressScanner from "../AddressScanner/AddressScanner";
 
+const fieldsActions={
+  bulding:addBuilding,
+  room:addRoom,
+  row:addRow,
+  rack:addRack,
+  tray:addTray,
+  number:addNumber,
+  shelf:addShelf
+}
 
 
 export const AddressFields = () => {
@@ -49,9 +58,12 @@ export const AddressFields = () => {
       else if (key === "shelf") {
         dispatch(addShelf(address[key]));
       }
-
-  
   })}
+  const fieldHandler=(e)=>{
+    const { value, name } = e.target;
+    if(typeof(value)==String)dispatch(fieldsActions[name](value))
+      else if(typeof(value)==Number)dispatch(fieldsActions[name](Number.parseInt(value)))
+  }
   const handlerBuilding = (e) => {
     const { value } = e.target;
     dispatch(addBuilding(value));

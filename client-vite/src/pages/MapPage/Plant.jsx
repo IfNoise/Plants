@@ -44,7 +44,7 @@ export default function Plant({ plant }) {
         height: "34px",
         border: "1px solid green",
         borderRadius: "2px",
-        backgroundColor: stringToColor(plant.strain),
+        backgroundColor: stringToColor(plant.pheno),
         p: "1px",
         cursor: "pointer",
       }}
@@ -72,8 +72,9 @@ export default function Plant({ plant }) {
           border: "1px solid green",
           borderRadius: "5px",
           backgroundColor: "#f0f0f0",
-          p: "3px",
-          boxShadow: 3,
+          p: "15px",
+          m: "3px",
+         boxShadow: 3,
         }}
         open={open}
         anchorEl={anchorEl}

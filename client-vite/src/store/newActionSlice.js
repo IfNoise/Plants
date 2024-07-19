@@ -5,6 +5,9 @@ export const newActionSlice=createSlice({
   name:'newAction',
   initialState:{},
   reducers:{
+    addDate: (state,action)=>{
+      state.date=action.payload
+    },
     addType: (state,action)=>{
       state.actionType=action.payload
     },
@@ -48,7 +51,7 @@ export const newActionSlice=createSlice({
     addClonesNumber:(state,action)=>{
       state.clonesNumber=action.payload
     },
-    clear: (state)=>{
+    clear: ()=>{
    return {}
     },
     addNote:(state,action)=>{
@@ -58,7 +61,7 @@ export const newActionSlice=createSlice({
 })
 
 
-export const {addType,addAuthor,addPotSize,addBuilding,addRoom,addRack,addShelf,
+export const {addDate,addType,addAuthor,addPotSize,addBuilding,addRoom,addRack,addShelf,
               addRow,addTray,addClonesNumber,addNumber,addReason,addUserReason,
               addNote,addGender, clear}=newActionSlice.actions
 

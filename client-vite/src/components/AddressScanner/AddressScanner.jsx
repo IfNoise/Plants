@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
-import { useAddToTrayMutation } from "../../store/trayApi";
+import { useRef, useState} from "react";
+import PropTypes from "prop-types";
 import QrScanner from "qr-scanner";
 import {
   Box,
@@ -14,18 +13,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { useMediaQuery } from "@mui/material";
-import { useGetPlantsQuery } from "../../store/plantsApi";
-import e from "cors";
 
 var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
 
-//All arguments are optional:
-
-//duration of the tone in milliseconds. Default is 500
-//frequency of the tone in hertz. default is 440
-//volume of the tone. Default is 1, off is 0.
-//type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
-//callback to use on end of tone
 function beep(duration, frequency, volume, type, callback) {
     var oscillator = audioCtx.createOscillator();
     var gainNode = audioCtx.createGain();
@@ -48,14 +38,11 @@ export default function AddressScanner({setOutput}) {
   const [open, setOpen] = useState(false);
   const video = useRef(null);
   const [qrScanner, setQrScanner] = useState(null);
-  const [scanResult, setScanResult] = useState("");
-  const store = new Set();
+  let tempAddress = null;
   
-
   function close() {
     qrScanner?.stop();
     qrScanner?.destroy();
-    setScanResult(null);
     setQrScanner(null);
     setAddress(null);
     setOpen(false);
@@ -70,14 +57,11 @@ export default function AddressScanner({setOutput}) {
   }
   function handleScan(result) {
     const data = JSON.parse(result.data);
-    
-    if (data?.building && data?.room ) {
-      setScanResult(data);
-      store.add(result.data);
-      console.log(store);
-      beep(100, 580, 0.7, "sine", () => {
-        console.log("beep");
-      });
+    if(JSON.stringify(tempAddress) === JSON.stringify(data)) return;
+    if (data?.building) {
+      tempAddress = data;
+      setAddress(data);
+      beep(100, 580, 0.7, "sine");
     }else{
       beep(120, 60, 0.4, "square")
     }
@@ -106,7 +90,7 @@ export default function AddressScanner({setOutput}) {
   };
   return (
     <>
-      <IconButton onClick={toggleScan}>
+      <IconButton onClick={toggleScan} size="large">
         <QrCode2Icon />
       </IconButton>
       <Dialog
@@ -174,10 +158,10 @@ export default function AddressScanner({setOutput}) {
 
             <Button
               variant="outlined"
-              disabled={!scanResult}
+              disabled={!address}
               onClick={
                 () => {
-                  setOutput(scanResult);
+                  setOutput(address);
                   close();
                 }
               }
@@ -201,3 +185,7 @@ export default function AddressScanner({setOutput}) {
     </>
   );
 }
+AddressScanner.propTypes = {
+  setOutput: PropTypes.func.isRequired,
+};
+

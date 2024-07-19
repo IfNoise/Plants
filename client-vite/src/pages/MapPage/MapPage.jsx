@@ -428,6 +428,9 @@ export const MapPage = () => {
   );
   useEffect(() => {
     if (data) {
+      if(plants.length>0){
+        setPlants([]);
+      }
       setPlants(data);
     }
   }, [data]);
@@ -446,7 +449,7 @@ export const MapPage = () => {
         if (!plant.currentAddress) return;
         const row = plant.currentAddress.row - 1;
         let trayNum;
-        if (rows[row].numeration === "Up") {
+        if (rows[row]?.numeration === "Up") {
           trayNum = rows[row].trays.length - plant.currentAddress?.tray;
         } else {
           trayNum = plant.currentAddress?.tray - 1;

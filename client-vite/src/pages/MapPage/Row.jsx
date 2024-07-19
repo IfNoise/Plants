@@ -57,7 +57,7 @@ export const Row = ({ index, trays ,direction}) => {
 
       <Stack direction="column" spacing={0.5}>
         {trays?.map((tray, index) => (
-          <Tray size={tray.size} key={index} plants={tray.plants ?? []} />
+          <Tray size={tray.size} key={index} plants={tray?.plants} />
         ))}
       </Stack>
       {direction==="Up"&&<Banner/>}

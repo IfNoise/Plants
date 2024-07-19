@@ -22,6 +22,7 @@
     "@reduxjs/toolkit": "^2.1.0",
     "dayjs": "^1.11.10",
     "html5-qrcode": "^2.3.8",
+    "mqtt": "^5.7.0",
     "perfect-scrollbar": "^1.5.5",
     "qr-scanner": "^1.4.2",
     "react": "^18.2.0",
