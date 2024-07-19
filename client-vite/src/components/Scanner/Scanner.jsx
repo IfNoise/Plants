@@ -69,7 +69,7 @@ export default function Scanner({ setOutput }) {
   const [addressRes, setAddressRes] = useState(null); //
   const { isLoading, isError, error, data } = useGetPlantsQuery(
     { _id: idResult },
-    { skip: scanResult.length !== 24 || scanResult.length === 0 }
+    { skip: scanResult?.length !== 24 || scanResult?.length === 0 }
   );
   const [addToTray] = useAddToTrayMutation();
   const store = new Set();
