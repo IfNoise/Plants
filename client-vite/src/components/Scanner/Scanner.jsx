@@ -75,6 +75,7 @@ export default function Scanner({ setOutput }) {
   const store = new Set();
   const params = new URLSearchParams({ ...addressRes });
   let tempAddress = null;
+  let tempRes=null; 
   const addToTrayHandler = () => {
     console.log(scanResult);
     addToTray([scanResult]);
@@ -100,7 +101,8 @@ export default function Scanner({ setOutput }) {
   }
   function handleScan(result) {
     const data = result.data;
-    if (scanResult === data) return;
+    if (tempRes === data) return;
+    tempRes = data;
     setScanResult(data);
   }
   const initScanner = () => {
