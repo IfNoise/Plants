@@ -97,7 +97,9 @@ export default function Scanner({ setOutput }) {
       console.log("start");
     } else initScanner();
     setPlant(null);
-    setScanResult("");
+    setScanResult(null);
+    setIdResult(null);
+    setAddressRes(null);
   }
   function handleScan(result) {
     const data = result.data;
@@ -138,7 +140,6 @@ export default function Scanner({ setOutput }) {
       if (json.type === "address") address = { ...json.address };
     } catch (e) {
       console.log(e);
-      errorSnd();
     }
     if (id) {
       setIdResult(id);
