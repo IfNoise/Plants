@@ -64,12 +64,11 @@ export default function Scanner({ setOutput }) {
   const video = useRef(null);
   const [qrScanner, setQrScanner] = useState(null);
   const navigate = useNavigate();
-  const [scanResult, setScanResult] = useState("");
-  const [idResult, setIdResult] = useState("");
+  const [scanResult, setScanResult] = useState(null);
+  const [idResult, setIdResult] = useState(null);
   const [addressRes, setAddressRes] = useState(null); //
   const { isLoading, isError, error, data } = useGetPlantsQuery(
-    { _id: idResult },
-    { skip: scanResult?.length !== 24 || scanResult?.length === 0 }
+    { _id: idResult }
   );
   const [addToTray] = useAddToTrayMutation();
   const store = new Set();
@@ -133,7 +132,7 @@ export default function Scanner({ setOutput }) {
     let address;
     if(!scanResult)return
     if (scanResult?.length === 24) id = scanResult;
-    try {
+    else try {
       const json = JSON.parse(scanResult);
       if (json.type === "plant") id = json.id;
       if (json.type === "address") address = { ...json.address };
