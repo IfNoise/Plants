@@ -45,7 +45,7 @@ function beep(duration, frequency, volume, type, callback) {
   oscillator.start(audioCtx.currentTime);
   oscillator.stop(audioCtx.currentTime + (duration || 500) / 1000);
 }
-const ok=()=>{
+const okSnd=()=>{
   beep(100, 580, 0.7, "sine");
 }
 
@@ -53,7 +53,7 @@ const errorSnd=()=>{
   beep(120, 60, 0.4, "square");
 }
 
-const added=()=>{
+const addedSnd=()=>{
   beep(120, 100, 0.4, "square");
 }
 
@@ -80,7 +80,7 @@ export default function Scanner({ setOutput }) {
   const addToTrayHandler = () => {
     console.log(scanResult);
     addToTray([scanResult]);
-    added();
+    addedSnd();
     handlerNext();
   };
 
@@ -146,7 +146,7 @@ export default function Scanner({ setOutput }) {
         setScanResult({ id });
         store.add(id);
         console.log(store);
-        ok();
+        okSnd();
       }
     }
     if (address) {
@@ -154,7 +154,7 @@ export default function Scanner({ setOutput }) {
       if (address?.building) {
         tempAddress.current = address;
         setAddressRes(address);
-        ok();
+        okSnd();
       }
     }
   }, [scanResult]);
