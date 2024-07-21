@@ -131,6 +131,7 @@ export default function Scanner({ setOutput }) {
   useEffect(() => {
     let id;
     let address;
+    if(!scanResult)return
     if (scanResult?.length === 24) id = scanResult;
     try {
       const json = JSON.parse(scanResult);
