@@ -41,7 +41,7 @@ function PrivateOutlet() {
   );
 }
 
-const CollapseList = ({ obj }) => {
+const CollapseList = ({ obj ,onClick}) => {
   const [open, setOpen] = React.useState(false);
   return (
     <>
@@ -54,16 +54,16 @@ const CollapseList = ({ obj }) => {
           {open ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={open} timeout="auto" unmountOnExit >
         <List component="div">
           {obj.collapsed.map((obj,i) =>{ 
             if (obj.collapsed) {
-            return <CollapseList key={i} obj={obj} />
+            return <CollapseList key={i} obj={obj} onClick={onClick}/>
           } else {
             return <ListItem key={obj.text} sx={{
               pl: "60px",
             }} disablePadding>
-              <ListItemButton component={Link} to={obj.href}>
+              <ListItemButton component={Link} to={obj.href} onClick={onClick}>
                 <ListItemText primary={obj.text} />
               </ListItemButton>
             </ListItem>
@@ -81,6 +81,7 @@ const CollapseList = ({ obj }) => {
 
 CollapseList.propTypes = {
   obj: PropTypes.object,
+  onClick: PropTypes.func
 };
 
         
@@ -199,7 +200,7 @@ export const Layout = () => {
           )}
         </DrawerHeader>
         <Divider />
-        <Box role="presentation" onClick={handleDrawerClose}>
+        <Box role="presentation" >
           <List>
             {[
               {
@@ -268,10 +269,10 @@ export const Layout = () => {
             ].map((obj, i) => {
               if (obj.collapsed) {
 
-                          return <CollapseList key={i} obj={obj}/> } else {
+                          return <CollapseList key={i} obj={obj} onClick={handleDrawerClose}/> } else {
                 return (
                   <ListItem key={obj.text} disablePadding >
-                    <ListItemButton component={Link} to={obj.href}  >
+                    <ListItemButton component={Link} to={obj.href} onClick={handleDrawerClose} >
                       <ListItemIcon>{obj.icon}</ListItemIcon>
                       <ListItemText primary={obj.text} />
                     </ListItemButton>
