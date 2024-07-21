@@ -90,6 +90,8 @@ export default function Scanner({ setOutput }) {
     setQrScanner(null);
     setPlant(null);
     setOpen(false);
+    setIdResult(null);
+    setAddressRes(null);
   }
   function handlerNext() {
     if (qrScanner) {
