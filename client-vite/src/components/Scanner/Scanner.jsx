@@ -74,8 +74,9 @@ export default function Scanner({ setOutput }) {
   const [addToTray] = useAddToTrayMutation();
   const store = new Set();
   const params = new URLSearchParams({ ...addressRes });
-  let tempAddress = null;
-  let tempRes=null; 
+
+  const tempAddress = useRef(null);
+  const tempRes = useRef(null); 
   const addToTrayHandler = () => {
     console.log(scanResult);
     addToTray([scanResult]);
@@ -101,8 +102,8 @@ export default function Scanner({ setOutput }) {
   }
   function handleScan(result) {
     const data = result.data;
-    if (tempRes === data) return;
-    tempRes = data;
+    if (tempRes.current === data) return;
+    tempRes.current = data;
     setScanResult(data);
   }
   const initScanner = () => {
@@ -149,9 +150,9 @@ export default function Scanner({ setOutput }) {
       }
     }
     if (address) {
-      if (JSON.stringify(tempAddress) === JSON.stringify(address)) return;
+      if (JSON.stringify(tempAddress.current) === JSON.stringify(address)) return;
       if (address?.building) {
-        tempAddress = address;
+        tempAddress.current = address;
         setAddressRes(address);
         ok();
       }

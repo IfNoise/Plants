@@ -168,8 +168,8 @@ export default function PlantSpeedDial(props) {
   const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
-      dispatch(clear());
-      console.log(newAction)
+    dispatch(clear());
+    console.log(newAction);
   }, []);
 
   useEffect(() => {
@@ -358,32 +358,34 @@ export default function PlantSpeedDial(props) {
               <MenuItem value={true}>Custom Date</MenuItem>
             </Select>
           </FormControl>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              sx={{ m: "1px" }}
-              hidden={!showPicker}
-              disableFuture
-              closeOnSelect
-              size="small"
-              value={date}
-              label="Start Date"
-              onChange={handleChangeDate}
-              slotProps={{
-                layout: {
-                  sx: {
-                    ".MuiDateCalendar-root": {
-                      color: "#1565c0",
-                      borderRadius: 4,
-                      borderWidth: 1,
-                      borderColor: "#2196f3",
-                      border: "1px solid",
-                      backgroundColor: "#bbdefb",
+          {showPicker && (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ m: "2px" }}
+                hidden={!showPicker}
+                disableFuture
+                closeOnSelect
+                size="small"
+                value={date}
+                label="Start Date"
+                onChange={handleChangeDate}
+                slotProps={{
+                  layout: {
+                    sx: {
+                      ".MuiDateCalendar-root": {
+                        color: "#1565c0",
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        borderColor: "#2196f3",
+                        border: "1px solid",
+                        backgroundColor: "#bbdefb",
+                      },
                     },
                   },
-                },
-              }}
-            />
-          </LocalizationProvider>
+                }}
+              />
+            </LocalizationProvider>
+          )}
           {newAction?.actionType && actionFields[newAction.actionType]?.fields}
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
