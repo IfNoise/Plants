@@ -5,32 +5,57 @@ import { useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { PrinterContext } from "./context/PrinterContext.js";
 
-const theme = createTheme(
-{
+const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
-      main: '#9a8ef5',
+      main: '#3f51b5',
     },
     secondary: {
       main: '#f50057',
     },
     background: {
-      default: '#d3efdb',
-      paper: '#fbfdfd',
-    },
-    text: {
-      primary: 'rgba(80,79,62,0.87)',
+      paper: 'rgba(104,104,125,0.87)',
+      default: 'rgba(31,39,45,0.86)',
     },
   },
-  typography: {
-    h4: {
-      letterSpacing: '0.06em',
+  shape: {
+    borderRadius: 10,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+          border: 0,
+          borderRadius: 10,
+          color: 'white',
+          height: 38,
+          padding: '0 20px',
+        },
+      },
     },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+  },
+  props: {
+    MuiAppBar: {
+      color: 'transparent',
+    },
+  },
+  spacing: 8,
+  typography: {
     caption: {
       fontSize: '0.6rem',
-      lineHeight: 1.76,
-      letterSpacing: '0.18em',
+      fontWeight: 100,
+      letterSpacing: '0.19em',
+      lineHeight: 1.03,
+    },
+    button: {
+      fontSize: '0.8rem',
     },
   },
 })

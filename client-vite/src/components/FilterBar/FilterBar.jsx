@@ -33,6 +33,7 @@ import {
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from 'dayjs';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -47,7 +48,7 @@ export const FilterBar = (props) => {
   const [values, setValues] = useState([...Object.values(filter)]);
   const [phenos, setPhenos] = useState([]);
   const [compare, setCompare] = useState("$gte");
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState(dayjs('2022-04-17'));
   const [rooms, setRooms] = useState([]);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -175,7 +176,7 @@ export const FilterBar = (props) => {
               onClick={() => {
                 dispatch(clearFilter());
                 setValues([]);
-                setStartDate("");
+                setStartDate(null);
               }}
             >
               Clear
@@ -332,7 +333,7 @@ export const FilterBar = (props) => {
                       disableFuture
                       closeOnSelect
                       size="small"
-                      value={startDate}
+                      value={startDate||new Date()}
                       label="Start Date"
                       onChange={handleChangeStart}
                       slotProps={{

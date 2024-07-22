@@ -17,6 +17,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import OnlinePredictionIcon from "@mui/icons-material/OnlinePrediction";
@@ -59,6 +60,7 @@ Status.propTypes = {
 
 
 const Outputs = ({ deviceId, updateInterval }) => {
+  const theme = useTheme();
   const { isLoading, isError, data } = useGetStateQuery(deviceId, {
     pollingInterval: updateInterval,
   });
@@ -68,10 +70,6 @@ const Outputs = ({ deviceId, updateInterval }) => {
       sx={{
         m: "5px",
         p: "5px",
-        backgroundColor: "GrayText",
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderRadius: "4px",
         width: "100%",
       }}
     >
@@ -95,7 +93,7 @@ const Outputs = ({ deviceId, updateInterval }) => {
                 height: "24px",
                 borderRadius: "5px",
                 borderStyle: "solid",
-                borderColor: output.state ? "green" : "red",
+                borderColor: output.state ?  "lime" : "red",
                 borderWidth: "1px",
               }}
             >
@@ -119,7 +117,6 @@ const TimerMode = ({ mode, onChange }) => {
       sx={{
         m: "5px",
         p: "5px",
-        borderStyle: "solid",
         borderWidth: "1px",
         borderRadius: "4px",
       }}
@@ -233,9 +230,6 @@ const IrrigatorCard = ({ name, config, onSave }) => {
         sx={{
           m: "3px",
           p: "5px",
-          backgroundColor: "gray",
-          borderStyle: "solid",
-          borderWidth: "1px",
           width: "190px",
         }}
       >
@@ -345,9 +339,6 @@ const LightTimerCard = ({ name, config, onSave }) => {
         sx={{
           m: "3px",
           p: "5px",
-          backgroundColor: "gray",
-          borderStyle: "solid",
-          borderWidth: "1px",
         }}
       >
         <Typography variant="body" display="inline">
@@ -431,9 +422,6 @@ const DeviceCard = ({ device }) => {
         sx={{
           m: "5px",
           width: "430px",
-          borderStyle: "solid",
-          borderWidth: "1px",
-          borderRadius: "4px",
 
         }}
       >
