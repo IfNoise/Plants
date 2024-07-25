@@ -21,7 +21,7 @@ export const PlantsPage = () => {
   const pFilter = Object.fromEntries(params)
   console.log(pFilter);
 
-  const { isLoading, isError, error, data:plants} = useGetPlantsQuery(sFilter?{...sFilter}:{state:{$not:["Stopped","Harvested"]}},{
+  const { isLoading, isError, error, data:plants} = useGetPlantsQuery(Object.entries(sFilter).length>0?{...sFilter}:{state:{$nin:["Stopped","Harvested"]}},{
     refetchOnReconnect:true,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true

@@ -73,7 +73,7 @@ export const PlantsList = (props) => {
   const apiRef = useGridApiRef(null);
   const [apiIsLoaded, setApiIsLoaded] = useState(false);
   const [allSelected, setAllSelected] = useState(false);
-  const [sel, setSel] = useState(false);
+  //const [sel, setSel] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedPlants, setSelectedPlants] = useState([]);
   const plantDetails = (id) => {
@@ -102,7 +102,6 @@ export const PlantsList = (props) => {
   }, [apiRef]);
 
   const checkboxSelectionHandler = () => {
-    setSel(getSelected().length < 1);
     setSelectedPlants(getSelected());
   };
 

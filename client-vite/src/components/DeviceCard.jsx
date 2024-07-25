@@ -230,7 +230,6 @@ const IrrigatorCard = ({ name, config, onSave }) => {
         sx={{
           m: "3px",
           p: "5px",
-          width: "190px",
         }}
       >
         <Typography variant="body" display="inline">
@@ -420,8 +419,7 @@ const DeviceCard = ({ device }) => {
     <>
       <Card
         sx={{
-          m: "5px",
-          width: "430px",
+          m: "2px",
 
         }}
       >
@@ -432,7 +430,7 @@ const DeviceCard = ({ device }) => {
         />
         <CardContent>
           <Outputs deviceId={id} updateInterval={10000} />
-          <Stack direction="row" useFlexGap flexWrap="wrap">
+          <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
           {Object.keys(config)
             .filter((key) => key.startsWith("irr") && config[key].enable)
             .map((key, i) => (

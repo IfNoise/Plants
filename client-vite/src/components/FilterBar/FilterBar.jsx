@@ -95,7 +95,7 @@ export const FilterBar = (props) => {
   };
 
   const strains = [...new Set(getData().map((obj) => obj.strain))];
-  const states = [...new Set(getData().map((obj) => obj.state))];
+  const states = ["Germination","Cloning","Growing","MotherPlant","Blooming","Stopped", "Harvested"];
   useEffect(() => {
     if (!filter.strain) {
       return;

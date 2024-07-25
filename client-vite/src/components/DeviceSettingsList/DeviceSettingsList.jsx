@@ -266,8 +266,8 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
         sx={{
           height: "70%",
           overflowY: "scroll",
-          p: "20px",
-          m: "20px",
+          p: "5px",
+          m: "5px",
           borderBottom: "1px solid #ccc",
         }}
       >
@@ -299,7 +299,7 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
           Save
         </Button>
         <Button
-          sx={{ margin: "10px" }}
+          sx={{ margin: "5px" }}
           variant="outlined"
           //disabled={Object.keys(changes).length === 0}
           onClick={() => {
@@ -310,7 +310,7 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
           Reset
         </Button>
         <FormControlLabel
-          sx={{ margin: "10px" }}
+          sx={{ margin: "5px" }}
           label="Reboot"
           control={
             <Checkbox

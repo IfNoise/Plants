@@ -14,6 +14,8 @@ export const TrayPage = () => {
   } = useGetTrayQuery({ 
     refetchOnMountOrArgChange: true, 
     refetchOnFocus: true ,
+    refetchOnReconnect:true,
+    refetchOnMount:true
   });
   useEffect(() => {
     refetch();

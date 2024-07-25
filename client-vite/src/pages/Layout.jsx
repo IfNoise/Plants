@@ -1,4 +1,10 @@
-import { Outlet, Link, Navigate, useLocation,useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  Link,
+  //Navigate,
+  //useLocation,
+  useNavigate,
+} from "react-router-dom";
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -23,25 +29,25 @@ import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SnackBar from "../components/SnackBar/SnackBar";
-import { useAuth } from "../hooks/auth.hook";
+//import { useAuth } from "../hooks/auth.hook";
 import { TrayButton } from "../components/TrayButton/TrayButton";
 import { Collapse, useMediaQuery } from "@mui/material";
 import Scanner from "../components/Scanner/Scanner";
 import PrintDialog from "../components/PrintDialog";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-function PrivateOutlet() {
-  const { isAuth } = useAuth();
-  const location = useLocation();
+// function PrivateOutlet() {
+//   const { isAuth } = useAuth();
+//   const location = useLocation();
 
-  return isAuth ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/auth" state={{ from: location }} />
-  );
-}
+//   return isAuth ? (
+//     <Outlet />
+//   ) : (
+//     <Navigate to="/auth" state={{ from: location }} />
+//   );
+// }
 
-const CollapseList = ({ obj ,onClick}) => {
+const CollapseList = ({ obj, onClick }) => {
   const [open, setOpen] = React.useState(false);
   return (
     <>
@@ -54,37 +60,41 @@ const CollapseList = ({ obj ,onClick}) => {
           {open ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit >
+      <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div">
-          {obj.collapsed.map((obj,i) =>{ 
+          {obj.collapsed.map((obj, i) => {
             if (obj.collapsed) {
-            return <CollapseList key={i} obj={obj} onClick={onClick}/>
-          } else {
-            return <ListItem key={obj.text} sx={{
-              pl: "60px",
-            }} disablePadding>
-              <ListItemButton component={Link} to={obj.href} onClick={onClick}>
-                <ListItemText primary={obj.text} />
-              </ListItemButton>
-            </ListItem>
-          }}
-
-          )}
-          
-
+              return <CollapseList key={i} obj={obj} onClick={onClick} />;
+            } else {
+              return (
+                <ListItem
+                  key={obj.text}
+                  sx={{
+                    pl: "60px",
+                  }}
+                  disablePadding
+                >
+                  <ListItemButton
+                    component={Link}
+                    to={obj.href}
+                    onClick={onClick}
+                  >
+                    <ListItemText primary={obj.text} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            }
+          })}
         </List>
       </Collapse>
     </>
   );
 };
 
-
 CollapseList.propTypes = {
   obj: PropTypes.object,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
-
-        
 
 const drawerWidth = 240;
 
@@ -158,10 +168,9 @@ export const Layout = () => {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ width: "100%" }}>
-          <IconButton
-            aria-label="back"
-            onClick={() => navigate(-1)}
-            ><ChevronLeftIcon/></IconButton>
+          <IconButton aria-label="back" onClick={() => navigate(-1)}>
+            <ChevronLeftIcon />
+          </IconButton>
           <IconButton
             aria-label="open drawer"
             onClick={handleDrawerOpen}
@@ -200,7 +209,7 @@ export const Layout = () => {
           )}
         </DrawerHeader>
         <Divider />
-        <Box role="presentation" >
+        <Box role="presentation">
           <List>
             {[
               {
@@ -268,21 +277,24 @@ export const Layout = () => {
               },
             ].map((obj, i) => {
               if (obj.collapsed) {
-
-                          return <CollapseList key={i} obj={obj} onClick={handleDrawerClose}/> } else {
                 return (
-                  <ListItem key={obj.text} disablePadding >
-                    <ListItemButton component={Link} to={obj.href} onClick={handleDrawerClose} >
+                  <CollapseList key={i} obj={obj} onClick={handleDrawerClose} />
+                );
+              } else {
+                return (
+                  <ListItem key={obj.text} disablePadding>
+                    <ListItemButton
+                      component={Link}
+                      to={obj.href}
+                      onClick={handleDrawerClose}
+                    >
                       <ListItemIcon>{obj.icon}</ListItemIcon>
                       <ListItemText primary={obj.text} />
                     </ListItemButton>
                   </ListItem>
                 );
               }
-            }
-            )
-            }
-
+            })}
           </List>
         </Box>
         <Divider />
