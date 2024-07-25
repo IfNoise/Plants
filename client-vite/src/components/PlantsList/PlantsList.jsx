@@ -20,36 +20,36 @@ function getRowId(row) {
 }
 
 const columns = [
-  { field: "strain", headerName: "Strain", width: 250 },
+  { field: "strain", headerName: "Strain", width: 230 },
   {
     field: "pheno",
     headerName: "Pheno",
-    width: 100,
+    width: 80,
     editable: false,
   },
   {
     field: "type",
     headerName: "Type",
-    width: 100,
+    width: 70,
     editable: false,
     color: "green",
   },
   {
     field: "gender",
     headerName: "Gender",
-    width: 100,
+    width: 80,
     editable: false,
   },
   {
     field: "state",
     headerName: "State",
-    width: 150,
+    width: 100,
     editable: false,
   },
   {
     field: "start",
     headerName: "Started",
-    width: 200,
+    width: 140,
     editable: false,
   },
   {
@@ -155,7 +155,7 @@ export const PlantsList = (props) => {
       )}
       {plants?.length > 0 && isSmall && (
         <>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={0.5}>
             <Pagination
               count={Math.floor(plants.length / plantsPerPage) + 1}
               page={page}

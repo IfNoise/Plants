@@ -273,6 +273,7 @@ export default function Scanner({ setOutput }) {
                 <Button
                   variant="outlined"
                   sx={{
+                    backgroundColor: "transparent",
                     borderColor: "red",
                     borderWidth: "2px",
                     borderBlockColor: "red",
@@ -310,6 +311,7 @@ export default function Scanner({ setOutput }) {
                   href={`/plants/${params}`}
                   variant="outlined"
                   sx={{
+                    backgroundColor: "transparent",
                     borderColor: "red",
                     borderWidth: "2px",
                     borderBlockColor: "red",
@@ -323,12 +325,13 @@ export default function Scanner({ setOutput }) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    added();
+                    addedSnd();
                     if(setOutput) setOutput({...addressRes});
                     setAddressRes(null);
                     close();
                   }}
                   sx={{
+                    backgroundColor: "transparent",
                     borderColor: "red",
                     borderWidth: "2px",
                     borderBlockColor: "red",
@@ -346,6 +349,7 @@ export default function Scanner({ setOutput }) {
               variant="outlined"
               onClick={handlerNext}
               sx={{
+                backgroundColor: "transparent",
                 borderColor: "red",
                 borderWidth: "2px",
                 borderBlockColor: "red",
