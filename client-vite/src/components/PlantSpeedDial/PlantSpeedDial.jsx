@@ -47,6 +47,7 @@ import { addDate, addType, clear } from "../../store/newActionSlice";
 import { PrinterContext } from "../../context/PrinterContext";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 const states = {
   Germination: {
@@ -283,7 +284,7 @@ export default function PlantSpeedDial(props) {
                 return;
               }
               const id = getPlants().map((plant) => plant._id);
-              addToTray(id);
+              dispatch(addToTray(id));
             }}
           />
         )}
@@ -295,7 +296,7 @@ export default function PlantSpeedDial(props) {
             onClick={() => {
               setPrintDialog({
                 onChange: (printer) => {
-                  printTray({ printer });
+                  dispatch(printTray({ printer }));
                 },
                 open: true,
               });
@@ -308,7 +309,7 @@ export default function PlantSpeedDial(props) {
             icon={<DeleteIcon />}
             tooltipTitle=" Clear tray"
             onClick={() => {
-              clearTray();
+              dispatch(clearTray());
             }}
           />
         )}
@@ -366,23 +367,9 @@ export default function PlantSpeedDial(props) {
                 disableFuture
                 closeOnSelect
                 size="small"
-                value={date}
+                value={date||dayjs()}
                 label="Start Date"
                 onChange={handleChangeDate}
-                slotProps={{
-                  layout: {
-                    sx: {
-                      ".MuiDateCalendar-root": {
-                        color: "#1565c0",
-                        borderRadius: 4,
-                        borderWidth: 1,
-                        borderColor: "#2196f3",
-                        border: "1px solid",
-                        backgroundColor: "#bbdefb",
-                      },
-                    },
-                  },
-                }}
               />
             </LocalizationProvider>
           )}

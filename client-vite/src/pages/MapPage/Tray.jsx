@@ -48,12 +48,12 @@ export default function Tray({ size, plants }) {
         direction="row"
         useFlexGap
         flexWrap="wrap"
-        spacing={"5"}
+        spacing={"1"}
         margin="1px"
         sx={{
           display: "flex",
           justifyContent: "space-around",
-          height: "100%",
+          height: "calc(100% - 25px)",
         }}
       >
         {plants?.map((plant, i) => (
