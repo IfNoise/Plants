@@ -76,9 +76,9 @@ export default function Scanner({ setOutput }) {
 
   const tempAddress = useRef(null);
   const tempRes = useRef(null); 
+
   const addToTrayHandler = () => {
-    console.log(scanResult);
-    addToTray([scanResult]);
+    addToTray([idResult]);
     addedSnd();
     handlerNext();
   };
