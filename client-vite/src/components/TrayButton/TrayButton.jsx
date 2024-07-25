@@ -16,6 +16,8 @@ export const TrayButton = () => {
   const { data, refetch } = useGetTrayQuery({
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
   });
   const [number, setNumber] = useState(0);
   const [contextMenu, setContextMenu] = useState(null);
@@ -36,9 +38,6 @@ export const TrayButton = () => {
         : null
     );
   };
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
   useEffect(() => {
     setNumber(data?.length || 0);
   }, [data]);
