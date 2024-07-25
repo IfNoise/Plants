@@ -376,7 +376,7 @@ export default function PlantSpeedDial(props) {
           {newAction?.actionType && actionFields[newAction.actionType]?.fields}
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
-          <Button onClick={newActionFunc} disabled={!newAction.actionType}>
+          <Button onClick={newActionFunc} role="submit" disabled={!newAction.actionType}>
             Ok
           </Button>
           <Button onClick={handleCancel}>Cancel</Button>
