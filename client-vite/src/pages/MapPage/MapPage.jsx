@@ -269,13 +269,11 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
           ],
           numeration: "Up",
         },
         {
           trays: [
-            { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
@@ -293,25 +291,12 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" }
+            { plants: [], size: "4x8" },
           ],
           numeration: "Up",
         },
         {
           trays: [
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" }
-          ],
-          numeration: "Up",
-        },
-        {
-          trays: [
-            { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
@@ -328,7 +313,6 @@ const map = {
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
-            { plants: [], size: "4x8" },
             { plants: [], size: "4x8" }
           ],
           numeration: "Up",
@@ -336,6 +320,16 @@ const map = {
         {
           trays: [
             { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" },
+            { plants: [], size: "4x8" }
+          ],
+          numeration: "Up",
+        },
+        {
+          trays: [
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
@@ -346,7 +340,6 @@ const map = {
         },
         {
           trays: [
-            { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
             { plants: [], size: "4x8" },
