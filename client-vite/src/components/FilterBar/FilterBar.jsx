@@ -4,9 +4,6 @@ import {
   MenuItem,
   Button,
   Typography,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   TextField,
   Divider,
   Chip,
@@ -23,7 +20,8 @@ import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addPheno,
-  addStartDate,
+  addAfterDate,
+  addBeforeDate,
   addState,
   addStrain,
   addPotSize,
@@ -47,8 +45,8 @@ export const FilterBar = (props) => {
   const [address, setAddress] = useState({});
   const [values, setValues] = useState([...Object.values(filter)]);
   const [phenos, setPhenos] = useState([]);
-  const [compare, setCompare] = useState("$gte");
-  const [startDate, setStartDate] = useState(dayjs('2022-04-17'));
+  const [afterDate, setAfterDate] = useState(dayjs());
+  const [beforeDate, setBeforeDate] = useState(dayjs());
   const [rooms, setRooms] = useState([]);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -125,10 +123,15 @@ export const FilterBar = (props) => {
     setPhenos([]);
   };
 
-  const handleChangeStart = (value) => {
-    dispatch(addStartDate({ [compare]: new Date(value.$d) }));
-    setStartDate(new Date(value.$d));
+  const handleChangeAfter = (value) => {
+    dispatch(addAfterDate(new Date(value.$d)));
+    setAfterDate(new Date(value.$d));
   };
+  const handleChangeBefore = (value) => {
+    dispatch(addBeforeDate(new Date(value.$d)));
+    setBeforeDate(new Date(value.$d));
+  };
+
 
   return (
     <>
@@ -142,7 +145,7 @@ export const FilterBar = (props) => {
         open={open}
         anchor="right"
         sx={{
-          width: { xs: "100vw", sm: "100vw", md: "20vw" },
+          
           height: "100%",
           display: "flex",
           flexDirection: "column",
@@ -150,7 +153,7 @@ export const FilterBar = (props) => {
           p: 2,
         }}
       >
-        <Box sx={{ m: 1 }}>
+        <Box sx={{ m: 1 ,width: { xs: "100vw", sm: "100vw", md: "30vw" },}}>
           <Typography variant="h5" mr={5}>
             Filter
           </Typography>
@@ -158,7 +161,6 @@ export const FilterBar = (props) => {
             <Button
               sx={{
                 borderRadius: 5,
-                backgroundColor: theme.palette.primary.main,
               }}
               variant="filled"
               onClick={() => {
@@ -176,7 +178,9 @@ export const FilterBar = (props) => {
               onClick={() => {
                 dispatch(clearFilter());
                 setValues([]);
-                setStartDate(null);
+                setAfterDate(null);
+                setBeforeDate(null);
+
               }}
             >
               Clear
@@ -326,68 +330,52 @@ export const FilterBar = (props) => {
                 </Stack>
               )}
               <Box>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Stack direction="row" spacing={1}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  
                     <DatePicker
                       sx={{ m: "1px" }}
                       disableFuture
                       closeOnSelect
                       size="small"
-                      value={startDate||new Date()}
-                      label="Start Date"
-                      onChange={handleChangeStart}
-                      slotProps={{
-                        layout: {
-                          sx: {
-                            ".MuiDateCalendar-root": {
-                              color: "#1565c0",
-                              borderRadius: 4,
-                              borderWidth: 1,
-                              borderColor: "#2196f3",
-                              border: "1px solid",
-                              backgroundColor: "#bbdefb",
-                            },
-                          },
-                        },
-                      }}
+                      value={afterDate||dayjs()}
+                      label="After"
+                      onChange={handleChangeAfter}
                     />
-                  </LocalizationProvider>
-                  <FormControl>
-                    <RadioGroup
-                      sx={{
-                        m: "1px",
-                      }}
-                      aria-labelledby="Equal start date"
-                      defaultValue={compare}
-                      row
-                      value={compare}
-                      name="radio-buttons-group"
-                      onChange={(e) => {
-                        setCompare(e.target.value);
-                        dispatch(addStartDate({ [e.target.value]: startDate }));
-                      }}
-                    >
-                      <FormControlLabel
-                        value="$gte"
-                        control={<Radio />}
-                        label="After"
-                      />
-                      <FormControlLabel
-                        value="$lte"
-                        control={<Radio />}
-                        label="Before"
-                      />
-                    </RadioGroup>
-                  </FormControl>
                   <Button
                     sx={{
-                      display: filter.startDate ? "block" : "none",
+                      display: afterDate ? "block" : "none",
                     }}
-                    onClick={() => dispatch(addStartDate(null))}
+                    onClick={() => {dispatch(addAfterDate(null))
+                      setAfterDate(null)}
+                    }
                   >
                     <CancelIcon fontSize="small" />
                   </Button>
                 </Stack>
+                <Stack direction="row" spacing={1}>
+                    <DatePicker
+                      sx={{ m: "1px" }}
+                      disableFuture
+                      closeOnSelect
+                      size="small"
+                      value={beforeDate||dayjs()}
+                      label="Before"
+                      onChange={handleChangeBefore}
+                    />
+                  
+                  <Button
+                    sx={{
+                      display: beforeDate ? "block" : "none",
+                    }}
+                    onClick={() => {dispatch(addBeforeDate(null))
+                      setBeforeDate(null)}
+                    }
+                  >
+                    <CancelIcon fontSize="small" />
+                  </Button>
+                </Stack>
+                </LocalizationProvider>
               </Box>
               <Stack direction="row" spacing={1}>
                 <FormControl

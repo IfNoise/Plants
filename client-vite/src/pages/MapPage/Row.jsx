@@ -6,9 +6,7 @@ export const Row = ({ index, trays ,direction}) => {
 
   const Banner=()=>(      <Box
     sx={{
-      borderColor: "green",
-      borderRadius: 1,
-      border: "1px solid green",
+      borderRadius: "4px",
       p: "2px",
       m: "2px",
     }}
@@ -19,7 +17,6 @@ export const Row = ({ index, trays ,direction}) => {
         fontWeight: "bold",
         color: "red",
         borderRadius:"5px",
-        border: "1px solid green",
         margin: "1px",
         padding: "1px",
       }}

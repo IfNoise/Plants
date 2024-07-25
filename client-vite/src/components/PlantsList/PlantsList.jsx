@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useCallback } from "react";
-import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid,  useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 import PlantListItem from "../PlantListItem/PlantListItem";
@@ -142,9 +142,6 @@ export const PlantsList = (props) => {
             apiRef={apiRef}
             columns={columns}
             initialState={{}}
-            slots={{
-              toolbar: GridToolbar,
-            }}
             onCellDoubleClick={(params) => {
               plantDetails(params.row._id);
             }}

@@ -414,7 +414,7 @@ export const MapPage = () => {
   const building = useParams().building;
   const room = useParams().room;
   const roomName = room.split("_").join(" ");
-  const [plants, setPlants] = useState([{}]); //[{}
+  const [plants, setPlants] = useState(null); //[{}
   const { data, isLoading, isError, error } = useGetPlantsQuery(
     {
       "currentAddress.building": building,
@@ -423,19 +423,15 @@ export const MapPage = () => {
     {
       refetchOnReconnect: true,
       refetchOnMountOrArgChange: true,
-      refetchOnFocus: true,
+      refetchOnFocus: true, 
     }
   );
   useEffect(() => {
-    if (data) {
-      if(plants.length>0){
-        setPlants([]);
-      }
-      setPlants(data);
-    }
+      if(plants)return
+      if(data)setPlants(()=>data);
   }, [data]);
   useEffect(() => {
-    if(room==="Laboratory"){
+    if(plants){if(room==="Laboratory"){
     const racks = map[building][room]?.racks;
     plants.map((plant) => {
       if (!plant.currentAddress) return;
@@ -457,10 +453,10 @@ export const MapPage = () => {
         const tray = rows[row]?.trays[trayNum];
         tray?.plants.push(plant);
       });
-    }
+    }}
   }
   , [plants,building,room]);
-  const totalPlants = plants.length;
+  const totalPlants = plants?.length||0;
   if (isError) return <Box>Error: {error.message}</Box>;
   if (isLoading) return <Box>Loading...</Box>;
 
@@ -484,10 +480,10 @@ export const MapPage = () => {
 
           }}
         >
-          {map[building][room]?.racks && map[building][room].racks.map((rack, index) => (
+          {data&&map[building][room]?.racks && map[building][room].racks.map((rack, index) => (
             <Rack key={index} index={index} shelfs={rack.shelfs} />
           ))}
-          {map[building][room]?.rows &&  map[building][room].rows.map((row, index) => (
+          {data&&map[building][room]?.rows &&  map[building][room].rows.map((row, index) => (
             <Row key={index} index={index} trays={row.trays} direction={row.numeration} />
           ))}
         </Box>

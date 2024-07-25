@@ -35,7 +35,7 @@ export const filterSlice = createSlice({
           !Object.keys(action.payload).includes(key)
         ) {
           delete state["currentAddress." + key];
-        }else if(Object.keys(action.payload).includes(key)) {
+        } else if (Object.keys(action.payload).includes(key)) {
           state["currentAddress." + key] = action.payload[key];
         }
       });
@@ -43,24 +43,35 @@ export const filterSlice = createSlice({
     addGender: (state, action) => {
       if (action.payload === null) {
         delete state.gender;
-      } else
-      state.gender = action.payload;
+      } else state.gender = action.payload;
     },
     addPotSize: (state, action) => {
       if (action.payload === null) {
         delete state.potSize;
-      } else
-      state.potSize = action.payload;
+      } else state.potSize = action.payload;
     },
-    addStartDate: (state, action) => {
+    addAfterDate: (state, action) => {
       if (action.payload === null) {
-        delete state.startDate;
-      } else state.startDate = action.payload;
+        if(!state.startDate?.["$gte"]) return;
+        else{
+        delete state.startDate["$gte"];
+        if(!state.startDate?.["$lte"])delete state.startDate;
+      }
+      } else state.startDate = { ...state.startDate, ["$gte"]: action.payload };
+    },
+    addBeforeDate: (state, action) => {
+      if (action.payload === null){ 
+        if(!state.startDate?.["$lte"]) return;
+        else {
+          delete state.startDate["$lte"]
+          if(!state.startDate?.["$gte"])delete state.startDate
+        }
+      }else state.startDate = { ...state.startDate, ["$lte"]: action.payload };
     },
     addGroup: (state, action) => {
       if (action.payload === null) {
         delete state.group;
-      } else return {group:action.payload};
+      } else return { group: action.payload };
     },
     setFilter: (state, action) => {
       return action.payload;
@@ -76,7 +87,8 @@ export const {
   addStrain,
   addPheno,
   addAddress,
-  addStartDate,
+  addAfterDate,
+  addBeforeDate,
   addPotSize,
   addGender,
   addGroup,

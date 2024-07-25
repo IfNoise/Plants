@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, Link } from "@mui/material";
+import { Stack, Typography, Link, Paper } from "@mui/material";
 import PropTypes from "prop-types";
 import Plant from "./Plant";
 export default function Tray({ size, plants }) {
@@ -7,24 +7,16 @@ export default function Tray({ size, plants }) {
   const plantCount = plants.length;
   const params = new URLSearchParams({...plants[0]?.currentAddress});
   return (
-    <Box
+    <Paper
       sx={{
         width,
         height,
-        borderColor: "green",
-        borderRadius: 1,
-        backgroundColor: "greenyellow",
-        border: "1px solid green",
-
         margin: 1,
       }}
     >
-      <Box
+      <Paper
         sx={{
-          borderColor: "green",
-          borderRadius: "5px",
           //border: "1px solid green",
-          backgroundColor: "#f0f0f0",
           p: "1px",
           m: "3px",
           height: "25px",
@@ -35,7 +27,6 @@ export default function Tray({ size, plants }) {
           sx={{
             fontSize: "9px",
             fontWeight: "bold",
-            color: "black",
           }}
           variant="caption"
         >
@@ -52,7 +43,7 @@ export default function Tray({ size, plants }) {
           {" "}
           All
         </Link>
-      </Box>
+      </Paper>
       <Stack
         direction="row"
         useFlexGap
@@ -69,7 +60,7 @@ export default function Tray({ size, plants }) {
           <Plant key={i} plant={plant} />
         ))}
       </Stack>
-    </Box>
+    </Paper>
   );
 }
 Tray.propTypes = {

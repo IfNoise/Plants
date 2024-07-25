@@ -1,4 +1,4 @@
-import { Box, Popper, Typography } from "@mui/material";
+import { Box, Paper, Popper, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -42,8 +42,7 @@ export default function Plant({ plant }) {
       sx={{
         width: "34px",
         height: "34px",
-        border: "1px solid green",
-        borderRadius: "2px",
+        borderRadius: "4px",
         backgroundColor: stringToColor(plant.pheno),
         p: "1px",
         cursor: "pointer",
@@ -66,20 +65,17 @@ export default function Plant({ plant }) {
         {plant.pheno}
       </Typography>
       <Popper
-        sx={{
-          width: "150px",
-          height: "150px",
-          border: "1px solid green",
-          borderRadius: "5px",
-          backgroundColor: "#f0f0f0",
-          p: "15px",
-          m: "3px",
-         boxShadow: 3,
-        }}
         open={open}
         anchorEl={anchorEl}
         anc
         onClose={() => {}}
+      ><Paper
+      sx={{
+        width: "150px",
+        height: "150px",
+        p: "15px",
+        m: "3px",
+      }}
       >
         <Typography  gutterBottom display="block" sx={{fontSize:"16px",fontWeight:"bold"}}>
           {plant.strain}
@@ -93,6 +89,7 @@ export default function Plant({ plant }) {
         <Typography sx={{fontSize:"10px",fontWeight:"bold"}} gutterBottom display="block">
           {plant.potSize || ""}
         </Typography>
+        </Paper>
       </Popper>
     </Box>
   );

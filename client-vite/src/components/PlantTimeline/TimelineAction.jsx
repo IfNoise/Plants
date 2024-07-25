@@ -6,6 +6,7 @@ import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import Typography from "@mui/material/Typography";
+import { Box } from "@mui/material";
 
 const actionData={
   Start:{color:'success',text:'Start'},
@@ -39,12 +40,17 @@ export default function TimelineAction({ action }) {
       <TimelineContent >
         <Typography variant="h5">{actionData[action.type]?.text}</Typography>
         {action?.oldAddress && (
-          <Typography variant="caption">
+          <Box maxWidth="100px" sx={{
+            width: "100%",
+            maxWidth: "100px",
+          }}>
+          <Typography variant="body2" gutterBottom >
             Building:{action.oldAddress?.building}
             Room:{action.oldAddress?.room}
-            Row:{action.oldAddress?.row}
-            Tray{action.oldAddress?.tray}
+            Row:{action.oldAddress?.row||''}
+            Tray{action.oldAddress?.tray||''}
           </Typography>
+          </Box>
         )}
         {action?.potSize && (
           <Typography variant="caption">{action.potSize}</Typography>
