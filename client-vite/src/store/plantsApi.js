@@ -29,6 +29,12 @@ export const plantsApi = createApi({
         url: "strains"
       })
     }),
+    getMap: build.query({
+      query: () => ({
+        url: "plants_map"
+      }),
+      providesTags:['Action','Plants'],
+    }),
     getPlantCounts: build.query({
       query: () => ({
         url: "plant_counts"
@@ -57,4 +63,4 @@ export const plantsApi = createApi({
   }),
 });
 
-export const { useGetPlantsQuery,useGetStrainsQuery ,useGetPlantCountsQuery, useAddActionMutation,useNewPlantMutation, refetch } = plantsApi;
+export const { useGetPlantsQuery,useGetStrainsQuery ,useGetMapQuery,useGetPlantCountsQuery, useAddActionMutation,useNewPlantMutation, refetch } = plantsApi;

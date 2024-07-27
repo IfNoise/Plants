@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
 const c = require("config");
+const plantMap = require("../config/map");
 
 router.post("/new_plant", async (req, res) => {
   const number = parseInt(req.body.form.seedsNumber);
@@ -272,6 +273,75 @@ router.post("/new_action", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+router.get("/plants_by_room", async (req, res) => {
+  try {
+    const plants = await Plant.find().sort("currentAddress.room");
+    
+
+    plants.forEach((plant) => {
+      const { building, room, row, shelf, rack, tray } = plant.currentAddress;
+      const { id, pheno, strain, startDate, potSize } = plant;
+      const plantData = { id, pheno, strain, startDate, potSize };
+
+      if (building && room && row !== undefined && tray !== undefined) {
+        if (building in plantMap && room in plantMap[building]) {
+          const roomData = plantMap[building][room];
+
+          if (roomData.rows[row] && roomData.rows[row].trays[tray]) {
+            if (roomData.numeration === "Down") {
+              roomData.rows[row].trays[tray].plants.unshift(plantData);
+            } else {
+              roomData.rows[row].trays[tray].plants.push(plantData);
+            }
+          }
+        }
+      }
+    });
+
+    res.json(plantMap);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/plants_map", async (req, res) => {
+  try{
+    const plants = await Plant.find({currentAddress:{$ne:{}}},{id:1,pheno:1,strain:1,startDate:1,currentAddress:1});
+    const map = {...plantMap};
+    plants.forEach((plant)=>{
+      const { building, room, row, shelf, rack, tray } = plant.currentAddress;
+      const { id, pheno, strain, startDate, potSize } = plant;
+      const plantData = { id, pheno, strain, startDate, potSize };
+      if(!building||!room) return;
+      const roomName = room.split(" ").join("_");
+      const buildingName = building.split(" ").join("");
+      if (room === "Laboratory"&&row&&tray) {
+        const racks = map[buildingName][roomName]?.racks;
+          let shelfNum =
+            racks[rack-1]?.shelfs.length - shelf;
+          const shelfTmp = racks[rack-1]?.shelfs[shelfNum];
+          shelfTmp?.plants.push(plantData);
+      } else if (room&&row&&tray) {
+        const rows = map[buildingName][roomName]?.rows;
+          let trayNum;
+          if (rows[row-1]?.numeration === "Up") {
+            trayNum = rows[row-1].trays.length - tray;
+            const trayTmp = rows[row-1]?.trays[trayNum];
+            trayTmp?.plants.push(plantData);
+          } else {
+            trayNum = tray - 1;
+            const trayTmp = rows[row-1]?.trays[trayNum];
+            trayTmp?.plants.unshift(plantData);
+          }
+        }
+        });
+        map["totalPlants"] = plants.length;
+        res.json(map)
+      }catch(error){
+        return res.status(500).json({ message: error.message });
+      }
+    })
+
 router.get("/test", async (req, res) => {
   try {
       const plant = await Plant.findById("65ead409974c3784d01228a0");
