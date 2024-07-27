@@ -273,36 +273,6 @@ router.post("/new_action", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-router.get("/plants_by_room", async (req, res) => {
-  try {
-    const plants = await Plant.find().sort("currentAddress.room");
-    
-
-    plants.forEach((plant) => {
-      const { building, room, row, shelf, rack, tray } = plant.currentAddress;
-      const { id, pheno, strain, startDate, potSize } = plant;
-      const plantData = { id, pheno, strain, startDate, potSize };
-
-      if (building && room && row !== undefined && tray !== undefined) {
-        if (building in plantMap && room in plantMap[building]) {
-          const roomData = plantMap[building][room];
-
-          if (roomData.rows[row] && roomData.rows[row].trays[tray]) {
-            if (roomData.numeration === "Down") {
-              roomData.rows[row].trays[tray].plants.unshift(plantData);
-            } else {
-              roomData.rows[row].trays[tray].plants.push(plantData);
-            }
-          }
-        }
-      }
-    });
-
-    res.json(plantMap);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
 
 router.get("/plants_map", async (req, res) => {
   try{
@@ -310,8 +280,8 @@ router.get("/plants_map", async (req, res) => {
     const map = {...plantMap};
     plants.forEach((plant)=>{
       const { building, room, row, shelf, rack, tray } = plant.currentAddress;
-      const { id, pheno, strain, startDate, potSize } = plant;
-      const plantData = { id, pheno, strain, startDate, potSize };
+      const { id, pheno,state, strain, startDate, potSize,currentAddress } = plant;
+      const plantData = { id, pheno, strain,state, startDate, potSize,currentAddress };
       if(!building||!room) return;
       const roomName = room.split(" ").join("_");
       const buildingName = building.split(" ").join("");

@@ -30,7 +30,7 @@ export default function Plant({ plant }) {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate(`/plant/${plant._id}`);
+    navigate(`/plant/${plant.id}`);
   };
   const handleEnter = (event) => {
     setAnchorEl(event.currentTarget);

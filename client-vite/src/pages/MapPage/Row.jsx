@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import Tray from "./Tray";
 export const Row = ({ index, trays ,direction}) => {
   const plants = trays.map((tray) => tray.plants).flat().length;
-
   const Banner=()=>(      <Box
     sx={{
       borderRadius: "4px",
