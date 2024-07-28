@@ -276,7 +276,7 @@ router.post("/new_action", async (req, res) => {
 
 router.get("/plants_map", async (req, res) => {
   try{
-    const plants = await Plant.find({currentAddress:{$ne:{}}},{id:1,pheno:1,strain:1,startDate:1,currentAddress:1});
+    const plants = await Plant.find({currentAddress:{$ne:{}}},{id:1,pheno:1,strain:1,state:1,potSize:1,startDate:1,currentAddress:1});
     const map = {...plantMap};
     plants.forEach((plant)=>{
       const { building, room, row, shelf, rack, tray } = plant.currentAddress;
