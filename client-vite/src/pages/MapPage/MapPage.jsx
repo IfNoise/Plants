@@ -61,7 +61,7 @@ export const MapPage = () => {
         Map Page
       </Typography>
       <Typography variant="h6" component="h6" gutterBottom>
-        Total:{map?.totalPlants||"0"}plants
+        Total:{map[building][room].totalPlants||"0"}plants
       </Typography>
       <Box>
         <Box
