@@ -2,6 +2,7 @@ const plantMap = {
   Hangar1: {
     Main_room: {
       width: `650px`,
+      totalPlants: 0,
       rows: [
         {
           trays: [
@@ -100,6 +101,7 @@ const plantMap = {
     },
     Laboratory: {
       width: "100%",
+      totalPlants: 0,
       racks: [
         {
           shelfs: [
@@ -233,6 +235,7 @@ const plantMap = {
   Hangar2: {
     Main_room: {
       width: `780px`,
+      totalPlants: 0,
       rows: [
         {
           trays: [
@@ -336,6 +339,7 @@ const plantMap = {
     },
     Small_Room: {
       width: `390px`,
+      totalPlants: 0,
       rows: [
         {
           trays: [
