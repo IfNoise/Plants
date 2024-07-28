@@ -1,11 +1,14 @@
 import { Stack, Typography, Link, Paper } from "@mui/material";
 import PropTypes from "prop-types";
 import Plant from "./Plant";
+
 export default function Tray({ size, plants }) {
   const height = size === "4x4" ? 140 : 282;
   const width = 111;
   const plantCount = plants.length;
-  const params = new URLSearchParams({...plants[0]?.currentAddress});
+  if(plantCount===0) return null;
+  const { building, room, row, tray } = plants[0].currentAddress;
+  const params = new URLSearchParams({ building, room, row, tray }).toString();
   return (
     <Paper
       sx={{
@@ -24,24 +27,27 @@ export default function Tray({ size, plants }) {
         }}
       >
         <Typography
-          sx={{
-            fontSize: "9px",
-            fontWeight: "bold",
-          }}
-          variant="caption"
-        >
-          {plantCount}plants
-        </Typography>
+      sx={{
+        fontSize: "14px",
+        fontWeight: "bold",
+        borderRadius:"5px",
+        ml: "5px",
+        padding: "1px",
+      }}
+      variant="caption"
+    >
+      {tray}
+    </Typography>
         <Link
           href={`/plants?${params}`}
           sx={{
-            fontSize: "9px",
+            ml: "5px",
+            fontSize: "12px",
             fontWeight: "bold",
             color: "black",
           }}
         >
-          {" "}
-          All
+          {plantCount}plants
         </Link>
       </Paper>
       <Stack

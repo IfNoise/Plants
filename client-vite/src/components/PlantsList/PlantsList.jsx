@@ -106,7 +106,6 @@ export const PlantsList = (props) => {
   };
 
   useEffect(() => {
-    console.log(apiRef);
     if (Object.keys(apiRef.current).length === 0) {
       return;
     }

@@ -5,9 +5,8 @@ import { PlantsList } from "../components/PlantsList/PlantsList";
 import { useSelector } from "react-redux";
 import { useLocation} from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addGroup ,clearFilter} from "../store/filterSlice";
+import { addGroup ,addAddress,clearFilter} from "../store/filterSlice";
 import { useEffect } from "react";
-import { addBuilding, addRack, addRoom, addRow, addShelf, addTray } from "../store/newActionSlice";
 
 
 
@@ -16,10 +15,7 @@ export const PlantsPage = () => {
   const dispatch = useDispatch();
   const sFilter = useSelector((state) => state.filter);
   const params = new URLSearchParams(location.search);
-  console.log(params);
-
   const pFilter = Object.fromEntries(params)
-  console.log(pFilter);
 
   const { isLoading, isError, error, data:plants,refetch} = useGetPlantsQuery(Object.entries(sFilter).length>0?{...sFilter}:{state:{$nin:["Stopped","Harvested"]}},{
     refetchOnReconnect:true,
@@ -35,30 +31,11 @@ export const PlantsPage = () => {
     Object.keys(pFilter).forEach((key) => {
       const value=pFilter[key]
       if(value==="undefined") return;
-      switch(key){
-        case "building":
-          dispatch(addBuilding(value));
-          break;
-        case "room":
-          dispatch(addRoom(value));
-          break;
-        case "row":
-          dispatch(addRow(value));
-          break;
-        case "rack":
-          dispatch(addRack(value));
-          break;
-        case "tray":
-          dispatch(addTray(value));
-          break;
-        case "shelf":
-          dispatch(addShelf(value));
-          break;
-        case "group":
-          dispatch(addGroup(value));
-          break;
-        default:
-          break;
+      if(key==="group"){
+        dispatch(addGroup({key,value}))
+      }
+      if(key==="building"||key==="room"||key==="rack"||key==="shelf"||key==="tray"){
+        dispatch(addAddress({...pFilter}))
       }
     })
     refetch();

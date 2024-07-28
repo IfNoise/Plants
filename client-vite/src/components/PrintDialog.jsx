@@ -16,7 +16,6 @@ export default function PrintDialog() {
 
   useEffect(() => {
     if (data) {
-      console.log(data)
       setPrinters(data);
     }
   }, [data]);

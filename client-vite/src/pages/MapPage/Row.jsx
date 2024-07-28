@@ -1,8 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import Tray from "./Tray";
 export const Row = ({ index, trays ,direction}) => {
   const plants = trays.map((tray) => tray.plants).flat().length;
+  const {building, room,row} = trays[0].plants[0].currentAddress;
+  const params = new URLSearchParams({building, room,row}).toString();
   const Banner=()=>(      <Box
     sx={{
       borderRadius: "4px",
@@ -23,16 +25,16 @@ export const Row = ({ index, trays ,direction}) => {
     >
       {index + 1}
     </Typography>
-    <Typography
-      sx={{
-        fontSize: "10px",
-        fontWeight: "bold",
-        color: "black",
-      }}
-      variant="caption"
-    >
+    <Link
+          href={`/plants?${params}`}
+          sx={{
+            fontSize: "14px",
+            fontWeight: "bold",
+            color: "black",
+          }}
+        >
       {plants}plants
-    </Typography>
+        </Link>
   </Box>)
   return (
     <Box
@@ -53,7 +55,7 @@ export const Row = ({ index, trays ,direction}) => {
 
       <Stack direction="column" spacing={0.5}>
         {trays?.map((tray, index) => (
-          <Tray size={tray.size} key={index} plants={tray?.plants} />
+          <Tray size={tray.size} key={index} plants={tray.plants} />
         ))}
       </Stack>
       {direction==="Up"&&<Banner/>}
