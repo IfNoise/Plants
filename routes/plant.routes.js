@@ -286,7 +286,7 @@ router.get("/plants_map", async (req, res) => {
       if(!room) return;
       const roomName = room.split(" ").join("_");
       if(Object.keys(map[building]).indexOf(roomName)===-1) return;
-      if (room === "Laboratory"&&row&&tray) {
+      if (room === "Laboratory"&&rack&&shelf) {
         const racks = map[building][roomName]?.racks;
           let shelfNum =
             racks[rack-1]?.shelfs.length - shelf;

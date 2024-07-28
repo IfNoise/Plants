@@ -7,9 +7,6 @@ export const Rack = ({ index, shelfs }) => {
   const Banner = () => (
     <Box
       sx={{
-        borderColor: "green",
-        borderRadius: 1,
-        border: "1px solid green",
         p: "2px",
         m: "2px",
       }}

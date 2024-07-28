@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Tray from "./Tray";
 export const Row = ({ index, trays ,direction}) => {
   const plants = trays.map((tray) => tray.plants).flat().length;
+  if(plants===0) return null;
   const {building, room,row} = trays[0].plants[0].currentAddress;
   const params = new URLSearchParams({building, room,row}).toString();
   const Banner=()=>(      <Box
