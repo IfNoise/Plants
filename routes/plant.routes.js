@@ -282,17 +282,18 @@ router.get("/plants_map", async (req, res) => {
       const { building, room, row, shelf, rack, tray } = plant.currentAddress;
       const { id, pheno,state, strain, startDate, potSize,currentAddress } = plant;
       const plantData = { id, pheno, strain,state, startDate, potSize,currentAddress };
-      if(!building||!room) return;
+      if(!building||Object.keys(map).indexOf(building)===-1) return;
+      if(!room) return;
       const roomName = room.split(" ").join("_");
-      const buildingName = building.split(" ").join("");
+      if(Object.keys(map[building]).indexOf(roomName)===-1) return;
       if (room === "Laboratory"&&row&&tray) {
-        const racks = map[buildingName][roomName]?.racks;
+        const racks = map[building][roomName]?.racks;
           let shelfNum =
             racks[rack-1]?.shelfs.length - shelf;
           const shelfTmp = racks[rack-1]?.shelfs[shelfNum];
           shelfTmp?.plants.push(plantData);
       } else if (room&&row&&tray) {
-        const rows = map[buildingName][roomName]?.rows;
+        const rows = map[building][roomName]?.rows;
           let trayNum;
           if (rows[row-1]?.numeration === "Up") {
             trayNum = rows[row-1].trays.length - tray;
