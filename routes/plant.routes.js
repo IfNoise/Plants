@@ -299,16 +299,15 @@ router.get("/plants_map", async (req, res) => {
             trayNum = rows[row-1].trays.length - tray;
             const trayTmp = rows[row-1]?.trays[trayNum];
             trayTmp?.plants.push(plantData);
-            map[building][roomName].totalPlants++;
+            map[building][roomName]["totalPlants"]++;
           } else {
             trayNum = tray - 1;
             const trayTmp = rows[row-1]?.trays[trayNum];
             trayTmp?.plants.unshift(plantData);
-            map[building][roomName].totalPlants++;
+            map[building][roomName]["totalPlants"]++;
           }
         }
         });
-        map["totalPlants"] = plants.length;
         res.json(map)
       }catch(error){
         return res.status(500).json({ message: error.message });
