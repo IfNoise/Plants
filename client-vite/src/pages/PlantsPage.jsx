@@ -32,7 +32,7 @@ export const PlantsPage = () => {
       const value=pFilter[key]
       if(value==="undefined") return;
       if(key==="group"){
-        dispatch(addGroup({key,value}))
+        dispatch(addGroup(value))
       }
       if(key==="building"||key==="room"||key==="rack"||key==="shelf"||key==="tray"){
         dispatch(addAddress({...pFilter}))
