@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import MiniPlant from "./MiniPlant";
 export default function Shelf({plants}) {
@@ -6,14 +6,14 @@ export default function Shelf({plants}) {
   const width = 200
   const plantCount = plants.length;
   return (
-    <Box
+    <Paper
       sx={{
         width,
         height,
         margin: 1,
       }}
     >
-      <Box
+      <Paper
         sx={{
           p:"1px",
           m:"3px",
@@ -30,7 +30,7 @@ export default function Shelf({plants}) {
         }}
         variant="caption"
         >Total:{plantCount}plants</Typography>
-      </Box>
+      </Paper>
       <Stack direction="row" useFlexGap flexWrap="wrap" spacing={0.2} margin="1px"
       sx={{
         overflowY:"auto",
@@ -41,7 +41,7 @@ export default function Shelf({plants}) {
         <MiniPlant key={i} plant={plant} />
       ))}
       </Stack>
-    </Box>
+    </Paper>
   );
 }
 Shelf.propTypes = {
