@@ -1,6 +1,6 @@
 const express=require("express")
-// const https = require('https');
-// const fs = require('fs');
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 const config=require("config")
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
@@ -19,6 +19,10 @@ app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
 app.use('/api/strain',require('./routes/strain.routes.js'))
 app.use('/api/cycle',require('./routes/cycle.routes.js'))
+app.post('api/photos/upload', upload.array('photos', 12), function (req, res, next) {
+  // req.files - массив файлов `photos`
+  // req.body сохранит текстовые поля, если они будут
+})
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client-vite', 'dist')))

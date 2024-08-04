@@ -50,7 +50,7 @@ export const Row = ({ index, trays ,direction}) => {
         p: "2px",
         width: "117px",
         height: "auto",
-        alignSelf: "flex-start",
+        alignSelf: "baseline",
       }}
     >
     {direction==="Down"&&<Banner/>}

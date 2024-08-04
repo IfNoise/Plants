@@ -26,6 +26,7 @@ import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 import { usePrintPlantsMutation } from "../../store/printApi";
 import { useAddActionMutation } from "../../store/plantsApi";
@@ -48,6 +49,8 @@ import { PrinterContext } from "../../context/PrinterContext";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { AddPhotoFields } from "./AddPhotoFields";
+import { useUploadPhotosMutation } from "../../store/photoApi";
 
 const states = {
   Germination: {
@@ -56,6 +59,7 @@ const states = {
       { text: "Picking" },
       { text: "Relocation" },
       { text: "Stop" },
+      { text: "AddPhoto" },
     ],
   },
   Cloning: {
@@ -64,6 +68,7 @@ const states = {
       { text: "Picking" },
       { text: "Relocation" },
       { text: "Stop" },
+      { text: "AddPhoto" },
     ],
   },
   Growing: {
@@ -75,6 +80,7 @@ const states = {
       { text: "Blooming" },
       { text: "MakeMother" },
       { text: "Stop" },
+      { text: "AddPhoto" },
     ],
   },
   Blooming: {
@@ -83,13 +89,14 @@ const states = {
       { text: "Relocation" },
       { text: "Stop" },
       { text: "Harvest" },
+      { text: "AddPhoto" },
     ],
   },
   Stopped: {
-    actions: [{ text: "Note" }],
+    actions: [{ text: "Note" }, { text: "AddPhoto" }],
   },
   Harvested: {
-    actions: [{ text: "Note" }],
+    actions: [{ text: "Note" }, { text: "AddPhoto" }],
   },
   MotherPlant: {
     actions: [
@@ -99,6 +106,7 @@ const states = {
       { text: "CuttingClones" },
       { text: "Blooming" },
       { text: "Stop" },
+      { text: "AddPhoto" },
     ],
   },
 };
@@ -145,6 +153,11 @@ const actionFields = {
     icon: <ContentCutIcon />,
     fields: <CuttingClonesFields />,
   },
+  AddPhoto: {
+    name: "Photo",
+    icon: <AddPhotoAlternateIcon />,
+    fields: <AddPhotoFields />,
+  },
 };
 
 export default function PlantSpeedDial(props) {
@@ -158,6 +171,7 @@ export default function PlantSpeedDial(props) {
   const [printPlants] = usePrintPlantsMutation();
   const [clearTray] = useClearTrayMutation();
   const [printTray] = usePrintTrayMutation();
+  const [uploadPhotos]=useUploadPhotosMutation();
   const [date, setDate] = useState(null);
   const { setPrintDialog } = useContext(PrinterContext);
   //const [actions,setActions]=useState([])
@@ -226,6 +240,9 @@ export default function PlantSpeedDial(props) {
 
     const body = { id, action: newAction };
     addAction(body);
+    if (newAction.actionType === "AddPhoto") {
+      uploadPhotos({files:newAction.photos})
+    }
     dispatch(clear());
     setOpen(false);
   };
@@ -367,7 +384,7 @@ export default function PlantSpeedDial(props) {
                 disableFuture
                 closeOnSelect
                 size="small"
-                value={date||dayjs()}
+                value={date || dayjs()}
                 label="Start Date"
                 onChange={handleChangeDate}
               />
@@ -376,7 +393,11 @@ export default function PlantSpeedDial(props) {
           {newAction?.actionType && actionFields[newAction.actionType]?.fields}
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
-          <Button onClick={newActionFunc} role="submit" disabled={!newAction.actionType}>
+          <Button
+            onClick={newActionFunc}
+            role="submit"
+            disabled={!newAction.actionType}
+          >
             Ok
           </Button>
           <Button onClick={handleCancel}>Cancel</Button>

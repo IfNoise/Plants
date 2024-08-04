@@ -8,6 +8,9 @@ export const newActionSlice=createSlice({
     addDate: (state,action)=>{
       state.date=action.payload
     },
+    addPhotos: (state,action)=>{
+      state.photos=action.payload
+    },
     addType: (state,action)=>{
       state.actionType=action.payload
     },
@@ -62,7 +65,7 @@ export const newActionSlice=createSlice({
 
 
 export const {addDate,addType,addAuthor,addPotSize,addBuilding,addRoom,addRack,addShelf,
-              addRow,addTray,addClonesNumber,addNumber,addReason,addUserReason,
+              addRow,addTray,addClonesNumber,addNumber,addReason,addUserReason,addPhotos,
               addNote,addGender, clear}=newActionSlice.actions
 
 export default newActionSlice.reducer

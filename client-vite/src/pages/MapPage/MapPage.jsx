@@ -42,7 +42,6 @@ export const MapPage = () => {
             flexDirection: "row",
             flexWrap: "wrap",
             flex: "0 0 0",
-            verticalAlign: "",
           }}
         >
           {Object.keys(map).length>0&&
