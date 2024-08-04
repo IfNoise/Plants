@@ -19,7 +19,7 @@ app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
 app.use('/api/strain',require('./routes/strain.routes.js'))
 app.use('/api/cycle',require('./routes/cycle.routes.js'))
-app.post('api/photos/upload', upload.array('photos', 12), function (req, res, next) {
+app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, next) {
   // req.files - массив файлов `photos`
   // req.body сохранит текстовые поля, если они будут
 })
