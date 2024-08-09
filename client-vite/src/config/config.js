@@ -1,5 +1,5 @@
-export const baseUrl = "https://ddweed.org/api";
-export const printerUrl = "https://ddweed.org/api/printer";
+export const baseUrl = "https://ddweed.org";
+export const printerUrl = "https://ddweed.org";
 export const buildRooms = 
   {
     Hangar1: ["Main room", "Laboratory"],

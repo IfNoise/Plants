@@ -4,7 +4,7 @@ import {printerUrl} from "../config/config"
 export const printApi = createApi({
   reducerPath: "print/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: printerUrl
+    baseUrl: printerUrl+"/api/printer",
   }),
   endpoints: (build) => ({
     getPrinters: build.query({

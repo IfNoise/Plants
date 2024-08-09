@@ -4,7 +4,7 @@ import { baseUrl } from "../config/config";
 export const deviceApi = createApi({
   reducerPath: "device/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl,
+    baseUrl: baseUrl+"/api/",
     // prepareHeaders: (headers, { getState }) => {
     //   const token = getState().auth.token
     //   if (token) {

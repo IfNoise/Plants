@@ -12,6 +12,7 @@ import { printApi } from "./printApi";
 import { cycleApi } from "./cycleApi";
 import { deviceApi } from "./deviceApi";
 import { photoApi } from "./photoApi";
+import { lightApi } from "./lightApi";
 
 const reducer = {
   [plantsApi.reducerPath]: plantsApi.reducer,
@@ -20,6 +21,7 @@ const reducer = {
   [strainApi.reducerPath]:strainApi.reducer,
   [printApi.reducerPath]:printApi.reducer,
   [cycleApi.reducerPath]:cycleApi.reducer,
+  [lightApi.reducerPath]:lightApi.reducer,
   [deviceApi.reducerPath]:deviceApi.reducer,
   [photoApi.reducerPath]:photoApi.reducer,
   newAction: newActionSliceReducer,
@@ -31,7 +33,7 @@ export const store = configureStore({
   reducer,
   preloadedState: reHydrateStore(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([plantsApi.middleware,deviceApi.middleware,photoApi.middleware, authApi.middleware,trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,localStorageMiddleware]),
+    getDefaultMiddleware().concat([plantsApi.middleware,deviceApi.middleware,photoApi.middleware, authApi.middleware,lightApi.middleware, trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,localStorageMiddleware]),
 });
 
 setupListeners(store.dispatch)

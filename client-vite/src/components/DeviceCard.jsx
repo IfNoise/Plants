@@ -9,6 +9,10 @@ import {
   Checkbox,
   CircularProgress,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
   FormControlLabel,
   IconButton,
   Popover,
@@ -29,6 +33,7 @@ import { useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import Slide from '@mui/material/Slide';
 import dayjs from "dayjs";
 const secToTime = (seconds) => {
   return dayjs()
@@ -58,6 +63,33 @@ Status.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
+// const AccepptPopover = ({ open, onClose, onAccept }) => {
+//   return (
+//     <Popover
+//       open={open}
+//       onClose={onClose}
+//       anchorOrigin={{
+//         vertical: "bottom",
+//         horizontal: "left",
+//       }}
+//     >
+//       <Typography sx={{ p: "3px" }} display="inline">
+//         Are you sure?
+//       </Typography>
+//       <Button size="small" onClick={onAccept}>
+//         Ok
+//       </Button>
+//       <Button size="small" onClick={onClose}>
+//         Cancel
+//       </Button>
+//     </Popover>
+//   );
+// };
+// AccepptPopover.propTypes = {
+//   open: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
+//   onAccept: PropTypes.func.isRequired,
+// };
 
 const Outputs = ({ deviceId, updateInterval }) => {
   const theme = useTheme();
@@ -83,17 +115,17 @@ const Outputs = ({ deviceId, updateInterval }) => {
               key={i}
               sx={{
                 display: "inline",
-                fontSize: "7px",
+                fontSize: "8px",
                 fontFamily: "monospace",
                 fontWeight: "bold",
-                width: "40px",
+                width: "45px",
                 color: "white",
                 m: "2px",
                 p: "2px",
-                height: "24px",
+                height: "26px",
                 borderRadius: "5px",
                 borderStyle: "solid",
-                borderColor: output.state ?  "lime" : "red",
+                borderColor: output.state ?  "green" : "gray",
                 borderWidth: "1px",
               }}
             >
@@ -183,13 +215,16 @@ const EnableField = ({ name, value, onChange }) => {
     setAnchorEl(null);
   };
   return (
-    <>
+    <><FormControl 
+    sx={{ ml: "10px",my:0, p: "2px",py:0, borderRadius: "4px" }}
+    >
       <FormControlLabel
         control={
           <Checkbox checked={value} size="small" onClick={handleClick} />
         }
         label={name}
       />
+      </FormControl>
       <Popover
         sx={{  p:"5px" , borderRadius: "4px",height:"200px"}}
         open={open}
@@ -218,12 +253,19 @@ EnableField.propTypes = {
 
 const IrrigatorCard = ({ name, config, onSave }) => {
   const [open, setOpen] = useState(false);
+  const [newConfig, setNewConfig] = useState(config);
+  const [reboot, setReboot] = useState(false);
   const handleClose = () => {
+    setNewConfig(config);
     setOpen(false);
   };
   const handleOpen = () => {
     setOpen(true);
   };
+  const handleSave=()=>{
+    onSave({ [name]: newConfig }, reboot);
+    handleClose() 
+  }
   return (
     <>
       <Card
@@ -236,7 +278,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           {config.name+"  "}
         </Typography>
          <EnableField
-          name=""
+          name={""}
           value={config.enable}
           onChange={(e) => {
             onSave({ [name]: { enable: e.target.checked } }, false);
@@ -253,41 +295,46 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           {secToTime(config.stop).format("HH:mm")}
         </Typography>
         <Typography variant="caption" display="block">
-          Irrigation window: {config.win}
+          Irrigation window: {config.win} s.
         </Typography>
         <Typography variant="caption" display="block">
           Irrigation number: {config.num}
         </Typography>
       </Card>
-      <Dialog fullScreen open={open} onClose={handleClose}>
-        <Typography variant="h6" display="inline">
+      <Dialog 
+      TransitionComponent={Slide}
+      open={open} onClose={handleClose}>
+        <DialogTitle>
+        
           {config.name}
-        </Typography>
+       
+        </DialogTitle>
+        <DialogContent>
         <EnableField
-          name=""
+          name="Enable"
           value={config.enable}
           onChange={(e) => {
-            onSave({ [name]: { enable: e.target.checked } }, false);
+            setNewConfig({ enable: e.target.checked });
           }}
         />
         <TimerMode
           mode={config.mode}
           onChange={(e) => {
-            onSave({ [name]: { mode: parseInt(e.target.value) } }, false);
+            setNewConfig({ mode: parseInt(e.target.value) });
           }}
         />
         <TimeField
           name="Start"
           value={config.start}
           onChange={(e) => {
-            onSave({ [name]: { start: timeToSec(e) } }, false);
+            setNewConfig({ start: timeToSec(e) });
           }}
         />
         <TimeField
           name="Stop"
           value={config.stop}
           onChange={(e) => {
-            onSave({ [name]: { stop: timeToSec(e) } }, false);
+            setNewConfig({ stop: timeToSec(e) });
           }}
         />
 
@@ -295,25 +342,40 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           sx={{ m: "2px" }}
           variant="outlined"
           label="Irrigation window"
-          fullWidth
           type="number"
           value={config.win}
           onChange={(event) => {
-            onSave({ [name]: { win: parseInt(event.target.value) } }, false);
+            setNewConfig({ win: parseInt(event.target.value) });
           }}
         />
         <TextField
           sx={{ m: "2px" }}
           variant="outlined"
           label="Irrigation number"
-          fullWidth
           type="number"
           value={config.num}
           onChange={(event) => {
-            onSave({ [name]: { num: parseInt(event.target.value) } }, false);
+            setNewConfig({ num: parseInt(event.target.value) });
           }}
         />
-        <Button onClick={handleClose}>Close</Button>
+        </DialogContent>
+        <DialogActions 
+        sx={{ m: "2px",alignContent:"center",justifyContent:"center" }}
+        >
+        
+        <Button onClick={handleSave}>Save</Button>
+        <Checkbox
+          checked={reboot}
+          size="small"
+          onChange={(e) => {
+            setReboot(e.target.checked);
+          }}
+        />
+        <Typography variant="caption" display="block">
+          Reboot
+        </Typography>
+        <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
       </Dialog>
     </>
   );
@@ -326,12 +388,19 @@ IrrigatorCard.propTypes = {
 
 const LightTimerCard = ({ name, config, onSave }) => {
   const [open, setOpen] = useState(false);
+  const [newConfig, setNewConfig] = useState(config);
+  const [reboot, setReboot] = useState(false);
   const handleClose = () => {
+    setNewConfig(config);
     setOpen(false);
   };
   const handleOpen = () => {
     setOpen(true);
   };
+  const handleSave=()=>{
+    onSave({ [name]: newConfig }, reboot);
+    handleClose() 
+  }
   return (
     <>
       <Card
@@ -343,9 +412,9 @@ const LightTimerCard = ({ name, config, onSave }) => {
         <Typography variant="body" display="inline">
           {config.name}
         </Typography>
-        <Checkbox
-          checked={config.enable}
-          size="small"
+        <EnableField
+          name={""}
+          value={config.enable}
           onChange={(e) => {
             onSave({ [name]: { enable: e.target.checked } }, false);
           }}
@@ -362,37 +431,54 @@ const LightTimerCard = ({ name, config, onSave }) => {
           {secToTime(config.stop).format("HH:mm")}
         </Typography>
       </Card>
-      <Dialog fullScreen open={open} onClose={handleClose}>
-        <Typography variant="body" display="inline">
+      <Dialog open={open} onClose={handleClose} TransitionComponent={Slide} >
+        <DialogTitle>
           {config.name}
-        </Typography>
-        <Checkbox
-          checked={config.enable}
+        </DialogTitle>
+        <DialogContent>
+        <EnableField
+          name="Enable"
+          value={config.enable}
           onChange={(e) => {
-            onSave({ [name]: { enable: e.target.checked } }, false);
+            setNewConfig({ enable: e.target.checked });
           }}
         />
         <TimerMode
           mode={config.mode}
           onChange={(e) => {
-            onSave({ [name]: { mode: parseInt(e.target.value) } }, false);
+            setNewConfig({ mode: parseInt(e.target.value) });
           }}
         />
         <TimeField
           name="Start"
           value={config.start}
           onChange={(e) => {
-            onSave({ [name]: { start: timeToSec(e) } }, false);
+            setNewConfig({ start: timeToSec(e) });
           }}
         />
         <TimeField
           name="Stop"
           value={config.stop}
           onChange={(e) => {
-            onSave({ [name]: { stop: timeToSec(e) } }, false);
+            setNewConfig({ stop: timeToSec(e) });
           }}
         />
-        <Button onClick={handleClose}>Close</Button>
+        </DialogContent>
+        <DialogActions sx={{alignContent:"center",justifyContent:"center"}}>
+        <Button onClick={handleSave}>Save</Button>
+        <Checkbox
+          checked={reboot}
+          size="small"
+          onChange={(e) => {
+            setReboot(e.target.checked);
+          }}
+        />
+        <Typography variant="caption" display="block">
+          Reboot
+        </Typography>
+        
+        <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
       </Dialog>
     </>
   );
@@ -429,7 +515,7 @@ const DeviceCard = ({ device }) => {
           subheader={address}
         />
         <CardContent>
-          <Outputs deviceId={id} updateInterval={10000} />
+          <Outputs deviceId={id} updateInterval={60000} />
           <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
           {Object.keys(config)
             .filter((key) => key.startsWith("irr") && config[key].enable)

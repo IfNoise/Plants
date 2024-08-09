@@ -17,10 +17,11 @@ export default function CameraDialog({ onTakePhoto}) {
       <DialogTitle>Take a photo</DialogTitle>
       <DialogContent>
         <Camera
+          imageType="jpg"
           onCameraError={(error) => {
             console.error('onCameraError', error)
           }}
-          
+
           onTakePhoto={(dataUri) => {
             onTakePhoto(dataUri)
           }}

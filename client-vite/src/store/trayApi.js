@@ -4,7 +4,7 @@ import {baseUrl} from "../config/config"
 export const trayApi = createApi({
   reducerPath: "tray/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+"/tray",
+    baseUrl: baseUrl+"/api/tray",
     
   }),
   endpoints: (build) => ({

@@ -2,6 +2,7 @@ import { Alert, Box, CircularProgress, Grid, Stack } from "@mui/material";
 
 import { useGetDevicesQuery } from "../../store/deviceApi";
 import DeviceCard from "../../components/DeviceCard";
+import LightController from "../../components/LightController/LightController";
 
 const Dashboard = () => {
   const { isLoading, isError, error, data,refetch }=useGetDevicesQuery({refetchOnReconnect:true,
@@ -20,6 +21,9 @@ const Dashboard = () => {
         <DeviceCard key={device.id} device={device} />
         </Grid>
       ))}
+      <Grid item xs={12} sm={12} md={10} lg={6} xl={2}>
+        <LightController/>
+      </Grid>
       </Grid>
     </Box>
   );

@@ -328,7 +328,7 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
             onCancel();
           }}
         >
-          Ok
+          Cancel
         </Button>
       </Box>
     </>

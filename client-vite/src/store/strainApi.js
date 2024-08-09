@@ -4,7 +4,7 @@ import {baseUrl} from "../config/config"
 export const strainApi = createApi({
   reducerPath: "strain/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+"/strain",
+    baseUrl: baseUrl+"/api/strain",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token
       if (token) {

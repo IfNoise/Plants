@@ -241,7 +241,7 @@ export default function PlantSpeedDial(props) {
     const body = { id, action: newAction };
     addAction(body);
     if (newAction.actionType === "AddPhoto") {
-      uploadPhotos({files:newAction.photos})
+      uploadPhotos({files:newAction.photos[0]})
     }
     dispatch(clear());
     setOpen(false);

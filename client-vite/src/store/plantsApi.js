@@ -4,7 +4,7 @@ import {baseUrl} from "../config/config"
 export const plantsApi = createApi({
   reducerPath: "plants/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+"/plant",
+    baseUrl: baseUrl+"/api/plant",
     refetchOnFocus: true,
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token
