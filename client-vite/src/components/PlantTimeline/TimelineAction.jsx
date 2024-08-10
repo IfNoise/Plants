@@ -69,6 +69,7 @@ export default function TimelineAction({ action }) {
     setAnchorEl(event.currentTarget);
     setOpen(true);
   };
+  const isManyInfo = action?.photo?.length>0 || action?.oldAddress || action?.newAddress || action?.clonesNumber || action?.group;
   const handleLeave = () => {
     setAnchorEl(null);
     setOpen(false);
@@ -121,7 +122,7 @@ export default function TimelineAction({ action }) {
 
       </TimelineContent>
     </TimelineItem>
-    <Popper
+    {isManyInfo&&<Popper
         open={open}
         anchorEl={anchorEl}
         anc
@@ -175,7 +176,7 @@ export default function TimelineAction({ action }) {
           }
           {action?.group && <PlantGroup group={action.group} />}
         </Paper>
-      </Popper>
+      </Popper>}
 
     </>
   );

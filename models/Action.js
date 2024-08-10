@@ -1,4 +1,3 @@
-const { g } = require("@vite-pwa/assets-generator/dist/shared/assets-generator.5e51fd40.js");
 const { Schema, model, Types } = require("mongoose");
 
 const schema = new Schema({
