@@ -69,7 +69,7 @@ export default function TimelineAction({ action }) {
     setAnchorEl(event.currentTarget);
     setOpen(true);
   };
-  const isManyInfo = action?.photo?.length>0 || action?.oldAddress || action?.newAddress || action?.clonesNumber || action?.group;
+  const isManyInfo = action?.photos?.length>0 || action?.oldAddress || action?.newAddress || action?.clonesNumber || action?.group;
   const handleLeave = () => {
     setAnchorEl(null);
     setOpen(false);
@@ -161,11 +161,11 @@ export default function TimelineAction({ action }) {
           </Typography>
           </Box>
         )}
-        {action?.photo?.length>0 && 
+        {action?.photos?.length>0 && 
         <ImageList sx={{ width: 150, height: 150 }} cols={1}>
-          {action.photo.map((item,i) => (
+          {action.photos.map((item,i) => (
             <ImageListItem key={i}>
-              <img src={`/upload/${item}`} alt={`Photo ${i}`} />
+              <img src={`/uploads/${item}`} alt={`Photo ${i}`} />
             </ImageListItem>
           ))}
         </ImageList>
