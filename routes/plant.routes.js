@@ -266,6 +266,7 @@ router.post("/new_action", async (req, res) => {
           data.photos.map((photo)=>{
 
           if (plant.photos.indexOf(photo) === -1) {
+            console.log("photo",photo);
             plant.photos.push(photo);
             action.photos.push(photo);
           }})
