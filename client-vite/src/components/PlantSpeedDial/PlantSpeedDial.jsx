@@ -154,7 +154,7 @@ const actionFields = {
     fields: <CuttingClonesFields />,
   },
   AddPhoto: {
-    name: "Photo",
+    name: "AddPhoto",
     icon: <AddPhotoAlternateIcon />,
     fields: <AddPhotoFields />,
   },

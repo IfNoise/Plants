@@ -146,7 +146,7 @@ router.post("/new_action", async (req, res) => {
       action = { type: data.actionType, date: data?.date||Date.now() };
       const plant = await Plant.findById(idx);
 
-      switch (action.type) {
+      switch (data.actionType) {
         case "Note": {
           if (data.note) action.note = data.note;
           break;

@@ -34,7 +34,7 @@ const actionData={
   Blooming:{color:'warning',text:'Blooming Start',icon:<LocalFloristIcon/>},
   Stop:{color:'error',text:'Stop',icon:<CancelIcon/>},
   Harvest:{color:'success',text:'Harvest',icon:<AgricultureIcon/>},
-  addPhoto:{color:'info',text:'Add Photo',icon:<AddAPhotoIcon/>},
+  AddPhoto:{color:'info',text:'Add Photo',icon:<AddAPhotoIcon/>},
   Insecticide:{color:'error',text:'Insecticide',icon:<BugReportIcon/>},
   Cutting:{color:'warning',text:'Cutting',icon:<ContentCutIcon/>}
 }

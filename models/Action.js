@@ -37,7 +37,6 @@ const schema = new Schema({
   discription:String,
   clonesNumber:Number,
   group:String,
-  photos:[String],
 }, { _id: false });
 
 module.exports =  schema
