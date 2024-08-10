@@ -259,10 +259,16 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         case "addPhoto": {
-          if (plant.photos.indexOf(data.photo) === -1) {
-            plant.photos.push(data.photo);
-            action.photo = data.photo;
+          if(data?.photos?.length===0){
+            action=null;
+            break;
           }
+          data.photos.map((photo)=>{
+
+          if (plant.photos.indexOf(photo) === -1) {
+            plant.photos.push(photo);
+            action.photos.push(photo);
+          }})
           break;
         }
         case "Cutting":{
