@@ -57,6 +57,7 @@ export const MapPage = () => {
                 index={index}
                 trays={row.trays}
                 direction={row.numeration}
+                address={{building, room}}
               />
             ))}
         </Box>
