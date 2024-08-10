@@ -6,7 +6,6 @@ export default function Tray({ size, plants }) {
   const height = size === "4x4" ? 140 : 282;
   const width = 111;
   const plantCount = plants.length;
-  if(plantCount===0) return null;
   const { building, room, row, tray } = plants[0].currentAddress;
   const params = new URLSearchParams({ building, room, row, tray }).toString();
   return (
