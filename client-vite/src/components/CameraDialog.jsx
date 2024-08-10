@@ -17,7 +17,7 @@ export default function CameraDialog({ onTakePhoto}) {
       <DialogTitle>Take a photo</DialogTitle>
       <DialogContent>
         <Camera
-          
+          isFullscreen={true}
           idealFacingMode="environment"
           isMaxResolution={true}
           imageType="jpg"
