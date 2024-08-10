@@ -263,13 +263,12 @@ router.post("/new_action", async (req, res) => {
             action=null;
             break;
           }
-          action.photos = [];
+          action.photos = data.photos;
           data.photos.map((photo)=>{
 
           if (plant.photos.indexOf(photo) === -1) {
             console.log("photo",photo);
             plant.photos.push(photo);
-            action.photos.push(photo);
           }})
           break;
         }
