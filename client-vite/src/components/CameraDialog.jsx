@@ -1,8 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, IconButton } from "@mui/material"
+import { Box,Dialog, IconButton } from "@mui/material"
 import { useState } from "react"
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import Camera from "react-html5-camera-photo"
 import "react-html5-camera-photo/build/css/index.css"
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function CameraDialog({ onTakePhoto}) {
   const [open, setOpen] = useState(false)
@@ -13,9 +14,10 @@ export default function CameraDialog({ onTakePhoto}) {
     <IconButton onClick={() => setOpen(true)}  >
       <PhotoCameraIcon />
     </IconButton>
-    <Dialog fullScreen open={open} onClose={onClose}>
-      <DialogTitle>Take a photo</DialogTitle>
-      <DialogContent>
+    <Dialog 
+    sx={{m:0,p:0}}  
+    fullScreen open={open} onClose={onClose}>
+        <Box sx={{m:0,p:0,position:"relative" }}>
         <Camera
           isFullscreen={true}
           idealFacingMode="environment"
@@ -29,10 +31,15 @@ export default function CameraDialog({ onTakePhoto}) {
             onTakePhoto(dataUri)
           }}
         />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-      </DialogActions>
+        <IconButton 
+        sx={{position: 'absolute',
+          top: 10,
+          right: 10,
+          zIndex: 1000,
+          color:"red",
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',}}
+        onClick={onClose}><CloseIcon/></IconButton>
+        </Box>
     </Dialog>
     </>
   )
