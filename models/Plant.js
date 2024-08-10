@@ -40,6 +40,8 @@ const plant = new Schema({
   maxClones: Number,
   //================
   actions: [Action],
+  //================
+  photos: [String],
 });
 
 module.exports = model("Plant", plant);

@@ -28,7 +28,7 @@ export const photoApi = createApi({
     uploadPhotos: build.mutation({
       query: (files) => {
         const formData = new FormData();
-        files.forEach((file, index) => {
+        files.forEach((file) => {
           formData.append(`photos`, dataURItoBlob(file));
         });
         return {

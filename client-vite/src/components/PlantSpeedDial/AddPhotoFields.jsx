@@ -18,7 +18,8 @@ export const AddPhotoFields = () => {
 
   const handleSendPhotos = async () => {
     try {
-      await uploadPhotos(photos).unwrap();
+      const res=await uploadPhotos(photos).unwrap();
+      dispatch(addPhotos(res.files.map(file=>file.filename)));
       console.log('Photos uploaded successfully');
     } catch (error) {
       console.error('Error uploading photos:', error);

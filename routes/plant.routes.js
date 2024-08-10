@@ -170,7 +170,8 @@ router.post("/new_action", async (req, res) => {
             action = null;
             break;
           }
-          action.address = plant.currentAddress;
+          action.oldAddress = plant.currentAddress;
+          action.newAddress = data.address;
 
           plant.set("currentAddress", data.address);
           break;
@@ -256,6 +257,19 @@ router.post("/new_action", async (req, res) => {
           plant.set("cloneCounter", newCounter);
           plant.set("maxClones", maxClones);
           break;
+        }
+        case "addPhoto": {
+          if (plant.photos.indexOf(data.photo) === -1) {
+            plant.photos.push(data.photo);
+            action.photo = data.photo;
+          }
+          break;
+        }
+        case "Cutting":{
+          break
+        }
+        case "Insecticide":{
+          break
         }
         default: {
           return res.json({ message: "Wrong action type" });
