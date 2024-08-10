@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import CameraDialog from "../DeviceSettingsList/CameraDialog";
+import CameraDialog from "../CameraDialog";
 import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { addPhotos} from "../../store/newActionSlice";
 import { useDispatch } from "react-redux";

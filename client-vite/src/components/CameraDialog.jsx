@@ -13,10 +13,12 @@ export default function CameraDialog({ onTakePhoto}) {
     <IconButton onClick={() => setOpen(true)}  >
       <PhotoCameraIcon />
     </IconButton>
-    <Dialog open={open} onClose={onClose}>
+    <Dialog fullScreen open={open} onClose={onClose}>
       <DialogTitle>Take a photo</DialogTitle>
       <DialogContent>
         <Camera
+          idealFacingMode="environment"
+          
           imageType="jpg"
           onCameraError={(error) => {
             console.error('onCameraError', error)
