@@ -3,7 +3,6 @@ const Plant = require("../models/Plant");
 const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
-const c = require("config");
 const plantMap = require("../config/map");
 
 router.post("/new_plant", async (req, res) => {

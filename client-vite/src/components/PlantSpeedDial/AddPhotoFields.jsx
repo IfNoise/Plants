@@ -1,34 +1,52 @@
 
 import { useState } from "react";
 import CameraDialog from "../CameraDialog";
-import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
+import { Button, IconButton, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { addPhotos} from "../../store/newActionSlice";
 import { useDispatch } from "react-redux";
+import { useUploadPhotosMutation } from "../../store/photoApi";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export const AddPhotoFields = () => {
-  const [photo, setPhoto] = useState(null)
+  const [photos, setPhotos] = useState([])
   const dispatch = useDispatch()
+  const [uploadPhotos] = useUploadPhotosMutation()
 
   const handleTakePhoto = (dataUri) => {
-    setPhoto(dataUri)
-    dispatch(addPhotos(photo))
-  }
+    setPhotos([...photos,dataUri]);
+  };
+
+  const handleSendPhotos = async () => {
+    try {
+      await uploadPhotos(photos).unwrap();
+      console.log('Photos uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading photos:', error);
+    }
+  };
 
   return(
     <>
     <CameraDialog  onTakePhoto={handleTakePhoto} />
-    {[photo].length>0&&<ImageList
+    {photos.length>0&&<ImageList
       cols={4}
       rowHeight={160}
       style={{width:"100%"}}
     >
-      {[photo].map((photo,index)=>(
+      {photos.map((photo,index)=>(
         <ImageListItem key={index}>
-        <ImageListItemBar title={"Photo "+(index+1)} />
+        <ImageListItemBar 
+        title={"Photo "+(index+1)} 
+        actionIcon={
+          <IconButton onClick={()=>setPhotos(photos.filter((_,i)=>i!==index))}><CancelIcon/></IconButton>
+        }
+        actionPosition="top"
+        />
         <img src={photo} key={index} />
         </ImageListItem>
       ))}
     </ImageList>}
+    <Button onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )
 }
