@@ -258,7 +258,7 @@ router.post("/new_action", async (req, res) => {
           plant.set("maxClones", maxClones);
           break;
         }
-        case "addPhoto": {
+        case "AddPhoto": {
           if(data?.photos?.length===0){
             action=null;
             break;
