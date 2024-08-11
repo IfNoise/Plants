@@ -238,7 +238,7 @@ export default function PlantSpeedDial(props) {
     const id = plants.map((plant) => plant._id);
 
     const body = { id, action: newAction };
-    dispatch(addAction(body));
+    addAction(body);
     dispatch(clear());
     setOpen(false);
   };
@@ -328,6 +328,7 @@ export default function PlantSpeedDial(props) {
         )}
       </SpeedDial>
       <Dialog
+
         sx={{ width: { md: "30%" }, justifyContent: "center" }}
         id="action_popover"
         fullScreen={isSmall}

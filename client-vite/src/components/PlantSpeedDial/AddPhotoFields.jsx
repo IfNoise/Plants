@@ -21,8 +21,14 @@ export const AddPhotoFields = () => {
     try {
       const res=await uploadPhotos(photos);
       console.log(res);
+      if (res.error) {  
+        throw new Error(res.error.message);
+      }
+      if(res.files?.length>0){ 
       dispatch(addPhotos(res.files.map(file=>file.filename)));
       console.log('Photos uploaded successfully');
+      setPhotos([]);
+      }
     } catch (error) {
       console.error('Error uploading photos:', error);
     }
