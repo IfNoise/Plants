@@ -18,6 +18,8 @@ app.use('/api/tray',require('./routes/tray.routes.js'))
 app.use('/api/plant',require('./routes/plant.routes.js'))
 app.use('/api/strain',require('./routes/strain.routes.js'))
 app.use('/api/cycle',require('./routes/cycle.routes.js'))
+app.use('/api/gallery',require('./routes/gallery.routes.js'))
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/');
@@ -39,10 +41,10 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
   }
   res.status(200).send({ message: 'Files uploaded successfully.', files: req.files });
 });
+app.use('/gallery', express.static(path.join(__dirname, 'uploads')))
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client-vite', 'dist')))
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client-vite', 'dist', 'index.html'))
   })

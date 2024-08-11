@@ -125,14 +125,13 @@ export default function TimelineAction({ action }) {
     {isManyInfo&&<Popper
         open={open}
         anchorEl={anchorEl}
-        anc
         onClose={() => {}}
       ><Paper
       sx={{
-        width: "150px",
-        height: "150px",
-        p: "15px",
-        m: "3px",
+        minWidth: "160px",
+        minHeight: "160px",
+        maxWidth: "320px",
+        maxHeight: "3200px",
       }}
       >
         {action?.oldAddress && (
@@ -148,9 +147,22 @@ export default function TimelineAction({ action }) {
           </Typography>
           </Box>
         )}
+        {action?.oldAddress && (
+          <Box sx={{
+            maxWidth: "100px",
+          }}>
+          <Typography variant="body2" gutterBottom >
+            Building:{action.oldAddress?.building}
+            Room:{action.oldAddress?.room}
+            Row:{action.oldAddress?.row||''}
+            Tray{action.oldAddress?.tray||''}
+          </Typography>
+          </Box>
+        )
+
+          }
         {action?.newAddress && (
-          <Box maxWidth="100px" sx={{
-            width: "100%",
+          <Box sx={{
             maxWidth: "100px",
           }}>
           <Typography variant="body2" gutterBottom >
@@ -162,10 +174,10 @@ export default function TimelineAction({ action }) {
           </Box>
         )}
         {action?.photos?.length>0 && 
-        <ImageList sx={{ width: 150, height: 150 }} cols={1}>
+        <ImageList sx={{ p:"5px" }} cols={3} rowHeight={80} variant="quilted" > 
           {action.photos.map((item,i) => (
-            <ImageListItem key={i}>
-              <img src={`/uploads/${item}`} alt={`Photo ${i}`} />
+            <ImageListItem sx={{borderRadius:"2px"}} key={i}>
+              <img src={`https://ddweed.org/uploads/${item}`} alt={`Photo ${i}`} />
             </ImageListItem>
           ))}
         </ImageList>

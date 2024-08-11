@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const Plant = require("../models/Plant");
+const Photo = require("../models/Photo");
 const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
@@ -264,12 +265,25 @@ router.post("/new_action", async (req, res) => {
             break;
           }
           action.photos = data.photos;
-          data.photos.map((photo)=>{
+          const newPhotos= data.photos.map((photo)=>{
 
           if (plant.photos.indexOf(photo) === -1) {
-            console.log("photo",photo);
+            const LastStateChenge = plant.actions.filter(
+              (action) => (action.type === "Start" || action.type === "Picking"||action.type === "Blooming"||action.type === "MakeMother"||action.type === "SetGender"||action.type === "CuttingClones")  
+            ).pop().date;
+            const ageOfState = Date.now() - LastStateChenge;
             plant.photos.push(photo);
+            return new Photo({
+              src:`/gallery/${photo}`,
+              date: Date.now(),
+              strain: plant.strain,
+              pheno: plant.pheno,
+              state: plant.state,
+              plantId: plant._id,
+              ageOfState,
+            });
           }})
+          await Photo.insertMany(newPhotos);
           break;
         }
         case "Cutting":{
