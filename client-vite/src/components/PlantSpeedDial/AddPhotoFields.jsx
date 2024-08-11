@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import CameraDialog from "../CameraDialog";
-import { Button, CircularProgress, IconButton, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
+import { Button, CircularProgress, IconButton, ImageList, ImageListItem, ImageListItemBar, Input } from "@mui/material";
 import { addPhotos} from "../../store/newActionSlice";
 import { useDispatch } from "react-redux";
 import { useUploadPhotosMutation } from "../../store/photoApi";
@@ -46,6 +46,15 @@ export const AddPhotoFields = () => {
       rowHeight={160}
       style={{width:"100%"}}
     >
+      <Input type="file" accept="image/*" onChange={(e)=>{
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setPhotos([...photos,e.target.result]);
+        }
+        reader.readAsDataURL(file);
+      }
+      }/>
       {photos.map((photo,index)=>(
         <ImageListItem key={index}>
         <ImageListItemBar 
