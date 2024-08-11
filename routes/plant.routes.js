@@ -271,7 +271,8 @@ router.post("/new_action", async (req, res) => {
             const LastStateChenge = new Date(plant.actions.filter(
               (action) => (action.type === "Start" || action.type === "Picking"||action.type === "Blooming"||action.type === "MakeMother"||action.type === "SetGender"||action.type === "CuttingClones")  
             ).pop().date);
-            const ageOfState = Date.now() - LastStateChenge;
+            //days from last state change
+            const ageOfState = Math.floor((Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24));
             plant.photos.push(photo);
             return new Photo({
               src:`/gallery/${photo}`,

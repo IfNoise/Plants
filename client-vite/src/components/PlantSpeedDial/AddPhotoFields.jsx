@@ -48,7 +48,7 @@ export const AddPhotoFields = () => {
         </ImageListItem>
       ))}
     </ImageList>}
-    <Button onClick={handleSendPhotos}>Send Photos</Button>
+    <Button disabled={!photos?.length>0 } onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )
 }
