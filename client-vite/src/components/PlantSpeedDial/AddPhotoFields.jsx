@@ -1,16 +1,16 @@
 
 import { useState } from "react";
 import CameraDialog from "../CameraDialog";
-import { Button, IconButton, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
+import { Button, CircularProgress, IconButton, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { addPhotos} from "../../store/newActionSlice";
 import { useDispatch } from "react-redux";
 import { useUploadPhotosMutation } from "../../store/photoApi";
 import CancelIcon from '@mui/icons-material/Cancel';
-
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 export const AddPhotoFields = () => {
   const [photos, setPhotos] = useState([])
   const dispatch = useDispatch()
-  const [uploadPhotos] = useUploadPhotosMutation()
+  const [uploadPhotos,{isLoading,isSuccess,isError}] = useUploadPhotosMutation()
 
   const handleTakePhoto = (dataUri) => {
     setPhotos([...photos,dataUri]);
@@ -48,6 +48,9 @@ export const AddPhotoFields = () => {
         </ImageListItem>
       ))}
     </ImageList>}
+    {isLoading&&<CircularProgress />}
+    {isSuccess&&<CheckCircleIcon color="success"/>}
+    {isError&&<CheckCircleIcon color="error"/>}
     <Button disabled={!photos?.length>0 } onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )
