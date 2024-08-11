@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useUploadPhotosMutation } from "../../store/photoApi";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 export const AddPhotoFields = () => {
   const [photos, setPhotos] = useState([])
   const dispatch = useDispatch()
@@ -18,7 +19,7 @@ export const AddPhotoFields = () => {
 
   const handleSendPhotos = async () => {
     try {
-      const res=await uploadPhotos(photos).unwrap();
+      const res=await uploadPhotos(photos);
       console.log(res);
       dispatch(addPhotos(res.files.map(file=>file.filename)));
       console.log('Photos uploaded successfully');
@@ -50,7 +51,7 @@ export const AddPhotoFields = () => {
     </ImageList>}
     {isLoading&&<CircularProgress />}
     {isSuccess&&<CheckCircleIcon color="success"/>}
-    {isError&&<CheckCircleIcon color="error"/>}
+    {isError&&<CancelIcon color="error"/>}
     <Button disabled={!photos?.length>0 } onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )
