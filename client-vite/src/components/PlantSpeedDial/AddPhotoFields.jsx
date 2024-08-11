@@ -52,7 +52,7 @@ export const AddPhotoFields = () => {
     {isLoading&&<CircularProgress />}
     {isSuccess&&<CheckCircleIcon color="success"/>}
     {isError&&<CancelIcon color="error"/>}
-    {isError&&<p>{error}</p>}
+    {isError&&<pre>{JSON.stringify(error)}</pre>}
     <Button disabled={!photos?.length>0 } onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )
