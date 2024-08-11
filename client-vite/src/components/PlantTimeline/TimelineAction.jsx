@@ -177,7 +177,7 @@ export default function TimelineAction({ action }) {
         <ImageList sx={{ p:"5px" }} cols={3} rowHeight={80} variant="quilted" > 
           {action.photos.map((item,i) => (
             <ImageListItem sx={{borderRadius:"2px"}} key={i}>
-              <img src={`https://ddweed.org/uploads/${item}`} alt={`Photo ${i}`} />
+              <img src={`https://ddweed.org/gallery/${item}`} alt={`Photo ${i}`} />
             </ImageListItem>
           ))}
         </ImageList>

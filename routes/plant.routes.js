@@ -268,9 +268,9 @@ router.post("/new_action", async (req, res) => {
           const newPhotos= data.photos.map((photo)=>{
 
           if (plant.photos.indexOf(photo) === -1) {
-            const LastStateChenge = plant.actions.filter(
+            const LastStateChenge = new Date(plant.actions.filter(
               (action) => (action.type === "Start" || action.type === "Picking"||action.type === "Blooming"||action.type === "MakeMother"||action.type === "SetGender"||action.type === "CuttingClones")  
-            ).pop().date;
+            ).pop().date);
             const ageOfState = Date.now() - LastStateChenge;
             plant.photos.push(photo);
             return new Photo({
