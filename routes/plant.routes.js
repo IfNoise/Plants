@@ -262,6 +262,7 @@ router.post("/new_action", async (req, res) => {
         case "AddPhoto": {
           if(data?.photos?.length===0){
             action=null;
+            res.json({ message: "No photos" });
             break;
           }
           action.photos = data.photos;
@@ -286,7 +287,13 @@ router.post("/new_action", async (req, res) => {
               ageOfState,
             });
           }})
-          await Photo.insertMany(newPhotos);
+          const result= await Photo.insertMany(newPhotos);
+          console.log(result);
+          if(result.length===0){
+            action=null;
+            res.json({ message: "Error while adding photos" });
+            break;
+          }
           break;
         }
         case "Cutting":{
