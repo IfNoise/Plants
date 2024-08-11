@@ -21,7 +21,8 @@ export default function CameraDialog({ onTakePhoto}) {
         <Camera
           isFullscreen={true}
           idealFacingMode="environment"
-          sizeFactor={0.1}
+          isMaxResolution={true}
+
           imageType="jpg"
           onCameraError={(error) => {
             console.error('onCameraError', error)
