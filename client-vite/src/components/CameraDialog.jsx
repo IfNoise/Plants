@@ -1,4 +1,4 @@
-import { Box,Dialog, IconButton } from "@mui/material"
+import { Box,Button,Dialog, IconButton } from "@mui/material"
 import { useState } from "react"
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import Camera from "react-html5-camera-photo"
@@ -11,9 +11,11 @@ export default function CameraDialog({ onTakePhoto}) {
 
   return (
   <>
-    <IconButton onClick={() => setOpen(true)}  >
-      <PhotoCameraIcon />
-    </IconButton>
+    <Button  
+    sx={{m:2}}
+    size="large" onClick={() => setOpen(true)} startIcon={
+      <PhotoCameraIcon/>}>Take a Photo
+    </Button>
     <Dialog 
     sx={{m:0,p:0}}  
     fullScreen open={open} onClose={onClose}>

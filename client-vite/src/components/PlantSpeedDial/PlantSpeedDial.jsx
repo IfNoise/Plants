@@ -329,7 +329,7 @@ export default function PlantSpeedDial(props) {
       </SpeedDial>
       <Dialog
 
-        sx={{ width: { md: "30%" }, justifyContent: "center" }}
+        sx={{ height:"auto", justifyContent: "center" }}
         id="action_popover"
         fullScreen={isSmall}
         fullWidth={true}

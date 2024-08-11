@@ -4,7 +4,8 @@ const router = Router()
 
 router.get('/',async (req,res)=>{
   try {
-    const photos=await Photo.find()
+    const filter = JSON.parse(req.query.filter);
+    const photos=await Photo.find(filter)
     res.json(photos)
   } catch (error) {
     res.status(500).json({message:'Something went wrong, try again'})

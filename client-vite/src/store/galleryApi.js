@@ -17,10 +17,13 @@ export const galleryApi = createApi({
   }),
   endpoints: (build) => ({
     getPhotos: build.query({
-      query: () => {
+      query: (filter) => {
         return {
           url: "/",
           method: "GET",
+          params: {
+            filter: JSON.stringify(filter),
+          },
         };
       },
     }),

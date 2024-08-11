@@ -1,12 +1,13 @@
 
 import { useEffect, useState } from "react";
 import CameraDialog from "../CameraDialog";
-import { Button, CircularProgress, IconButton, ImageList, ImageListItem, ImageListItemBar, Input } from "@mui/material";
+import { Button, CircularProgress, Divider, IconButton, ImageList, ImageListItem, ImageListItemBar, Input } from "@mui/material";
 import { addPhotos} from "../../store/newActionSlice";
 import { useDispatch } from "react-redux";
 import { useUploadPhotosMutation } from "../../store/photoApi";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PhotoIcon from '@mui/icons-material/Photo';
 
 export const AddPhotoFields = () => {
   const [photos, setPhotos] = useState([])
@@ -41,12 +42,27 @@ export const AddPhotoFields = () => {
   return(
     <>
     <CameraDialog  onTakePhoto={handleTakePhoto} />
-    {photos.length>0&&<ImageList
-      cols={4}
-      rowHeight={160}
-      style={{width:"100%"}}
-    >
-      <Input type="file" accept="image/*" onChange={(e)=>{
+    <Button 
+    sx={{m:2}}
+    component="label"
+    role={undefined}
+    variant="contained"
+    tabIndex={-1}
+    startIcon={<PhotoIcon/>}>
+      Select Photos
+    <Input 
+    sx={{
+      clip: 'rect(0 0 0 0)',
+      clipPath: 'inset(50%)',
+      height: 1,
+      overflow: 'hidden',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      whiteSpace: 'nowrap',
+      width: 1,
+    }}
+    type="file" accept="image/*" onChange={(e)=>{
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -54,7 +70,14 @@ export const AddPhotoFields = () => {
         }
         reader.readAsDataURL(file);
       }
-      }/>
+      }/></Button>
+    
+    {photos.length>0&&<ImageList
+      cols={4}
+      rowHeight={160}
+      style={{width:"100%"}}
+    >
+      
       {photos.map((photo,index)=>(
         <ImageListItem key={index}>
         <ImageListItemBar 
@@ -72,6 +95,7 @@ export const AddPhotoFields = () => {
     {isSuccess&&<CheckCircleIcon color="success"/>}
     {isError&&<CancelIcon color="error"/>}
     {isError&&<pre>{JSON.stringify(error)}</pre>}
+    <Divider />
     <Button disabled={!photos?.length>0 } onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )

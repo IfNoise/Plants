@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useGetPhotosQuery } from "../store/galleryApi";
-import { Alert, Box, CircularProgress, Dialog,IconButton,ImageList, ImageListItem, ImageListItemBar, Link, MenuItem, Select, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Dialog,FormControl,IconButton,ImageList, ImageListItem, ImageListItemBar, InputLabel, Link, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
@@ -100,7 +100,9 @@ export const GalleryPage = () => {
   const [filter, setFilter] = useState(pFilter||{});
   const [strains, setStrains] = useState([]);
   const [phenos, setPhenos] = useState([]);
-  const { data: photos, isLoading, isError, error } = useGetPhotosQuery(filter)
+  const { data: photos, isLoading, isError, error } = useGetPhotosQuery(filter, {
+    refetchOnMountOrArgChange: true,
+  })
   const next=()=>{
     const max=photos.length-1;
     if(photoView===max){
@@ -126,12 +128,15 @@ export const GalleryPage = () => {
   useEffect(() => {
     if (photos?.length>0) {
       const str = photos.map((photo) => photo.strain);
-      const phn = photos.map((photo) => photo.pheno);
       setStrains([...new Set(str)]);
-      setPhenos([...new Set(phn)]);
-      console.log(strains, phenos);
     }
   }, [photos]);
+  useEffect(() => {
+    if(filter.strain){
+      const phn = photos.filter(photo=>photo.strain===filter.strain).map(photo=>photo.pheno);
+      setPhenos([...new Set(phn)]);
+    }
+    }, [filter.strain])
 
   return (
     <Box>
@@ -142,6 +147,8 @@ export const GalleryPage = () => {
       {isLoading && <CircularProgress />}
       <Box>
         {strains?.length>0 && (
+          <FormControl>
+            <InputLabel>Strain</InputLabel>
           <Select
           sx={{margin:"2px",width:"200px"}}
             label="Strain"
@@ -154,8 +161,11 @@ export const GalleryPage = () => {
 
         )}
           </Select>
+          </FormControl>
         )}
         {phenos?.length>0 && (
+          <FormControl>
+          <InputLabel>Pheno</InputLabel>
           <Select
           sx={{margin:"2px",width:"200px"}}
             label="Pheno"
@@ -168,6 +178,7 @@ export const GalleryPage = () => {
 
         )}
           </Select>
+          </FormControl>
         )}
 
       </Box>
