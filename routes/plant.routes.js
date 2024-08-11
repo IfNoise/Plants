@@ -275,7 +275,7 @@ router.post("/new_action", async (req, res) => {
             const ageOfState = Math.floor((Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24));
             plant.photos.push(photo);
             return new Photo({
-              src:`/gallery/${photo}`,
+              src:`gallery/${photo}`,
               date: Date.now(),
               strain: plant.strain,
               pheno: plant.pheno,
