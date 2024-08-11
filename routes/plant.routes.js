@@ -262,8 +262,7 @@ router.post("/new_action", async (req, res) => {
         case "AddPhoto": {
           if(data?.photos?.length===0){
             action=null;
-            res.json({ message: "No photos" });
-            break;
+            throw new Error("No photos to add");
           }
           action.photos = data.photos;
           const newPhotos= data.photos.map((photo)=>{
@@ -291,7 +290,7 @@ router.post("/new_action", async (req, res) => {
           console.log(result);
           if(result.length===0){
             action=null;
-            res.json({ message: "Error while adding photos" });
+            throw new Error("Error while adding photos");
             break;
           }
           break;
@@ -303,16 +302,19 @@ router.post("/new_action", async (req, res) => {
           break
         }
         default: {
-          return res.json({ message: "Wrong action type" });
+          throw new Error("Action type not found");
         }
       }
       if (action !== null) {
         plant.actions.push(action);
         await plant.save();
+        return res.json({ message: "Ok" });
+      }else{
+        throw new Error("Action not created");
       }
     });
 
-    return res.json({ message: "Ok" });
+    
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

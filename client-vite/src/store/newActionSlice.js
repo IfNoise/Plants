@@ -9,7 +9,7 @@ export const newActionSlice=createSlice({
       state.date=action.payload
     },
     addPhotos: (state,action)=>{
-      state.photos=action.payload
+      state.photos=[...state.photos,...action.payload]
     },
     addType: (state,action)=>{
       state.actionType=action.payload

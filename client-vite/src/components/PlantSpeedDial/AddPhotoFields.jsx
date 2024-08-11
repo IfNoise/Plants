@@ -19,6 +19,9 @@ export const AddPhotoFields = () => {
 
   const handleSendPhotos = async () => {
     try {
+      if(photos.length===0){
+        throw new Error('No photos to upload');
+      }
       const res=await uploadPhotos(photos);
       console.log(res);
       if (res.error) {  
