@@ -171,7 +171,6 @@ export default function PlantSpeedDial(props) {
   const [printPlants] = usePrintPlantsMutation();
   const [clearTray] = useClearTrayMutation();
   const [printTray] = usePrintTrayMutation();
-  const [uploadPhotos]=useUploadPhotosMutation();
   const [date, setDate] = useState(null);
   const { setPrintDialog } = useContext(PrinterContext);
   //const [actions,setActions]=useState([])
@@ -239,7 +238,7 @@ export default function PlantSpeedDial(props) {
     const id = plants.map((plant) => plant._id);
 
     const body = { id, action: newAction };
-    addAction(body);
+    dispatch(addAction(body));
     dispatch(clear());
     setOpen(false);
   };
