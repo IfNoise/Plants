@@ -270,13 +270,13 @@ router.post("/new_action", async (req, res) => {
           if (plant.photos.indexOf(photo) === -1) {
             //days from last state change
             const chAct=plant.actions.filter(
-              (action) => (action.type === "Start" || action.type === "Picking"||action.type === "Blooming"||action.type === "MakeMother"||action.type === "SetGender"||action.type === "CuttingClones")  
+              (action) => (action.type === "Start" || action.type === "Picking"||action.type === "Blooming"||action.type === "MakeMother")  
             )
             const LastStateChenge = new Date(chAct.lastIdx().date);
             //days from last state change
             const ageOfState = Math.floor((Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24));
             plant.photos.push(photo);
-            return new Photo({
+            return {
               src:`gallery/${photo}`,
               date: Date.now(),
               strain: plant.strain,
@@ -284,14 +284,13 @@ router.post("/new_action", async (req, res) => {
               state: plant.state,
               plantId: plant._id,
               ageOfState,
-            });
+            };
           }})
           const result= await Photo.insertMany(newPhotos);
           console.log(result);
           if(result.length===0){
             action=null;
             throw new Error("Error while adding photos");
-            break;
           }
           break;
         }

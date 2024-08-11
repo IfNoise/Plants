@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 export const AddPhotoFields = () => {
   const [photos, setPhotos] = useState([])
   const dispatch = useDispatch()
-  const [uploadPhotos,{isLoading,isSuccess,isError,error}] = useUploadPhotosMutation()
+  const [uploadPhotos,{isLoading,isSuccess,isError,error,data:res}] = useUploadPhotosMutation()
 
   const handleTakePhoto = (dataUri) => {
     setPhotos([...photos,dataUri]);
@@ -22,15 +22,18 @@ export const AddPhotoFields = () => {
       if(photos.length===0){
         throw new Error('No photos to upload');
       }
-      const res=await uploadPhotos(photos);
+      await uploadPhotos(photos);
       console.log(res);
       if (res.error) {  
         throw new Error(res.error.message);
       }
       if(res.files?.length>0){ 
-      dispatch(addPhotos(res.files.map(file=>file.filename)));
+      const files=res.files.map(file=>file.filename);
+      if(files.length>0){
+      dispatch(addPhotos(files));
       console.log('Photos uploaded successfully');
       setPhotos([]);
+      }
       }
     } catch (error) {
       console.error('Error uploading photos:', error);
