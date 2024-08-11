@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 export const AddPhotoFields = () => {
   const [photos, setPhotos] = useState([])
   const dispatch = useDispatch()
-  const [uploadPhotos,{isLoading,isSuccess,isError}] = useUploadPhotosMutation()
+  const [uploadPhotos,{isLoading,isSuccess,isError,error}] = useUploadPhotosMutation()
 
   const handleTakePhoto = (dataUri) => {
     setPhotos([...photos,dataUri]);
@@ -52,6 +52,7 @@ export const AddPhotoFields = () => {
     {isLoading&&<CircularProgress />}
     {isSuccess&&<CheckCircleIcon color="success"/>}
     {isError&&<CancelIcon color="error"/>}
+    {isError&&<p>{error.message}</p>}
     <Button disabled={!photos?.length>0 } onClick={handleSendPhotos}>Send Photos</Button>
     </>
   )
