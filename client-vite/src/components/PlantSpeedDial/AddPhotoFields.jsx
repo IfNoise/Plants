@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CameraDialog from "../CameraDialog";
 import { Button, CircularProgress, IconButton, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { addPhotos} from "../../store/newActionSlice";
@@ -17,28 +17,26 @@ export const AddPhotoFields = () => {
     setPhotos([...photos,dataUri]);
   };
 
-  const handleSendPhotos = async () => {
+  const handleSendPhotos = () => {
     try {
       if(photos.length===0){
         throw new Error('No photos to upload');
       }
-      await uploadPhotos(photos);
-      console.log(res);
-      if (res.error) {  
-        throw new Error(res.error.message);
-      }
-      if(res.files?.length>0){ 
-      const files=res.files.map(file=>file.filename);
-      if(files.length>0){
-      dispatch(addPhotos(files));
-      console.log('Photos uploaded successfully');
-      setPhotos([]);
-      }
-      }
+      uploadPhotos(photos);  
     } catch (error) {
       console.error('Error uploading photos:', error);
     }
   };
+  useEffect(() => {
+    if(res?.files?.length>0){
+      console.log('Files uploaded:',res.files);
+      const files=res.files.map(file=>file.filename);
+      dispatch(addPhotos(files));
+      console.log('Photos uploaded successfully');
+      setPhotos([]);
+    }
+  }, [res])
+
 
   return(
     <>
