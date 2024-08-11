@@ -34,6 +34,7 @@ import { TrayButton } from "../components/TrayButton/TrayButton";
 import { Collapse, useMediaQuery } from "@mui/material";
 import Scanner from "../components/Scanner/Scanner";
 import PrintDialog from "../components/PrintDialog";
+import CollectionsIcon from '@mui/icons-material/Collections';
 import PropTypes from "prop-types";
 
 // function PrivateOutlet() {
@@ -221,6 +222,11 @@ export const Layout = () => {
                 text: "Dashboard",
                 href: "/dashboard",
                 icon: <DashboardIcon />,
+              },
+              {
+                text: "Gallery",
+                href: "/gallery",
+                icon: <CollectionsIcon />,
               },
               {
                 text: "Map",

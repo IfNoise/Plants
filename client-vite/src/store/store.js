@@ -13,6 +13,7 @@ import { cycleApi } from "./cycleApi";
 import { deviceApi } from "./deviceApi";
 import { photoApi } from "./photoApi";
 import { lightApi } from "./lightApi";
+import { galleryApi } from "./galleryApi";
 
 const reducer = {
   [plantsApi.reducerPath]: plantsApi.reducer,
@@ -24,6 +25,7 @@ const reducer = {
   [lightApi.reducerPath]:lightApi.reducer,
   [deviceApi.reducerPath]:deviceApi.reducer,
   [photoApi.reducerPath]:photoApi.reducer,
+  [galleryApi.reducerPath]:galleryApi.reducer, 
   newAction: newActionSliceReducer,
   filter: filterSliceReducer,
   auth: authReducer,
@@ -33,7 +35,7 @@ export const store = configureStore({
   reducer,
   preloadedState: reHydrateStore(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([plantsApi.middleware,deviceApi.middleware,photoApi.middleware, authApi.middleware,lightApi.middleware, trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,localStorageMiddleware]),
+    getDefaultMiddleware().concat([plantsApi.middleware,deviceApi.middleware,photoApi.middleware, authApi.middleware,lightApi.middleware, trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,localStorageMiddleware,galleryApi.middleware]),
 });
 
 setupListeners(store.dispatch)
