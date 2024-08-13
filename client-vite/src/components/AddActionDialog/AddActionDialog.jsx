@@ -206,6 +206,7 @@ export default function AddActionDialog({ open, onClose, plants }) {
     const body = { id, action: newAction };
     addAction(body);
     dispatch(clear());
+    onClose();
   };
   return (
     <Dialog
