@@ -171,8 +171,8 @@ router.post("/new_action", async (req, res) => {
             action = null;
             break;
           }
-          action.oldAddress = plant.currentAddress;
-          action.newAddress = data.address;
+          action.oldAddress = {...plant.currentAddress};
+          action.newAddress = {...data.address};
 
           plant.set("currentAddress", data.address);
           break;
