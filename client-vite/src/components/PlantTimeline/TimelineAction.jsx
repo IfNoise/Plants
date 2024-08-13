@@ -147,7 +147,8 @@ export default function TimelineAction({ action }) {
             whiteSpace: "normal",
           }}
           variant="body2" gutterBottom >
-            {`Building: ${action.oldAddress?.building}
+            {`Old Address:
+            Building: ${action.oldAddress?.building}
             Room: ${action.oldAddress?.room}
             Row: ${action.oldAddress?.row || ''}
             Rack: ${action.oldAddress?.rack || ''}
@@ -167,7 +168,7 @@ export default function TimelineAction({ action }) {
             whiteSpace: "normal",
           }}
           variant="body2" gutterBottom >
-            {`New Address
+            {`New Address:
             Building: ${action.newAddress?.building}
             Room: ${action.newAddress?.room}
             Row: ${action.newAddress?.row || ''}
