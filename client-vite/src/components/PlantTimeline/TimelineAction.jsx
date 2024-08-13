@@ -128,6 +128,7 @@ export default function TimelineAction({ action }) {
         onClose={() => {}}
       ><Paper
       sx={{
+        padding: "5px",
         minWidth: "160px",
         minHeight: "160px",
         maxWidth: "320px",
@@ -139,40 +140,45 @@ export default function TimelineAction({ action }) {
             width: "100%",
             maxWidth: "100px",
           }}>
-          <Typography variant="body2" gutterBottom >
-            Building:{action.oldAddress?.building}
-            Room:{action.oldAddress?.room}
-            Row:{action.oldAddress?.row||''}
-            Tray{action.oldAddress?.tray||''}
+                    <Typography 
+          sx={{
+            overflow: "hidden",
+            wordWrap: "break-word",
+            whiteSpace: "normal",
+          }}
+          variant="body2" gutterBottom >
+            {`Building: ${action.oldAddress?.building}
+            Room: ${action.oldAddress?.room}
+            Row: ${action.oldAddress?.row || ''}
+            Rack: ${action.oldAddress?.rack || ''}
+            Shelf: ${action.oldAddress?.shelf || ''}
+            Tray: ${action.oldAddress?.tray || ''}`}
           </Typography>
           </Box>
         )}
-        {action?.oldAddress && (
+        {action?.newAddress && (
           <Box sx={{
             maxWidth: "100px",
           }}>
-          <Typography variant="body2" gutterBottom >
-            Building:{action.oldAddress?.building}
-            Room:{action.oldAddress?.room}
-            Row:{action.oldAddress?.row||''}
-            Tray{action.oldAddress?.tray||''}
+                    <Typography 
+          sx={{
+            overflow: "hidden",
+            wordWrap: "break-word",
+            whiteSpace: "normal",
+          }}
+          variant="body2" gutterBottom >
+            {`New Address
+            Building: ${action.newAddress?.building}
+            Room: ${action.newAddress?.room}
+            Row: ${action.newAddress?.row || ''}
+            Rack: ${action.newAddress?.rack || ''}
+            Shelf: ${action.newAddress?.shelf || ''}
+            Tray: ${action.newAddress?.tray || ''}`}
           </Typography>
           </Box>
         )
 
           }
-        {action?.newAddress && (
-          <Box sx={{
-            maxWidth: "100px",
-          }}>
-          <Typography variant="body2" gutterBottom >
-            Building:{action.newAddress?.building}
-            Room:{action.newAddress?.room}
-            Row:{action.newAddress?.row||''}
-            Tray{action.newAddress?.tray||''}
-          </Typography>
-          </Box>
-        )}
         {action?.photos?.length>0 && 
         <ImageList sx={{ p:"5px" }} cols={3} rowHeight={80} variant="quilted" > 
           {action.photos.map((item,i) => (
