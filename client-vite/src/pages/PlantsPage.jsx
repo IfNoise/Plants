@@ -35,7 +35,8 @@ export const PlantsPage = () => {
         dispatch(addGroup(value))
       }
       if(key==="building"||key==="room"||key==="rack"||key==="shelf"||key==="tray"){
-        dispatch(addAddress({...pFilter}))
+        const roomName=pFilter.room.split("_").join(" ");
+        dispatch(addAddress({...pFilter,room:roomName}))
       }
     })
     refetch();
@@ -56,6 +57,7 @@ export const PlantsPage = () => {
 
       <PlantsList plants={plants}
                   show
+                  addPhotos
                   addAction
                   addToTray
                   print

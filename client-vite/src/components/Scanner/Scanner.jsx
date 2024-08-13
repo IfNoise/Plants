@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { useMediaQuery } from "@mui/material";
 import { useGetPlantsQuery } from "../../store/plantsApi";
+import { AddPhotoFast } from "../AddPhotoFast";
 
 var audioCtx = new (window.AudioContext ||
   window.webkitAudioContext ||
@@ -61,6 +63,7 @@ export default function Scanner({ setOutput }) {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null); //
   const [open, setOpen] = useState(false);
+  const [openPhoto, setOpenPhoto] = useState(false);
   const video = useRef(null);
   const [qrScanner, setQrScanner] = useState(null);
   const navigate = useNavigate();
@@ -170,6 +173,7 @@ export default function Scanner({ setOutput }) {
   const style = {
     width: "100%",
     bottom: 0,
+    p:0
   };
   return (
     <>
@@ -190,9 +194,9 @@ export default function Scanner({ setOutput }) {
           ></video>
           <Box
             sx={{
-              left: 30,
+              right: "10px",
               position: "absolute",
-              top: 0,
+              top: "10px",
               zIndex: 1,
               width: "90%",
             }}
@@ -202,35 +206,53 @@ export default function Scanner({ setOutput }) {
               onClick={close}
               size="large"
               sx={{
+                fontSize: "40px",
                 right: 0,
                 position: "absolute",
                 borderColor: "red",
+                borderStyle: "solid",
                 borderWidth: "2px",
                 borderBlockColor: "red",
                 color: "red",
+                height: "50px",
+                width: "50px",
               }}
             >
-              <CloseIcon fontSize="medium" />
+              <CloseIcon fontSize="40" />
             </IconButton>
             {isError && (
               <Typography variant="caption">{error.message}</Typography>
             )}
             {isLoading && <Typography variant="caption">Loading...</Typography>}
             {plant && (
-              <Card
-                variant="outlined"
-                sx={{ backgroundColor: "transparent", border: "none" }}
-              >
-                <Typography variant="h2" color="yellow">
+                <Box
+                sx={{ backgroundColor: "transparent", border: "none",padding:"0px" } }
+                >
+                <Typography variant="h3" color="yellow" fontWeight="bold">
                   {plant.strain}
                 </Typography>
-                <Typography variant="h5" color="yellow">
+                <Typography variant="h5" color="yellow" fontWeight="bold">
                   {plant.pheno} {plant.state}
                 </Typography>
-                <Typography variant="h7" color="fuchsia">
-                  {plant._id}
+                <Box sx={{
+                  width:"25%"
+                }}
+                >
+                <Typography variant="body" color="fuchsia" fontWeight="bold"
+                 sx={{
+                  wordWrap: "normal",
+                  overflow: "hidden",
+
+                 }} 
+                >
+                  {`Building: ${plant.currentAddress.building}
+                    Room: ${plant.currentAddress.room}
+                    Row: ${plant.currentAddress.row}
+                    Tray: ${plant.currentAddress.tray}
+                  `}
                 </Typography>
-              </Card>
+                </Box>
+                </Box>
             )}
             {addressRes && (
               <Card
@@ -292,6 +314,8 @@ export default function Scanner({ setOutput }) {
                   disabled={!idResult}
                   onClick={addToTrayHandler}
                   sx={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
                     borderColor: "red",
                     borderWidth: "2px",
                     borderBlockColor: "red",
@@ -303,6 +327,25 @@ export default function Scanner({ setOutput }) {
                 >
                   ADD
                 </Button>
+                <IconButton
+                  onClick={() => {
+                    setOpenPhoto(true);
+                  }}
+                  size="large"
+                  sx={{
+                    fontSize: "40px",
+                    borderColor: "red",
+                    borderWidth: "2px",
+                    borderBlockColor: "red",
+                    borderStyle: "solid",
+                    color: "red",
+                    height: "100px",
+                    width: "100px",
+                    borderRadius: "50%",
+                  }}  
+                >
+                  <AddAPhotoIcon fontSize="28px"/>
+                </IconButton>
               </>
             )}
             {addressRes && (
@@ -361,6 +404,7 @@ export default function Scanner({ setOutput }) {
           </DialogActions>
         </Box>
       </Dialog>
+      <AddPhotoFast open={openPhoto} onClose={()=>setOpenPhoto(false)} plants={[{_id:idResult}]}/>
     </>
   );
 }

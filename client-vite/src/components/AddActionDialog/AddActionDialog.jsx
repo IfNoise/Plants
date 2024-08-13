@@ -8,6 +8,7 @@ import {
   FormControl,
   Button,
   MenuItem,
+  FormControlLabel,
 } from "@mui/material";
 import PropTypes from "prop-types";
 
@@ -35,7 +36,7 @@ import { useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { AddPhotoFields } from "./AddPhotoFields";
 import { useAddActionMutation } from "../../store/plantsApi";
-import CheckBox from "@mui/icons-material/CheckBox";
+import CheckBox from "@mui/material/Checkbox";
 
 const states = {
   Germination: {
@@ -191,6 +192,9 @@ export default function AddActionDialog({ open, onClose, plants }) {
     dispatch(clear());
     onClose();
   };
+  const handleChange=(e)=>{
+   setShowPicker(e.target.checked)
+  }
 
   const newActionFunc = () => {
     if (plants.length < 1) {
@@ -217,9 +221,9 @@ export default function AddActionDialog({ open, onClose, plants }) {
       open={open}
       onClose={handleCancel}
     >
-      <DialogTitle sx={{ mb: "2px" }}>New Action</DialogTitle>
+      <DialogTitle >New Action</DialogTitle>
       <DialogContent>
-        <FormControl variant="outlined" sx={{ m: "3px", width: "98%" }}>
+        <FormControl variant="outlined" sx={{ mt:"6px", width: "50%" }}>
           <InputLabel id="action-label">Action Type</InputLabel>
           <Select
             labelId="action-label"
@@ -237,17 +241,21 @@ export default function AddActionDialog({ open, onClose, plants }) {
             })}
           </Select>
         </FormControl>
-          <CheckBox
+        <FormControl>
+        <FormControlLabel 
+        sx={{display:"inline"}}
+        control={<CheckBox
+
             checked={showPicker}
-            onChange={(e) => {setShowPicker(e.target.checked)}}
-            color="primary"
-            sx={{ m: "2px" }}
-          />
-          {/* <FormLabel  >Custom date</FormLabel> */}
+            onChange={handleChange}
+            sx={{ m: "6px" }}
+          />} label="Custom Date" />
+          </FormControl>
         {showPicker && (
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              sx={{ m: "2px" }}
+              sx={{ mt: "6px" }}
+              disabled={!showPicker}
               disableFuture
               closeOnSelect
               size="small"

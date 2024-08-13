@@ -289,7 +289,7 @@ export const PlantDetailPage = () => {
             <PlantTimeline actions={actions ?? []} />
           </Grid>
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <PlantSpeedDial getPlants={getPlant} addAction addToTray print />
+            <PlantSpeedDial getPlants={getPlant} addPhotos addAction addToTray print />
           </Grid>
         </>
       )}

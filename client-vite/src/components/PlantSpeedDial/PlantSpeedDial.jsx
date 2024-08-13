@@ -5,6 +5,7 @@ import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import PrintIcon from "@mui/icons-material/Print";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 import { usePrintPlantsMutation } from "../../store/printApi";
 
@@ -17,6 +18,7 @@ import { SnackbarContext } from "../../context/SnackbarContext";
 import { useState } from "react";
 import { PrinterContext } from "../../context/PrinterContext";
 import AddActionDialog from "../AddActionDialog/AddActionDialog";
+import { AddPhotoFast } from "../AddPhotoFast";
 
 export default function PlantSpeedDial(props) {
   const { setSnack } = useContext(SnackbarContext);
@@ -28,6 +30,7 @@ export default function PlantSpeedDial(props) {
   const { setPrintDialog } = useContext(PrinterContext);
   //const [actions,setActions]=useState([])
   const [open, setOpen] = useState(false);
+  const [openPhoto, setOpenPhoto] = useState(false);
   const { getPlants } = props;
   const plants = getPlants();
 
@@ -41,6 +44,18 @@ export default function PlantSpeedDial(props) {
       return;
     }
     setOpen(true);
+  };
+
+  const handleOpenPhoto = () => {
+    if (getPlants()?.length < 1) {
+      setSnack({
+        open: true,
+        severity: "error",
+        message: "No plants selected",
+      });
+      return;
+    }
+    setOpenPhoto(true);
   };
 
   return (
@@ -57,6 +72,14 @@ export default function PlantSpeedDial(props) {
             icon={<AddIcon />}
             tooltipTitle="Add new action"
             onClick={handleOpen}
+          />
+        )}
+        {props.addPhotos && (
+          <SpeedDialAction
+            key="Add photo"
+            icon={<AddAPhotoIcon />}
+            tooltipTitle="Add photo"
+            onClick={handleOpenPhoto}
           />
         )}
         {props.print && (
@@ -128,17 +151,31 @@ export default function PlantSpeedDial(props) {
           />
         )}
       </SpeedDial>
-      <AddActionDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        plants={plants}
-      />
+      {plants?.length > 0 && (
+        <>
+          {props.addPhotos && (
+            <AddPhotoFast
+              open={openPhoto}
+              onClose={() => setOpenPhoto(false)}
+              plants={plants}
+            />
+          )}
+          {props.addAction && (
+            <AddActionDialog
+              open={open}
+              onClose={() => setOpen(false)}
+              plants={plants}
+            />
+          )}
+        </>
+      )}
     </>
   );
 }
 PlantSpeedDial.propTypes = {
   getPlants: PropTypes.func,
   show: PropTypes.bool,
+  addPhotos: PropTypes.bool,
   addAction: PropTypes.bool,
   print: PropTypes.bool,
   addToTray: PropTypes.bool,
