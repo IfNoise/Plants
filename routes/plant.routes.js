@@ -360,28 +360,33 @@ router.get("/plants_map", async (req, res) => {
       }
     })
 
-router.get("/test", async (req, res) => {
-  try {
-      const plant = await Plant.findById("65ead409974c3784d01228a0");
-      plant.actions.pop();
-      plant.set("state","MotherPlant");
-      plant.set("currentAddress",{
-        building: "Hangar1",
-        room: "Laboratory",
-        row: 1,
-        tray: 1,
-      });
-      await plant.save();
+// router.get("/test", async (req, res) => {
+//   try {
+//       //const plants=["669b9435021e1d69b9481ed5","669b9435021e1d69b9481ed6","669b9435021e1d69b9481ed7"]
+//       const plants=["669b9435021e1d69b9481ed2","669b9435021e1d69b9481ed3","669b9435021e1d69b9481ed4"]
+//       plants.map(async (idx) => {
+//       const plant = await Plant.findById(idx);
+//       plant.actions.pop();
+//       plant.set("state","Cloning");
+//       plant.set("currentAddress",{
+//         building: "Hangar1",
+//         room: "Laboratory",
+//         row: 1,
+//         tray: 1,
+//       });
+//       await plant.save();
+//   })
+      
     
-    res.json({ message: "Ok" });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-);
+//     res.json({ message: "Ok" });
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// }
+// );
 
 
-module.exports = router;
+
 
 router.get("/plant_counts", async (req, res) => {
   try {
@@ -393,3 +398,4 @@ router.get("/plant_counts", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+module.exports = router;

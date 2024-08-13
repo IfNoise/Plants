@@ -160,10 +160,6 @@ const TimerSettings = ({ timer }) => {
   const [haveModifications, setHaveModifications] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [settings, setSettings] = useState({
-    steps,
-    stepTime,
-    sunriseTime: minutesToDate(sunriseTime),
-    sunsetTime: minutesToDate(sunsetTime),
   });
   const [removeTimer] = useRemoveTimerMutation();
 
@@ -198,6 +194,14 @@ const TimerSettings = ({ timer }) => {
     removeTimer(name);
   };
   useEffect(() => {
+    setSettings({
+      steps,
+    stepTime,
+    sunriseTime: minutesToDate(sunriseTime),
+    sunsetTime: minutesToDate(sunsetTime),
+    });
+  },[])
+  useEffect(() => {
     if (
       settings.steps !== steps ||
       settings.stepTime !== stepTime ||
@@ -224,14 +228,14 @@ const TimerSettings = ({ timer }) => {
             label="Steps"
             variant="outlined"
             type="number"
-            value={steps}
+            value={settings.steps}
             onChange={handleSetSteps}
           />
           <TextField
             label="Step Time"
             variant="outlined"
             type="number"
-            value={stepTime}
+            value={settings.stepTime}
             onChange={handleSetStepTime}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">

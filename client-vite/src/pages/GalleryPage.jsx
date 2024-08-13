@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useGetPhotosQuery } from "../store/galleryApi";
-import { Alert, Box, CircularProgress, Dialog,FormControl,IconButton,ImageList, ImageListItem, ImageListItemBar, InputLabel, Link, MenuItem, Select, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog,FormControl,IconButton,ImageList, ImageListItem, ImageListItemBar, InputLabel, Link, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
@@ -139,13 +139,10 @@ export const GalleryPage = () => {
     }, [filter.strain])
 
   return (
-    <Box>
-      <Typography variant="h4" component="h4" gutterBottom>
-        Gallery
-      </Typography>
+    <Box  >
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
-      <Box>
+      <Box >
         {strains?.length>0 && (
           <FormControl>
             <InputLabel>Strain</InputLabel>
@@ -180,18 +177,19 @@ export const GalleryPage = () => {
           </Select>
           </FormControl>
         )}
-
+        <Button 
+        sx={{margin:"auto",}}
+        onClick={() => setFilter({})}>Clear</Button>
       </Box>
 
       {photos && (
-        <ImageList cols={4} rowHeight={200} style={{ width: "100%" } } variant={'quilted'}>
+        <ImageList cols={6} rowHeight={160} sx={{ width: "100%"} } gap={8} variant="masonry">
           {photos.map((photo, index) => {
             const {src,strain,pheno,date}=photo;
             return (<ImageListItem 
             onClick={()=>{setPhotoView(index);setOpen(true)}}
             key={index}>
               <img src={`https://ddweed.org/${src}`} alt={strain} />
-              <ImageListItemBar title={`${pheno} `} subtitle={new Date(date).toLocaleDateString()} position="below"/>
             </ImageListItem>)
           })}
         </ImageList>

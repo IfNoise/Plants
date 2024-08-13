@@ -312,27 +312,27 @@ const IrrigatorCard = ({ name, config, onSave }) => {
         <DialogContent>
         <EnableField
           name="Enable"
-          value={config.enable}
+          value={newConfig.enable}
           onChange={(e) => {
             setNewConfig({ enable: e.target.checked });
           }}
         />
         <TimerMode
-          mode={config.mode}
+          mode={newConfig.mode}
           onChange={(e) => {
             setNewConfig({ mode: parseInt(e.target.value) });
           }}
         />
         <TimeField
           name="Start"
-          value={config.start}
+          value={newConfig.start}
           onChange={(e) => {
             setNewConfig({ start: timeToSec(e) });
           }}
         />
         <TimeField
           name="Stop"
-          value={config.stop}
+          value={newConfig.stop}
           onChange={(e) => {
             setNewConfig({ stop: timeToSec(e) });
           }}
@@ -343,7 +343,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           variant="outlined"
           label="Irrigation window"
           type="number"
-          value={config.win}
+          value={newConfig.win}
           onChange={(event) => {
             setNewConfig({ win: parseInt(event.target.value) });
           }}
@@ -353,7 +353,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           variant="outlined"
           label="Irrigation number"
           type="number"
-          value={config.num}
+          value={newConfig.num}
           onChange={(event) => {
             setNewConfig({ num: parseInt(event.target.value) });
           }}
@@ -438,27 +438,27 @@ const LightTimerCard = ({ name, config, onSave }) => {
         <DialogContent>
         <EnableField
           name="Enable"
-          value={config.enable}
+          value={newConfig.enable}
           onChange={(e) => {
             setNewConfig({ enable: e.target.checked });
           }}
         />
         <TimerMode
-          mode={config.mode}
+          mode={newConfig.mode}
           onChange={(e) => {
             setNewConfig({ mode: parseInt(e.target.value) });
           }}
         />
         <TimeField
           name="Start"
-          value={config.start}
+          value={newConfig.start}
           onChange={(e) => {
             setNewConfig({ start: timeToSec(e) });
           }}
         />
         <TimeField
           name="Stop"
-          value={config.stop}
+          value={newConfig.stop}
           onChange={(e) => {
             setNewConfig({ stop: timeToSec(e) });
           }}
