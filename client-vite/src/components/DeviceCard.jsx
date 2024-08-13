@@ -207,10 +207,17 @@ TimeField.propTypes = {
 };
 const EnableField = ({ name, value, onChange }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [checked, setChecked] = useState(value);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleOk = () => {
+    
+    setChecked(!checked);
+    setAnchorEl(null);
+    onChange(checked);
+  }
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -220,7 +227,7 @@ const EnableField = ({ name, value, onChange }) => {
     >
       <FormControlLabel
         control={
-          <Checkbox checked={value} size="small" onClick={handleClick} />
+          <Checkbox checked={checked} size="small" onClick={handleClick} />
         }
         label={name}
       />
@@ -238,7 +245,7 @@ const EnableField = ({ name, value, onChange }) => {
         <Typography sx={{ p: "3px" }} display="inline">
           Are you sure?
         </Typography>
-        <Button size="small" onClick={onChange}>Ok</Button>
+        <Button size="small" onClick={handleOk}>Ok</Button>
         <Button size="small" onClick={handleClose}>Cancel</Button>
       </Popover>
     </>
@@ -279,9 +286,9 @@ const IrrigatorCard = ({ name, config, onSave }) => {
         </Typography>
          <EnableField
           name={""}
-          value={config.enable}
-          onChange={(e) => {
-            onSave({ [name]: { enable: e.target.checked } }, false);
+          value={newConfig.enable}
+          onChange={(checked) => {
+            onSave({ [name]: { enable: checked } }, false);
           }}
         />
         <IconButton onClick={handleOpen} size="small">
@@ -314,27 +321,28 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           name="Enable"
           value={newConfig.enable}
           onChange={(e) => {
-            setNewConfig({ enable: e.target.checked });
+            setNewConfig({ ...newConfig,enable: e });
           }}
         />
         <TimerMode
           mode={newConfig.mode}
           onChange={(e) => {
-            setNewConfig({ mode: parseInt(e.target.value) });
+            setNewConfig({ ...newConfig,mode: parseInt(e.target.value) });
+            onSave({ [name]: { mode: parseInt(e.target.value)  } }, false);
           }}
         />
         <TimeField
           name="Start"
           value={newConfig.start}
           onChange={(e) => {
-            setNewConfig({ start: timeToSec(e) });
+            setNewConfig({ ...newConfig,start: timeToSec(e) });
           }}
         />
         <TimeField
           name="Stop"
           value={newConfig.stop}
           onChange={(e) => {
-            setNewConfig({ stop: timeToSec(e) });
+            setNewConfig({ ...newConfig,stop: timeToSec(e) });
           }}
         />
 
@@ -345,7 +353,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           type="number"
           value={newConfig.win}
           onChange={(event) => {
-            setNewConfig({ win: parseInt(event.target.value) });
+            setNewConfig({ ...newConfig,win: parseInt(event.target.value) });
           }}
         />
         <TextField
@@ -355,7 +363,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           type="number"
           value={newConfig.num}
           onChange={(event) => {
-            setNewConfig({ num: parseInt(event.target.value) });
+            setNewConfig({ ...newConfig,num: parseInt(event.target.value) });
           }}
         />
         </DialogContent>
@@ -416,7 +424,7 @@ const LightTimerCard = ({ name, config, onSave }) => {
           name={""}
           value={config.enable}
           onChange={(e) => {
-            onSave({ [name]: { enable: e.target.checked } }, false);
+            onSave({ [name]: { enable: e} }, false);
           }}
         />
 
@@ -440,27 +448,28 @@ const LightTimerCard = ({ name, config, onSave }) => {
           name="Enable"
           value={newConfig.enable}
           onChange={(e) => {
-            setNewConfig({ enable: e.target.checked });
+            setNewConfig({ ...newConfig,enable: e});
           }}
         />
         <TimerMode
           mode={newConfig.mode}
           onChange={(e) => {
-            setNewConfig({ mode: parseInt(e.target.value) });
+            setNewConfig({...newConfig, mode: parseInt(e.target.value) })
+            onSave({ [name]: { mode: parseInt(e.target.value)  } }, false);
           }}
         />
         <TimeField
           name="Start"
           value={newConfig.start}
           onChange={(e) => {
-            setNewConfig({ start: timeToSec(e) });
+            setNewConfig({ ...newConfig,start: timeToSec(e) });
           }}
         />
         <TimeField
           name="Stop"
           value={newConfig.stop}
           onChange={(e) => {
-            setNewConfig({ stop: timeToSec(e) });
+            setNewConfig({...newConfig, stop: timeToSec(e) });
           }}
         />
         </DialogContent>
