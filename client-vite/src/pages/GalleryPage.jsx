@@ -68,6 +68,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
         <img
           style={{ height: "100%", width: "100%", objectFit: "cover" }}
           src={`https://ddweed.org/${src}`}
+          loading="lazy"
           alt={strain}
         />
         <Box

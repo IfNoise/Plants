@@ -1,8 +1,8 @@
 export const localStorageMiddleware = ({ getState }) => {
   return next => action => {
     const result = next(action);
-    const {newAction,auth,filter}=getState();
-    localStorage.setItem('applicationState', JSON.stringify({newAction,auth,filter})); // save the state to localStorage
+    const {newAction,auth,filter,nutrients}=getState();
+    localStorage.setItem('applicationState', JSON.stringify({newAction,auth,filter,nutrients})); // save the state to localStorage
     return result;
   };
 };

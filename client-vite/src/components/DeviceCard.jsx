@@ -406,6 +406,7 @@ const LightTimerCard = ({ name, config, onSave }) => {
     setOpen(true);
   };
   const handleSave=()=>{
+    if(JSON.stringify(config)!==JSON.stringify(newConfig))
     onSave({ [name]: newConfig }, reboot);
     handleClose() 
   }
@@ -486,7 +487,7 @@ const LightTimerCard = ({ name, config, onSave }) => {
           Reboot
         </Typography>
         
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </>

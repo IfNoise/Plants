@@ -267,7 +267,11 @@ export default function AddActionDialog({ open, onClose, plants }) {
         )}
         {newAction?.actionType && actionFields[newAction.actionType]?.fields}
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "center" }}>
+      <DialogActions 
+      sx={{ justifyContent: "center",
+        position: "sticky",
+        bottom: 0,
+       }}>
         <Button
           onClick={newActionFunc}
           role="submit"

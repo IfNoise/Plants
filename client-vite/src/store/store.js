@@ -4,6 +4,8 @@ import { plantsApi } from "./plantsApi";
 import { authApi } from "./authApi";
 import newActionSliceReducer from "./newActionSlice";
 import filterSliceReducer from "./filterSlice";
+import nutrientsSliceReducer from "./nutrientsSlice";
+
 import authReducer from "./authSlice";
 import { trayApi } from "./trayApi"; 
 import { localStorageMiddleware, reHydrateStore } from "./localStoreMiddleware";
@@ -28,6 +30,7 @@ const reducer = {
   [galleryApi.reducerPath]:galleryApi.reducer, 
   newAction: newActionSliceReducer,
   filter: filterSliceReducer,
+  nutrients: nutrientsSliceReducer,
   auth: authReducer,
 };
 

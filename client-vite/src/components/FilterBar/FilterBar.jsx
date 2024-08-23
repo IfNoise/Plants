@@ -194,27 +194,29 @@ export const FilterBar = (props) => {
             width="100%"
           >
             {values.map((value, index) => {
-              if (
-                typeof value === "object" &&
-                value !== null &&
-                value !== undefined &&
-                !Array.isArray(value)
-              ) {
-                return (
-                  <Chip
-                    color="primary"
-                    size="small"
-                    key={index}
-                    label={
-                      Object.keys(value)[0] === "$gte"
-                        ? "After"
-                        : "Before" +
-                          " " +
-                          new Date(Object.values(value)[0]).toDateString()
-                    }
-                  />
-                );
-              }
+              if (typeof value === "object" && value !== null) {
+                  return Object.keys(value).map((key, index) => {
+                  if (key === "$gte") {
+                    return (
+                      <Chip
+                        color="primary"
+                        size="small"
+                        key={index}
+                        label={`After: ${dayjs(value[key]||0).format("DD/MM/YYYY")}`}
+                      />
+                    );
+                  } else if (key === "$lte") {
+                    return (
+                      <Chip
+                        color="primary"
+                        size="small"
+                        key={index}
+                        label={`Before: ${dayjs(value[key]||0).format("DD/MM/YYYY")}`}
+                      />
+                    );
+                  }
+                });
+              }else
               return (
                 <Chip color="primary" size="small" key={index} label={value} />
               );

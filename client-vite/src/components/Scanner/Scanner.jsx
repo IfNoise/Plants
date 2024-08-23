@@ -229,10 +229,10 @@ export default function Scanner({ setOutput }) {
                 sx={{ backgroundColor: "transparent", border: "none",padding:"0px" } }
                 >
                 <Typography variant="h3" color="yellow" fontWeight="bold">
-                  {plant.strain}
+                  {plant?.strain||"Unknown"}
                 </Typography>
                 <Typography variant="h5" color="yellow" fontWeight="bold">
-                  {plant.pheno} {plant.state}
+                  {plant?.pheno||"Unknown"} {plant?.state||"Unknown"}
                 </Typography>
                 <Box sx={{
                   width:"25%"
@@ -245,10 +245,10 @@ export default function Scanner({ setOutput }) {
 
                  }} 
                 >
-                  {`Building: ${plant.currentAddress.building}
-                    Room: ${plant.currentAddress.room}
-                    Row: ${plant.currentAddress.row}
-                    Tray: ${plant.currentAddress.tray}
+                  {`Building: ${plant.currentAddress?.building||"Unknown"}
+                    Room: ${plant.currentAddress?.room||"Unknown"}
+                    Row: ${plant.currentAddress?.row||"Unknown"}
+                    Tray: ${plant.currentAddress?.tray||"Unknown"}
                   `}
                 </Typography>
                 </Box>

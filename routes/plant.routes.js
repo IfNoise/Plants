@@ -363,17 +363,11 @@ router.get("/plants_map", async (req, res) => {
 // router.get("/test", async (req, res) => {
 //   try {
 //       //const plants=["669b9435021e1d69b9481ed5","669b9435021e1d69b9481ed6","669b9435021e1d69b9481ed7"]
-//       const plants=["669b9435021e1d69b9481ed2","669b9435021e1d69b9481ed3","669b9435021e1d69b9481ed4"]
+//       const plants=["66692921b66182d2da37f6b1","66692921b66182d2da37f6af","66692921b66182d2da37f6b0","66692b9b8b1eebc0fb32070a"]
 //       plants.map(async (idx) => {
 //       const plant = await Plant.findById(idx);
-//       plant.actions.pop();
-//       plant.set("state","Cloning");
-//       plant.set("currentAddress",{
-//         building: "Hangar1",
-//         room: "Laboratory",
-//         row: 1,
-//         tray: 1,
-//       });
+//       // plant.actions.pop();
+//       plant.set("gender","Female");
 //       await plant.save();
 //   })
       

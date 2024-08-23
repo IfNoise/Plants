@@ -28,6 +28,7 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import ScienceIcon from '@mui/icons-material/Science';
 import SnackBar from "../components/SnackBar/SnackBar";
 //import { useAuth } from "../hooks/auth.hook";
 import { TrayButton } from "../components/TrayButton/TrayButton";
@@ -281,6 +282,12 @@ export const Layout = () => {
                 href: "/strains",
                 icon: <MailIcon />,
               },
+              {
+                text:"Nutrients",
+                href:"/nutrients",
+                icon: <ScienceIcon/>
+
+              }
             ].map((obj, i) => {
               if (obj.collapsed) {
                 return (
