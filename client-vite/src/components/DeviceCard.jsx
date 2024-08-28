@@ -328,7 +328,6 @@ const IrrigatorCard = ({ name, config, onSave }) => {
           mode={newConfig.mode}
           onChange={(e) => {
             setNewConfig({ ...newConfig,mode: parseInt(e.target.value) });
-            onSave({ [name]: { mode: parseInt(e.target.value)  } }, false);
           }}
         />
         <TimeField
@@ -456,7 +455,6 @@ const LightTimerCard = ({ name, config, onSave }) => {
           mode={newConfig.mode}
           onChange={(e) => {
             setNewConfig({...newConfig, mode: parseInt(e.target.value) })
-            onSave({ [name]: { mode: parseInt(e.target.value)  } }, false);
           }}
         />
         <TimeField

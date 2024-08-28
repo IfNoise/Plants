@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
@@ -15,12 +15,162 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  ButtonGroup,
+  ToggleButtonGroup,
+  ToggleButton,
 
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { AddConcentrateToUnitDialog, AddFertigationUnitDialog } from "./Helpers";
 import { elements } from "../../config/config";
 import { addPumpToUnit,editPump,removeFertilizerUnit } from "../../store/nutrientsSlice";
+const units=[
+  "ppm",
+  "mM",
+  "%w/v"
+]
+
+// const ElementsTable=({solution}) => {
+// const [unit, setUnit] = useState('mM');//ppm,mM,%w/v
+// const [elementsList, setElementsList] = useState(solution);
+// const [iones, setIones] = useState([]);
+// const [kationAnion, setKationAnion] = useState(0);
+// useMemo(() => {
+//   const ionesMmass = elements.map((element) => {
+//     return element.content;
+//   }).flat();
+//   //const coefficients = ionesMmass.map((element) => element.coef);
+
+//   if(solution?.length>0){
+//    const iones = solution.filter((element) => {
+//       return(!ionesMmass.find((e) => element.name===e.element)?.chelate);
+//     })
+//    .map((el) => {
+//       const{ion,charge,mmass}=ionesMmass.find((e)=>el.name===e.element);
+//       return {
+//         name:ion,//NO3-,NH4+,PO4,PO4,PO4,K+,Ca++,Mg++
+//         charge:charge,//-1,1,-3,-3,-3,1,2,2
+//         concentration:el.concentration,//weight/1L
+//         mmass,//g/mol
+
+//       }
+//     }
+//     )
+//     const kationAnion = iones.reduce((acc,element)=>{
+//       if(element.charge>0){
+//         acc.kation+=element.concentration/element.mmass*element.charge;
+//       }else{
+//         acc.anion+=element.concentration/element.mmass*element.charge;
+//       }
+//       acc.ballance=acc.kation+acc.anion;
+//       return acc;
+//     }
+//     ,{kation:0,anion:0,ballance:0}
+//     )
+//     setIones(iones);
+//     setKationAnion(kationAnion);
+//     const eList= solution.map((element) => {
+//       if(unit==='ppm'){
+
+//         return {
+//           name: element.name,
+//           concentration: element.concentration,
+//         };
+//       }else if(unit==='mM'){
+//         return {
+//           name: element.name,
+//           concentration: (element.concentration/1000),
+//         };
+//       } else if(unit==='%w/v'){
+//         return {
+//           name: element.name,
+//           concentration: element.concentration/1000*(ionesMmass.find((e)=>element.name===e.element).mmass),
+//         };
+//       } 
+
+      
+//     }
+//     )
+//     // .map((element) => {
+//     //     return {
+//     //       id:
+//     //         elements.find((e) => element.name?.startsWith(e.code))?.id ||
+//     //         element.id,
+//     //       name:
+//     //         elements.find((e) => element.name?.startsWith(e.code))?.code ||
+//     //         element.name,
+//     //       concentration:
+//     //         element.concentration *
+//     //         coefficients.find((c) => element.name === c.element).coef,
+//     //     };
+//     //   })
+//     //   .sort((a, b) => a.id - b.id)
+//     //   .reduce((acc, element) => {
+//     //     const existing = acc.find((e) => e.name === element.name);
+//     //     if (existing) {
+//     //       existing.concentration += element.concentration;
+//     //     } else {
+//     //       acc.push(element);
+//     //     }
+//     //     return acc;
+//     //   }, []);
+//     setElementsList(eList);
+  
+//   }
+  
+// }, [solution,unit]);
+// return (
+// <Box
+
+// >
+// <ToggleButtonGroup
+//   value={unit}
+//   exclusive
+//   onChange={(event, newUnit) => {
+//     if (newUnit !== null) {
+//       setUnit(newUnit);
+//     }
+//   }}
+
+// >
+// {units.map((u,i)=>(
+//   <ToggleButton 
+//     key={i}
+//     value={u}
+//   >
+//     {u}
+//   </ToggleButton>
+// ))}
+// </ToggleButtonGroup>
+// <pre>{JSON.stringify(solution,null,2)}</pre>
+// <pre>{JSON.stringify(iones,null,2)}</pre>
+// <pre>{JSON.stringify(kationAnion,null,2)}</pre>
+// <pre>{JSON.stringify(elementsList,null,2)}</pre>
+// {/* <Table>
+//   <TableHead>
+//     <TableRow>
+//       <TableCell>Element</TableCell>
+//       <TableCell>Concentration</TableCell>
+//     </TableRow>
+//   </TableHead>
+//   <TableBody>
+//     {elements?.length > 0 && elements.map((element, i) => (
+//       <TableRow key={i}>
+//         <TableCell>{element.name}</TableCell>
+//         <TableCell>
+//           {unit==='ppm'?element.concentration:unit==='mM'?(element.concentration/1000):element.concentration}
+//         </TableCell>
+//       </TableRow>
+//     ))}
+//   </TableBody>
+// </Table> */}
+// </Box>
+
+// )
+// }
+// ElementsTable.propTypes={
+//   solution:PropTypes.array.isRequired,
+// }
 
 
 
@@ -119,69 +269,69 @@ const FertigationUnit = ({ unit }) => {
   }, [pumps,concentrates]);
 
  
-  useEffect(() => {
-    
+  useMemo(() => {
     if (pumps?.length > 0 && concentrates?.length > 0) {
-    const solution = pumps
-      .map((pump) => {
-        if (pump.concentrate === null) return [];
-        const concentrate = concentrateList.find(
-          (c) => c.name === pump.concentrate
-        );
-        if (!concentrate) return;
-        return concentrate.content.map((fertilizer) => {
+      const solution = pumps
+        .map((pump) => {
+          if (pump.concentrate === null) return [];
+          const concentrate = concentrateList.find(
+            (c) => c.name === pump.concentrate
+          );
+          if (!concentrate) return;
+          return concentrate.content.map((fertilizer) => {
+            return {
+              name: fertilizer.name,
+              concentration: (
+                (fertilizer.concentration * pump.flowRate) /
+                10
+              ).toFixed(3),
+            };
+          });
+        })
+        .flat()
+        .map((fertilizer) => {
+          const frt = fertilizers.find((f) => f.name === fertilizer.name);
           return {
             name: fertilizer.name,
-            concentration: (
-              (fertilizer.concentration * pump.flowRate) /
-              100
-            ).toFixed(3),
+            concentration: fertilizer.concentration,
+            elements: frt.content,
           };
-        });
-      })
-      .flat()
-      .map((fertilizer) => {
-        const frt = fertilizers.find((f) => f.name === fertilizer.name);
-        return {
-          name: fertilizer.name,
-          concentration: fertilizer.concentration,
-          elements: frt.content,
-        };
-      })
-      .map((f) => {
-        return f.elements.map((element) => {
+        })
+        .map((f) => {
+          return f.elements.map((element) => {
+            return {
+              name: element.name,
+              concentration: (element.concentration * f.concentration),
+            };
+          });
+        })
+        .flat()
+        .map((element) => {
           return {
-            name: element.name,
-            concentration: (element.concentration * f.concentration*10).toFixed(1),
+            id:
+              elements.find((e) => element.name?.startsWith(e.code))?.id ||
+              element.id,
+            name:
+              elements.find((e) => element.name?.startsWith(e.code))?.code ||
+              element.name,
+            concentration:
+              element.concentration *
+              coefficients.find((c) => element.name === c.element).coef,
           };
-        });
-      })
-      .flat()
-      .map((element) => {
-        return {
-          id:
-            elements.find((e) => element.name?.startsWith(e.code))?.id ||
-            element.id,
-          name:
-            elements.find((e) => element.name?.startsWith(e.code))?.code ||
-            element.name,
-          concentration:
-            element.concentration *
-            coefficients.find((c) => element.name === c.element).coef,
-        };
-      })
-      .sort((a, b) => a.id - b.id)
-      .reduce((acc, element) => {
-        const existing = acc.find((e) => e.name === element.name);
-        if (existing) {
-          existing.concentration += element.concentration;
-        } else {
-          acc.push(element);
-        }
-        return acc;
-      }, []);
+        })
+        .sort((a, b) => a.id - b.id)
+        .reduce((acc, element) => {
+          const existing = acc.find((e) => e.name === element.name);
+          if (existing) {
+            existing.concentration += element.concentration;
+          } else {
+            acc.push(element);
+          }
+          return acc;
+        }, []);
 
-    setSolution(solution);}
+      setSolution(solution);
+    }
   }, [pumps, concentrateList, fertilizers]);
 
   const [open, setOpen] = useState(false);
@@ -235,6 +385,7 @@ const FertigationUnit = ({ unit }) => {
           </TableRow>
         </TableBody>
         </Table>
+        {/* <ElementsTable solution={solution}/> */}
            </Box>
       </CardContent>
       <CardActions>

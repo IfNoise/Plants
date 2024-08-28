@@ -15,9 +15,9 @@ export const elements = [
     name: "Nitrogen",
     description: "Nitrogen is a key nutrient for plant growth",
     content: [
-      { element: "NO3", coef: 0.23 },
-      { element: "NH3", coef: 0.19 },
-      { element: "N", coef: 1.0 },
+      { element: "NO3", coef: 0.23,ion:"NO3-",charge:-1,mmass:62},
+      { element: "NH3", coef: 0.19 ,ion:"NH4+",charge:1,mmass:18},
+      { element: "N", coef: 1.0 ,mmass:14},
     ],
   },
   {
@@ -26,9 +26,9 @@ export const elements = [
     name: "Phosphorus",
     description: "Phosphorus is a key nutrient for plant growth",
     content: [
-      { element: "P2O5", coef: 0.436 },
-      { element: "PO4", coef: 0.375 },
-      { element: "P", coef: 1.0 },
+      { element: "P2O5", coef: 0.436,ion:"PO4",charge:-3,mmass:95 },
+      { element: "PO4", coef: 0.375,ion:"PO4",charge:-3,mmass:95 },
+      { element: "P", coef: 1.0,mmass:31 },
     ],
   },
   {
@@ -37,8 +37,8 @@ export const elements = [
     name: "Potassium",
     description: "Potassium is a key nutrient for plant growth",
     content: [
-      { element: "K2O", coef: 0.83 },
-      { element: "K", coef: 1.0 },
+      { element: "K2O", coef: 0.83,ion:"K+",charge:1,mmass:39 },
+      { element: "K", coef: 1.0,mmass:39 },
     ],
   },
   {
@@ -47,8 +47,8 @@ export const elements = [
     name: "Calcium",
     description: "Calcium is a key nutrient for plant growth",
     content: [
-      { element: "CaO", coef: 0.715 },
-      { element: "Ca", coef: 1.0 },
+      { element: "CaO", coef: 0.715,ion:"Ca++",charge:2,mmass:40 },
+      { element: "Ca", coef: 1.0,mmass:40 },
     ],
   },
   {
@@ -57,8 +57,9 @@ export const elements = [
     name: "Magnesium",
     description: "Magnesium is a key nutrient for plant growth",
     content: [
-      { element: "MgO", coef: 0.603 },
-      { element: "Mg", coef: 1.0 },
+      { element: "MgO", coef: 0.603,ion:"Mg++",charge:2,mmass:24 },
+      { element: "Mg", coef: 1.0,ion:"Mg++",charge:2,mmass:24 },
+      { element: "Mg", coef: 1.0,chelate:true,mmass:24 },
     ],
   },
   {
@@ -67,8 +68,8 @@ export const elements = [
     name: "Sulfur",
     description: "Sulfur is a key nutrient for plant growth",
     content: [
-      { element: "SO4", coef: 0.33 },
-      { element: "S", coef: 1.0 },
+      { element: "SO4", coef: 0.33,ion:"SO4--",charge:-2,mmass:96 },
+      { element: "S", coef: 1.0,mmass:32 },
     ],
   },
   {
@@ -76,41 +77,45 @@ export const elements = [
     code: "Fe",
     name: "Iron",
     description: "Iron is a key nutrient for plant growth",
-    content: [{ element: "Fe", coef: 0.5 }],
+    content: [
+      { element: "FeO", coef: 0.56,ion:"Fe++",charge:2,mmass:56 },
+      { element: "Fe", coef: 1 ,chelate:true}],
   },
   {
     id: 11,
     name: "Manganese",
     description: "Manganese is a key nutrient for plant growth",
-    content: [{ element: "Mn", coef: 0.5 }],
+    content: [{ element: "Mn", coef: 1,mmass:55,chelate:true }],
   },
   {
     id: 9,
     code: "Zn",
     name: "Zinc",
     description: "Zinc is a key nutrient for plant growth",
-    content: [{ element: "Zn", coef: 1.0 }],
+    content: [{ element: "Zn", coef: 1.0,mmass:65,chelate:true }],
   },
   {
     id: 8,
     code: "Cu",
     name: "Copper",
     description: "Copper is a key nutrient for plant growth",
-    content: [{ element: "Cu", coef: 1.0 }],
+    content: [
+      { element: "CuO", coef: 0.5,ion:"Cu++",charge:2,mmass:64 },
+      { element: "Cu", coef: 1.0,mmass:64,chelate:true }],
   },
   {
     id: 10,
     code: "B",
     name: "Boron",
     description: "Boron is a key nutrient for plant growth",
-    content: [{ element: "B", coef: 1.0 }],
+    content: [{ element: "B", coef: 1.0,mmass:11,chelate:true }],
   },
   {
     id: 12,
     code: "Mo",
     name: "Molybdenum",
     description: "Molybdenum is a key nutrient for plant growth",
-    content: [{ element: "Mo", coef: 1.0 }],
+    content: [{ element: "Mo", coef: 1.0,mmass:96,chelate:true }],
   },
 ];
 
