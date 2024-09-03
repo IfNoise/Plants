@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const querystring = require('querystring');
 const cors=require("cors")
 const path=require('path')
+const sharp = require('sharp');
+const Photo=require('./models/Photo')
 
 const PORT=config.get("port")||5000
 
@@ -39,7 +41,24 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
   if (!req.files) {
     return res.status(400).send({ message: 'No files uploaded.' });
   }
+  req.files.forEach(async (file) => {
+    await sharp(file.path)
+      .resize(200, 200)
+      .toFile(`uploads/thumbnails/${file.filename}`);
+  }
+  );
   res.status(200).send({ message: 'Files uploaded successfully.', files: req.files });
+});
+app.post('api/photos/make_thumbnails', async(req, res) => {
+  const photos=await Photo.find({})
+  photos.forEach(async (photo) => {
+    if(fs.fileExists(`uploads/thumbnails/${photo.filename}`))return
+    await sharp(`uploads/${photo.filename}`)
+      .resize(200, 200)
+      .toFile(`uploads/thumbnails/${photo.filename}`);
+  });
+  res.status(200).send({ message: 'Thumbnails created successfully.' });
+
 });
 app.use('/gallery', express.static(path.join(__dirname, 'uploads')))
 
@@ -58,6 +77,7 @@ async function start(){
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
+
     app.listen(PORT,()=>console.log(`Server has been started at ${PORT}`)
     )
   } catch (error) {

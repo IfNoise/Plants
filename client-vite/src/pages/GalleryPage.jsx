@@ -19,17 +19,15 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import DownloadIcon from "@mui/icons-material/Download";
 import { AppBarContext } from "../context/AppBarContext";
 
-
-const buttonStyle = 
-  {
-    marginRight:"auto",
+const buttonStyle = {
+  marginRight: "auto",
 };
 
 const DownloadButton = ({ photo }) => {
@@ -91,12 +89,10 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-
       >
         <img
           style={{ height: "100vh", width: "auto", objectFit: "cover" }}
           src={`https://ddweed.org/${src}`}
-          
           alt={strain}
         />
         <Box
@@ -124,11 +120,11 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
           sx={{
             position: "absolute",
             bottom: {
-              xs:"calc(50% - 24px)",
-              sm:"calc(50% - 32px)",
-              md:0,
-              lg:0,
-              xl:0,
+              xs: "calc(50% - 24px)",
+              sm: "calc(50% - 32px)",
+              md: 0,
+              lg: 0,
+              xl: 0,
             },
             left: 0,
             p: 2,
@@ -140,20 +136,15 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
           }}
         >
           <Tooltip title="Previous">
-            <IconButton onClick={prev}
-              sx={buttonStyle}
-            >
+            <IconButton onClick={prev} sx={buttonStyle}>
               <NavigateBeforeIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Next">
-            <IconButton 
-            
-            onClick={next}>
+            <IconButton onClick={next}>
               <NavigateNextIcon />
             </IconButton>
           </Tooltip>
-          
         </Box>
         <Box
           sx={{
@@ -206,7 +197,7 @@ export const GalleryPage = () => {
   } = useGetPhotosQuery(filter, {
     refetchOnMountOrArgChange: true,
   });
-  
+
   const next = () => {
     const max = photos.length - 1;
     if (photoView === max) {
@@ -239,8 +230,6 @@ export const GalleryPage = () => {
       const sts = photos.map((photo) => photo.state);
       setStates([...new Set(sts)]);
     }
-
-
   }, [photos]);
   useEffect(() => {
     if (filter.strain) {
@@ -327,7 +316,7 @@ export const GalleryPage = () => {
           variant="masonry"
         >
           {photos.map((photo, index) => {
-            const { src, strain} = photo;
+            const { src, strain } = photo;
             return (
               <ImageListItem
                 onClick={() => {
@@ -342,7 +331,7 @@ export const GalleryPage = () => {
           })}
         </ImageList>
       )}
-      {photoView!==null && (
+      {photoView !== null && (
         <ImageView
           photo={photos[photoView]}
           open={open}
