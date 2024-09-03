@@ -61,7 +61,7 @@ app.get('/api/photos/make_thumbnails', async(req, res) => {
     const filename=photo.src?.includes("gallery/")?photo.src.split("/")[1]:photo.src
     console.log(filename)
     if(fs.existsSync(`uploads/thumbnails/${filename}`))return
-    await sharp(`uploads/${filename}`)
+    await sharp("uploads/"+filename)
       .resize(200)
       .toFile(`uploads/thumbnails/${filename}`)
 
