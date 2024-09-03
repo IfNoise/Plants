@@ -43,6 +43,7 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
     return res.status(400).send({ message: 'No files uploaded.' });
   }
   req.files.forEach(async (file) => {
+    console.log(file)
     await sharp(file.path)
       .resize(200, 200)
       .toFile(`uploads/thumbnails/${file.filename}`,(err,info)=>{
@@ -61,7 +62,7 @@ app.get('/api/photos/make_thumbnails', async(req, res) => {
     const filename=photo.src?.includes("gallery/")?photo.src.split("/")[1]:photo.src
     console.log(filename)
     if(fs.existsSync(`uploads/thumbnails/${filename}`))return
-    await sharp({url:"uploads/"+filename,encoding: null} )
+    await sharp("uploads/"+filename)
       .resize(200)
       .toFile(`uploads/thumbnails/${filename}`)
 
