@@ -54,6 +54,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
   };
+  const href=src.includes("gallery/")?src.split("gallery/"):src;
   const handleTouchMove = (e) => {
     setTouchEnd(e.touches[0].clientX);
   };
@@ -92,7 +93,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
       >
         <img
           style={{ height: "100vh", width: "auto", objectFit: "cover" }}
-          src={`https://ddweed.org/${src}`}
+          src={`https://ddweed.org/gallery/${href}`}
           alt={strain}
         />
         <Box
@@ -317,7 +318,7 @@ export const GalleryPage = () => {
         >
           {photos.map((photo, index) => {
             const { src, strain } = photo;
-            const thumbnail = src.split("/").join("/thumbnail/");
+            const thumbnail = "thumbnail/"+(src?.includes("gallery/")?src.split("gallery/"):src) 
             return (
               <ImageListItem
                 onClick={() => {
@@ -326,7 +327,7 @@ export const GalleryPage = () => {
                 }}
                 key={index}
               >
-                <img src={thumbnail} alt={strain} />
+                <img src={`https://ddweed.org/gallery/${thumbnail}`} alt={strain} />
               </ImageListItem>
             );
           })}
