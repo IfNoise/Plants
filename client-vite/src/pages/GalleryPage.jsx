@@ -318,7 +318,7 @@ export const GalleryPage = () => {
         >
           {photos.map((photo, index) => {
             const { src, strain } = photo;
-            const thumbnail = "thumbnail/"+(src?.includes("gallery/")?src.split("gallery/"):src) 
+            const thumbnail = "thumbnail/"+(src?.includes("gallery/")?src.split("gallery/")[1]:src);
             return (
               <ImageListItem
                 onClick={() => {
