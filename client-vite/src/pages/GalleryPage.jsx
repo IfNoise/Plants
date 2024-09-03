@@ -54,7 +54,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
   };
-  const href=src.includes("gallery/")?src.split("gallery/"):src;
+  const href=src.includes("gallery/")?src.split("/")[1]:src;
   const handleTouchMove = (e) => {
     setTouchEnd(e.touches[0].clientX);
   };
@@ -82,9 +82,10 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
       <Box
         sx={{
           position: "relative",
-          width: "100vw",
-          height: "100vh",
-          overflow: "hidden",
+          width: "100%",
+          height: "100%",
+          overflow:'hidden',
+          display: "flex",
           alignContent: "center",
         }}
         onTouchStart={handleTouchStart}
@@ -130,7 +131,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
             left: 0,
             p: 2,
             backgroundColor: "tranparent",
-            width: "100vw",
+            width: "100%",
             color: "black",
             justifyContent: "center",
             display: "flex",
@@ -318,7 +319,7 @@ export const GalleryPage = () => {
         >
           {photos.map((photo, index) => {
             const { src, strain } = photo;
-            const thumbnail = "thumbnail/"+(src?.includes("gallery/")?src.split("gallery/")[1]:src);
+            const thumbnail = "thumbnails/"+(src?.includes("gallery/")?src.split("gallery/")[1]:src);
             return (
               <ImageListItem
                 onClick={() => {

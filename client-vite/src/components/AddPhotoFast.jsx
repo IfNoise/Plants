@@ -30,11 +30,37 @@ export function AddPhotoFast({ open, onClose, plants }) {
       if(photos.length===0){
         throw new Error('No photos to upload');
       }
-      uploadPhotos(photos);  
+      uploadPhotos(photos).unwrap()
+      .then (res=>{
+        console.log('Files uploaded:',res.files);
+        const files=res.files.map(file=>file.filename);
+        dispatch(addType('AddPhoto'));
+        dispatch(addPhotos(files));
+        console.log('Photos uploaded successfully');
+        if (plants.length < 1) {
+          setSnack({
+            open: true,
+            severity: "error",
+            message: "No plants selected",
+          });
+          return;
+        }
+        const id = plants.map((plant) => plant._id);
+    
+        const body = { id, action: newAction };
+        addAction(body);
+      }
+      )
+      .catch((error) => {
+        console.error('Error uploading photos:', error);
+      } );
+      
     } catch (error) {
       console.error('Error uploading photos:', error);
     }
   };
+
+
   useEffect(() => {
     if(res?.files?.length>0){
       console.log('Files uploaded:',res.files);
