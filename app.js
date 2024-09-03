@@ -62,8 +62,9 @@ app.get('/api/photos/make_thumbnails', async(req, res) => {
     console.log(filename)
     if(fs.existsSync(`uploads/thumbnails/${filename}`))return
     const path="uploads/"+filename
-    console.log(path)
+    console.log("Path:",path)
     const thumb=`uploads/thumbnails/${filename}`
+    console.log("Thumb:",thumb)
     await sharp(path)
       .resize(200)
       .toFile(thumb)
