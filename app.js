@@ -49,7 +49,7 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
   );
   res.status(200).send({ message: 'Files uploaded successfully.', files: req.files });
 });
-app.post('/api/photos/make_thumbnails', async(req, res) => {
+app.get('/api/photos/make_thumbnails', async(req, res) => {
   const photos=await Photo.find({})
   photos.forEach(async (photo) => {
     if(fs.fileExists(`uploads/thumbnails/${photo.filename}`))return
