@@ -61,6 +61,7 @@ app.get('/api/photos/make_thumbnails', async(req, res) => {
 
 });
 app.use('/gallery', express.static(path.join(__dirname, 'uploads')))
+app.use('/gallery/thumbnails', express.static(path.join(__dirname, 'uploads','thumbnails')))
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client-vite', 'dist')))

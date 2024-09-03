@@ -317,6 +317,7 @@ export const GalleryPage = () => {
         >
           {photos.map((photo, index) => {
             const { src, strain } = photo;
+            const thumbnail = src.split("/").join("/thumbnail/");
             return (
               <ImageListItem
                 onClick={() => {
@@ -325,7 +326,7 @@ export const GalleryPage = () => {
                 }}
                 key={index}
               >
-                <img src={`https://ddweed.org/${src}`} alt={strain} />
+                <img src={thumbnail} alt={strain} />
               </ImageListItem>
             );
           })}
