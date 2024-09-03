@@ -83,8 +83,8 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
       <Box
         sx={{
           position: "relative",
-          width: "100%",
-          height: "100%",
+          width: "100vw",
+          height: "100vh",
           overflow: "hidden",
           alignContent: "center",
         }}
@@ -133,7 +133,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
             left: 0,
             p: 2,
             backgroundColor: "tranparent",
-            width: "100%",
+            width: "100vw",
             color: "black",
             justifyContent: "center",
             display: "flex",
