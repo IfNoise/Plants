@@ -499,9 +499,8 @@ LightTimerCard.propTypes = {
 
 const DeviceCard = ({ device }) => {
   const [open, setOpen] = useState(false);
-  const { id, address, status } = device;
-  const [setConfig] = useSetConfigMutation();
-  const config = { ...device.config };
+  const { id, address,config, status } = device;
+  const [setConfig,{isError,error}] = useSetConfigMutation();
   const handleClose = () => {
     setOpen(false);
   };
@@ -511,6 +510,7 @@ const DeviceCard = ({ device }) => {
 
   return (
     <>
+      {isError && <Alert severity="error">{error.message}</Alert>}
       <Card
         sx={{
           m: "2px",

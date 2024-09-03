@@ -4,14 +4,20 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomTabPanel} from "../../components/Calculator/Helpers";
 import FertilizerList from "../../components/Calculator/FertilizerList";
 import ConcentrateList from "../../components/Calculator/ConcentrateList";
 import FertigationUnitList from "../../components/Calculator/UnitList";
+import { AppBarContext } from "../../context/AppBarContext";
+import { useContext } from "react";
 
 export default function NutrientCalculator() {
   const [tab, setTab] = useState(0);
+  const appBar = useContext(AppBarContext);
+  useEffect(() => {
+    appBar.setAppBar({ title: "Nutrient Calculator" });
+  }, []);
   return (
     <Box>
       <Typography variant="h4">Nutrient Calculator</Typography>

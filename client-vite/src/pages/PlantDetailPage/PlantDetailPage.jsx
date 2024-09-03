@@ -12,6 +12,10 @@ import { useGetPlantsQuery } from "../../store/plantsApi";
 import PlantTimeline from "../../components/PlantTimeline/PlantTimeline";
 import PlantSpeedDial from "../../components/PlantSpeedDial/PlantSpeedDial";
 import propsTypes from "prop-types";
+import { useContext } from "react";
+import { AppBarContext } from "../../context/AppBarContext";
+import  Scanner  from "../../components/Scanner/Scanner";
+import  {TrayButton}  from "../../components/TrayButton/TrayButton";
 
 const PlantGroup=({group})=>{
 const params=new URLSearchParams({group});
@@ -89,6 +93,7 @@ PlantGender.propTypes={
 
 export const PlantDetailPage = () => {
   const id = useParams().id;
+  const appBar = useContext(AppBarContext);
   const [plant, setPlant] = useState({});
   const { isLoading, isError, error, data } = useGetPlantsQuery(
     { _id: id },
@@ -98,6 +103,16 @@ export const PlantDetailPage = () => {
     if (data?.length < 1) return [];
     return [data[0]];
   };
+  useEffect(() => {
+    appBar.setAppBar({ title: "Plant Details",
+      toolbar: (
+        <>
+          <Scanner />
+          <TrayButton />
+        </>
+      ),
+     });
+  }, []);
 
   useEffect(() => {
     if (data?.length > 0) {

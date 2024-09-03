@@ -28,15 +28,15 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ScienceIcon from '@mui/icons-material/Science';
+import ScienceIcon from "@mui/icons-material/Science";
 import SnackBar from "../components/SnackBar/SnackBar";
 //import { useAuth } from "../hooks/auth.hook";
-import { TrayButton } from "../components/TrayButton/TrayButton";
-import { Collapse, useMediaQuery } from "@mui/material";
-import Scanner from "../components/Scanner/Scanner";
+import { Collapse, Typography, useMediaQuery } from "@mui/material";
 import PrintDialog from "../components/PrintDialog";
-import CollectionsIcon from '@mui/icons-material/Collections';
+import CollectionsIcon from "@mui/icons-material/Collections";
 import PropTypes from "prop-types";
+import { AppBarContext } from "../context/AppBarContext";
+import { useContext } from "react";
 
 // function PrivateOutlet() {
 //   const { isAuth } = useAuth();
@@ -120,22 +120,81 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+// const AppBar = styled(MuiAppBar, {
+//   shouldForwardProp: (prop) => prop !== "open",
+// })(({ theme, open }) => ({
+//   transition: theme.transitions.create(["margin", "width"], {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   ...(open && {
+//     width: `calc(100% - ${drawerWidth}px)`,
+//     marginLeft: `${drawerWidth}px`,
+//     transition: theme.transitions.create(["margin", "width"], {
+//       easing: theme.transitions.easing.easeOut,
+//       duration: theme.transitions.duration.enteringScreen,
+//     }),
+//   }),
+// }));
+const AppBar = ({ open, openDrawer }) => {
+  const { appBar } = useContext(AppBarContext);
+  const navigate = useNavigate();
+
+  return (
+    <MuiAppBar
+      position="fixed"
+      open={open}
+      sx={{
+        transition: (theme) =>
+          theme.transitions.create(["margin", "width"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+        ...(open && {
+          width: `calc(100% - ${drawerWidth}px)`,
+          marginLeft: `${drawerWidth}px`,
+          transition: (theme) =>
+            theme.transitions.create(["margin", "width"], {
+              easing: theme.transitions.easing.easeOut,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+        }),
+      }}
+    >
+      <Toolbar>
+        <IconButton
+          aria-label="open drawer"
+          onClick={openDrawer}
+          edge="start"
+          sx={{ p: "10px", ml: 2, mr: 2, ...(open && { display: "none" }) }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <IconButton aria-label="back" onClick={() => navigate(-1)}>
+          <ChevronLeftIcon />
+        </IconButton>
+        {appBar?.toolbar && appBar.toolbar}
+        <Typography variant="h5" marginLeft={2} noWrap>
+          {appBar?.title}
+        </Typography>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {appBar?.right}
+        </Box>
+      </Toolbar>
+    </MuiAppBar>
+  );
+};
+AppBar.propTypes = {
+  open: PropTypes.bool,
+  openDrawer: PropTypes.func,
+};
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -148,7 +207,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export const Layout = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const [open, setOpen] = React.useState(!isSmall && true);
   const handleDrawerOpen = () => {
@@ -168,23 +226,7 @@ export const Layout = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ width: "100%" }}>
-          <IconButton aria-label="back" onClick={() => navigate(-1)}>
-            <ChevronLeftIcon />
-          </IconButton>
-          <IconButton
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ p: "10px", ml: 2, mr: 2, ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Scanner />
-          <TrayButton />
-        </Toolbar>
-      </AppBar>
+      <AppBar open={open} openDrawer={handleDrawerOpen} />
       <Drawer
         sx={{
           width: drawerWidth,
@@ -283,11 +325,10 @@ export const Layout = () => {
                 icon: <MailIcon />,
               },
               {
-                text:"Nutrients",
-                href:"/nutrients",
-                icon: <ScienceIcon/>
-
-              }
+                text: "Nutrients",
+                href: "/nutrients",
+                icon: <ScienceIcon />,
+              },
             ].map((obj, i) => {
               if (obj.collapsed) {
                 return (

@@ -149,7 +149,7 @@ const actionFields = {
 export default function AddActionDialog({ open, onClose, plants }) {
   const dispatch = useDispatch();
   const { setSnack } = useContext(SnackbarContext);
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(dayjs());
   const [showPicker, setShowPicker] = useState(false);
   const newAction = useSelector((state) => state.newAction);
   const isSmall = window.innerWidth < 600;

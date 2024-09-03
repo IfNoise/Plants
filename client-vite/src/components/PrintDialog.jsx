@@ -1,18 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { useGetPrintersQuery } from "../store/printApi";
 import { PrinterContext } from "../context/PrinterContext";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Select, MenuItem } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Select, MenuItem, CircularProgress, Alert } from "@mui/material";
 
 
 export default function PrintDialog() {
   const { printDialog,setPrintDialog} = useContext(PrinterContext);
-  const { data ,refetch} = useGetPrintersQuery({refetchOnMountOrArgChange: true, refetchOnFocus: true});
+  const { data ,isError,isLoading} = useGetPrintersQuery({refetchOnMountOrArgChange: true, refetchOnFocus: true});
   const [selectedPrinter, setSelectedPrinter] = useState("");
   const [printers, setPrinters] = useState([]);
-  useEffect(()=>{
-    refetch()
-  
-  },[])
 
   useEffect(() => {
     if (data) {
@@ -27,9 +23,11 @@ export default function PrintDialog() {
     open={printDialog.open}>
       <DialogTitle>Select Printer</DialogTitle>
       <DialogContent>
+        {isLoading && <CircularProgress/>}
+        {isError && <Alert severity="error">Error fetching printers</Alert>}
         {printers.length>0 &&
         <Select
-          sx={{ width: "200pt" }}
+          sx={{ width: "200px" }}
           value={selectedPrinter}
           onChange={(e) => setSelectedPrinter(e.target.value)}
         >

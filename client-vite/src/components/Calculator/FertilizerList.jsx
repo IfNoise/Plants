@@ -19,7 +19,8 @@ import {
 import PropTypes from 'prop-types';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { AddElementDialog, AddFertilizerDialog, NewFertilizerDialog } from './Helpers';
+import { AddElementDialog,
+   NewFertilizerDialog } from './Helpers';
 import { EditConcentrationDialog } from './Helpers';
 import { addElement, editElement, removeElement,addFertilizer } from '../../store/nutrientsSlice';
 
@@ -66,7 +67,7 @@ const FertilizerCard = ({ fertilizer }) => {
 
       <CardContent>
         <Typography variant="h6">{description}</Typography>
-        <Table>
+        <Table size='small'>
           <TableHead>
             <TableRow>
               <TableCell>Element</TableCell>

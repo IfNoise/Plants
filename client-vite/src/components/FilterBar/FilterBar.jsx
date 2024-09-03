@@ -12,6 +12,8 @@ import {
   Drawer,
   Fab,
   useTheme,
+  IconButton,
+  Autocomplete,
 } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -97,6 +99,7 @@ export const FilterBar = (props) => {
   const strains = [...new Set(getData().map((obj) => obj.strain))];
   const states = ["Germination","Cloning","Growing","MotherPlant","Blooming","Stopped", "Harvested"];
   useEffect(() => {
+    setValues(() => [...Object.values(filter)]);
     if (!filter.strain) {
       return;
     }
@@ -105,11 +108,10 @@ export const FilterBar = (props) => {
       .map((obj) => obj.pheno);
     const uniquePhenos = [...new Set(pheno)];
     setPhenos(uniquePhenos);
-    setValues(() => [...Object.values(filter)]);
   }, [filter]);
 
-  const handleChangeStrain = (event) => {
-    dispatch(addStrain(event.target.value));
+  const handleChangeStrain = (_,newValue) => {
+    dispatch(addStrain(newValue));
   };
   const handleChangePotSize = (event) => {
     dispatch(addPotSize(event.target.value));
@@ -118,8 +120,8 @@ export const FilterBar = (props) => {
   const handleChangePheno = (event) => {
     dispatch(addPheno(event.target.value));
   };
-  const handleChangeState = (event) => {
-    dispatch(addState(event.target.value));
+  const handleChangeState = (_,newValue) => {
+    dispatch(addState(newValue));
     setPhenos([]);
   };
 
@@ -135,25 +137,23 @@ export const FilterBar = (props) => {
 
   return (
     <>
-      <Fab
+      <IconButton
+
         onClick={() => setOpen(!open)}
-        sx={{ position: "fixed", top: 65, right: 10 }}
       >
         <TuneIcon />
-      </Fab>
+      </IconButton>
       <Drawer
         open={open}
         anchor="right"
         sx={{
-          
+          width: "100%",
           height: "100%",
-          display: "flex",
-          flexDirection: "column",
           m: 2,
           p: 2,
         }}
       >
-        <Box sx={{ m: 1 ,width: { xs: "100vw", sm: "100vw", md: "30vw" },}}>
+        <Box sx={{ m: 1 ,width:{xs:"100%"},}}>
           <Typography variant="h5" mr={5}>
             Filter
           </Typography>
@@ -239,23 +239,17 @@ export const FilterBar = (props) => {
             >
               <Stack direction="row" spacing={1}>
                 <FormControl sx={{ m: "1px", width: "95%" }}>
-                  <InputLabel id="state-label">State</InputLabel>
-                  <Select
+                  <Autocomplete
                     onChange={handleChangeState}
-                    labelId="state-label"
+
                     id="state"
                     name="state"
+                    options={states}
                     value={filter.state ?? ""}
-                    input={<OutlinedInput label="State" />}
-                  >
-                    {states.map((state, id) => {
-                      return (
-                        <MenuItem key={id} value={state}>
-                          {state}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField {...params} label="State" />
+                    )}
+                  />
                 </FormControl>
                 <Button
                   sx={{
@@ -269,25 +263,16 @@ export const FilterBar = (props) => {
               {strains && (
                 <Stack direction="row" spacing={1}>
                   <FormControl sx={{ m: "1px", width: "95%" }}>
-                    <InputLabel id="strain-checkbox-label">
-                      Strain
-                    </InputLabel>
-                    <Select
+                    <Autocomplete
                       onChange={handleChangeStrain}
-                      labelId="strain-checkbox-label"
                       id="strain-checkbox"
                       name="strain"
                       value={filter.strain ?? ""}
-                      input={<OutlinedInput label="Strain" />}
-                    >
-                      {strains.map((strain, id) => {
-                        return (
-                          <MenuItem key={id} value={strain}>
-                            {strain}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
+                      options={strains}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Strain" />
+                      )}
+                    />
                   </FormControl>
                   <Button
                     sx={{

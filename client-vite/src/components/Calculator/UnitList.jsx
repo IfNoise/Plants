@@ -18,6 +18,8 @@ import {
   ButtonGroup,
   ToggleButtonGroup,
   ToggleButton,
+  Select,
+  MenuItem,
 
 } from "@mui/material";
 import PropTypes from "prop-types";
@@ -176,11 +178,27 @@ const units=[
 
 
 const DosingPump = ({ pump, onChange }) => {
-  const { name, flowRate: flowRateProp} = pump;
+  const { name,factor:factorProp , flowRate: flowRateProp} = pump;
   const [flowRate, setFlowRate] = useState(flowRateProp);
+  const [sliderRate,setSliderRate]=useState(flowRateProp);
+  const [factor, setFactor] = useState(factorProp||1);
+  const factors =[
+    {factor:1.0,name:"1x"},
+    {factor:0.5,name:"1/2x"},
+    {factor:0.33,name:"1/3x"},
+    {factor:0.25,name:"1/4x"},
+    {factor:0.2,name:"1/5x"},
+    {factor:0.1,name:"1/10x"},
+  ]
   const changeFlowRate = (flowRate) => {
     setFlowRate(flowRate);
-    if (onChange) onChange(flowRate);
+    if (onChange) onChange({flowRate});
+  };
+  const changeFactor = (e) => {
+    const factor = e.target.value;
+    setFactor(factor);
+    console.log(factor);
+    if (onChange) onChange({factor});
   };
   const marks = [
     {
@@ -224,13 +242,24 @@ const DosingPump = ({ pump, onChange }) => {
           marks={marks}
           max={4.0}
           step={0.1}
-          value={flowRate}
+          value={sliderRate}
           onChange={(_, value) => {
+            setSliderRate(value);
             changeFlowRate(value);
           }}
         />
 
-        <Typography variant="h4" color="yellowgreen" display={"block"} >{flowRate}</Typography>
+        <Typography variant="h4" color="yellowgreen" display={"block"} >{sliderRate}</Typography>
+          <Select
+            value={factor}
+            onChange={changeFactor}
+          >
+            {factors.map((f, i) => (
+              <MenuItem key={i} value={f.factor}>
+                {f.name}
+              </MenuItem>
+            ))}
+          </Select>
 
       </CardContent>
     </Card>
@@ -282,7 +311,7 @@ const FertigationUnit = ({ unit }) => {
             return {
               name: fertilizer.name,
               concentration: (
-                (fertilizer.concentration * pump.flowRate) /
+                (fertilizer.concentration * pump.flowRate*pump.factor) /
                 10
               ).toFixed(3),
             };
@@ -353,8 +382,8 @@ const FertigationUnit = ({ unit }) => {
             <DosingPump
               key={i}
               pump={pump}
-              onChange={(flowRate) => {
-                dispatch(editPump({ unit: name, pumpIdx: i, flowRate }));
+              onChange={(changes) => {
+                dispatch(editPump({ unit: name, pumpIdx: i,changes}));
               }}
             />
           ))}

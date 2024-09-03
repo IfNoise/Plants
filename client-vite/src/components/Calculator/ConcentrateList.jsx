@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
@@ -7,12 +7,14 @@ import {
   CardContent,
   CardHeader,
   IconButton,
+  Paper,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
@@ -28,7 +30,9 @@ const ConcentrateCard = ({ concentrate }) => {
   const concentrates = useSelector((state) => state.nutrients.concentrates);
   const fertilizers = useSelector((state) => state.nutrients.fertilizers);
   const dispatch = useDispatch();
+  const [volume, setVolume] = useState(1);
   const [solution, setSolution] = useState([]);
+  const [perVolume, setPerVolume] = useState([]);
   const coefficients = elements.map((element) => element.content).flat();
   const { name, description, content } = concentrates.find(
     (c) => c.name === concentrate
@@ -68,6 +72,17 @@ const ConcentrateCard = ({ concentrate }) => {
     });
   };
   
+  useMemo(() => {
+    if (content?.length > 0) {
+      const perVolume = content.map((fertilizer) => {
+        return {
+          name: fertilizer.name,
+          concentration: (fertilizer.concentration * volume).toFixed(2),
+        };
+      });
+      setPerVolume(perVolume);
+    }
+    }, [content, volume]);
 
   useEffect(() => {
     if (content?.length > 0) {
@@ -167,33 +182,27 @@ const solution=content.map((fertilizer) => {
       padding: "10px",
     }}
     >
-      <CardHeader variant="h4" title={name}></CardHeader>
+      <CardHeader variant="h4" title={<TextField
+        size="small"
+          label="Volume"
+          type="number"
+          value={volume}
+          onChange={(e) => setVolume(e.target.value)}
+        />} avatar={<Typography variant="h2">{name}</Typography>}/>
       <CardContent>
         <Typography variant="h6">{description}</Typography>
-        <Stack
-          direction="row"
-          margin={2}
-          spacing={2}
-          useFlexGap 
-          flexWrap="wrap"
-
-        >
         <Table 
+        size="small"
         sx={{
-          margin: "10px",
-          marginLeft: "0px",
-          padding: "10px",
           width: "auto",
         }}
         >
           <TableHead>
             <TableRow 
-            sx={{
-              m:"2px"
-            }}
             >
               <TableCell>Nutrient</TableCell>
-              <TableCell>Concentration</TableCell>
+              <TableCell>Mass per 1L</TableCell>
+              <TableCell>Mass per {volume}L</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -203,6 +212,7 @@ const solution=content.map((fertilizer) => {
                 <TableRow key={i}>
                   <TableCell>{element.name}</TableCell>
                   <TableCell>{element.concentration}g</TableCell>
+                  <TableCell>{(element.concentration * volume).toFixed(2)}g</TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => {
@@ -300,7 +310,7 @@ const solution=content.map((fertilizer) => {
           </TableRow>
         </TableBody>
         </Table>
-        </Stack>
+        
         <Button onClick={() => setOpen(true)}>Add Fertilizer</Button>
 
         <AddFertilizerDialog

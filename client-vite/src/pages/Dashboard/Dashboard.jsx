@@ -1,22 +1,32 @@
-import { Alert, Box, CircularProgress, Grid, Stack } from "@mui/material";
+import { Alert, Box, CircularProgress, Grid} from "@mui/material";
 
 import { useGetDevicesQuery } from "../../store/deviceApi";
 import DeviceCard from "../../components/DeviceCard";
 import LightController from "../../components/LightController/LightController";
+import { useEffect, useState,useContext } from "react";
+import { AppBarContext } from "../../context/AppBarContext";
 
 const Dashboard = () => {
-  const { isLoading, isError, error, data,refetch }=useGetDevicesQuery({refetchOnReconnect:true,
+  const { isLoading, isError, error, data}=useGetDevicesQuery({refetchOnReconnect:true,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true});
-  if (data?.length === 0) {
-    return <Alert severity="info">No devices found{error}</Alert>;
-  }
+  const appBar = useContext(AppBarContext);
+  const [devices, setDevices] = useState([]);
+  useEffect(() => {
+    appBar.setAppBar({ title: "Dashboard" });
+  }, []);
+  useEffect(() => {
+    if (data?.length > 0) {
+      setDevices(data);
+    }
+  }, [data]); 
   return (
     <Box >
-      {!data && <CircularProgress /> }
+      {isLoading && <CircularProgress /> }
+      {isError && <Alert severity="error">{error}</Alert>}
       {data?.length === 0 && <Alert severity="info">No devices found</Alert>}
       <Grid container spacing={2}>
-      {data && data.map((device) => (
+      {devices?.length>0 && devices.map((device) => (
         <Grid item key={device.id} xs={12} sm={12} md={10} lg={6} xl={2}>
         <DeviceCard key={device.id} device={device} />
         </Grid>

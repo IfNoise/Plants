@@ -38,7 +38,7 @@ export const store = configureStore({
   reducer,
   preloadedState: reHydrateStore(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([plantsApi.middleware,deviceApi.middleware,photoApi.middleware, authApi.middleware,lightApi.middleware, trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,localStorageMiddleware,galleryApi.middleware]),
+    getDefaultMiddleware().concat([localStorageMiddleware,plantsApi.middleware,deviceApi.middleware,photoApi.middleware, authApi.middleware,lightApi.middleware, trayApi.middleware,strainApi.middleware,cycleApi.middleware,printApi.middleware,galleryApi.middleware]),
 });
 
 setupListeners(store.dispatch)

@@ -41,12 +41,16 @@ export const nutrientsSlice = createSlice({
         }
     },
     editPump: (state, action) => {
-      if (action.payload?.unit&&action.payload?.pumpIdx>-1&&action.payload?.flowRate){
+      if (action.payload?.unit&&action.payload?.pumpIdx>-1&&action.payload?.changes){
         const unit = state.fertilizerUnits.find((unit) => unit.name === action.payload.unit);
         if(unit){
           const index = state.fertilizerUnits.indexOf(unit);
           if(index>-1){
-          state.fertilizerUnits[index].pumps[action.payload.pumpIdx].flowRate = action.payload.flowRate;
+          state.fertilizerUnits[index].pumps[action.payload.pumpIdx] = {
+            ...state.fertilizerUnits[index].pumps[action.payload.pumpIdx],
+            ...action.payload.changes,
+          };
+          state.fertilizerUnits[index].pumps[action.payload.pumpIdx]
           }
         }
         }

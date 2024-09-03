@@ -2,6 +2,9 @@ import { Alert, CircularProgress} from "@mui/material";
 import { PlantsList } from "../components/PlantsList/PlantsList";
 import { useGetTrayQuery } from "../store/trayApi";
 import { useEffect } from "react";
+import { useContext } from "react";
+import { AppBarContext } from "../context/AppBarContext";
+import { TrayButton } from "../components/TrayButton/TrayButton";
 
 export const TrayPage = () => {
   const {
@@ -17,10 +20,16 @@ export const TrayPage = () => {
     refetchOnReconnect:true,
     refetchOnMount:true
   });
+  const appBar = useContext(AppBarContext);
   useEffect(() => {
     refetch();
   }
   , [refetch]);
+  useEffect(() => {
+    appBar.setAppBar({ title: "Tray" ,
+    toolbar:(<TrayButton/>),
+  });
+  } , []);
   return (
     <>
       {isError && <Alert severity="error">{error?.message||'error'}</Alert>}

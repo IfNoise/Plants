@@ -3,8 +3,11 @@ import { Row } from "./Row";
 import { useGetMapQuery } from "../../store/plantsApi";
 import { useParams } from "react-router-dom";
 import { Rack } from "./Rack";
+import { useContext, useEffect } from "react";
+import { AppBarContext } from "../../context/AppBarContext";
 
 export const MapPage = () => {
+  const appBar = useContext(AppBarContext);
   const building = useParams().building;
   const room = useParams().room;
   const roomName = room.split("_").join(" ");
@@ -16,6 +19,10 @@ export const MapPage = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+  useEffect(() => {
+    appBar.setAppBar({ title: "Map" });
+  }
+  , []);
 
   if (isError) return <Box>Error: {error.message}</Box>;
   if (isLoading) return <Box>Loading...</Box>;

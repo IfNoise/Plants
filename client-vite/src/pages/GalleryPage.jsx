@@ -19,11 +19,18 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import DownloadIcon from "@mui/icons-material/Download";
+import { AppBarContext } from "../context/AppBarContext";
+
+
+const buttonStyle = 
+  {
+    marginRight:"auto",
+};
 
 const DownloadButton = ({ photo }) => {
   const { src, strain, pheno } = photo;
@@ -43,6 +50,23 @@ DownloadButton.propTypes = {
 
 const ImageView = ({ photo, open, onClose, next, prev }) => {
   const { src, strain, pheno, state, ageOfState, plantId } = photo;
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipe = 100;
+  const handleTouchStart = (e) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.touches[0].clientX);
+  };
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > minSwipe) {
+      next();
+    }
+    if (touchStart - touchEnd < -minSwipe) {
+      prev();
+    }
+  };
 
   return (
     <Dialog
@@ -64,11 +88,15 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
           overflow: "hidden",
           alignContent: "center",
         }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+
       >
         <img
-          style={{ height: "100%", width: "100%", objectFit: "cover" }}
+          style={{ height: "100vh", width: "auto", objectFit: "cover" }}
           src={`https://ddweed.org/${src}`}
-          loading="lazy"
+          
           alt={strain}
         />
         <Box
@@ -95,7 +123,14 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
         <Box
           sx={{
             position: "absolute",
-            bottom: 0,
+            bottom: {
+              xs:"calc(50% - 24px)",
+              sm:"calc(50% - 32px)",
+              md:0,
+              lg:0,
+              xl:0,
+            },
+            left: 0,
             p: 2,
             backgroundColor: "tranparent",
             width: "100%",
@@ -105,16 +140,20 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
           }}
         >
           <Tooltip title="Previous">
-            <IconButton onClick={prev}>
+            <IconButton onClick={prev}
+              sx={buttonStyle}
+            >
               <NavigateBeforeIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Next">
-            <IconButton onClick={next}>
+            <IconButton 
+            
+            onClick={next}>
               <NavigateNextIcon />
             </IconButton>
           </Tooltip>
-          <DownloadButton photo={photo} />
+          
         </Box>
         <Box
           sx={{
@@ -126,6 +165,9 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
             color: "black",
           }}
         >
+          <Tooltip title="Download">
+            <DownloadButton photo={photo} />
+          </Tooltip>
           <Tooltip title="Close">
             <IconButton onClick={onClose}>
               <CloseIcon />
@@ -147,6 +189,7 @@ ImageView.propTypes = {
 
 export const GalleryPage = () => {
   const location = useLocation();
+  const appBar = useContext(AppBarContext);
   const params = new URLSearchParams(location.search);
   const pFilter = Object.fromEntries(params);
   const [open, setOpen] = useState(false);
@@ -163,6 +206,7 @@ export const GalleryPage = () => {
   } = useGetPhotosQuery(filter, {
     refetchOnMountOrArgChange: true,
   });
+  
   const next = () => {
     const max = photos.length - 1;
     if (photoView === max) {
@@ -185,6 +229,9 @@ export const GalleryPage = () => {
     setOpen(false);
     setPhotoView(null);
   };
+  useEffect(() => {
+    appBar.setAppBar({ title: "Gallery" });
+  }, []);
   useEffect(() => {
     if (photos?.length > 0) {
       const str = photos.map((photo) => photo.strain);
@@ -280,7 +327,7 @@ export const GalleryPage = () => {
           variant="masonry"
         >
           {photos.map((photo, index) => {
-            const { src, strain, pheno, date } = photo;
+            const { src, strain} = photo;
             return (
               <ImageListItem
                 onClick={() => {

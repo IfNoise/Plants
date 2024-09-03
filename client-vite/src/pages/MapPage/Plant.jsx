@@ -67,7 +67,6 @@ export default function Plant({ plant }) {
       <Popper
         open={open}
         anchorEl={anchorEl}
-        anc
         onClose={() => {}}
       ><Paper
       sx={{
