@@ -53,11 +53,14 @@ app.get('/api/photos/make_thumbnails', async(req, res) => {
   const photos=await Photo.find({})
   photos.forEach(async (photo) => {
     if(fs.fileExists(`uploads/thumbnails/${photo.filename}`))return
-    await sharp(`uploads/${photo.filename}`)
+    const result =await sharp(`uploads/${photo.filename}`)
       .resize(200, 200)
       .toFile(`uploads/thumbnails/${photo.filename}`);
   });
+  if(result)
   res.status(200).send({ message: 'Thumbnails created successfully.' });
+  else
+  res.status(400).send({ message: result });
 
 });
 app.use('/gallery', express.static(path.join(__dirname, 'uploads')))
