@@ -17,6 +17,7 @@ import {
   Select,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState, useContext } from "react";
@@ -25,6 +26,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import DownloadIcon from "@mui/icons-material/Download";
 import { AppBarContext } from "../context/AppBarContext";
+import { ThemeContext } from "@emotion/react";
 
 const buttonStyle = {
   marginRight: "auto",
@@ -182,6 +184,8 @@ ImageView.propTypes = {
 
 export const GalleryPage = () => {
   const location = useLocation();
+  const theme = useContext(ThemeContext);
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const appBar = useContext(AppBarContext);
   const params = new URLSearchParams(location.search);
   const pFilter = Object.fromEntries(params);
@@ -311,11 +315,10 @@ export const GalleryPage = () => {
 
       {photos && (
         <ImageList
-          cols={6}
-          rowHeight={160}
+          cols={isSmall ? 3 : 6}
+          rowHeight="200px"
           sx={{ width: "100%" }}
-          gap={8}
-          variant="masonry"
+          variant="standard"
         >
           {photos.map((photo, index) => {
             const { src, strain } = photo;
