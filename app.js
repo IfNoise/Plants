@@ -53,10 +53,11 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
 app.get('/api/photos/make_thumbnails', async(req, res) => {
   const photos=await Photo.find({})
   photos.forEach(async (photo) => {
-    if(fs.existsSync(`uploads/thumbnails/${photo.filename}`))return
-    const result =await sharp(`uploads/${photo.filename}`)
+    const filename=src?.includes("gallery/")?photo.src.split("gallery/"):photo.src;
+    if(fs.existsSync(`uploads/thumbnails/${filename}`))return
+    await sharp(`uploads/${filename}`)
       .resize(200)
-      .toFile(`uploads/thumbnails/${photo.filename}`)
+      .toFile(`uploads/thumbnails/${filename}`)
 
   });
 
