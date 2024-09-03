@@ -58,7 +58,7 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
 app.get('/api/photos/make_thumbnails', async(req, res) => {
   const photos=await Photo.find({})
   photos.forEach(async (photo) => {
-    const filename=src?.includes("gallery/")?photo.src.split("gallery/"):photo.src;
+    const filename=photo.src?.includes("gallery/")?photo.src.split("gallery/"):photo.src;
     if(fs.existsSync(`uploads/thumbnails/${filename}`))return
     await sharp(`uploads/${filename}`)
       .resize(200)
