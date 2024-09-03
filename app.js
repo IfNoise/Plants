@@ -59,7 +59,7 @@ app.get('/api/photos/make_thumbnails', async(req, res) => {
   const photos=await Photo.find({})
   photos.forEach(async (photo) => {
     const filename= photo.src?.includes("gallery/")?photo.src.split("/")[1]:photo.src
-    console.log(filename)
+    console.log("Filename",filename)
     if(fs.existsSync(`uploads/thumbnails/${filename}`))return
     const path="uploads/"+filename
     console.log("Path:",path)
