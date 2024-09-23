@@ -22,7 +22,7 @@ router.post("/add", async (req, res) => {
  
   try {
     
-      if(!req.body.seedType||!req.body.number||req.body.number<=0||!req.body.seedBank){
+      if(!req.body.number||req.body.number<=0||!req.body.seedBank){
         return res.status(400).json({ message: "Some fields are ex" });
       }
  
