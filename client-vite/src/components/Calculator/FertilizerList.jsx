@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
+  CircularProgress,
   IconButton,
   Stack,
   Table,
@@ -15,31 +16,41 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@mui/material';
-import PropTypes from 'prop-types';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { AddElementDialog,
-   NewFertilizerDialog } from './Helpers';
-import { EditConcentrationDialog } from './Helpers';
-import { addElement, editElement, removeElement,addFertilizer } from '../../store/nutrientsSlice';
+} from "@mui/material";
+import PropTypes from "prop-types";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { AddElementDialog, NewFertilizerDialog } from "./Helpers";
+import { EditConcentrationDialog,ContentTable } from "./Helpers";
 
-
+import {
+  useAddElementMutation,
+  useCreateFertilizerMutation,
+  useDeleteFertilizerMutation,
+  useDeleteElementMutation,
+  useGetAllFertilizersQuery,
+  useUpdateElementMutation,
+} from "../../store/feedingApi";
 
 const FertilizerCard = ({ fertilizer }) => {
-  const fertilizers = useSelector((state) => state.nutrients.fertilizers);
-  const [open, setOpen] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState([]);
-  const dispatch = useDispatch();
-  if (!fertilizer) {
-    return null;
-  }
-  if (!fertilizers.find((n) => n.name === fertilizer)) return null;
+  const [addElement] =
+    useAddElementMutation();
+  const [
+    updateElement
+  ] = useUpdateElementMutation();
+  const [
+    deleteElement
+  ] = useDeleteElementMutation();
+  const [deleteFertilizer] = useDeleteFertilizerMutation();
+  const deleteFertilizerHandler = (id) => {
+    deleteFertilizer(id);
+  };
 
-  const { name, description, content } = fertilizers.find(
-    (n) => n.name === fertilizer
-  );
+  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState([]);
+
+  const { name, description, elements, _id: id,content } = fertilizer;
+
   const openDialog = (index) => {
     setOpenEdit((prev) => {
       if (prev.length === 0) {
@@ -62,12 +73,12 @@ const FertilizerCard = ({ fertilizer }) => {
   };
 
   return (
-    <Card >
+    <Card>
       <CardHeader title={name} />
 
       <CardContent>
         <Typography variant="h6">{description}</Typography>
-        <Table size='small'>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>Element</TableCell>
@@ -76,8 +87,8 @@ const FertilizerCard = ({ fertilizer }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {content?.length > 0 &&
-              content.map((element, i) => (
+            {elements?.length > 0 &&
+              elements.map((element, i) => (
                 <TableRow key={i}>
                   <TableCell>{element.name}</TableCell>
                   <TableCell>{element.concentration}</TableCell>
@@ -93,13 +104,7 @@ const FertilizerCard = ({ fertilizer }) => {
                       open={openEdit[i]}
                       concentration={element.concentration}
                       onChange={(concentration) => {
-                        dispatch(
-                          editElement({
-                            name,
-                            element: element.name,
-                            concentration,
-                          })
-                        );
+                        updateElement({id, elementId:element._id, body: { concentration }});
                       }}
                       onClose={() => {
                         closeDialog(i);
@@ -107,9 +112,7 @@ const FertilizerCard = ({ fertilizer }) => {
                     />
                     <IconButton
                       onClick={() => {
-                        dispatch(
-                          removeElement({ name, element: element.name })
-                        );
+                        deleteElement({id, elementId:element._id});
                       }}
                     >
                       <DeleteForeverIcon />
@@ -119,14 +122,23 @@ const FertilizerCard = ({ fertilizer }) => {
               ))}
           </TableBody>
         </Table>
+        {content?.length>0 && <ContentTable content={content} />}
       </CardContent>
       <CardActions>
         <Button onClick={() => setOpen(true)}>Add Element</Button>
+        <Button
+          onClick={() => {
+            deleteFertilizerHandler(id);
+          }}
+        >
+          Delete
+        </Button>
         <AddElementDialog
           open={open}
           onClose={() => setOpen(false)}
           onChange={(element) => {
-            dispatch(addElement({ name, element }));
+            console.log(element); 
+            addElement({id,body: element});
             setOpen(false);
           }}
         />
@@ -139,23 +151,32 @@ FertilizerCard.propTypes = {
 };
 
 const FertilizerList = () => {
-  const fertilizers = useSelector((state) => state.nutrients.fertilizers);
-  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  return (
-    <Box 
+  const {
+    isLoading,
+    isError,
+    data: fertilizers,
+    error,
+  } = useGetAllFertilizersQuery();
 
-    >
-      <Stack
-      direction="column"
-      margin={2}
-      spacing={2}
-      justifyContent="center"
-      >
-      {fertilizers?.length > 0 &&
-        fertilizers.map((fertilizer) => (
-          <FertilizerCard key={fertilizer.name} fertilizer={fertilizer.name} />
-        ))}
+  const [
+    createFertilizer
+  ] = useCreateFertilizerMutation();
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+  if (isError) {
+    return <Alert severity="error">{error.message}</Alert>;
+  }
+
+  return (
+    <Box>
+      <Stack direction="column" margin={2} spacing={2} justifyContent="center">
+        {fertilizers?.length > 0 &&
+          fertilizers.map((fertilizer) => (
+            <FertilizerCard key={fertilizer.name} fertilizer={fertilizer} />
+          ))}
       </Stack>
       <Button
         onClick={() => {
@@ -168,12 +189,12 @@ const FertilizerList = () => {
         open={open}
         onClose={() => setOpen(false)}
         onChange={(fertilizer) => {
-          dispatch(addFertilizer(fertilizer));
+          createFertilizer(fertilizer);
           setOpen(false);
         }}
       />
     </Box>
   );
-}
+};
 
 export default FertilizerList;

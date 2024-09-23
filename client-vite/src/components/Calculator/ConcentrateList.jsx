@@ -1,13 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState,useMemo } from "react";
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   IconButton,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -20,23 +20,21 @@ import {
 import PropTypes from "prop-types";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { AddConcentrateDialog, AddFertilizerDialog,EditConcentrationDialog  } from "./Helpers";
-import { editConcentrateElement,removeConcentrateElement } from "../../store/nutrientsSlice";
+import { AddConcentrateDialog, AddFertilizerDialog,ContentTable,EditConcentrationDialog  } from "./Helpers";
 import { elements } from "../../config/config";
+import { useDeleteConcentrateMutation, useDeleteFertilizerFromConcMutation, useGetAllConcentratesQuery, useGetAllFertilizersQuery, useUpdateFertilizerMutation } from "../../store/feedingApi";
 
 
 
 const ConcentrateCard = ({ concentrate }) => {
-  const concentrates = useSelector((state) => state.nutrients.concentrates);
-  const fertilizers = useSelector((state) => state.nutrients.fertilizers);
-  const dispatch = useDispatch();
+  const { _id:id ,name, description, content,fertilizers } = concentrate
+  const { data: fertilizerList } = useGetAllFertilizersQuery()
+  const [deleteConcentrate] = useDeleteConcentrateMutation()
+  const [deleteFertilizerFromConc]= useDeleteFertilizerFromConcMutation()
+  const [updateFertilizer]=useUpdateFertilizerMutation()
   const [volume, setVolume] = useState(1);
-  const [solution, setSolution] = useState([]);
   const [perVolume, setPerVolume] = useState([]);
-  const coefficients = elements.map((element) => element.content).flat();
-  const { name, description, content } = concentrates.find(
-    (c) => c.name === concentrate
-  );
+  
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState([]);
 
@@ -56,14 +54,12 @@ const ConcentrateCard = ({ concentrate }) => {
     });
   };
 
-  const handleEdit = (element, concentration) => {
-    dispatch(
-      editConcentrateElement({
-        name: concentrate,
-        fertilizer:element,
-        concentration,
-      })
-    );
+  const handleEdit = (elementId, concentration) => {
+    updateFertilizer({
+      id,
+      elementId,
+      body:{concentration}
+    })
   };
 
   const closeDialog = (index) => {
@@ -71,109 +67,41 @@ const ConcentrateCard = ({ concentrate }) => {
       return prev.map((v, j) => (index === j ? false : v));
     });
   };
+  const deleteConcentrateHandler = (id) => {
+    deleteConcentrate(id);
+  }
+  useMemo(() => {
+    if(fertilizers?.length>0){
+      const ferts=fertilizers.map((fert) => {
+        const fertilizer = fertilizerList.find((f) => f._id === fert.fertilizer);
+        if (!fertilizer) return null;
+        return {
+          _id: fert._id,
+          name: fertilizer.name,
+          concentration: fert.concentration,
+        };
+      })
+      .filter((f) => f !== null);
+      
+      setElementsList(ferts);
+    }
+  }, [fertilizers, fertilizerList]);
   
   useMemo(() => {
-    if (content?.length > 0) {
-      const perVolume = content.map((fertilizer) => {
+    if (fertilizers?.length > 0) {
+      const perVolume = fertilizers.map((fertilizer) => {
         return {
           name: fertilizer.name,
           concentration: (fertilizer.concentration * volume).toFixed(2),
         };
       });
       setPerVolume(perVolume);
+    }else{
+      setPerVolume([])
     }
-    }, [content, volume]);
+    }, [elements, volume]);
 
-  useEffect(() => {
-    if (content?.length > 0) {
-      const elements = content
-        .map((fertilizer) => {
-          const frt = fertilizers.find((f) => f.name === fertilizer.name);
-          return {
-            name: fertilizer.name,
-            concentration: fertilizer.concentration,
-            elements: frt.content,
-          };
-        })
-        .map((f) => {
-          return f.elements.map((element) => {
-            return {
-              name: element.name,
-              concentration: (
-                (element.concentration * f.concentration/1000)
-              ).toFixed(2),
-            };
-          });
-        })
-        .flat()
-        .sort((a, b) => a.id - b.id)
-        .reduce((acc, element) => {
-          const existing = acc.find((e) => e.name === element.name);
-          if (existing) {
-            existing.concentration = (parseFloat(existing.concentration)+parseFloat(element.concentration)).toFixed(2);
-          } else {
-            acc.push(element);
-          }
-          return acc;
-        }, [])
-      setElementsList(elements);
-    }
-  }, [content]);
-useEffect(() => {
-    
-const solution=content.map((fertilizer) => {
-          return {
-            name: fertilizer.name,
-            concentration: (
-              (fertilizer.concentration * 0.4) /
-              100
-            ).toFixed(3),
-          };
-        })
-      .flat()
-      .map((fertilizer) => {
-        const frt = fertilizers.find((f) => f.name === fertilizer.name);
-        return {
-          name: fertilizer.name,
-          concentration: fertilizer.concentration,
-          elements: frt.content,
-        };
-      })
-      .map((f) => {
-        return f.elements.map((element) => {
-          return {
-            name: element.name,
-            concentration: (element.concentration * f.concentration*10).toFixed(1),
-          };
-        });
-      })
-      .flat()
-      .map((element) => {
-        return {
-          id:
-            elements.find((e) => element.name?.startsWith(e.code))?.id ||
-            element.id,
-          name:
-            elements.find((e) => element.name?.startsWith(e.code))?.code ||
-            element.name,
-          concentration:
-            element.concentration *
-            coefficients.find((c) => element.name === c.element).coef,
-        };
-      })
-      .sort((a, b) => a.id - b.id)
-      .reduce((acc, element) => {
-        const existing = acc.find((e) => e.name === element.name);
-        if (existing) {
-          existing.concentration += element.concentration;
-        } else {
-          acc.push(element);
-        }
-        return acc;
-      }, []);
 
-    setSolution(solution)
-  }, [ concentrates, fertilizers,coefficients]);
   return (
     <Card 
     sx={{
@@ -207,8 +135,8 @@ const solution=content.map((fertilizer) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {content?.length > 0 &&
-              content.map((element, i) => (
+            {elementsList?.length > 0 &&
+              elementsList.map((element, i) => (
                 <TableRow key={i}>
                   <TableCell>{element.name}</TableCell>
                   <TableCell>{element.concentration}g</TableCell>
@@ -225,7 +153,7 @@ const solution=content.map((fertilizer) => {
                       open={openEdit[i] || false}
                       concentration={element.concentration}
                       onChange={(concentration) => {
-                        handleEdit(element.name, concentration);
+                        handleEdit(element._id, concentration);
                       }}
                       onClose={() =>
                         closeDialog(i)
@@ -234,11 +162,7 @@ const solution=content.map((fertilizer) => {
 
                     <IconButton
                       onClick={() =>
-                        dispatch(
-                          removeConcentrateElement({
-                            name: concentrate,
-                            fertilizer: element.name,
-                          })
+                        deleteFertilizerFromConc({id,elementId:element._id}
                         )
                       }
                     >
@@ -249,75 +173,17 @@ const solution=content.map((fertilizer) => {
               ))}
           </TableBody>
         </Table>
-        
-        <Table sx={{
-          margin: "10px",
-          marginLeft: "0px",
-          padding: "10px",
-          width: "auto",
-        }}>
-          <TableHead
-          sx={{
-            backgroundColor: "rgba(0,0,0,0.1)",
-          }}
-          >
-            <TableRow>
-              {elementsList?.length > 0 &&
-                elementsList.map((element, i) => (
-                  <TableCell key={i}>{element.name}</TableCell>
-                ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              {elementsList?.length > 0 &&
-                elementsList.map((element, i) => (
-                  <TableCell key={i}>{element.concentration}%</TableCell>
-                ))}
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Table 
-        sx={
-          {
-            margin: "10px",
-            marginLeft: "0px",
-            padding: "10px",
-            width: "auto",
-        }}
-        >
-        <TableHead
-        sx={{
-          backgroundColor: "rgba(0,0,0,0.1)",
-        }}
-        
-        >
-          <TableRow>
-            {solution?.length > 0 &&
-              solution.map((element, i) => (
-                <TableCell key={i}>{element.name}</TableCell>
-              ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            {solution?.length > 0 &&
-              solution.map((element, i) => (
-                <TableCell key={i}>
-                  {element.concentration.toFixed(1)}
-                </TableCell>
-              ))}
-          </TableRow>
-        </TableBody>
-        </Table>
+      
+        {content?.length>0 && <ContentTable content={content} />}
         
         <Button onClick={() => setOpen(true)}>Add Fertilizer</Button>
 
         <AddFertilizerDialog
           open={open}
           onClose={() => setOpen(false)}
-          concentrate={name}
+          concentrateId={id}
         />
+        <Button onClick={() => deleteConcentrateHandler(id)}>Delete</Button>
       </CardContent>
     </Card>
   );
@@ -327,9 +193,10 @@ ConcentrateCard.propTypes = {
 };
 
 export default function ConcentrateList() {
-  const concentrates = useSelector((state) => state.nutrients.concentrates);
+  const {isLoading,isError,error,data:concentrates} = useGetAllConcentratesQuery()
   const [open, setOpen] = useState(false);
- 
+  if (isLoading) return <CircularProgress />;  
+  if (isError) return <Alert severity="error">{error.message}</Alert>;
   return (
     <Box>
       <Stack
@@ -339,7 +206,7 @@ export default function ConcentrateList() {
         justifyContent="center"
       >
       {concentrates.map((concentrate, i) => (
-        <ConcentrateCard key={i} concentrate={concentrate.name} />
+        <ConcentrateCard key={i} concentrate={concentrate} />
       ))}
       </Stack>
       <Button

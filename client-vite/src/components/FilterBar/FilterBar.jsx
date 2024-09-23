@@ -10,7 +10,6 @@ import {
   Stack,
   Box,
   Drawer,
-  Fab,
   useTheme,
   IconButton,
   Autocomplete,
@@ -334,7 +333,7 @@ export const FilterBar = (props) => {
                       display: afterDate ? "block" : "none",
                     }}
                     onClick={() => {dispatch(addAfterDate(null))
-                      setAfterDate(null)}
+                      setAfterDate(dayjs())}
                     }
                   >
                     <CancelIcon fontSize="small" />
@@ -356,7 +355,7 @@ export const FilterBar = (props) => {
                       display: beforeDate ? "block" : "none",
                     }}
                     onClick={() => {dispatch(addBeforeDate(null))
-                      setBeforeDate(null)}
+                      setBeforeDate(dayjs())}
                     }
                   >
                     <CancelIcon fontSize="small" />

@@ -1,5 +1,4 @@
-import {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -11,17 +10,53 @@ import {
   TextField,
   Typography,
   List,
-} from '@mui/material';
-import {addConcentrate, addToConcentrate,addFertilizer,addConcentrateToUnit,addFertilizerUnit} from '../../store/nutrientsSlice';
-import PropTypes from 'prop-types';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Stack,
+} from "@mui/material";
+import PropTypes from "prop-types";
 import { elements } from "../../config/config";
+import {
+  useAddFertilizerMutation,
+  useAddPumpToFertilizerUnitMutation,
+  useCreateConcentrateMutation,
+  useCreateFertilizerUnitMutation,
+  useGetAllConcentratesQuery,
+  useGetAllFertilizersQuery,
+} from "../../store/feedingApi";
+
+export function ContentTable({ content }) {
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Element</TableCell>
+          <TableCell>Concentration</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {content.map((c, i) => (
+          <TableRow key={i}>
+            <TableCell>{c.element}</TableCell>
+            <TableCell>{c.concentration}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+ContentTable.propTypes = {
+  content: PropTypes.array,
+};
 
 export function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
     <div
-
       role="tabpanel"
       hidden={value !== index}
       height="80%"
@@ -40,12 +75,12 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export function AddConcentrateDialog({ open, onClose }){
+export function AddConcentrateDialog({ open, onClose }) {
   const [newConcentrate, setNewConcentrate] = useState(null);
-  const dispatch = useDispatch();
+  const [createConcentrate] = useCreateConcentrateMutation();
   const handleAddConcentrate = () => {
     if (newConcentrate) {
-      dispatch(addConcentrate(newConcentrate));
+      createConcentrate(newConcentrate);
       setNewConcentrate(null);
       if (onClose) {
         onClose();
@@ -86,17 +121,25 @@ AddConcentrateDialog.propTypes = {
   onClose: PropTypes.func,
 };
 
-export function AddFertilizerDialog({ open, concentrate, onClose }){
-  const fertilizers = useSelector((state) => state.nutrients.fertilizers);
+export function AddFertilizerDialog({ open, concentrateId, onClose }) {
+  const { data: fertilizers } = useGetAllFertilizersQuery();
+  const [addFertilizer] = useAddFertilizerMutation();
   const [fertilizer, setFertilizer] = useState(null);
-  const dispatch = useDispatch();
   const handleAddFertilizer = () => {
-    if (fertilizer) {
-      dispatch(addToConcentrate({ name: concentrate, fertilizer }));
+    if (fertilizer?.concentration && fertilizer?.id) {
+      addFertilizer({
+        id: concentrateId,
+        body: {
+          fertilizer: fertilizer.id,
+          concentration: fertilizer.concentration,
+        },
+      });
       setFertilizer(null);
       if (onClose) {
         onClose();
       }
+    } else {
+      alert("Please select a fertilizer and set the concentration");
     }
   };
   return (
@@ -105,17 +148,25 @@ export function AddFertilizerDialog({ open, concentrate, onClose }){
       <DialogContent>
         <Box>
           <Select
+            sx={{ width: "100%" }}
             value={fertilizer}
+            renderValue={(value) => {
+              if (!value) {
+                return "Select Fertilizer";
+              }
+              return fertilizers.find((f) => f._id === value)?.name;
+            }}
             onChange={(e) =>
-              setFertilizer({ ...fertilizer, name: e.target.value })
+              setFertilizer({ ...fertilizer, id: e.target.value })
             }
           >
             <MenuItem value={null}>None</MenuItem>
-            {fertilizers.map((f, i) => (
-              <MenuItem key={i} value={f.name}>
-                {f.name}
-              </MenuItem>
-            ))}
+            {fertilizers?.length > 0 &&
+              fertilizers.map((f, i) => (
+                <MenuItem key={i} value={f._id}>
+                  {f.name}
+                </MenuItem>
+              ))}
           </Select>
           <TextField
             label="Concentration g/L"
@@ -129,7 +180,12 @@ export function AddFertilizerDialog({ open, concentrate, onClose }){
               })
             }
           />
-          <Button onClick={handleAddFertilizer}>Add Fertilizer</Button>
+          <Button
+            disabled={!fertilizer?.id || !fertilizer?.concentration}
+            onClick={handleAddFertilizer}
+          >
+            Add Fertilizer
+          </Button>
         </Box>
       </DialogContent>
     </Dialog>
@@ -137,7 +193,7 @@ export function AddFertilizerDialog({ open, concentrate, onClose }){
 }
 AddFertilizerDialog.propTypes = {
   open: PropTypes.bool,
-  concentrate: PropTypes.string,
+  concentrateId: PropTypes.string.isRequired,
   onClose: PropTypes.func,
 };
 
@@ -146,7 +202,7 @@ export function EditConcentrationDialog({
   concentration,
   onChange,
   onClose,
-}){
+}) {
   const [newConcentration, setNewConcentration] = useState(concentration);
   const handleEditConcentration = () => {
     if (newConcentration) {
@@ -169,11 +225,7 @@ export function EditConcentrationDialog({
             value={newConcentration}
             onChange={(e) => setNewConcentration(parseFloat(e.target.value))}
           />
-          <Button
-            onClick={handleEditConcentration}
-          >
-            Save
-          </Button>
+          <Button onClick={handleEditConcentration}>Save</Button>
         </Box>
       </DialogContent>
     </Dialog>
@@ -186,7 +238,7 @@ EditConcentrationDialog.propTypes = {
   onClose: PropTypes.func,
 };
 
-export function AddElementDialog({ open, onChange, onClose }){
+export function AddElementDialog({ open, onChange, onClose }) {
   const [newElement, setNewElement] = useState(null);
 
   const handleAddElement = () => {
@@ -244,13 +296,12 @@ AddElementDialog.propTypes = {
   onClose: PropTypes.func,
 };
 
-export function NewFertilizerDialog({ open, onClose }){
+export function NewFertilizerDialog({ open, onChange, onClose }) {
   const [newFertilizer, setNewFertilizer] = useState(null);
-  const dispatch = useDispatch();
 
   const handleAddFertilizer = () => {
     if (newFertilizer) {
-      dispatch(addFertilizer({ ...newFertilizer, content: [] }));
+      onChange(newFertilizer);
       setNewFertilizer(null);
       if (onClose) {
         onClose();
@@ -294,57 +345,118 @@ export function NewFertilizerDialog({ open, onClose }){
 NewFertilizerDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
-export function AddConcentrateToUnitDialog({ open,unit, onClose }){ 
-  const [concentrate, setConcentrate] = useState(null);
-  const concentrates = useSelector((state) => state.nutrients.concentrates);
-  const dispatch = useDispatch();
-  const handleAddConcentrate = () => {
-    if (concentrate) {
-      dispatch(addConcentrateToUnit({unit,concentrate:concentrate.name}));
+export function AddPumpToUnitDialog({ open, unit, onClose }) {
+  const [pump, setPump] = useState({
+    name: "",
+    description: "",
+    minFlowRate: 0.4,
+    maxFlowRate: 4.0,
+    concentrate: null,
+    flowRate: 0.4,
+    factor: 1.0,
+  });
+  const [addPumpToUnitDialog]=useAddPumpToFertilizerUnitMutation()
+  const { data: concentrates } = useGetAllConcentratesQuery();
+  const handleAddPump = () => {
+    if (pump?.name) {
+      addPumpToUnitDialog({id:unit,body:pump})
+      if (onClose) {
+        onClose();
+      }
     }
-    setConcentrate(null);
+    setPump(null);
   };
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Concentrate</DialogTitle>
       <DialogContent>
         <Box>
-          <Select
-            value={concentrate}
-            onChange={(e) =>
-              setConcentrate({ ...concentrate, name: e.target.value })
-            }
+          {concentrates?.length>0 && <Select
+            value={pump?.concentrate|| ""}
+            renderValue={(value) => {
+              if (!value) {
+                return "Select Concentrate";
+              }
+              return concentrates.find((c) => c._id === value)?.name; 
+            }}
+            onChange={(e) => setPump({ ...pump, concentrate: e.target.value })}
           >
             {concentrates.map((c, i) => (
-              <MenuItem key={i} value={c.name}>
+              <MenuItem key={i} value={c._id}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Select>}
+          <Stack direction="column" spacing={1}>
+          <TextField
+            label="Name"
+            value={pump?.name}
+            onChange={(e) => setPump({ ...pump, name: e.target.value })}
+          />
+          <TextField
+            label="Description"
+            value={pump?.description}
+            onChange={(e) => setPump({ ...pump, description: e.target.value })}
+          />
+          <TextField
+            label="Min Flow Rate"
+            type="number"
+            value={pump?.minFlowRate}
+            onChange={(e) =>
+              setPump({ ...pump, minFlowRate: parseFloat(e.target.value) })
+            }
+          />
+          <TextField
+            label="Max Flow Rate"
+            type="number"
+            value={pump?.maxFlowRate}
+            onChange={(e) =>
+              setPump({ ...pump, maxFlowRate: parseFloat(e.target.value) })
+            }
+          />
+          <Select
+            value={pump?.factor}
+            onChange={(e) =>
+              setPump({ ...pump, factor: parseFloat(e.target.value) })
+            }
+          >
+            {[
+              { factor: 1.0, name: "1x" },
+              { factor: 0.5, name: "1/2x" },
+              { factor: 0.33, name: "1/3x" },
+              { factor: 0.25, name: "1/4x" },
+              { factor: 0.2, name: "1/5x" },
+              { factor: 0.1, name: "1/10x" },
+            ].map((c, i) => (
+              <MenuItem key={i} value={c.factor}>
                 {c.name}
               </MenuItem>
             ))}
           </Select>
-          <pre>{JSON.stringify(concentrate, null, 2)}</pre>
-          
-          <Button onClick={handleAddConcentrate}>Add Concentrate</Button>
+
+          <Button onClick={handleAddPump}>Add Pump</Button>
           <Button onClick={onClose}>Close</Button>
+          </Stack>
         </Box>
       </DialogContent>
     </Dialog>
   );
 }
-AddConcentrateToUnitDialog.propTypes = {
+AddPumpToUnitDialog.propTypes = {
   open: PropTypes.bool,
   unit: PropTypes.string,
   onClose: PropTypes.func,
 };
 
-
-export function AddFertigationUnitDialog({ open, onClose }){
+export function AddFertigationUnitDialog({ open, onClose }) {
   const [newUnit, setNewUnit] = useState(null);
-  const dispatch = useDispatch();
+  const [createUnit] = useCreateFertilizerUnitMutation();
   const handleAddUnit = () => {
     if (newUnit) {
-      dispatch(addFertilizerUnit({...newUnit,concentrates:[],pumps:[]}));
+      createUnit(newUnit);
       setNewUnit(null);
       if (onClose) {
         onClose();
@@ -359,9 +471,7 @@ export function AddFertigationUnitDialog({ open, onClose }){
           <TextField
             label="Name"
             value={newUnit?.name}
-            onChange={(e) =>
-              setNewUnit({ ...newUnit, name: e.target.value })
-            }
+            onChange={(e) => setNewUnit({ ...newUnit, name: e.target.value })}
           />
           <TextField
             label="Description"

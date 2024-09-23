@@ -6,7 +6,6 @@ import {
   addRow,
   addRack,
   addTray,
-  addNumber,
   addShelf,
 } from "../../store/newActionSlice";
 import {
@@ -26,7 +25,6 @@ const fieldsActions={
   row:addRow,
   rack:addRack,
   tray:addTray,
-  number:addNumber,
   shelf:addShelf
 }
 
@@ -52,10 +50,7 @@ export const AddressFields = () => {
       else if (key === "tray") {
         dispatch(addTray(address[key]));
       }
-      else if (key === "number") {
-        dispatch(addNumber(address[key]));
-      }
-      else if (key === "shelf") {
+      else  if (key === "shelf") {
         dispatch(addShelf(address[key]));
       }
   })}
@@ -90,10 +85,6 @@ export const AddressFields = () => {
     dispatch(addTray(Number.parseInt(value)));
   };
 
-  const handlerNumber = (e) => {
-    const { value } = e.target;
-    dispatch(addNumber(Number.parseInt(value)));
-  };
 
   const handlerShelf = (e) => {
     const { value } = e.target;
@@ -199,16 +190,6 @@ export const AddressFields = () => {
           />
         </>
       )}
-      <TextField
-        id="outlined-number"
-        sx={{ m: "2px", width: "98%" }}
-        label="Number"
-        type="number"
-        onChange={handlerNumber}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
     </>
   )
 }

@@ -10,6 +10,7 @@ const plant = new Schema({
   type: { type: String }, //Seed,Clone
   gender:String,
   group: String,
+  generation: Number,
 
   //================
   state: { type: String, required: true, default: "Cloning" }, //new,Germination,Cloning,Growing,Blooming,Stopped,Harvested,MotherPlant

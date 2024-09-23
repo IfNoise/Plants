@@ -27,6 +27,22 @@ export const galleryApi = createApi({
         };
       },
     }),
+    getPhenoPhotos: build.query({
+      query: (pheno) => {
+        return {
+          url: `/${pheno}`,
+          method: "GET",
+        };
+      },
+    }),
+    deletePhoto: build.mutation({
+      query: (id) => {
+        return {
+          url: `/${id}`,
+          method: "DELETE",
+        };
+      },
+    }),
   }),
 });
 

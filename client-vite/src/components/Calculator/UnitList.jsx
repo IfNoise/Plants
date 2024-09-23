@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
   Button,
@@ -15,17 +14,21 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  ButtonGroup,
-  ToggleButtonGroup,
-  ToggleButton,
   Select,
   MenuItem,
+  CircularProgress,
+  Alert,
+  IconButton,
 
 } from "@mui/material";
+
+import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from "prop-types";
-import { AddConcentrateToUnitDialog, AddFertigationUnitDialog } from "./Helpers";
+import { AddPumpToUnitDialog, AddFertigationUnitDialog } from "./Helpers";
 import { elements } from "../../config/config";
-import { addPumpToUnit,editPump,removeFertilizerUnit } from "../../store/nutrientsSlice";
+import { useDeleteFertilizerUnitMutation, useGetAllConcentratesQuery, useGetAllFertilizersQuery, useGetConcentrateByIdQuery, useGetFertilizerUnitsQuery, useRemovePumpFromFertilizerUnitMutation, useUpdatePumpFromFertilizerUnitMutation } from "../../store/feedingApi";
+import AreYouSure from "../AreYouSure";
+import { set } from "mongoose";
 const units=[
   "ppm",
   "mM",
@@ -177,11 +180,14 @@ const units=[
 
 
 
-const DosingPump = ({ pump, onChange }) => {
-  const { name,factor:factorProp , flowRate: flowRateProp} = pump;
+const DosingPump = ({ unitId,pump, onChange }) => {
+  const { _id,name,factor:factorProp , flowRate: flowRateProp,concentrate:concentrateId} = pump;
+  const {data:concentrate}=useGetConcentrateByIdQuery(concentrateId);
   const [flowRate, setFlowRate] = useState(flowRateProp);
+  const [deletePump]=useRemovePumpFromFertilizerUnitMutation();
   const [sliderRate,setSliderRate]=useState(flowRateProp);
   const [factor, setFactor] = useState(factorProp||1);
+  const [del, setDel] = useState(false);
   const factors =[
     {factor:1.0,name:"1x"},
     {factor:0.5,name:"1/2x"},
@@ -197,9 +203,14 @@ const DosingPump = ({ pump, onChange }) => {
   const changeFactor = (e) => {
     const factor = e.target.value;
     setFactor(factor);
-    console.log(factor);
     if (onChange) onChange({factor});
   };
+
+  const deletePumpHandler = () => {
+    deletePump({id:unitId,pumpId:_id});
+    setDel(false);
+  };
+
   const marks = [
     {
       value: 0.4,
@@ -225,7 +236,18 @@ const DosingPump = ({ pump, onChange }) => {
 
   return (
     <Card>
-      <CardHeader variant="h4" title={name}></CardHeader>
+      <CardHeader variant="h4" title={<>
+        {name}
+        <IconButton
+          aria-label="delete"
+          sx={{ float: "right",m:-2,p:0.5 }}
+          onClick={() => {setDel(true)}}
+        >
+          <DeleteIcon/>
+        </IconButton>
+        </>}
+        subheader={concentrate?.name}
+        ></CardHeader>
       <CardContent 
         sx={{
         display: "flex",
@@ -260,6 +282,14 @@ const DosingPump = ({ pump, onChange }) => {
               </MenuItem>
             ))}
           </Select>
+          <AreYouSure 
+            show={del}
+            onCancel={() => {
+              setDel(false);
+            }}
+            onConfirm={deletePumpHandler}
+            message="Are you sure you want to delete this pump?"
+          />
 
       </CardContent>
     </Card>
@@ -271,33 +301,13 @@ DosingPump.propTypes = {
 };
 
 const FertigationUnit = ({ unit }) => {
-  const units = useSelector((state) => state.nutrients.fertilizerUnits);
-  const fertilizers = useSelector((state) => state.nutrients.fertilizers);
-  const concentrateList = useSelector((state) => state.nutrients.concentrates);
-  const { name,concentrates,pumps} = units.find((u) => u.name === unit);
+  const {data:fertilizers}=useGetAllFertilizersQuery();
+  const {data:concentrateList} = useGetAllFertilizersQuery();
+  const [updatePump]=useUpdatePumpFromFertilizerUnitMutation();
+  const [deleteFertilizerUnit]=useDeleteFertilizerUnitMutation(); 
+  const { _id,name,concentrates,pumps} = unit;
   const [solution, setSolution] = useState([]);
   const coefficients = elements.map((element) => element.content).flat();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if(pumps.length===0){
-      concentrates.forEach((concentrate,id) => {
-        const pump = { id,name: concentrate, flowRate: 0.4, concentrate: concentrate };
-        dispatch(addPumpToUnit({ unit: name, pump }));
-      }
-      );
-    }else if(pumps.length<concentrates.length){
-      concentrates.forEach((concentrate,id) => {
-        if(!pumps.find((p)=>p.name===concentrate)){
-          const pump = { id,name: concentrate, flowRate: 0.4, concentrate: concentrate };
-          dispatch(addPumpToUnit({ unit: name, pump }));
-        }
-      }
-      );
-    }
-  }, [pumps,concentrates]);
-
- 
   useMemo(() => {
     if (pumps?.length > 0 && concentrates?.length > 0) {
       const solution = pumps
@@ -363,6 +373,11 @@ const FertigationUnit = ({ unit }) => {
     }
   }, [pumps, concentrateList, fertilizers]);
 
+
+  const editPumpHandler = (id,changes) => {
+    updatePump({id:_id,pumpId:id,body:changes});
+  };
+
   const [open, setOpen] = useState(false);
   return (
     <Card>
@@ -382,8 +397,9 @@ const FertigationUnit = ({ unit }) => {
             <DosingPump
               key={i}
               pump={pump}
+              unitId={_id}
               onChange={(changes) => {
-                dispatch(editPump({ unit: name, pumpIdx: i,changes}));
+                editPumpHandler(pump._id,changes);
               }}
             />
           ))}
@@ -423,21 +439,21 @@ const FertigationUnit = ({ unit }) => {
             setOpen(true);
           }}
         >
-          Add Concentrate
+          Add Pump
         </Button>
         <Button
           onClick={() => {
-            dispatch(removeFertilizerUnit(name));
+            deleteFertilizerUnit(_id);
           }}
         >
           Remove Unit
         </Button>
-        <AddConcentrateToUnitDialog
+        <AddPumpToUnitDialog
           open={open}
           onClose={() => {
             setOpen(false);
           }}
-          unit={unit}
+          unit={unit._id}
         
         />
       </CardActions>
@@ -446,14 +462,16 @@ const FertigationUnit = ({ unit }) => {
 
 }
 FertigationUnit.propTypes = {
-  unit: PropTypes.string.isRequired,
+  unit: PropTypes.object.isRequired,  
 };
 
 export default function FertigationUnitList() {
-  const units = useSelector((state) => state.nutrients.fertilizerUnits);
+  const {isLoading,isError,error,data:units}=useGetFertilizerUnitsQuery();
   const [open, setOpen] = useState(false);
   return (
     <Box>
+      {isLoading && <CircularProgress />}
+      {isError && <Alert severity="error">{error.message}</Alert>}
       <Stack
         direction="column"
         margin={2}
@@ -461,7 +479,7 @@ export default function FertigationUnitList() {
         justifyContent="center"
       >
       {units?.length > 0 &&
-        units.map((unit, i) => <FertigationUnit key={i} unit={unit.name} />)}
+        units.map((unit, i) => <FertigationUnit key={i} unit={unit} />)}
       </Stack>
       <Button onClick={() => setOpen(true)}>Add Fertigation Unit</Button>
       <AddFertigationUnitDialog

@@ -178,7 +178,7 @@ export default function AddActionDialog({ open, onClose, plants }) {
 
   const handleChangeDate = (value) => {
     dispatch(addDate(new Date(value.$d)));
-    setDate(new Date(value.$d));
+    setDate(null);
   };
   const handleActionType = (e) => {
     const { value } = e.target;

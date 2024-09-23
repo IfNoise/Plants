@@ -21,4 +21,16 @@ router.get(/:pheno/,async (req,res)=>{
     res.status(500).json({message:'Something went wrong, try again'})
   }
 })
+router.delete('/:id',async (req,res)=>{
+  try {
+    const id=req.params.id
+    const photo=await Photo.findById(id)
+    fs.unlinkSync
+    await photo.remove()
+    res.json({message:'Photo deleted'})
+  } catch (error) {
+    res.status(500).json({message:'Something went wrong, try again'})
+  }
+}
+)
 module.exports = router;

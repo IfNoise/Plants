@@ -12,6 +12,7 @@ const slice = createSlice({
     ) => {
       state.user = user
       state.token = token
+      state.role = user.role
       state.isAuthenticated=true
     },
   },

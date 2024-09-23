@@ -27,10 +27,21 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
-    protected: builder.mutation({
-      query: () => 'protected',
+    refreshToken: builder.mutation({
+      query: (refreshToken) => ({
+        url: 'refresh',
+        method: 'POST',
+        body: { refreshToken },
+      }),
     }),
+    me: builder.query({
+      query: () => ({
+        url: 'me',
+        method: 'GET',
+      }),
+    }),
+
   }),
 })
 
-export const { useLoginMutation,useRegisterMutation, useProtectedMutation } = authApi
+export const { useLoginMutation,useRegisterMutation, useProtectedMutation,useRefreshTokenMutation,useMe } = authApi

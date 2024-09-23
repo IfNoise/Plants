@@ -65,6 +65,7 @@ export const NewStrainButton = () => {
     newPlant({
       strainName:form.name,
       number:form.number,
+      type:form.sourceType,
     });
     }
     setOpen(false);
