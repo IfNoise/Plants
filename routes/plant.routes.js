@@ -8,7 +8,7 @@ const plantMap = require("../config/map");
 
 router.post("/new_plant", async (req, res) => {
   try {
-    const number = parseInt(req.body.form.number);
+    const number = parseInt(req.body.number);
     if (!number || number === 0 || number < 0) {
       throw new Error("Number of clones must be greater than 0");
     }
@@ -50,7 +50,6 @@ router.post("/new_plant", async (req, res) => {
             shelf: 0,
             rack: 0,
             tray: 0,
-            number: 0,
           },
           type: "Clone",
           state: "Cloning",
