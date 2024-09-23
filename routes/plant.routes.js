@@ -86,7 +86,7 @@ router.post("/new_plant", async (req, res) => {
         });
       }
     }
-    console.log(newPlants);
+    console.log("New PLANTS!!!",newPlants);
     const result = await Plant.insertMany(newPlants);
     console.log(result);
     if (result.length === 0) {
