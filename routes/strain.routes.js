@@ -21,17 +21,16 @@ router.get("/", async (req, res) => {
 router.post("/add", async (req, res) => {
  
   try {
-    if(req.body.sourceType==='Seed'){
+    
       if(!req.body.seedType||!req.body.number||req.body.number<=0||!req.body.seedBank){
-        return res.status(400).json({ message: "Seed type and number is required" });
+        return res.status(400).json({ message: "Some fields are ex" });
       }
-    }
  
     const strain={
       name:req.body.name,
       code:req.body.code,
       seedBank:req.body.seedBank,
-      sourceType:req.body.type,
+      sourceType:req.body.sourceType,
       description:req.body.description
     }
     if(req.body.sourceType==='Seed'){
