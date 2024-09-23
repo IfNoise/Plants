@@ -389,23 +389,36 @@ router.get("/plants_map", async (req, res) => {
   }
 });
 
-// router.get("/test", async (req, res) => {
-//   try {
-//       //const plants=["669b9435021e1d69b9481ed5","669b9435021e1d69b9481ed6","669b9435021e1d69b9481ed7"]
-//       const plants=["66692921b66182d2da37f6b1","66692921b66182d2da37f6af","66692921b66182d2da37f6b0","66692b9b8b1eebc0fb32070a"]
-//       plants.map(async (idx) => {
-//       const plant = await Plant.findById(idx);
-//       // plant.actions.pop();
-//       plant.set("gender","Female");
-//       await plant.save();
-//   })
+router.get("/test", async (req, res) => {
+  try {
+      //const plants=["669b9435021e1d69b9481ed5","669b9435021e1d69b9481ed6","669b9435021e1d69b9481ed7"]
+      const plants=["66692921b66182d2da37f6b1","66692921b66182d2da37f6af","66692921b66182d2da37f6b0","66692b9b8b1eebc0fb32070a"]
+      plants.map(async (idx) => {
+      const plant = await Plant.findById(idx);
+      // plant.actions.pop();
+      plant.set("gender","Female");
+      await plant.save();
+  })
 
-//     res.json({ message: "Ok" });
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// }
-// );
+    res.json({ message: "Ok" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+);
+router.delete("/", async (req, res) => {
+  try {
+    const filter = req.body.filter;
+    const plants = await Plant.deleteMany(filter);
+    if (plants.length === 0) {
+      throw new Error("Plants not found");
+    }else{
+      res.json({ message: "Plant deleted" });
+    } 
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 router.get("/plant_counts", async (req, res) => {
   try {
