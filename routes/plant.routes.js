@@ -7,7 +7,8 @@ const Strain = require("../models/Strain");
 const plantMap = require("../config/map");
 
 router.post("/new_plant", async (req, res) => {
-  const number = parseInt(req.body.form.seedsNumber);
+  const seedsNumber = parseInt(req.body.form.seedsNumber);
+  const clonesNumber = parseInt(req.body.form.number);
   console.log(number);
   try {
     //const user = await User.findById(req.user.userId)
@@ -52,7 +53,7 @@ router.post("/new_plant", async (req, res) => {
       }
     } else if (sourceType === "Seed") {
       const start = strain?.lastIdx || 1;
-      for (let index = 1; index <= number; index++) {
+      for (let index = 1; index <= seedsNumber; index++) {
         let pheno = strain.code + "#" + (index+start).toString();
 
         newPlants.push({
