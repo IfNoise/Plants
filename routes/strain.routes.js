@@ -21,8 +21,8 @@ router.get("/", async (req, res) => {
 router.post("/add", async (req, res) => {
  
   try {
-    
-      if(!req.body.number||req.body.number<=0||!req.body.seedBank){
+      const number = parseInt(req.body.number);
+      if(!number||number<=0||!req.body.seedBank){
         return res.status(400).json({ message: "Some fields are ex" });
       }
  
@@ -35,7 +35,7 @@ router.post("/add", async (req, res) => {
     }
     if(req.body.sourceType==='Seed'){
       strain[seedType]=req.body?.seedType;
-      strain[counter]=parseInt(req.body.number);
+      strain[counter]=number;
     }
     await Strain.create(strain);
     res.json({ message: "Strain is added" });
