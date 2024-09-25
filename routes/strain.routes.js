@@ -36,8 +36,8 @@ router.post("/add", async (req, res) => {
       counter:0,
     }
     if(req.body.sourceType==='Seed'){
-      strain[seedType]=req.body?.seedType;
-      strain[counter]=number;
+      strain.seedType=req.body?.seedType;
+      strain.counter=number;
     }
     await Strain.create(strain);
     res.json({ message: "Strain is added" });
