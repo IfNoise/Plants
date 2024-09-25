@@ -361,8 +361,7 @@ export const PlantDetailPage = () => {
                           sx={{ display: "flex", justifyContent: "left" }}
                         >
                           <Typography variant="body" color="text.secondary">
-                            Cloning Stage: {cloningStage}days Veg Stage:{" "}
-                            {vegStage}days
+                            Mother Plant yeld:{cloneCounter ?? "0"} clones
                           </Typography>
 
                           <Typography color="text.secondary">

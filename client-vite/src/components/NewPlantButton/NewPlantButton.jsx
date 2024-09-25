@@ -54,7 +54,7 @@ export const NewPlantButton = ({strain}) => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
   const newStrain = () => {
-    newPlant({strain,form});
+    newPlant({strain, ...form});
     setOpen(false);
   };
 
@@ -90,11 +90,12 @@ export const NewPlantButton = ({strain}) => {
             />
 
             <TextField
-              name="seedsNumber"
+              name="number"
               type="number"
               InputLabelProps={{
                 shrink: true,
               }}
+              value={form.number||0}
               label="Number of seeds"
               onChange={changeHandler}
             />

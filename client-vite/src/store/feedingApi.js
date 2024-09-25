@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const feedingApi = createApi({
   reducerPath: "feeding/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:7000/api/feeding",
+    baseUrl: "http://localhost:3000/api/v1/feeding",
     refetchOnFocus: true,
     // prepareHeaders: (headers, { getState }) => {
     //   const token = getState().auth.token;

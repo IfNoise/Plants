@@ -31,7 +31,9 @@ router.post("/add", async (req, res) => {
       code:req.body.code,
       seedBank:req.body.seedBank,
       sourceType:req.body.sourceType,
-      description:req.body.description
+      description:req.body.description,
+      seedType:null,
+      counter:0,
     }
     if(req.body.sourceType==='Seed'){
       strain[seedType]=req.body?.seedType;
@@ -43,5 +45,24 @@ router.post("/add", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+router.post("/update", async (req, res) => {
+  try {
+    const strains = await Strain.find({seedType:{$exists:true}});
+    
+
+    strains.forEach(async (strain) => {
+      strain.set({ sourceType: "Seed"})
+      await strain.save();
+    }
+    );
+    res.json({ message: "Strains are updated" });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+);
+
 
 module.exports = router;

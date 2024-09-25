@@ -19,46 +19,44 @@ import {
 import { buildRooms } from "../../config/config";
 import AddressScanner from "../AddressScanner/AddressScanner";
 
-const fieldsActions={
-  bulding:addBuilding,
-  room:addRoom,
-  row:addRow,
-  rack:addRack,
-  tray:addTray,
-  shelf:addShelf
-}
-
+const fieldsActions = {
+  bulding: addBuilding,
+  room: addRoom,
+  row: addRow,
+  rack: addRack,
+  tray: addTray,
+  shelf: addShelf,
+};
 
 export const AddressFields = () => {
   const dispatch = useDispatch();
   const newAction = useSelector((state) => state.newAction);
   const [rooms, setRooms] = useState([]);
-  
+
   const setAddress = (address) => {
     Object.keys(address).forEach((key) => {
       if (key === "building") {
         dispatch(addBuilding(address[key]));
         setRooms(buildRooms[address[key]]);
-      }else if (key === "room") {
+      } else if (key === "room") {
         dispatch(addRoom(address[key]));
-      }else if (key === "row") {
+      } else if (key === "row") {
         dispatch(addRow(address[key]));
-      }
-      else if (key === "rack") {
+      } else if (key === "rack") {
         dispatch(addRack(address[key]));
-      }
-      else if (key === "tray") {
+      } else if (key === "tray") {
         dispatch(addTray(address[key]));
-      }
-      else  if (key === "shelf") {
+      } else if (key === "shelf") {
         dispatch(addShelf(address[key]));
       }
-  })}
-  const fieldHandler=(e)=>{
+    });
+  };
+  const fieldHandler = (e) => {
     const { value, name } = e.target;
-    if(typeof(value)==String)dispatch(fieldsActions[name](value))
-      else if(typeof(value)==Number)dispatch(fieldsActions[name](Number.parseInt(value)))
-  }
+    if (typeof value == String) dispatch(fieldsActions[name](value));
+    else if (typeof value == Number)
+      dispatch(fieldsActions[name](Number.parseInt(value)));
+  };
   const handlerBuilding = (e) => {
     const { value } = e.target;
     dispatch(addBuilding(value));
@@ -85,7 +83,6 @@ export const AddressFields = () => {
     dispatch(addTray(Number.parseInt(value)));
   };
 
-
   const handlerShelf = (e) => {
     const { value } = e.target;
     dispatch(addShelf(Number.parseInt(value)));
@@ -98,7 +95,7 @@ export const AddressFields = () => {
 
   return (
     <>
-      <AddressScanner setOutput={setAddress} /> 
+      <AddressScanner setOutput={setAddress} />
       <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
@@ -171,6 +168,16 @@ export const AddressFields = () => {
           <TextField
             id="outlined-number"
             sx={{ m: "2px", width: "98%" }}
+            label="Tray"
+            type="number"
+            onChange={handlerTray}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            id="outlined-number"
+            sx={{ m: "2px", width: "98%" }}
             label="Rack"
             type="number"
             onChange={handlerRack}
@@ -191,5 +198,5 @@ export const AddressFields = () => {
         </>
       )}
     </>
-  )
-}
+  );
+};
