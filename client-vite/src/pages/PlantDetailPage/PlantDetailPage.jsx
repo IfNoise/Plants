@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -105,6 +105,17 @@ PlantGender.propTypes = {
 
 const PlantStages = ({ plant }) => {
   const { state, actions } = plant;
+  const initialState = {
+    plantAge: 0,
+    cloningStage: 0,
+    vegStage: 0,
+    bloomStage: 0,
+    motherPlantStage: 0,
+  };
+  const [stages, setStages] = useState(initialState);
+  const calcStages= useMemo(() => {
+
+
   const now = new Date();
   const startDate = new Date(
     actions?.find((action) => action.type === "Start")?.date
@@ -154,32 +165,34 @@ const PlantStages = ({ plant }) => {
     state === "MotherPlant"
       ? Math.floor((now - motherPlantStartDate) / 86400000)
       : 0;
+  setStages({ plantAge , cloningStage, vegStage, bloomStage, motherPlantStage });
+}, [actions, state]);
 
   return (
     <>
       <Typography variant="h6" color="text.secondary">
-        Plant Age: {plantAge} days
+        Plant Age: {stages.plantAge} days
       </Typography>
       {state === "Cloning" && (
         <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {cloningStage} days
+          Cloning Stage: {stages.cloningStage} days
         </Typography>
       )}
       {state === "Growing" && (
         <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {cloningStage} days Veg Stage: {vegStage} days
+          Cloning Stage: {stages.cloningStage} days Veg Stage: {stages.vegStage} days
         </Typography>
       )}
       {state === "Blooming" && (
         <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {cloningStage}days Veg Stage: {vegStage}days Bloom
-          Stage: {bloomStage} days
+          Cloning Stage: {stages.cloningStage}days Veg Stage: {stages.vegStage}days Bloom
+          Stage: {stages.bloomStage} days
         </Typography>
       )}
       {state === "MotherPlant" && (
         <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {cloningStage}days Veg Stage: {vegStage}days Mother
-          Plant Stage: {motherPlantStage} days
+          Cloning Stage: {stages.cloningStage}days Veg Stage: {stages.vegStage}days Mother
+          Plant Stage: {stages.motherPlantStage} days
         </Typography>
       )}
     </>
