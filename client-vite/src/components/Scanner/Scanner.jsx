@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { useMediaQuery } from "@mui/material";
 import { useGetPlantsQuery } from "../../store/plantsApi";
 import { AddPhotoFast } from "../AddPhotoFast";
@@ -22,7 +22,6 @@ import { AddPhotoFast } from "../AddPhotoFast";
 var audioCtx = new (window.AudioContext ||
   window.webkitAudioContext ||
   window.audioContext)();
-
 
 function beep(duration, frequency, volume, type, callback) {
   var oscillator = audioCtx.createOscillator();
@@ -47,19 +46,20 @@ function beep(duration, frequency, volume, type, callback) {
   oscillator.start(audioCtx.currentTime);
   oscillator.stop(audioCtx.currentTime + (duration || 500) / 1000);
 }
-const okSnd=()=>{
+const okSnd = () => {
   beep(100, 580, 0.7, "sine");
-}
+};
 
-const errorSnd=()=>{
+const errorSnd = () => {
   beep(120, 60, 0.4, "square");
-}
+};
 
-const addedSnd=()=>{
+const addedSnd = () => {
   beep(120, 100, 0.4, "square");
-}
+};
 
-export default function Scanner({ setOutput }) {
+export default function Scanner({output}) {
+  console.log(output);
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null); //
   const [open, setOpen] = useState(false);
@@ -70,15 +70,15 @@ export default function Scanner({ setOutput }) {
   const [scanResult, setScanResult] = useState(null);
   const [idResult, setIdResult] = useState(null);
   const [addressRes, setAddressRes] = useState(null); //
-  const { isLoading, isError, error, data } = useGetPlantsQuery(
-    { _id: idResult }
-  );
+  const { isLoading, isError, error, data } = useGetPlantsQuery({
+    _id: idResult,
+  });
   const [addToTray] = useAddToTrayMutation();
   const store = new Set();
   const params = new URLSearchParams({ ...addressRes });
 
   const tempAddress = useRef(null);
-  const tempRes = useRef(null); 
+  const tempRes = useRef(null);
 
   const addToTrayHandler = () => {
     addToTray([idResult]);
@@ -112,6 +112,16 @@ export default function Scanner({ setOutput }) {
     tempRes.current = data;
     setScanResult(data);
   }
+  function okHandler() {
+      addedSnd();
+      if (typeof output === 'function') {
+        output(addressRes);
+      } else {
+        console.error('setOutput is not a function');
+      }
+      //setAddressRes(null);
+      close();
+  }
   const initScanner = () => {
     if (Object.keys(video.current).length !== 0) {
       let target = video.current;
@@ -126,7 +136,6 @@ export default function Scanner({ setOutput }) {
       );
       setQrScanner(newQrScanner);
       newQrScanner.start();
-      console.log("init");
     }
   };
 
@@ -135,41 +144,38 @@ export default function Scanner({ setOutput }) {
   };
 
   useEffect(() => {
-    console.log(scanResult)
     let id;
     let address;
-    if(!scanResult)return
+    if (!scanResult) return;
     if (scanResult?.length === 24) id = scanResult;
+    else
+      try {
+        const json = JSON.parse(scanResult);
+        if (json.type === "plant") id = json.id;
+        if (json.type === "address") {
+          const { type,room,...scAddr } = json;
+          const roomWithSpace = room.replace(/_/g, " ");
 
-    else try {
-      const json = JSON.parse(scanResult);
-      console.log(json)
-      if (json.type === "plant") id = json.id;
-      if (json.type === "address") {
-        const {type,...scAddr}=json
-        address=scAddr;
+          address = {room:roomWithSpace,...scAddr};
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
     if (id) {
       okSnd();
       setIdResult(id);
       if (!store.has(id)) {
         setScanResult({ id });
         store.add(id);
-        console.log(store);
-        
       }
     }
     if (address) {
       okSnd();
-      if (JSON.stringify(tempAddress.current) === JSON.stringify(address)) return;
+      if (JSON.stringify(tempAddress.current) === JSON.stringify(address))
+        return;
       if (address?.building) {
         tempAddress.current = address;
-
         setAddressRes(address);
-        
       }
     }
   }, [scanResult]);
@@ -182,7 +188,7 @@ export default function Scanner({ setOutput }) {
   const style = {
     width: "100%",
     bottom: 0,
-    p:0
+    p: 0,
   };
   return (
     <>
@@ -234,34 +240,41 @@ export default function Scanner({ setOutput }) {
             )}
             {isLoading && <Typography variant="caption">Loading...</Typography>}
             {plant && (
-                <Box
-                sx={{ backgroundColor: "transparent", border: "none",padding:"0px" } }
-                >
+              <Box
+                sx={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  padding: "0px",
+                }}
+              >
                 <Typography variant="h3" color="yellow" fontWeight="bold">
-                  {plant?.strain||"Unknown"}
+                  {plant?.strain || "Unknown"}
                 </Typography>
                 <Typography variant="h5" color="yellow" fontWeight="bold">
-                  {plant?.pheno||"Unknown"} {plant?.state||"Unknown"}
+                  {plant?.pheno || "Unknown"} {plant?.state || "Unknown"}
                 </Typography>
-                <Box sx={{
-                  width:"25%"
-                }}
+                <Box
+                  sx={{
+                    width: "25%",
+                  }}
                 >
-                <Typography variant="body" color="fuchsia" fontWeight="bold"
-                 sx={{
-                  wordWrap: "normal",
-                  overflow: "hidden",
-
-                 }} 
-                >
-                  {`Building: ${plant.currentAddress?.building||"Unknown"}
-                    Room: ${plant.currentAddress?.room||"Unknown"}
-                    Row: ${plant.currentAddress?.row||"Unknown"}
-                    Tray: ${plant.currentAddress?.tray||"Unknown"}
+                  <Typography
+                    variant="body"
+                    color="fuchsia"
+                    fontWeight="bold"
+                    sx={{
+                      wordWrap: "normal",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {`Building: ${plant.currentAddress?.building || "Unknown"}
+                    Room: ${plant.currentAddress?.room || "Unknown"}
+                    Row: ${plant.currentAddress?.row || "Unknown"}
+                    Tray: ${plant.currentAddress?.tray || "Unknown"}
                   `}
-                </Typography>
+                  </Typography>
                 </Box>
-                </Box>
+              </Box>
             )}
             {addressRes && (
               <Card
@@ -351,16 +364,16 @@ export default function Scanner({ setOutput }) {
                     height: "100px",
                     width: "100px",
                     borderRadius: "50%",
-                  }}  
+                  }}
                 >
-                  <AddAPhotoIcon fontSize="28px"/>
+                  <AddAPhotoIcon fontSize="28px" />
                 </IconButton>
               </>
             )}
             {addressRes && (
               <>
                 <Button
-                  href={`/plants/${params}`}
+                  href={`/plants?${params}`}
                   variant="outlined"
                   sx={{
                     backgroundColor: "transparent",
@@ -374,14 +387,9 @@ export default function Scanner({ setOutput }) {
                   Details
                 </Button>
 
-                <Button
+                {(typeof output === 'function')&&<Button
                   variant="outlined"
-                  onClick={() => {
-                    addedSnd();
-                    if(setOutput) setOutput({...addressRes});
-                    setAddressRes(null);
-                    close();
-                  }}
+                  onClick={okHandler}
                   sx={{
                     backgroundColor: "transparent",
                     borderColor: "red",
@@ -394,7 +402,7 @@ export default function Scanner({ setOutput }) {
                   }}
                 >
                   OK
-                </Button>
+                </Button>}
               </>
             )}
             <Button
@@ -413,10 +421,14 @@ export default function Scanner({ setOutput }) {
           </DialogActions>
         </Box>
       </Dialog>
-      <AddPhotoFast open={openPhoto} onClose={()=>setOpenPhoto(false)} plants={[{_id:idResult}]}/>
+      <AddPhotoFast
+        open={openPhoto}
+        onClose={() => setOpenPhoto(false)}
+        plants={[{ _id: idResult }]}
+      />
     </>
   );
 }
 Scanner.propTypes = {
-  setOutput: PropTypes.func,
+  output: PropTypes.func,
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addAddress,
   addBuilding,
   addRoom,
   addRow,
@@ -17,7 +18,7 @@ import {
 } from "@mui/material";
 
 import { buildRooms } from "../../config/config";
-import AddressScanner from "../AddressScanner/AddressScanner";
+import Scanner from "../Scanner/Scanner";
 
 const fieldsActions = {
   bulding: addBuilding,
@@ -33,24 +34,11 @@ export const AddressFields = () => {
   const newAction = useSelector((state) => state.newAction);
   const [rooms, setRooms] = useState([]);
 
-  const setAddress = (address) => {
-    Object.keys(address).forEach((key) => {
-      if (key === "building") {
-        dispatch(addBuilding(address[key]));
-        setRooms(buildRooms[address[key]]);
-      } else if (key === "room") {
-        dispatch(addRoom(address[key]));
-      } else if (key === "row") {
-        dispatch(addRow(address[key]));
-      } else if (key === "rack") {
-        dispatch(addRack(address[key]));
-      } else if (key === "tray") {
-        dispatch(addTray(address[key]));
-      } else if (key === "shelf") {
-        dispatch(addShelf(address[key]));
-      }
-    });
+  const dispatchAddress = (address) => {
+    setRooms(buildRooms[address.building]);
+    dispatch(addAddress(address));
   };
+
   const fieldHandler = (e) => {
     const { value, name } = e.target;
     if (typeof value == String) dispatch(fieldsActions[name](value));
@@ -95,7 +83,7 @@ export const AddressFields = () => {
 
   return (
     <>
-      <AddressScanner setOutput={setAddress} />
+      <Scanner output={dispatchAddress} />
       <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
@@ -125,9 +113,6 @@ export const AddressFields = () => {
           value={newAction.address?.room ?? ""}
           label="Room"
           onChange={handlerRoom}
-          InputLabelProps={{
-            shrink: true,
-          }}
         >
           {rooms.map((text, index) => {
             return (
@@ -144,6 +129,7 @@ export const AddressFields = () => {
             id="outlined-number"
             sx={{ m: "2px", width: "98%" }}
             label="Row"
+            value={newAction.address?.row ?? ""}
             type="number"
             onChange={handlerRow}
             InputLabelProps={{
@@ -155,6 +141,7 @@ export const AddressFields = () => {
             id="outlined-number"
             sx={{ m: "2px", width: "98%" }}
             label="Tray"
+            value={newAction.address?.tray ?? ""}
             type="number"
             onChange={handlerTray}
             InputLabelProps={{
@@ -169,6 +156,7 @@ export const AddressFields = () => {
             id="outlined-number"
             sx={{ m: "2px", width: "98%" }}
             label="Tray"
+            value={newAction.address?.tray ?? ""}
             type="number"
             onChange={handlerTray}
             InputLabelProps={{
@@ -179,6 +167,7 @@ export const AddressFields = () => {
             id="outlined-number"
             sx={{ m: "2px", width: "98%" }}
             label="Rack"
+            value={newAction.address?.rack ?? ""}
             type="number"
             onChange={handlerRack}
             InputLabelProps={{
@@ -189,6 +178,7 @@ export const AddressFields = () => {
             id="outlined-number"
             sx={{ mx: "2px", width: "98%" }}
             label="Shelf"
+            value={newAction.address?.shelf ?? ""}
             type="number"
             onChange={handlerShelf}
             InputLabelProps={{
