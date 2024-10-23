@@ -24,11 +24,12 @@ import {
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from "prop-types";
-import { AddPumpToUnitDialog, AddFertigationUnitDialog } from "./Helpers";
+import { AddPumpToUnitDialog, AddFertigationUnitDialog, RecipeTable, Ballance } from "./Helpers";
 import { elements } from "../../config/config";
 import { useDeleteFertilizerUnitMutation, useGetAllConcentratesQuery, useGetAllFertilizersQuery, useGetConcentrateByIdQuery, useGetFertilizerUnitsQuery, useRemovePumpFromFertilizerUnitMutation, useUpdatePumpFromFertilizerUnitMutation } from "../../store/feedingApi";
 import AreYouSure from "../AreYouSure";
 import { set } from "mongoose";
+import RecipeList, { RecipeCard } from "./RecipeList";
 const units=[
   "ppm",
   "mM",
@@ -301,78 +302,9 @@ DosingPump.propTypes = {
 };
 
 const FertigationUnit = ({ unit }) => {
-  const {data:fertilizers}=useGetAllFertilizersQuery();
-  const {data:concentrateList} = useGetAllFertilizersQuery();
   const [updatePump]=useUpdatePumpFromFertilizerUnitMutation();
   const [deleteFertilizerUnit]=useDeleteFertilizerUnitMutation(); 
-  const { _id,name,concentrates,pumps} = unit;
-  const [solution, setSolution] = useState([]);
-  const coefficients = elements.map((element) => element.content).flat();
-  useMemo(() => {
-    if (pumps?.length > 0 && concentrates?.length > 0) {
-      const solution = pumps
-        .map((pump) => {
-          if (pump.concentrate === null) return [];
-          const concentrate = concentrateList.find(
-            (c) => c.name === pump.concentrate
-          );
-          if (!concentrate) return;
-          return concentrate.content.map((fertilizer) => {
-            return {
-              name: fertilizer.name,
-              concentration: (
-                (fertilizer.concentration * pump.flowRate*pump.factor) /
-                10
-              ).toFixed(3),
-            };
-          });
-        })
-        .flat()
-        .map((fertilizer) => {
-          const frt = fertilizers.find((f) => f.name === fertilizer.name);
-          return {
-            name: fertilizer.name,
-            concentration: fertilizer.concentration,
-            elements: frt.content,
-          };
-        })
-        .map((f) => {
-          return f.elements.map((element) => {
-            return {
-              name: element.name,
-              concentration: (element.concentration * f.concentration),
-            };
-          });
-        })
-        .flat()
-        .map((element) => {
-          return {
-            id:
-              elements.find((e) => element.name?.startsWith(e.code))?.id ||
-              element.id,
-            name:
-              elements.find((e) => element.name?.startsWith(e.code))?.code ||
-              element.name,
-            concentration:
-              element.concentration *
-              coefficients.find((c) => element.name === c.element).coef,
-          };
-        })
-        .sort((a, b) => a.id - b.id)
-        .reduce((acc, element) => {
-          const existing = acc.find((e) => e.name === element.name);
-          if (existing) {
-            existing.concentration += element.concentration;
-          } else {
-            acc.push(element);
-          }
-          return acc;
-        }, []);
-
-      setSolution(solution);
-    }
-  }, [pumps, concentrateList, fertilizers]);
-
+  const { _id,name,pumps,recipe,water,solution} = unit;
 
   const editPumpHandler = (id,changes) => {
     updatePump({id:_id,pumpId:id,body:changes});
@@ -384,7 +316,9 @@ const FertigationUnit = ({ unit }) => {
       <CardHeader variant="h4" title={name}/>
       <CardContent>
         <Box>
-        <Typography variant="h4">Solution</Typography>
+          {pumps.length>0 &&<RecipeTable recipe={recipe} content={solution?.elements||[]}/>}
+          {water && <Typography variant="h6">Water: {water.name}L</Typography>}
+          {solution.kationes&&solution.aniones&&<Ballance kationes={solution.kationes} aniones={solution.aniones}/>}
         <Stack
         direction="row"
         margin={2}

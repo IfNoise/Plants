@@ -21,7 +21,6 @@ import {
   Stack,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import OnlinePredictionIcon from "@mui/icons-material/OnlinePrediction";
@@ -92,7 +91,6 @@ Status.propTypes = {
 // };
 
 const Outputs = ({ deviceId, updateInterval }) => {
-  const theme = useTheme();
   const { isLoading, isError, data } = useGetStateQuery(deviceId, {
     pollingInterval: updateInterval,
   });
@@ -381,7 +379,7 @@ const IrrigatorCard = ({ name, config, onSave }) => {
         <Typography variant="caption" display="block">
           Reboot
         </Typography>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </>

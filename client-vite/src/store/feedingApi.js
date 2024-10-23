@@ -164,6 +164,7 @@ export const feedingApi = createApi({
           body,
         };
       },
+      invalidatesTags: ["Concentrates"],
     }),
     deleteFertilizerFromConc: build.mutation({
       query: ({id,elementId}) => {
@@ -192,6 +193,7 @@ export const feedingApi = createApi({
           method: "GET",
         };
       },
+      providesTags: ["Waters"],
     }),
     createWater: build.mutation({
       query: (body) => {
@@ -201,6 +203,7 @@ export const feedingApi = createApi({
           body,
         };
       },
+      invalidatesTags: ["Waters"],
     }),
     getWaterById: build.query({
       query: (id) => {
@@ -209,6 +212,7 @@ export const feedingApi = createApi({
           method: "GET",
         };
       },
+      providesTags: ["Waters"],
     }),
     updateWater: build.mutation({
       query: (id, body) => {
@@ -218,6 +222,7 @@ export const feedingApi = createApi({
           body,
         };
       },
+      invalidatesTags:["Waters"],
     }),
     deleteWater: build.mutation({
       query: (id) => {
@@ -226,6 +231,16 @@ export const feedingApi = createApi({
           method: "DELETE",
         };
       },
+    }),
+    addElementToWater: build.mutation({
+      query: ({id,body}) => {
+        return {
+          url: `/waters/${id}/elements`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["Waters"],
     }),
     getWaterElementById: build.query({
       query: (id) => {
@@ -236,21 +251,23 @@ export const feedingApi = createApi({
       },
     }),
     updateWaterElement: build.mutation({
-      query: (id, body) => {
+      query: ({id,elementId, body}) => {
         return {
-          url: `/elements/${id}`,
+          url: `/waters/${id}/elements/${elementId}`,
           method: "PATCH",
           body,
         };
       },
+      invalidatesTags: ["Waters"],
     }),
     deleteWaterElement: build.mutation({
-      query: (id) => {
+      query: ({id,elementId}) => {
         return {
-          url: `/elements/${id}`,
+          url: `/waters/${id}/elements/${elementId}`,
           method: "DELETE",
         };
       },
+      invalidatesTags: ["Waters"],
     }),
     //================================================================================================
     // getAllReciepts,
@@ -261,44 +278,49 @@ export const feedingApi = createApi({
     getAllReciepts: build.query({
       query: () => {
         return {
-          url: "/reciepts",
+          url: "/recipes",
           method: "GET",
         };
       },
+      providesTags: ["Reciepts"],
     }),
     createReciept: build.mutation({
       query: (body) => {
         return {
-          url: "/reciepts",
+          url: "/recipes",
           method: "POST",
           body,
         };
       },
+      invalidatesTags: ["Reciepts"],
     }),
     getRecieptById: build.query({
       query: (id) => {
         return {
-          url: `/reciepts/${id}`,
+          url: `/recipes/${id}`,
           method: "GET",
         };
       },
+      providesTags: ["Reciepts"],
     }),
     updateReciept: build.mutation({
-      query: (id, body) => {
+      query: ({id, body}) => {
         return {
-          url: `/reciepts/${id}`,
+          url: `/recipes/${id}`,
           method: "PATCH",
           body,
         };
       },
+      invalidatesTags: ["Reciepts"],
     }),
     deleteReciept: build.mutation({
       query: (id) => {
         return {
-          url: `/reciepts/${id}`,
+          url: `/recipes/${id}`,
           method: "DELETE",
         };
       },
+      invalidatesTags: ["Reciepts"],
     }),
     //================================================================================================
     // createFertilizerUnit,
@@ -345,7 +367,7 @@ export const feedingApi = createApi({
           body,
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "FertilizerUnits", id }],
+      invalidatesTags: ["FertilizerUnits"],
     }),
     deleteFertilizerUnit: build.mutation({
       query: (id) => {
@@ -354,7 +376,7 @@ export const feedingApi = createApi({
           method: "DELETE",
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "FertilizerUnits", id }],
+      invalidatesTags: ["FertilizerUnits"],
     }),
     getFertilizerUnitPumps: build.query({
       query: (id) => {
@@ -363,7 +385,7 @@ export const feedingApi = createApi({
           method: "GET",
         };
       },
-      providesTags: (result, error, id) => [{ type: "FertilizerUnits", id }],
+      providesTags: ["FertilizerUnits"],
     }),
     addPumpToFertilizerUnit: build.mutation({
       query: ({id, body}) => {
@@ -373,7 +395,7 @@ export const feedingApi = createApi({
           body,
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "FertilizerUnits", id }],
+      invalidatesTags: ["FertilizerUnits"],
     }),
     removePumpFromFertilizerUnit: build.mutation({
       query: ({id, pumpId}) => {
@@ -382,7 +404,7 @@ export const feedingApi = createApi({
           method: "DELETE",
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "FertilizerUnits", id }],
+      invalidatesTags: ["FertilizerUnits"],
     }),
     updatePumpFromFertilizerUnit: build.mutation({
       query: ({id, pumpId, body}) => {
@@ -392,7 +414,7 @@ export const feedingApi = createApi({
           body,
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "FertilizerUnits", id }],
+      invalidatesTags: ["FertilizerUnits"],
     }),
     //================================================================================================
   }),
@@ -420,6 +442,7 @@ export const {
   useGetWaterByIdQuery,
   useUpdateWaterMutation,
   useDeleteWaterMutation,
+  useAddElementToWaterMutation,
   useGetWaterElementByIdQuery,
   useUpdateWaterElementMutation,
   useDeleteWaterElementMutation,

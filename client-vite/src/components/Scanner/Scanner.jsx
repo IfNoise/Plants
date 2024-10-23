@@ -135,32 +135,41 @@ export default function Scanner({ setOutput }) {
   };
 
   useEffect(() => {
+    console.log(scanResult)
     let id;
     let address;
     if(!scanResult)return
     if (scanResult?.length === 24) id = scanResult;
+
     else try {
       const json = JSON.parse(scanResult);
+      console.log(json)
       if (json.type === "plant") id = json.id;
-      if (json.type === "address") address = { ...json.address };
+      if (json.type === "address") {
+        const {type,...scAddr}=json
+        address=scAddr;
+      }
     } catch (e) {
       console.log(e);
     }
     if (id) {
+      okSnd();
       setIdResult(id);
       if (!store.has(id)) {
         setScanResult({ id });
         store.add(id);
         console.log(store);
-        okSnd();
+        
       }
     }
     if (address) {
+      okSnd();
       if (JSON.stringify(tempAddress.current) === JSON.stringify(address)) return;
       if (address?.building) {
         tempAddress.current = address;
+
         setAddressRes(address);
-        okSnd();
+        
       }
     }
   }, [scanResult]);

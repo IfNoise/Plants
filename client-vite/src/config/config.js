@@ -14,10 +14,10 @@ export const elements = [
     id: 1,
     name: "Nitrogen",
     description: "Nitrogen is a key nutrient for plant growth",
-    content: [
-      { element: "NO3", coef: 0.23,ion:"NO3-",charge:-1,mmass:62},
-      { element: "NH3", coef: 0.19 ,ion:"NH4+",charge:1,mmass:18},
-      { element: "N", coef: 1.0 ,mmass:14},
+    forms: [
+      { name: "NO3", mmass: 62 },
+      { name: "NH4", mmass: 18 },
+      { name: "N", mmass: 14 },
     ],
   },
   {
@@ -25,10 +25,10 @@ export const elements = [
     code: "P",
     name: "Phosphorus",
     description: "Phosphorus is a key nutrient for plant growth",
-    content: [
-      { element: "P2O5", coef: 0.436,ion:"PO4",charge:-3,mmass:95 },
-      { element: "PO4", coef: 0.375,ion:"PO4",charge:-3,mmass:95 },
-      { element: "P", coef: 1.0,mmass:31 },
+    forms: [
+      { name: "P2O5", mmass: 95 },
+      { name: "PO4", mmass: 95 },
+      { name: "P", mmass: 31 },
     ],
   },
   {
@@ -36,9 +36,9 @@ export const elements = [
     code: "K",
     name: "Potassium",
     description: "Potassium is a key nutrient for plant growth",
-    content: [
-      { element: "K2O", coef: 0.83,ion:"K+",charge:1,mmass:39 },
-      { element: "K", coef: 1.0,mmass:39 },
+    forms: [
+      { name: "K2O", mmass: 39 },
+      { name: "K", mmass: 39 },
     ],
   },
   {
@@ -46,9 +46,9 @@ export const elements = [
     code: "Ca",
     name: "Calcium",
     description: "Calcium is a key nutrient for plant growth",
-    content: [
-      { element: "CaO", coef: 0.715,ion:"Ca++",charge:2,mmass:40 },
-      { element: "Ca", coef: 1.0,mmass:40 },
+    forms: [
+      { name: "CaO", mmass: 40 },
+      { name: "Ca", mmass: 40 },
     ],
   },
   {
@@ -56,10 +56,10 @@ export const elements = [
     code: "Mg",
     name: "Magnesium",
     description: "Magnesium is a key nutrient for plant growth",
-    content: [
-      { element: "MgO", coef: 0.603,ion:"Mg++",charge:2,mmass:24 },
-      { element: "Mg", coef: 1.0,ion:"Mg++",charge:2,mmass:24 },
-      { element: "Mg", coef: 1.0,chelate:true,mmass:24 },
+    forms: [
+      { name: "MgO", mmass: 24 },
+      { name: "Mg", mmass: 24 },
+      { name: "Mg", mmass: 24, chelate: true },
     ],
   },
   {
@@ -67,9 +67,9 @@ export const elements = [
     code: "S",
     name: "Sulfur",
     description: "Sulfur is a key nutrient for plant growth",
-    content: [
-      { element: "SO4", coef: 0.33,ion:"SO4--",charge:-2,mmass:96 },
-      { element: "S", coef: 1.0,mmass:32 },
+    forms: [
+      { name: "SO4", mmass: 96 },
+      { name: "S", mmass: 32 },
     ],
   },
   {
@@ -77,45 +77,47 @@ export const elements = [
     code: "Fe",
     name: "Iron",
     description: "Iron is a key nutrient for plant growth",
-    content: [
-      { element: "FeO", coef: 0.56,ion:"Fe++",charge:2,mmass:56 },
-      { element: "Fe", coef: 1 ,chelate:true}],
+    forms: [
+      { name: "FeO", mmass: 56 },
+      { name: "Fe", chelate: true },
+    ],
   },
   {
     id: 11,
     name: "Manganese",
     description: "Manganese is a key nutrient for plant growth",
-    content: [{ element: "Mn", coef: 1,mmass:55,chelate:true }],
+    forms: [{ name: "Mn", mmass: 55, chelate: true }],
   },
   {
     id: 9,
     code: "Zn",
     name: "Zinc",
     description: "Zinc is a key nutrient for plant growth",
-    content: [{ element: "Zn", coef: 1.0,mmass:65,chelate:true }],
+    forms: [{ name: "Zn", mmass: 65, chelate: true }],
   },
   {
     id: 8,
     code: "Cu",
     name: "Copper",
     description: "Copper is a key nutrient for plant growth",
-    content: [
-      { element: "CuO", coef: 0.5,ion:"Cu++",charge:2,mmass:64 },
-      { element: "Cu", coef: 1.0,mmass:64,chelate:true }],
+    forms: [
+      { name: "CuO", mmass: 64 },
+      { name: "Cu", mmass: 64, chelate: true },
+    ],
   },
   {
     id: 10,
     code: "B",
     name: "Boron",
     description: "Boron is a key nutrient for plant growth",
-    content: [{ element: "B", coef: 1.0,mmass:11,chelate:true }],
+    forms: [{ name: "B", mmass: 11, chelate: true }],
   },
   {
     id: 12,
     code: "Mo",
     name: "Molybdenum",
     description: "Molybdenum is a key nutrient for plant growth",
-    content: [{ element: "Mo", coef: 1.0,mmass:96,chelate:true }],
+    forms: [{ name: "Mo", mmass: 96, chelate: true }],
   },
 ];
 
