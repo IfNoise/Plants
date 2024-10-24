@@ -184,7 +184,7 @@ const ChapterField = ({ name, path, value, onChange }) => {
                   return (
                     <ChapterField
                       key={i}
-                      name={key}
+                      name={value[key]?.name || key}
                       path={newPath}
                       value={value[key]}
                       onChange={onChange}
@@ -328,7 +328,7 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
             onCancel();
           }}
         >
-          Cancel
+          Close
         </Button>
       </Box>
     </>

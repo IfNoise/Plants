@@ -62,6 +62,7 @@ export default function PlantSpeedDial(props) {
     <>
       <SpeedDial
         ariaLabel="Plant Action SpeedDial"
+        FabProps={{size: "large"}}
         hidden={!props.show && getPlants().length === 0}
         sx={{ position: "fixed", bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
@@ -72,6 +73,7 @@ export default function PlantSpeedDial(props) {
             icon={<AddIcon />}
             tooltipTitle="Add new action"
             onClick={handleOpen}
+            FabProps={{size: "large"}}
           />
         )}
         {props.addPhotos && (
@@ -79,6 +81,13 @@ export default function PlantSpeedDial(props) {
             key="Add photo"
             icon={<AddAPhotoIcon />}
             tooltipTitle="Add photo"
+            PopperProps={{
+              sx:{
+                
+              }
+            }}
+
+            FabProps={{size: "medium"}}
             onClick={handleOpenPhoto}
           />
         )}

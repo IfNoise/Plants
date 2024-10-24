@@ -2,7 +2,15 @@ import { useEffect, useMemo } from "react";
 
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { Card, Alert, CircularProgress, Grid, Link } from "@mui/material";
+import {
+  Card,
+  Alert,
+  CircularProgress,
+  Grid,
+  Link,
+  CardHeader,
+  Box,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import FemaleIcon from "@mui/icons-material/Female";
@@ -87,17 +95,14 @@ PlantSource.propTypes = {
 };
 
 const PlantGender = ({ gender }) => {
-  if (gender === "Female") {
-    return <FemaleIcon fontSize="large" />;
-  } else if (gender === "Male") {
-    return <MaleIcon fontSize="large" />;
-  } else {
-    return (
-      <Typography variant="caption" color="text.secondary">
-        Undefined
-      </Typography>
-    );
-  }
+  const isMale = gender === "Male";
+  const isFemale = gender === "Female";
+  return (
+    <>
+      {isMale && <MaleIcon color="male" />}
+      {isFemale && <FemaleIcon color="female" />}
+    </>
+  );
 };
 PlantGender.propTypes = {
   gender: propsTypes.string,
@@ -105,97 +110,111 @@ PlantGender.propTypes = {
 
 const PlantStages = ({ plant }) => {
   const { state, actions } = plant;
+  const [age, setAge] = useState(0);
   const initialState = {
-    plantAge: 0,
+    germinationStage: 0,
     cloningStage: 0,
     vegStage: 0,
     bloomStage: 0,
     motherPlantStage: 0,
   };
   const [stages, setStages] = useState(initialState);
-  const calcStages= useMemo(() => {
+  const calcStages = useMemo(() => {
+    const now = new Date();
+    const startDate = new Date(
+      actions?.find((action) => action.type === "Start")?.date
+    );
 
+    const plantAge = Math.floor((now - new Date(startDate)) / 86400000);
+    const vegStartDate = new Date(
+      actions?.find(
+        (action) =>
+          action.type === "Picking" &&
+          (action.potSize === "1 L" || action.potSize === "0.25 L")
+      )?.date
+    );
+    const bloomStartDate = new Date(
+      actions?.find((action) => action.type === "Blooming")?.date
+    );
+    const motherPlantStartDate = new Date(
+      actions?.find((action) => action.type === "MakeMother")?.date
+    );
+    const harvestDate = new Date(
+      actions?.find((action) => action.type === "Harvest")?.date
+    );
+    const stopDate = new Date(
+      actions?.find((action) => action.type === "Stop")?.date
+    );
 
-  const now = new Date();
-  const startDate = new Date(
-    actions?.find((action) => action.type === "Start")?.date
-  );
-  const plantAge = Math.floor((now - new Date(startDate)) / 86400000);
-  const vegStartDate = new Date(
-    actions?.find(
-      (action) =>
-        action.type === "Picking" &&
-        (action.potSize === "1 L" || action.potSize === "0.25 L")
-    )?.date
-  );
-  const bloomStartDate = new Date(
-    actions?.find((action) => action.type === "Blooming")?.date
-  );
-  const motherPlantStartDate = new Date(
-    actions?.find((action) => action.type === "MakeMother")?.date
-  );
-  const harvestDate = new Date(
-    actions?.find((action) => action.type === "Harvest")?.date
-  );
-  const stopDate = new Date(
-    actions?.find((action) => action.type === "Stop")?.date
-  );
+    const cloningStage =
+      state === "Cloning"
+        ? Math.floor((now - startDate) / 86400000)
+        : Math.floor((vegStartDate - startDate) / 86400000);
+    const germinationStage =
+      state === "Germination"
+        ? Math.floor((now - startDate) / 86400000)
+        : plant.type === "Seed"
+        ? Math.floor((vegStartDate - startDate) / 86400000)
+        : 0;
 
-  const cloningStage =
-    state === "Cloning"
-      ? Math.floor((now - startDate) / 86400000)
-      : Math.floor((vegStartDate - startDate) / 86400000);
-  const vegStage =
-    state === "Growing"
-      ? Math.floor((now - vegStartDate) / 86400000)
-      : state === "Blooming"
-      ? Math.floor((bloomStartDate - vegStartDate) / 86400000)
-      : state === "MotherPlant"
-      ? Math.floor((now - vegStartDate) / 86400000)
-      : 0;
-  const bloomStage =
-    state === "Blooming"
-      ? Math.floor((now - bloomStartDate) / 86400000)
-      : state === "Harvested"
-      ? Math.floor((now - harvestDate) / 86400000)
-      : state === "Stoped"
-      ? Math.floor((now - stopDate) / 86400000)
-      : 0;
-  const motherPlantStage =
-    state === "MotherPlant"
-      ? Math.floor((now - motherPlantStartDate) / 86400000)
-      : 0;
-  setStages({ plantAge , cloningStage, vegStage, bloomStage, motherPlantStage });
-}, [actions, state]);
+    const vegStage =
+      state === "Growing"
+        ? Math.floor((now - vegStartDate) / 86400000)
+        : state === "Blooming"
+        ? Math.floor((bloomStartDate - vegStartDate) / 86400000)
+        : state === "MotherPlant"
+        ? Math.floor((now - vegStartDate) / 86400000)
+        : 0;
+    const bloomStage =
+      state === "Blooming"
+        ? Math.floor((now - bloomStartDate) / 86400000)
+        : state === "Harvested"
+        ? Math.floor((now - harvestDate) / 86400000)
+        : state === "Stoped"
+        ? Math.floor((now - stopDate) / 86400000)
+        : 0;
+    const motherPlantStage =
+      state === "MotherPlant"
+        ? Math.floor((now - motherPlantStartDate) / 86400000)
+        : 0;
+    setAge(plantAge);
+    setStages({
+      Germination: germinationStage,
+      Cloning: cloningStage,
+      Vegitation: vegStage,
+      Blooming: bloomStage,
+      MotherPlant: motherPlantStage,
+    });
+  }, [actions, state]);
 
   return (
-    <>
-      <Typography variant="h6" color="text.secondary">
-        Plant Age: {stages.plantAge} days
+    <Box
+      sx={{
+        border: "solid 1px",
+        borderRadius: "5px",
+        padding: "5px",
+      }}
+    >
+      <Typography variant="h2" color="text.secondary" display="inline">
+        {age}
       </Typography>
-      {state === "Cloning" && (
-        <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {stages.cloningStage} days
-        </Typography>
+      <Typography variant="caption" color="text.secondary" display="inline">
+        days
+      </Typography>
+      {Object.keys(stages).map((stage) => {
+      if(stages[stage]) return (
+          <Typography
+            key={stage}
+            variant="body2"
+            color="text.secondary"
+            display="block"
+          >
+            {stage}: {stages[stage]}days
+          </Typography>
+        );
+      }
       )}
-      {state === "Growing" && (
-        <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {stages.cloningStage} days Veg Stage: {stages.vegStage} days
-        </Typography>
-      )}
-      {state === "Blooming" && (
-        <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {stages.cloningStage}days Veg Stage: {stages.vegStage}days Bloom
-          Stage: {stages.bloomStage} days
-        </Typography>
-      )}
-      {state === "MotherPlant" && (
-        <Typography variant="caption" color="text.secondary">
-          Cloning Stage: {stages.cloningStage}days Veg Stage: {stages.vegStage}days Mother
-          Plant Stage: {stages.motherPlantStage} days
-        </Typography>
-      )}
-    </>
+    </Box>
   );
 };
 PlantStages.propTypes = {
@@ -252,45 +271,45 @@ export const PlantDetailPage = () => {
       {isLoading && <CircularProgress />}
       {data?.length > 0 && (
         <>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            lg={6}
-            sx={{ display: "flex", justifyContent: "center" }}
-          >
+          <Grid item xs={12} md={12} lg={6}>
             <Card sx={{ width: "100%", height: "auto" }}>
-              <CardContent>
-                <Grid container>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <Typography variant="h6">{type ?? ""}</Typography>
-                    <Typography gutterBottom variant="h4">
-                      {strain ?? "undefined"}
+              <CardHeader
+                title={
+                  <>
+                    <Typography variant="h4" display="inline">
+                      {type ?? ""}
                     </Typography>
                     <PlantGender gender={gender} />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
+                    <Typography gutterBottom variant="h6" display="inline">
+                      {strain ?? "undefined"}
+                    </Typography>
+                    <Typography variant="h5" color="text.secondary">
+                    {state ?? "undefined"}
+                    </Typography>
+                  </>
+                }
+              />
+              <CardContent>
+                <Grid container>
+                  <Grid item xs={6}>
                     <Typography gutterBottom variant="h6">
                       Pheno.:{pheno ?? "undefined"}
                     </Typography>
                   </Grid>
                   <Grid
                     item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
+                    md={4}
+                    xs={4}
                   >
-                    <Typography variant="h5" color="text.secondary">
-                      State: {state ?? "undefined"}
-                    </Typography>
+                    <PlantStages plant={plant} />
                   </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                  >
+                  </Grid>
+
+
                   {group && (
                     <Grid
                       item
@@ -311,55 +330,40 @@ export const PlantDetailPage = () => {
                       Pot Size: {potSize || "undefined"}
                     </Typography>
                   </Grid>
-                  <Grid
-                    item
-                    md={6}
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      display="block"
-                    >
-                      {currentAddress &&
-                        `Building: ${currentAddress?.building ?? "undefined"} 
-                            Room:${currentAddress?.room ?? " "} 
-                            ${
-                              currentAddress?.room === "Laboratory"
-                                ? ` 
-                                Rack: ${currentAddress?.rack}`
-                                : ` 
-                                  Row: ${currentAddress?.row ?? ""}`
-                            } 
-                                  ${
-                                    currentAddress?.room === "Laboratory"
-                                      ? ` 
-                                    Shelf: ${currentAddress?.shelf}`
-                                      : ` 
-                                    Tray: ${currentAddress?.tray ?? ""}`
-                                  }
-                                        Number:  ${currentAddress?.number ?? ""}
-                                        `}
-                    </Typography>
+
+                  <Grid item md={6} xs={12}>
+                    {currentAddress && (
+                      <>
+                        <Typography variant="body2">
+                          Building: {currentAddress.building || "undefined"}
+                        </Typography>
+                        <Typography variant="body2">
+                          Room: {currentAddress.room || "undefined"}
+                        </Typography>
+                        {currentAddress?.row && (
+                          <Typography variant="body2">
+                            Row: {currentAddress.row}
+                          </Typography>
+                        )}
+                        {currentAddress?.rack && (
+                          <Typography variant="body2">
+                            Rack: {currentAddress.rack}
+                          </Typography>
+                        )}
+                        {currentAddress?.shelf && (
+                          <Typography variant="body2">
+                            Shelf: {currentAddress.shelf}
+                          </Typography>
+                        )}
+                        {currentAddress?.tray && (
+                          <Typography variant="body2">
+                            Tray: {currentAddress.tray || "undefined"}
+                          </Typography>
+                        )}
+                      </>
+                    )}
                   </Grid>
-                  <Grid
-                    item
-                    md={6}
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
-                    <PlantStages plant={plant} />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
-                    <Typography variant="caption" color="text.secondary">
-                      Clones Counter:{cloneCounter ?? "0"}
-                    </Typography>
-                  </Grid>
+                  
 
                   <Grid
                     item

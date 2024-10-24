@@ -14,6 +14,12 @@ export const theme = createTheme({
       paper: 'rgba(104,104,125,0.9)',
       default: 'rgba(31,39,45,0.86)',
     },
+    male:{
+      main:'#AAAAFF'
+    },
+    female:{
+      main:'#FFAAAA'
+    },
   },
   shape: {
     borderRadius: 10,
@@ -46,7 +52,7 @@ export const theme = createTheme({
   typography: {
     fontSize: 12,
     caption: {
-      fontSize: '0.6rem',
+      fontSize: '0.7rem',
       fontWeight: 600,
       letterSpacing: '0.2em',
       lineHeight: 1.25,

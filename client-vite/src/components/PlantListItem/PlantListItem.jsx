@@ -8,38 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import PlantAvatar from "../PlantAvatar";
 
-function stringToColor(string) {
-  let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let color = "#";
-
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  /* eslint-enable no-bitwise */
-
-  return color;
-}
-
-function stringAvatar(name) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children:
-      name.split(" ").length > 1
-        ? `${name.split(" ").reduce((a, b) => a + b[0],"").toUpperCase()}`
-        : `${name.split(" ")[0][0]}${name.split(" ")[0][1]}`,
-  };
-}
 export default function PlantListItem(props) {
   const plant = props.plant;
   return (
@@ -57,7 +27,7 @@ export default function PlantListItem(props) {
         >
           <ListItemButton onClick={()=>{props?.onClick(plant._id)}}>
             <ListItemAvatar>
-              <Avatar {...stringAvatar(plant.strain)} />
+              <PlantAvatar pheno={plant.pheno} />
             </ListItemAvatar>
             <ListItemText
               primary={plant.pheno}
@@ -66,7 +36,7 @@ export default function PlantListItem(props) {
                   <Typography sx={{mr:'5px'}} component='span' variant="body2" color="text.secondary">
                     {plant.strain}
                   </Typography>
-                  <Typography component="span" variant="h7" color="green">
+                  <Typography component="span" variant="h7" color="#AAFFAA">
                    {plant.state}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">

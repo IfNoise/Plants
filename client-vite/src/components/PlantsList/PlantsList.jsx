@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {
   Box,
   Checkbox,
+  Chip,
   CircularProgress,
   FormControlLabel,
   List,
@@ -13,13 +14,31 @@ import {
 import { useCallback } from "react";
 import { DataGrid,  useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female'
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 import PlantListItem from "../PlantListItem/PlantListItem";
+import PlantAvatar from "../PlantAvatar";
 function getRowId(row) {
   return row._id;
 }
 
+const idToColor = (
+  id //mongodb id to color
+) => {
+  const color = id.slice(0, 6);
+  return "#" + color;
+}
+
+
+
 const columns = [
+  { field: "avatar", headerName: "",
+    renderCell: (params) => {
+      return <PlantAvatar pheno={params.value} />;
+    },
+    
+    width: 50 },
   { field: "strain", headerName: "Strain", width: 230 },
   {
     field: "pheno",
@@ -37,6 +56,9 @@ const columns = [
   {
     field: "gender",
     headerName: "Gender",
+    renderCell: (params) => {
+      return params.value==='Male'?<MaleIcon color='male' />:<FemaleIcon color='female'/>
+    },
     width: 80,
     editable: false,
   },
@@ -49,12 +71,18 @@ const columns = [
   {
     field: "start",
     headerName: "Started",
+    renderCell: (params) => {
+      return new Date(params.value).toLocaleDateString();
+    },
     width: 140,
     editable: false,
   },
   {
     field: "group",
     headerName: "Group",
+    renderCell: (params) => {
+      return <Chip label={params.value} style={{ backgroundColor: idToColor(params.value) }} />;
+    },
     width: 150,
     editable: false,
   },
@@ -133,6 +161,7 @@ export const PlantsList = (props) => {
             disableRowSelectionOnClick
             rows={plants?.map((plant) => {
               return {
+                avatar: plant.pheno ,
                 ...plant,
                 start: new Date(plant?.startDate).toDateString() || "undefined",
               };
