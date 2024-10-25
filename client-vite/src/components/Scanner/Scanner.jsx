@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { useAddToTrayMutation } from "../../store/trayApi";
+import { useContext } from "react";
+import { SnackbarContext } from "../../context/SnackbarContext";
+import { useAddToTrayMutation, useGetTrayQuery } from "../../store/trayApi";
 import QrScanner from "qr-scanner";
 import {
   Box,
@@ -16,8 +18,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { useMediaQuery } from "@mui/material";
-import { useGetPlantsQuery } from "../../store/plantsApi";
+import { useAddActionMutation, useGetPlantsQuery } from "../../store/plantsApi";
 import { AddPhotoFast } from "../AddPhotoFast";
+import { TrayButton } from "../TrayButton/TrayButton";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useDispatch } from "react-redux";
 
 var audioCtx = new (window.AudioContext ||
   window.webkitAudioContext ||
@@ -57,8 +62,65 @@ const errorSnd = () => {
 const addedSnd = () => {
   beep(120, 100, 0.4, "square");
 };
+const FastRelocationButton = ({ plants, address }) => {
+  const {dispatch} = useDispatch()
+  const [addAction,{isSuccess}] = useAddActionMutation();
+  const { data} = useGetTrayQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  })
+  const {setSnack} = useContext(SnackbarContext);  
+  console.log("Plants",plants);
+  console.log("Address",address);
+  const handleClick = async () => {
+    
+    const action = {
+      id: data.map((item)=>item._id), 
+      action:{
+        address,
+        actionType: "Relocation",
+      },
+    };
+    addAction(action);
+  };
+  useEffect(() => {
+    if(isSuccess){
+      setSnack({open:true,severity:'success',message:'Relocated'})
+    }
+  }, [isSuccess])
 
-export default function Scanner({output}) {
+  return (<>
+     {
+      data?.length>0 && 
+      (<IconButton
+        variant="outlined"
+        onClick={handleClick}
+        sx={{
+          backgroundColor: "transparent",
+          borderStyle: "solid",
+          width: "80px",
+          height: "80px",
+          borderColor: "red",
+          borderWidth: "2px",
+          borderBlockColor: "red",
+          color: "red",
+          borderRadius: "50%",
+        }}>
+        <ArrowForwardIcon fontSize="40" />
+      </IconButton>)
+     }
+     </>
+  )
+};
+FastRelocationButton.propTypes = {
+  plants: PropTypes.array,
+  address: PropTypes.object,
+};
+
+
+export default function Scanner({ output }) {
   console.log(output);
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null); //
@@ -113,14 +175,14 @@ export default function Scanner({output}) {
     setScanResult(data);
   }
   function okHandler() {
-      addedSnd();
-      if (typeof output === 'function') {
-        output(addressRes);
-      } else {
-        console.error('setOutput is not a function');
-      }
-      //setAddressRes(null);
-      close();
+    addedSnd();
+    if (typeof output === "function") {
+      output(addressRes);
+    } else {
+      console.error("setOutput is not a function");
+    }
+    //setAddressRes(null);
+    close();
   }
   const initScanner = () => {
     if (Object.keys(video.current).length !== 0) {
@@ -153,10 +215,10 @@ export default function Scanner({output}) {
         const json = JSON.parse(scanResult);
         if (json.type === "plant") id = json.id;
         if (json.type === "address") {
-          const { type,room,...scAddr } = json;
+          const { type, room, ...scAddr } = json;
           const roomWithSpace = room.replace(/_/g, " ");
 
-          address = {room:roomWithSpace,...scAddr};
+          address = { room: roomWithSpace, ...scAddr };
         }
       } catch (e) {
         console.log(e);
@@ -216,6 +278,7 @@ export default function Scanner({output}) {
               width: "90%",
             }}
           >
+            <TrayButton />
             <IconButton
               variant="outlined"
               onClick={close}
@@ -361,8 +424,6 @@ export default function Scanner({output}) {
                     borderBlockColor: "red",
                     borderStyle: "solid",
                     color: "red",
-                    height: "100px",
-                    width: "100px",
                     borderRadius: "50%",
                   }}
                 >
@@ -386,23 +447,27 @@ export default function Scanner({output}) {
                 >
                   Details
                 </Button>
-
-                {(typeof output === 'function')&&<Button
-                  variant="outlined"
-                  onClick={okHandler}
-                  sx={{
-                    backgroundColor: "transparent",
-                    borderColor: "red",
-                    borderWidth: "2px",
-                    borderBlockColor: "red",
-                    color: "red",
-                    height: "100px",
-                    width: "100px",
-                    borderRadius: "50%",
-                  }}
-                >
-                  OK
-                </Button>}
+                <FastRelocationButton plants={Array.from(store)} address={addressRes} />
+                {typeof output === "function" && (
+                  <Button
+                    variant="outlined"
+                    onClick={okHandler}
+                    sx={{
+                      backgroundColor: "transparent",
+                      borderColor: "red",
+                      borderWidth: "2px",
+                      borderBlockColor: "red",
+                      color: "red",
+                      height: "100px",
+                      width: "100px",
+                      borderRadius: "50%",
+                    }}
+                  >
+                    OK
+                  </Button>
+                  
+                )}
+                 
               </>
             )}
             <Button

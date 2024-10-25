@@ -33,17 +33,14 @@ export default function PlantListItem(props) {
               primary={plant.pheno}
               secondary={
                 <>
-                  <Typography sx={{mr:'5px'}} component='span' variant="body2" color="text.secondary">
+                  <Typography sx={{mr:'5px'}}  variant="body2" color="text.secondary">
                     {plant.strain}
                   </Typography>
-                  <Typography component="span" variant="h7" color="#AAFFAA">
+                  <Typography  variant="h7" component='div' color="#AAFFAA">
                    {plant.state}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="body" color="text.secondary">
                    Start date: {new Date(plant.startDate).toLocaleDateString()}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                   Id: {plant._id}
                   </Typography>
                 </>
               }

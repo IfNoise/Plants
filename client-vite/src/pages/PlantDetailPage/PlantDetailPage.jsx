@@ -30,6 +30,7 @@ const PlantGroup = ({ group }) => {
   return (
     <div
       style={{
+        width: "6rem",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -62,6 +63,7 @@ const PlantSource = ({ plant }) => {
   return (
     <div
       style={{
+        width: "6rem",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -202,18 +204,18 @@ const PlantStages = ({ plant }) => {
         days
       </Typography>
       {Object.keys(stages).map((stage) => {
-      if(stages[stage]) return (
-          <Typography
-            key={stage}
-            variant="body2"
-            color="text.secondary"
-            display="block"
-          >
-            {stage}: {stages[stage]}days
-          </Typography>
-        );
-      }
-      )}
+        if (stages[stage])
+          return (
+            <Typography
+              key={stage}
+              variant="body2"
+              color="text.secondary"
+              display="block"
+            >
+              {stage}: {stages[stage]}days
+            </Typography>
+          );
+      })}
     </Box>
   );
 };
@@ -284,7 +286,7 @@ export const PlantDetailPage = () => {
                       {strain ?? "undefined"}
                     </Typography>
                     <Typography variant="h5" color="text.secondary">
-                    {state ?? "undefined"}
+                      {state ?? "undefined"}
                     </Typography>
                   </>
                 }
@@ -295,42 +297,15 @@ export const PlantDetailPage = () => {
                     <Typography gutterBottom variant="h6">
                       Pheno.:{pheno ?? "undefined"}
                     </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    md={4}
-                    xs={4}
-                  >
-                    <PlantStages plant={plant} />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                  >
-                  </Grid>
-
-
-                  {group && (
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", justifyContent: "left" }}
-                    >
-                      <PlantGroup group={group} />
-                      <PlantSource plant={plant} />
-                    </Grid>
-                  )}
-
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
+                    {group && <PlantGroup group={group} />}
+                    <PlantSource plant={plant} />
                     <Typography variant="h6" color="text.secondary">
                       Pot Size: {potSize || "undefined"}
                     </Typography>
                   </Grid>
-
+                  <Grid item md={4} xs={4}>
+                    <PlantStages plant={plant} />
+                  </Grid>
                   <Grid item md={6} xs={12}>
                     {currentAddress && (
                       <>
@@ -363,13 +338,7 @@ export const PlantDetailPage = () => {
                       </>
                     )}
                   </Grid>
-                  
 
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "left" }}
-                  >
                     {state === "MotherPlant" && (
                       <>
                         <Grid
@@ -388,7 +357,6 @@ export const PlantDetailPage = () => {
                       </>
                     )}
                   </Grid>
-                </Grid>
               </CardContent>
             </Card>
           </Grid>
