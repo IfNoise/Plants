@@ -1,15 +1,13 @@
 import { Alert, CircularProgress} from "@mui/material";
 import { PlantsList } from "../components/PlantsList/PlantsList";
 import { useGetTrayQuery } from "../store/trayApi";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useContext } from "react";
 import { AppBarContext } from "../context/AppBarContext";
 import { TrayButton } from "../components/TrayButton/TrayButton";
 import Scanner from "../components/Scanner/Scanner";
-import {FilterBar} from '../components/FilterBar/FilterBar'
 
 export const TrayPage = () => {
-  const [filter,setFilter]=useState({})
   const {
     isLoading,
     isError,
@@ -17,7 +15,7 @@ export const TrayPage = () => {
     data,
     refetch
     
-  } = useGetTrayQuery(filter,{ 
+  } = useGetTrayQuery({ 
     refetchOnMountOrArgChange: true, 
     refetchOnFocus: true ,
     refetchOnReconnect:true,
@@ -38,7 +36,6 @@ export const TrayPage = () => {
             <TrayButton />
           </>
         ),
-        right: <FilterBar setOutputFilter={setFilter} getData={()=>data } />,
   });
   } , [data]);
   return (
