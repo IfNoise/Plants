@@ -417,14 +417,11 @@ export default function ChannelsList({
   }, [data, channelNames]);
   return (
     <Accordion
-      square
-      defaultCollapsed={defaultCollapsed}
-      sx={{
-        borderRadius: "8px",
-      }}
-      expandIcon={<ExpandMoreIcon color="red" />}
+
     >
-      <AccordionSummary>Channels</AccordionSummary>
+      <AccordionSummary
+         expandIcon={<ExpandMoreIcon color="red" />}
+      >Channels</AccordionSummary>
       <AccordionDetails>
         {isLoading && <CircularProgress />}
         {isError && <Alert severity="error">{error.message}</Alert>}

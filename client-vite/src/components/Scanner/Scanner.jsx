@@ -12,6 +12,11 @@ import {
   Dialog,
   DialogActions,
   IconButton,
+  Popover,
+  Stack,
+  SvgIcon,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -22,7 +27,121 @@ import { useAddActionMutation, useGetPlantsQuery } from "../../store/plantsApi";
 import { AddPhotoFast } from "../AddPhotoFast";
 import { TrayButton } from "../TrayButton/TrayButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { useDispatch } from "react-redux";
+
+const PickingIcon = () => {
+  return (
+    <SvgIcon
+      sx={{ color: "red", width: "48px", height: "48px" }}
+      viewBox="0 0 24 24"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 48 48"
+        version="1.1"
+        id="svg5"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g id="layer1">
+          <path
+            style={{
+              fill: "none",
+              stroke: "red",
+              strokeWidth: 3,
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              strokeMiterlimit: 4,
+              strokeDasharray: "none",
+              strokeOpacity: 1,
+            }}
+            d="M 5.2291192,42.722255 3.2565526,23.245197 18.699196,23.219956 17.115306,42.733435 Z"
+            id="path1600"
+          />
+          <path
+            style={{
+              fill: "none",
+              stroke: "red",
+              strokeWidth: 3,
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              strokeMiterlimit: 4,
+              strokeDasharray: "none",
+              strokeOpacity: 1,
+            }}
+            d="m 26.913327,42.343204 -3.624089,-25.807942 21.092454,0.0406 -3.281325,25.817295 z"
+            id="path1600-3"
+          />
+          <path
+            style={{
+              fill: "none",
+              stroke: "red",
+              strokeWidth: 3,
+              strokeLinecap: "butt",
+              strokeLinejoin: "miter",
+              strokeMiterlimit: 4,
+              strokeDasharray: "none",
+              strokeOpacity: 1,
+            }}
+            d="M 9.184941,18.084149 C 10.556713,4.6918471 18.379601,2.5576131 24.923475,3.8453976 28.88262,4.6245272 32.729499,8.345972 33.218914,11.846946"
+            id="path1744"
+          />
+          <path
+            style={{
+              fill: "red",
+              fillOpacity: 1,
+              stroke: "red",
+              strokeWidth: 2.97249,
+              strokeLinecap: "butt",
+              strokeLinejoin: "miter",
+              strokeMiterlimit: 4,
+              strokeDasharray: "none",
+              strokeOpacity: 1,
+            }}
+            d="m 31.999552,6.8028442 0.532972,2.2047321 0.68639,2.8393697 -1.327536,-1.078973 -2.746857,-2.2325463 z"
+            id="path2034"
+          />
+        </g>
+      </svg>
+    </SvgIcon>
+  );
+};
+
+const PotIcon = ({ value, color = "black" }) => {
+  const displayValue = value.toString().replace(/^0+/, '');
+  return (
+    <SvgIcon
+      sx={{ color, width: "48px", height: "48px" }}
+      viewBox="0 0 24 24"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 48 48"
+        version="1.1"
+        id="svg5"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g id="layer1">
+          <path
+            style={{
+              fill: "none",
+              stroke: color,
+              strokeWidth: 4.50505,
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              strokeMiterlimit: 4,
+              strokeDasharray: "none",
+              strokeOpacity: 1,
+            }}
+            d="M 13.950823,43.428599 8.4573519,5.034763 l 31.9723931,0.0604 -4.973903,38.40775 z"
+            id="path1600-3"
+          />
+          <text x="24" y="24" textAnchor="middle" fontSize="10" fill="black" dy=".3em">{displayValue}</text>
+        </g>
+      </svg>
+    </SvgIcon>
+  );
+};
 
 var audioCtx = new (window.AudioContext ||
   window.webkitAudioContext ||
@@ -60,68 +179,177 @@ const errorSnd = () => {
 };
 
 const addedSnd = () => {
-  beep(120, 100, 0.4, "square");
+  beep(120, 100, 0.3, "square");
 };
-const FastRelocationButton = ({ plants, address }) => {
-  const {dispatch} = useDispatch()
-  const [addAction,{isSuccess}] = useAddActionMutation();
-  const { data} = useGetTrayQuery({
+
+const FastPickButton = () => {
+  const [addAction, { isSuccess,isError,error }] = useAddActionMutation();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const { data } = useGetTrayQuery({
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
-  })
-  const {setSnack} = useContext(SnackbarContext);  
-  console.log("Plants",plants);
-  console.log("Address",address);
+  });
+  const { setSnack } = useContext(SnackbarContext);
+  const [open, setOpen] = useState(false);
+  const [potSize, setPotSize] = useState("");
   const handleClick = async () => {
-    
     const action = {
-      id: data.map((item)=>item._id), 
-      action:{
+      id: data.map((item) => item._id),
+      action: {
+        actionType: "Picking",
+        potSize,
+      },
+    };
+    addAction(action);
+  };
+  const handleClose = () => {
+
+    setAnchorEl(null);
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      setSnack({ open: true, severity: "success", message: "Picked" });
+      okSnd();
+    }
+  }, [isSuccess]);
+  useEffect(() => {
+    if (isError) {
+      setSnack({ open: true, severity: "error", message: error.message });
+      errorSnd();
+    }
+  }, [isError]);
+
+  return (
+    <>
+      {data?.length > 0 && (
+        <IconButton
+          variant="outlined"
+          onClick={(e) => {
+            setAnchorEl(e.currentTarget);
+            setOpen(true)}}
+          sx={{
+            backgroundColor: "transparent",
+            borderStyle: "solid",
+            width: "80px",
+            height: "80px",
+            borderColor: "red",
+            borderWidth: "2px",
+            borderBlockColor: "red",
+            color: "red",
+            borderRadius: "50%",
+          }}
+        >
+          <PickingIcon />
+        </IconButton>
+      )}
+      <Popover 
+      open={open} 
+      anchorEl={anchorEl}
+      onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <Stack direction="column" spacing={1}
+        sx={{ p: 1 }}
+        >
+          <ToggleButtonGroup
+            value={potSize}
+            orientation="vertical"
+            exclusive
+            onChange={(e, value) => setPotSize(value)}
+            aria-label="text alignment"
+            size="medium"
+          >
+            <ToggleButton value={"0.25L"} aria-label="left aligned">
+              <PotIcon value={0.25} color="white" />
+            </ToggleButton>
+            <ToggleButton value={"1L"} aria-label="centered">
+              <PotIcon value={1} color="white"/>
+            </ToggleButton>
+            <ToggleButton value={"4L"} aria-label="right aligned">
+              <PotIcon value={4} color="white" />
+            </ToggleButton>
+            <ToggleButton value={"7L"} aria-label="right aligned">
+              <PotIcon value={7} color="white" />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        
+        <Button variant="filled" onClick={handleClick} sx={{ width: '100%' }}>
+          ok
+        </Button>
+        <Button variant="filled" onClick={() => setOpen(false)} sx={{ width: '100%'}}>
+          cancel
+        </Button>
+        </Stack>
+      </Popover>
+    </>
+  );
+};
+
+const FastRelocationButton = ({ address }) => {
+  const [addAction, { isSuccess }] = useAddActionMutation();
+  const { data } = useGetTrayQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+  const { setSnack } = useContext(SnackbarContext);
+  const handleClick = async () => {
+    const action = {
+      id: data.map((item) => item._id),
+      action: {
         address,
         actionType: "Relocation",
       },
     };
     addAction(action);
+    okSnd();
   };
   useEffect(() => {
-    if(isSuccess){
-      setSnack({open:true,severity:'success',message:'Relocated'})
+    if (isSuccess) {
+      setSnack({ open: true, severity: "success", message: "Relocated" });
     }
-  }, [isSuccess])
+  }, [isSuccess]);
 
-  return (<>
-     {
-      data?.length>0 && 
-      (<IconButton
-        variant="outlined"
-        onClick={handleClick}
-        sx={{
-          backgroundColor: "transparent",
-          borderStyle: "solid",
-          width: "80px",
-          height: "80px",
-          borderColor: "red",
-          borderWidth: "2px",
-          borderBlockColor: "red",
-          color: "red",
-          borderRadius: "50%",
-        }}>
-        <ArrowForwardIcon fontSize="40" />
-      </IconButton>)
-     }
-     </>
-  )
+  return (
+    <>
+      {data?.length > 0 && (
+        <IconButton
+          variant="outlined"
+          onClick={handleClick}
+          sx={{
+            backgroundColor: "transparent",
+            borderStyle: "solid",
+            width: "80px",
+            height: "80px",
+            borderColor: "red",
+            borderWidth: "2px",
+            borderBlockColor: "red",
+            color: "red",
+            borderRadius: "50%",
+          }}
+        >
+          <ArrowForwardIcon fontSize="40" />
+        </IconButton>
+      )}
+    </>
+  );
 };
 FastRelocationButton.propTypes = {
-  plants: PropTypes.array,
   address: PropTypes.object,
 };
 
-
 export default function Scanner({ output }) {
-  console.log(output);
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null); //
   const [open, setOpen] = useState(false);
@@ -161,7 +389,6 @@ export default function Scanner({ output }) {
   function handlerNext() {
     if (qrScanner) {
       qrScanner?.start();
-      console.log("start");
     } else initScanner();
     setPlant(null);
     setScanResult(null);
@@ -178,8 +405,10 @@ export default function Scanner({ output }) {
     addedSnd();
     if (typeof output === "function") {
       output(addressRes);
+      okSnd();
     } else {
       console.error("setOutput is not a function");
+      errorSnd();
     }
     //setAddressRes(null);
     close();
@@ -217,11 +446,11 @@ export default function Scanner({ output }) {
         if (json.type === "address") {
           const { type, room, ...scAddr } = json;
           const roomWithSpace = room.replace(/_/g, " ");
-
           address = { room: roomWithSpace, ...scAddr };
         }
       } catch (e) {
         console.log(e);
+        errorSnd();
       }
     if (id) {
       okSnd();
@@ -429,6 +658,7 @@ export default function Scanner({ output }) {
                 >
                   <AddAPhotoIcon fontSize="28px" />
                 </IconButton>
+                <FastPickButton />
               </>
             )}
             {addressRes && (
@@ -447,7 +677,10 @@ export default function Scanner({ output }) {
                 >
                   Details
                 </Button>
-                <FastRelocationButton plants={Array.from(store)} address={addressRes} />
+                <FastRelocationButton
+                  plants={Array.from(store)}
+                  address={addressRes}
+                />
                 {typeof output === "function" && (
                   <Button
                     variant="outlined"
@@ -465,9 +698,7 @@ export default function Scanner({ output }) {
                   >
                     OK
                   </Button>
-                  
                 )}
-                 
               </>
             )}
             <Button

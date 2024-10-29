@@ -44,7 +44,7 @@ app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, n
   }
   req.files.forEach(async (file) => {
     console.log(file)
-    await sharp(file.path)
+    sharp(file.path)
       .resize(200, 200)
       .toFile(`uploads/thumbnails/${file.originalname}`,(err,info)=>{
         if(err)console.log(err)
