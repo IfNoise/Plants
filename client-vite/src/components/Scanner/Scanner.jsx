@@ -27,6 +27,7 @@ import { useAddActionMutation, useGetPlantsQuery } from "../../store/plantsApi";
 import { AddPhotoFast } from "../AddPhotoFast";
 import { TrayButton } from "../TrayButton/TrayButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { set } from "mongoose";
 
 const PickingIcon = () => {
   return (
@@ -213,6 +214,8 @@ const FastPickButton = () => {
     if (isSuccess) {
       setSnack({ open: true, severity: "success", message: "Picked" });
       okSnd();
+      setOpen(false);
+      setAnchorEl(null);
     }
   }, [isSuccess]);
   useEffect(() => {
@@ -228,6 +231,7 @@ const FastPickButton = () => {
         <IconButton
           variant="outlined"
           onClick={(e) => {
+            if(anchorEl) return;
             setAnchorEl(e.currentTarget);
             setOpen(true)}}
           sx={{
