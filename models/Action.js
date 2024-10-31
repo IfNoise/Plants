@@ -31,7 +31,7 @@ const schema = new Schema({
   note:{
     
   },
-  photos:[],
+  photos:[String],
   potSize:String,
   reason:String,
   userReason:String,

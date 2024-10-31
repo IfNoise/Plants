@@ -27,7 +27,6 @@ import { useAddActionMutation, useGetPlantsQuery } from "../../store/plantsApi";
 import { AddPhotoFast } from "../AddPhotoFast";
 import { TrayButton } from "../TrayButton/TrayButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { set } from "mongoose";
 
 const PickingIcon = () => {
   return (
@@ -46,7 +45,7 @@ const PickingIcon = () => {
         <g id="layer1">
           <path
             style={{
-              fill: "none",
+              fill: "red",
               stroke: "red",
               strokeWidth: 3,
               strokeLinecap: "round",

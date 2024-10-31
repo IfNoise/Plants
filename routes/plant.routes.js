@@ -164,7 +164,6 @@ router.post("/new_action", async (req, res) => {
         case "Picking": {
           if (plant?.potSize && plant.potSize === data.potSize) {
             console.log("same pot size");
-
             action = null;
             break;
           }
@@ -223,10 +222,6 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         case "SetGender": {
-          if (plant.gender != "undefined") {
-            action = null;
-            break;
-          }
           plant.set("gender", data.gender);
           break;
         }

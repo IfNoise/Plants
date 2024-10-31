@@ -89,6 +89,7 @@ const states = {
       { text: "Note" },
       { text: "Picking" },
       { text: "Relocation" },
+      { text: "SetGender" },
       { text: "CuttingClones" },
       { text: "Blooming" },
       { text: "Stop" },

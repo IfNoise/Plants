@@ -20,16 +20,19 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import DownloadIcon from "@mui/icons-material/Download";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { AppBarContext } from "../context/AppBarContext";
 import { ThemeContext } from "@emotion/react";
-
 const buttonStyle = {
   marginRight: "auto",
+  size: "large",
+
 };
 
 const DownloadButton = ({ photo }) => {
@@ -51,12 +54,23 @@ DownloadButton.propTypes = {
 const ImageView = ({ photo, open, onClose, next, prev }) => {
   const { src, strain, pheno, state, ageOfState, plantId } = photo;
   const [touchStart, setTouchStart] = useState(null);
+  const imgNode = useRef(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [zoom, setZoom] = useState(1);
   const minSwipe = 100;
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
   };
-  const href=src.includes("gallery/")?src.split("/")[1]:src;
+  const handleZoomIn = () => {
+    const { width, height } = imgNode.current;
+    setZoom((prevZoom) => Math.min(prevZoom + 0.2, 2)); // Максимальный зум 3x
+  };
+
+  const handleZoomOut = () => {
+    const { width, height } = imgNode.current;
+    setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0)); // Минимальный зум 1x
+  };
+  const href = src.includes("gallery/") ? src.split("/")[1] : src;
   const handleTouchMove = (e) => {
     setTouchEnd(e.touches[0].clientX);
   };
@@ -84,21 +98,35 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
       <Box
         sx={{
           position: "relative",
-          width: "100%",
-          height: "100%",
-          overflow:'hidden',
-          display: "flex",
-          alignContent: "center",
+          width: "100vw",
+          height: "100vh",
+          overflow: "hidden",
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
+        <Box
+         sx={{
+          position: "relative",
+          height: '100%',
+          width: "100%",
+          overflow: "auto",
+         }}>
         <img
-          style={{ height: "100vh", width: "auto", objectFit: "cover" }}
+          ref={imgNode}
+          style={{
+            height: 'auto',
+            width:  'auto',
+            objectFit: "contain", // Change to 'contain' to prevent cropping
+            transform: `scale(${zoom})`,
+            transformPosition: "center",
+            transition: "transform 0.3s ease",
+          }}
           src={`https://ddweed.org/gallery/${href}`}
           alt={strain}
         />
+        </Box>
         <Box
           sx={{
             position: "absolute",
@@ -160,14 +188,28 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
             color: "black",
           }}
         >
-          <Tooltip title="Download">
-            <DownloadButton photo={photo} />
-          </Tooltip>
+
           <Tooltip title="Close">
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </Tooltip>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Tooltip title="Zoom In">
+            
+            <IconButton size="large" onClick={handleZoomIn}>
+              <ZoomInIcon fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Zoom Out">
+            <IconButton size="large" onClick={handleZoomOut}>
+              <ZoomOutIcon fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Download">
+            <DownloadButton photo={photo} />
+          </Tooltip>
+          </Box>
         </Box>
       </Box>
     </Dialog>
@@ -322,7 +364,9 @@ export const GalleryPage = () => {
         >
           {photos.map((photo, index) => {
             const { src, strain } = photo;
-            const thumbnail = "thumbnails/"+(src?.includes("gallery/")?src.split("gallery/")[1]:src);
+            const thumbnail =
+              "thumbnails/" +
+              (src?.includes("gallery/") ? src.split("gallery/")[1] : src);
             return (
               <ImageListItem
                 onClick={() => {
@@ -331,7 +375,10 @@ export const GalleryPage = () => {
                 }}
                 key={index}
               >
-                <img src={`https://ddweed.org/gallery/${thumbnail}`} alt={strain} />
+                <img
+                  src={`https://ddweed.org/gallery/${thumbnail}`}
+                  alt={strain}
+                />
               </ImageListItem>
             );
           })}
