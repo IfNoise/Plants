@@ -1,9 +1,12 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import Shelf from "./Shelf";
-export const Rack = ({ index, shelfs }) => {
+export const Rack = ({ index, shelfs,address }) => {
   const plants = shelfs.map((tray) => tray.plants).flat().length;
-
+  const shelfsCount = shelfs.length;
+  const rack = index + 1;
+  const { building, room } = address;
+  const params = new URLSearchParams({ building, room, rack }).toString();
   const Banner = () => (
     <Box
       sx={{
@@ -25,16 +28,16 @@ export const Rack = ({ index, shelfs }) => {
       >
         {index + 1}
       </Typography>
-      <Typography
-        sx={{
-          fontSize: "10px",
-          fontWeight: "bold",
-          color: "black",
-        }}
-        variant="caption"
-      >
-        {plants}plants
-      </Typography>
+      <Link
+          href={`/plants?${params}`}
+          sx={{
+            fontSize: "14px",
+            fontWeight: "bold",
+            color: "black",
+          }}
+        >
+      {plants}plants
+        </Link>
     </Box>
   );
   return (
@@ -56,7 +59,7 @@ export const Rack = ({ index, shelfs }) => {
 
       <Stack direction="column" spacing={0.5}>
         {shelfs?.map((shelf, index) => (
-          <Shelf key={index} plants={shelf.plants ?? []} />
+          <Shelf key={index} index={shelfsCount-1-index} plants={shelf.plants ?? []} address={{building,room,rack}} />
         ))}
       </Stack>
     </Box>

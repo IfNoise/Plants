@@ -11,18 +11,20 @@ export const MapPage = () => {
   const building = useParams().building;
   const room = useParams().room;
   const roomName = room.split("_").join(" ");
-  const params = new URLSearchParams({building, room:roomName}).toString();
+  const params = new URLSearchParams({ building, room: roomName }).toString();
 
-  const { data:map, isLoading, isError, error } = useGetMapQuery(
-    {
-      refetchOnReconnect: true,
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const {
+    data: map,
+    isLoading,
+    isError,
+    error,
+  } = useGetMapQuery({
+    refetchOnReconnect: true,
+    refetchOnMountOrArgChange: true,
+  });
   useEffect(() => {
     appBar.setAppBar({ title: "Map" });
-  }
-  , []);
+  }, []);
 
   if (isError) return <Box>Error: {error.message}</Box>;
   if (isLoading) return <Box>Loading...</Box>;
@@ -37,10 +39,10 @@ export const MapPage = () => {
           fontSize: "18px",
           fontWeight: "bold",
         }}
-          href={`/plants?${params}`}
-        >
-        Total:{map[building][room].totalPlants||"0"}plants
-        </Link>
+        href={`/plants?${params}`}
+      >
+        Total:{map[building][room].totalPlants || "0"}plants
+      </Link>
       <Box>
         <Box
           sx={{
@@ -51,12 +53,17 @@ export const MapPage = () => {
             flex: "0 0 0",
           }}
         >
-          {Object.keys(map).length>0&&
+          {Object.keys(map).length > 0 &&
             map[building][room]?.racks &&
             map[building][room].racks.map((rack, index) => (
-              <Rack key={index} index={index} shelfs={rack.shelfs} />
+              <Rack
+                key={index}
+                index={index}
+                shelfs={rack.shelfs}
+                address={{ building, room }}
+              />
             ))}
-          {Object.keys(map).length>0&&
+          {Object.keys(map).length > 0 &&
             map[building][room]?.rows &&
             map[building][room].rows.map((row, index) => (
               <Row
@@ -64,7 +71,7 @@ export const MapPage = () => {
                 index={index}
                 trays={row.trays}
                 direction={row.numeration}
-                address={{building, room}}
+                address={{ building, room }}
               />
             ))}
         </Box>
