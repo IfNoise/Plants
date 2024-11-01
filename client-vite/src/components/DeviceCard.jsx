@@ -123,8 +123,8 @@ const Outputs = ({ deviceId, updateInterval }) => {
                 height: "26px",
                 borderRadius: "5px",
                 borderStyle: "solid",
-                borderColor: output.state ?  "green" : "gray",
-                borderWidth: "1px",
+                borderColor: output.state ?  "#76ff03" : "#eeeeee",
+                borderWidth: "2px",
               }}
             >
               {output.name}

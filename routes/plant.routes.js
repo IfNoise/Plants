@@ -389,46 +389,15 @@ router.get("/plants_map", async (req, res) => {
 
 router.get("/test", async (req, res) => {
   try {
-    //const plants=["669b9435021e1d69b9481ed5","669b9435021e1d69b9481ed6","669b9435021e1d69b9481ed7"]
-    const plants = await Plant.find({ "state": "MotherPlant" });
-    console.log(plants);
+   const id =['66f673c59b6daa7b71bfcdcb','66f673c59b6daa7b71bfcdd4']
+    const plants = await Plant.find({ _id: { $in: id} });
     const result = await Promise.all(
       plants.map(async (plant) => {
-        plant.actions.push
-          ({
-            type: "MakeMother",
-            date: Date.now(),
-          });
-        await plant.save();
-        return plant;
+        plant.set("state", "Growing");
+        plant.actions.pop();
+        return await plant.save();
       })
     );
-    // const result = await Promise.all(
-    //   plants.map(async (plant) => {
-    //     plant.set({
-    //       state: "Growing",
-    //     });
-    //     plant.set({
-    //       currentAddress: {
-    //         building: "Hangar1",
-    //         room: "Laboratory",
-    //         row: 0,
-    //         shelf: 0,
-    //         rack: 0,
-    //         tray: 0,
-    //       },
-    //     });
-    //     await plant.save();
-    //   })
-    // );
-
-    // plants.map(async (idx) => {
-    // const plant = await Plant.findById(idx);
-    // // plant.actions.pop();
-    // plant.set("gender","Female");
-    // await plant.save();
-    //})
-
     res.json({ result });
   } catch (error) {
     return res.status(500).json({ message: error.message });

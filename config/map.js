@@ -127,9 +127,6 @@ const plantMap = {
             {
               plants: [],
             },
-            {
-              plants: [],
-            },
           ],
         },
         {
@@ -162,9 +159,6 @@ const plantMap = {
             {
               plants: [],
             },
-            {
-              plants: [],
-            },
           ],
         },
         {
@@ -175,13 +169,6 @@ const plantMap = {
             {
               plants: [],
             },
-            {
-              plants: [],
-            },
-          ],
-        },
-        {
-          shelfs: [
             {
               plants: [],
             },
@@ -219,6 +206,33 @@ const plantMap = {
             },
           ],
         },
+        {
+          shelfs: [
+            {
+              plants: [],
+            },
+            {
+              plants: [],
+            },
+            {
+              plants: [],
+            },
+          ],
+        },
+        {
+          shelfs: [
+            {
+              plants: [],
+            },
+            {
+              plants: [],
+            },
+            {
+              plants: [],
+            },
+          ],
+        },
+        
       ],
       rows: [
         {

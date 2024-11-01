@@ -32,14 +32,13 @@ import { ThemeContext } from "@emotion/react";
 const buttonStyle = {
   marginRight: "auto",
   size: "large",
-
 };
 
 const DownloadButton = ({ photo }) => {
-  const { src, strain, pheno } = photo;
+  const { src } = photo;
   return (
     <Link href={`https://ddweed.org/${src}`} download>
-      <Tooltip title={`Download ${strain} ${pheno}`}>
+      <Tooltip title="Download" placement="left">
         <IconButton>
           <DownloadIcon />
         </IconButton>
@@ -107,25 +106,26 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
         onTouchEnd={handleTouchEnd}
       >
         <Box
-         sx={{
-          position: "relative",
-          height: '100%',
-          width: "100%",
-          overflow: "auto",
-         }}>
-        <img
-          ref={imgNode}
-          style={{
-            height: 'auto',
-            width:  'auto',
-            objectFit: "contain", // Change to 'contain' to prevent cropping
-            transform: `scale(${zoom})`,
-            transformPosition: "center",
-            transition: "transform 0.3s ease",
+          sx={{
+            position: "relative",
+            height: "100%",
+            width: "100%",
+            overflow: "auto",
           }}
-          src={`https://ddweed.org/gallery/${href}`}
-          alt={strain}
-        />
+        >
+          <img
+            ref={imgNode}
+            style={{
+              height: "auto",
+              width: "auto",
+              objectFit: "contain", // Change to 'contain' to prevent cropping
+              transform: `scale(${zoom})`,
+              transformPosition: "center",
+              transition: "transform 0.3s ease",
+            }}
+            src={`https://ddweed.org/gallery/${href}`}
+            alt={strain}
+          />
         </Box>
         <Box
           sx={{
@@ -188,27 +188,29 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
             color: "black",
           }}
         >
-
           <Tooltip title="Close">
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </Tooltip>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Tooltip title="Zoom In">
-            
-            <IconButton size="large" onClick={handleZoomIn}>
-              <ZoomInIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Zoom Out">
-            <IconButton size="large" onClick={handleZoomOut}>
-              <ZoomOutIcon fontSize="large" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Download">
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Tooltip title="Zoom In" placement="left">
+              <IconButton size="large" onClick={handleZoomIn}>
+                <ZoomInIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Zoom Out" placement="left">
+              <IconButton size="large" onClick={handleZoomOut}>
+                <ZoomOutIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
             <DownloadButton photo={photo} />
-          </Tooltip>
           </Box>
         </Box>
       </Box>
