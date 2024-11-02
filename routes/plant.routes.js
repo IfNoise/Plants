@@ -44,6 +44,7 @@ router.post("/new_plant", async (req, res) => {
           strain: strain.name,
           pheno: req.body.code,
           gender,
+          generation: 2,
           group,
           startDate,
           currentAddress: {
@@ -68,6 +69,7 @@ router.post("/new_plant", async (req, res) => {
           startDate,
           strain: strain.name,
           pheno,
+          generation: 1,
           gender,
           group,
 
@@ -89,13 +91,10 @@ router.post("/new_plant", async (req, res) => {
         });
       }
     }
-    console.log("New PLANTS!!!", newPlants);
     const result = await Plant.insertMany(newPlants);
-    console.log(result);
     if (result.length === 0) {
       return res.status(500).json({ message: "Error while creating plants" });
     } else if (result.length === number) {
-      console.log("Plants created successfully");
       const currentCounter = strain.counter;
       const currentLIdx = strain?.lastIdx || 0;
       const newCounter = currentCounter - number;
@@ -151,9 +150,11 @@ router.post("/new_action", async (req, res) => {
   try {
     const data = req.body.action;
     const id = req.body.id;
+    const date = data?.date || Date.now();
     let action;
+    const group = crypto.randomBytes(8).toString("hex");
     id.map(async (idx) => {
-      action = { type: data.actionType, date: data?.date || Date.now() };
+      action = { type: data.actionType, date };
       const plant = await Plant.findById(idx);
 
       switch (data.actionType) {
@@ -227,14 +228,12 @@ router.post("/new_action", async (req, res) => {
         }
         case "CuttingClones": {
           const number = data.clonesNumber;
-          console.log(number);
-          const group = crypto.randomBytes(8).toString("hex");
           action.clonesNumber = number;
           action.group = group;
           const newClones = [];
           for (let index = 0; index < number; index++) {
             let firstAction = {
-              date: Date.now(),
+              date,
               type: "Start",
               source: plant._id,
               address: data.address,
@@ -242,11 +241,12 @@ router.post("/new_action", async (req, res) => {
             newClones.push({
               strain: plant.strain,
               pheno: plant.pheno,
+              generation: (plant?.generation||1) + 1,
               gender: plant?.gender || "undefined",
               type: "Clone",
               group,
               motherPlant: plant._id,
-              startDate: Date.now(),
+              startDate: date,
               state: "Cloning",
               currentAddress: data.address,
               actions: [firstAction],
