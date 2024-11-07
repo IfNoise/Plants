@@ -102,69 +102,99 @@ const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
+    position: "relative", 
     flexGrow: 1,
-    marginTop: "64px",
+    top: "64px",
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: { md: `-${drawerWidth}px`, sm: 0 },
+    left: { md: `${drawerWidth}px`, sm: 0 },
     ...(open && {
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
     }),
   })
 );
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  position: 'fixed',
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    left: drawerWidth+"px",
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
 
-// const AppBar = styled(MuiAppBar, {
-//   shouldForwardProp: (prop) => prop !== "open",
-// })(({ theme, open }) => ({
-//   transition: theme.transitions.create(["margin", "width"], {
-//     easing: theme.transitions.easing.sharp,
-//     duration: theme.transitions.duration.leavingScreen,
+// const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+//   ({ theme, open }) => ({
+//     '& .MuiDrawer-paper': {
+//       position: 'relative',
+//       whiteSpace: 'nowrap',
+//       width: drawerWidth,
+//       transition: theme.transitions.create('width', {
+//         easing: theme.transitions.easing.sharp,
+//         duration: theme.transitions.duration.enteringScreen,
+//       }),
+//       boxSizing: 'border-box',
+//       ...(!open && {
+//         overflowX: 'hidden',
+//         transition: theme.transitions.create('width', {
+//           easing: theme.transitions.easing.sharp,
+//           duration: theme.transitions.duration.leavingScreen,
+//         }),
+//         width: theme.spacing(7),
+//         [theme.breakpoints.up('sm')]: {
+//           width: theme.spacing(9),
+//         },
+//       }),
+//     },
 //   }),
-//   ...(open && {
-//     width: `calc(100% - ${drawerWidth}px)`,
-//     marginLeft: `${drawerWidth}px`,
-//     transition: theme.transitions.create(["margin", "width"], {
-//       easing: theme.transitions.easing.easeOut,
-//       duration: theme.transitions.duration.enteringScreen,
-//     }),
-//   }),
-// }));
-const AppBar = ({ open, openDrawer }) => {
-  const { appBar } = useContext(AppBarContext);
+// );
+
+
+export const Layout = () => {
   const navigate = useNavigate();
+  const { appBar } = useContext(AppBarContext);
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const [open, setOpen] = React.useState(!isSmall && true);
+  const handleToggleDrawer = () => {
+    if (isSmall) {
+      setOpen(!open);
+    }
+  };
+  const handleDrawerClose = () => {
+    if (isSmall) {
+      setOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isSmall) {
+      setOpen(!open);
+    }
+  }, [isSmall]);
 
   return (
-    <MuiAppBar
-      position="fixed"
-      open={open}
-      sx={{
-        transition: (theme) =>
-          theme.transitions.create(["margin", "width"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-        ...(open && {
-          width: `calc(100% - ${drawerWidth}px)`,
-          marginLeft: `${drawerWidth}px`,
-          transition: (theme) =>
-            theme.transitions.create(["margin", "width"], {
-              easing: theme.transitions.easing.easeOut,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
-        }),
-      }}
-    >
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar open={open} position="absolute" >
       <Toolbar>
         <IconButton
           aria-label="open drawer"
-          onClick={openDrawer}
+          onClick={handleToggleDrawer}
           edge="start"
           sx={{ p: "10px", ml: 2, mr: 2, ...(open && { display: "none" }) }}
         >
@@ -188,45 +218,7 @@ const AppBar = ({ open, openDrawer }) => {
           {appBar?.right}
         </Box>
       </Toolbar>
-    </MuiAppBar>
-  );
-};
-AppBar.propTypes = {
-  open: PropTypes.bool,
-  openDrawer: PropTypes.func,
-};
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
-
-export const Layout = () => {
-  const theme = useTheme();
-  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const [open, setOpen] = React.useState(!isSmall && true);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  React.useEffect(() => {
-    if (isSmall) {
-      setOpen(false);
-    }
-  }, [isSmall]);
-
-  const handleDrawerClose = () => {
-    setOpen(isSmall ? false : true);
-  };
-
-  return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar open={open} openDrawer={handleDrawerOpen} />
+      </AppBar>
       <Drawer
         sx={{
           width: drawerWidth,
@@ -238,20 +230,20 @@ export const Layout = () => {
         }}
         variant={isSmall ? "temporary" : "permanent"}
         anchor="left"
-        onClose={handleDrawerClose}
         open={open}
       >
-        <DrawerHeader>
-          {isSmall && (
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "ltr" ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
+          <Toolbar
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              px: [1],
+            }}
+          >
+            <IconButton onClick={handleToggleDrawer}>
+              <ChevronLeftIcon />
             </IconButton>
-          )}
-        </DrawerHeader>
+          </Toolbar>
         <Divider />
         <Box role="presentation">
           <List>

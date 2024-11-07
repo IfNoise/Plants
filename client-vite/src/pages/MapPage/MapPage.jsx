@@ -48,6 +48,9 @@ export const MapPage = () => {
           sx={{
             width: map[building][room]?.width,
             display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "baseline",
+            alignContent: "space-around",
             flexDirection: "row",
             flexWrap: "wrap",
             flex: "0 0 0",

@@ -27,7 +27,6 @@ router.post("/new_plant", async (req, res) => {
     if (!strain) {
       throw new Error("Strain not found");
     }
-    console.log(strain);
     const newPlants = [];
     const sourceType = strain.sourceType;
     const gender = strain.sourceType === "Seed" ? "undefined" : "Female";

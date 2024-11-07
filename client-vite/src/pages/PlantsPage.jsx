@@ -82,7 +82,12 @@ export const PlantsPage = () => {
       {isLoading && <CircularProgress />}
       {plants && (
         <>
-          <Box sx={{}}>
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            padding: 2,
+          }}>
             <Typography variant="h6" component="h1" gutterBottom>
               {plants.length} Plants
             </Typography>

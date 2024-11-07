@@ -1,4 +1,4 @@
-import { Box, Link, Paper, Stack} from "@mui/material";
+import { Link, Paper, Stack} from "@mui/material";
 import PropTypes from "prop-types";
 import MiniPlant from "./MiniPlant";
 export default function Shelf({index,plants,address}) {
@@ -50,5 +50,7 @@ export default function Shelf({index,plants,address}) {
   );
 }
 Shelf.propTypes = {
+  index: PropTypes.number,
   plants: PropTypes.array,
+  address: PropTypes.object,
 };

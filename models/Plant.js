@@ -31,13 +31,6 @@ const plant = new Schema({
     number: Number,
   },
   cloneCounter:Number,
-  //================
-  productYield: {
-    top: Number,
-    pop: Number,
-    trim: Number,
-    leafs: Number,
-  },
   maxClones: Number,
   //================
   actions: [Action],

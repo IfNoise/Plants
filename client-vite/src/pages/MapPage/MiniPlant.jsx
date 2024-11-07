@@ -24,6 +24,7 @@ export default function MiniPlant({ plant }) {
         backgroundColor: "greenyellow",
         p: "0px",
         cursor: "pointer",
+        border: "1px solid #555",
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={() => {
@@ -52,6 +53,7 @@ export default function MiniPlant({ plant }) {
           sx={{
             width: "150px",
           height: "150px",
+          border: "1px solid #555",
           p: "15px",
           m: "3px",
           }}>

@@ -46,6 +46,7 @@ export default function Plant({ plant }) {
         backgroundColor: stringToColor(plant.pheno),
         p: "1px",
         cursor: "pointer",
+        border: "1px solid #555",
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={() => {
@@ -72,6 +73,7 @@ export default function Plant({ plant }) {
       sx={{
         width: "150px",
         height: "150px",
+        border: "1px solid #555",
         p: "15px",
         m: "3px",
       }}

@@ -153,10 +153,10 @@ export const PlantsList = (props) => {
     <Box sx={{ display: "flow", height: "100%",right:0,ml:0,pl:0  }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
-        <Box sx={{ height: { md: "60vh", lg: "78vh" },}}>
           <DataGrid
             getRowId={getRowId}
             checkboxSelection
+            sx={{ height: "100%", width: "100%" }}
             maxHeight="100%" //{{md:"70%",lg:"80%"}}
             disableRowSelectionOnClick
             rows={plants?.map((plant) => {
@@ -173,7 +173,6 @@ export const PlantsList = (props) => {
               plantDetails(params.row._id);
             }}
           />
-        </Box>
       )}
 
       {plants?.length > 0 && apiIsLoaded && isLarge && (
