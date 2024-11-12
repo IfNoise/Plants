@@ -357,7 +357,7 @@ const plantMap = {
       ],
       columns: 6,
     },
-    Small_Room: {
+    Small_room: {
       width: `390px`,
       totalPlants: 0,
       rows: [
