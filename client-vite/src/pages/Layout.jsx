@@ -294,7 +294,7 @@ export const Layout = () => {
                       },
                       {
                         text: "Small room",
-                        href: "/map/Hangar2/Small_Room",
+                        href: "/map/Hangar2/Small_room",
                         icon: <InboxIcon />,
                       },
                     ],
