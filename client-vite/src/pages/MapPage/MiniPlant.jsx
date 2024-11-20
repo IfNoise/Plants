@@ -7,7 +7,7 @@ export default function MiniPlant({ plant }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  
+
   const handleClick = () => {
     navigate(`/plant/${plant.id}`);
   };
@@ -36,39 +36,37 @@ export default function MiniPlant({ plant }) {
       <Typography
         variant="caption"
         gutterBottom
-        sx={{ fontSize: "6px",
-          fontWeight: "bold",
-          color: "black",
-        }}
+        sx={{ fontSize: "6px", fontWeight: "bold", color: "black" }}
       >
         {plant.pheno}
       </Typography>
-      <Popper
-        open={open}
-        anchorEl={anchorEl}
-        anc
-        onClose={() => {}}
-      >
+      <Popper open={open} anchorEl={anchorEl} onClose={() => {}}>
         <Paper
           sx={{
             width: "150px",
-          height: "150px",
-          border: "1px solid #555",
-          p: "15px",
-          m: "3px",
-          }}>
-        <Typography variant="caption" gutterBottom display="block" sx={{fontSize:"12px",fontWeight:"bold"}}>
-          {plant.strain}
-        </Typography>
-        <Typography variant="caption" gutterBottom display="block">
-          {plant.pheno}
-        </Typography>
-        <Typography variant="caption" gutterBottom display="block">
-          {plant.state}
-        </Typography>
-        <Typography variant="caption" gutterBottom display="block">
-          {plant.potSize || ""}
-        </Typography>
+            height: "150px",
+            border: "1px solid #555",
+            p: "15px",
+            m: "3px",
+          }}
+        >
+          <Typography
+            variant="caption"
+            gutterBottom
+            display="block"
+            sx={{ fontSize: "12px", fontWeight: "bold" }}
+          >
+            {plant.strain}
+          </Typography>
+          <Typography variant="caption" gutterBottom display="block">
+            {plant.pheno}
+          </Typography>
+          <Typography variant="caption" gutterBottom display="block">
+            {plant.state}
+          </Typography>
+          <Typography variant="caption" gutterBottom display="block">
+            {plant.potSize || ""}
+          </Typography>
         </Paper>
       </Popper>
     </Box>

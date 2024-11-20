@@ -22,7 +22,7 @@ export const MotherCard = (props) => {
     return diffDays;
   };
   return (
-    <Card sx={{ width: 345, p: "3px", m: "2px", boxShadow: 4 }}>
+    <Card sx={{ width: 345, m: 1, p: "5px", boxShadow: 4 }}>
       <CardHeader
         avatar={<PlantAvatar pheno={props.plant.pheno} />}
         title={
@@ -63,7 +63,7 @@ export const MotherCard = (props) => {
           <Grid item xs={12}>
             <Typography
               variant="body2"
-              fontWeight="bold"  
+              fontWeight="bold"
               color="text.secondary"
               component="div"
             >

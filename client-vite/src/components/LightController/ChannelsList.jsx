@@ -277,10 +277,10 @@ const ChannalCard = ({ channel }) => {
 
   return (
     <>
-      <LockWrapper lockedDefault={manual}>
+      <LockWrapper lockedDefault={true}>
         <Card
           sx={{
-           // m: "4px",
+            // m: "4px",
             p: "8px",
             display: "flex",
             flexDirection: "column",
@@ -362,7 +362,7 @@ const ChannalCard = ({ channel }) => {
               onChange={(e) => setMaxValue(e.target.value)}
               onChangeCommitted={(e) => {
                 console.log(e);
-                setMaxLevel({ name, maxLevel: 32767*maxValue/100 });
+                setMaxLevel({ name, maxLevel: (32767 * maxValue) / 100 });
               }}
             />
           </Stack>
@@ -416,12 +416,10 @@ export default function ChannelsList({
     }
   }, [data, channelNames]);
   return (
-    <Accordion
-
-    >
-      <AccordionSummary
-         expandIcon={<ExpandMoreIcon color="red" />}
-      >Channels</AccordionSummary>
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon color="red" />}>
+        Channels
+      </AccordionSummary>
       <AccordionDetails>
         {isLoading && <CircularProgress />}
         {isError && <Alert severity="error">{error.message}</Alert>}

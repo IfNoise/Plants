@@ -132,7 +132,9 @@ const PlantStages = ({ plant }) => {
       actions?.find(
         (action) =>
           action.type === "Picking" &&
-          (action.potSize === "1 L" || action.potSize === "0.25 L")
+          (action.potSize === "1 L" ||
+            action.potSize === "0.25 L" ||
+            action.potSize === undefined)
       )?.date
     );
     const bloomStartDate = new Date(
@@ -339,24 +341,24 @@ export const PlantDetailPage = () => {
                     )}
                   </Grid>
 
-                    {state === "MotherPlant" && (
-                      <>
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", justifyContent: "left" }}
-                        >
-                          <Typography variant="body" color="text.secondary">
-                            Mother Plant yeld:{cloneCounter ?? "0"} clones
-                          </Typography>
+                  {state === "MotherPlant" && (
+                    <>
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{ display: "flex", justifyContent: "left" }}
+                      >
+                        <Typography variant="body" color="text.secondary">
+                          Mother Plant yeld:{cloneCounter ?? "0"} clones
+                        </Typography>
 
-                          <Typography color="text.secondary">
-                            Max Clones yeld:{maxClones ?? "0"} clones
-                          </Typography>
-                        </Grid>
-                      </>
-                    )}
-                  </Grid>
+                        <Typography color="text.secondary">
+                          Max Clones yeld:{maxClones ?? "0"} clones
+                        </Typography>
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
               </CardContent>
             </Card>
           </Grid>

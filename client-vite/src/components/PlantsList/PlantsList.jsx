@@ -12,10 +12,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useCallback } from "react";
-import { DataGrid,  useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import MaleIcon from '@mui/icons-material/Male';
-import FemaleIcon from '@mui/icons-material/Female'
+import MaleIcon from "@mui/icons-material/Male";
+import FemaleIcon from "@mui/icons-material/Female";
 import PlantSpeedDial from "../PlantSpeedDial/PlantSpeedDial";
 import PlantListItem from "../PlantListItem/PlantListItem";
 import PlantAvatar from "../PlantAvatar";
@@ -28,17 +28,18 @@ const idToColor = (
 ) => {
   const color = id.slice(0, 6);
   return "#" + color;
-}
-
-
+};
 
 const columns = [
-  { field: "avatar", headerName: "",
+  {
+    field: "avatar",
+    headerName: "",
     renderCell: (params) => {
       return <PlantAvatar pheno={params.value} />;
     },
-    
-    width: 50 },
+
+    width: 50,
+  },
   { field: "strain", headerName: "Strain", width: 230 },
   {
     field: "pheno",
@@ -57,7 +58,11 @@ const columns = [
     field: "gender",
     headerName: "Gender",
     renderCell: (params) => {
-      return params.value==='Male'?<MaleIcon color='male' />:<FemaleIcon color='female'/>
+      return params.value === "Male" ? (
+        <MaleIcon color="male" />
+      ) : (
+        <FemaleIcon color="female" />
+      );
     },
     width: 80,
     editable: false,
@@ -81,7 +86,12 @@ const columns = [
     field: "group",
     headerName: "Group",
     renderCell: (params) => {
-      return <Chip label={params.value} style={{ backgroundColor: idToColor(params.value) }} />;
+      return (
+        <Chip
+          label={params.value}
+          style={{ backgroundColor: idToColor(params.value) }}
+        />
+      );
     },
     width: 150,
     editable: false,
@@ -150,29 +160,29 @@ export const PlantsList = (props) => {
   }, [apiRef]);
   const plantsPerPage = 100;
   return (
-    <Box sx={{ display: "flow", height: "100%",right:0,ml:0,pl:0  }}>
+    <Box sx={{ display: "flow", height: "100%", right: 0, m: 0, p: 0 }}>
       {plants?.length < 1 && <CircularProgress />}
       {plants?.length > 0 && isLarge && (
-          <DataGrid
-            getRowId={getRowId}
-            checkboxSelection
-            sx={{ height: "100%", width: "100%" }}
-            maxHeight="100%" //{{md:"70%",lg:"80%"}}
-            disableRowSelectionOnClick
-            rows={plants?.map((plant) => {
-              return {
-                avatar: plant.pheno ,
-                ...plant,
-                start: new Date(plant?.startDate).toDateString() || "undefined",
-              };
-            })}
-            apiRef={apiRef}
-            columns={columns}
-            initialState={{}}
-            onCellDoubleClick={(params) => {
-              plantDetails(params.row._id);
-            }}
-          />
+        <DataGrid
+          getRowId={getRowId}
+          checkboxSelection
+          sx={{ height: "100%", width: "100%" }}
+          maxHeight="100%" //{{md:"70%",lg:"80%"}}
+          disableRowSelectionOnClick
+          rows={plants?.map((plant) => {
+            return {
+              avatar: plant.pheno,
+              ...plant,
+              start: new Date(plant?.startDate).toDateString() || "undefined",
+            };
+          })}
+          apiRef={apiRef}
+          columns={columns}
+          initialState={{}}
+          onCellDoubleClick={(params) => {
+            plantDetails(params.row._id);
+          }}
+        />
       )}
 
       {plants?.length > 0 && apiIsLoaded && isLarge && (
@@ -186,7 +196,7 @@ export const PlantsList = (props) => {
             <Pagination
               count={Math.floor(plants.length / plantsPerPage) + 1}
               page={page}
-              sx={{ top: 180, position: "revert", m: 1 }}
+              sx={{ top: 180, position: "revert" }}
               onChange={(e, value) => {
                 setPage(value);
               }}
@@ -221,7 +231,7 @@ export const PlantsList = (props) => {
               maxHeight: "70vh",
             }}
           >
-            {paginate(plants, plantsPerPage, page).map((obj,i) => {
+            {paginate(plants, plantsPerPage, page).map((obj, i) => {
               return (
                 <PlantListItem
                   key={i}
@@ -242,16 +252,18 @@ export const PlantsList = (props) => {
                       });
                       setAllSelected(false);
                     }
-                    
                   }}
                 />
               );
             })}
           </List>
           {selectedPlants.length > 0 && (
-            <PlantSpeedDial getPlants={()=>{
-              return selectedPlants;
-            }} {...props} />
+            <PlantSpeedDial
+              getPlants={() => {
+                return selectedPlants;
+              }}
+              {...props}
+            />
           )}
         </>
       )}

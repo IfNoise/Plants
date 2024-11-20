@@ -37,7 +37,6 @@ export const PlantsPage = () => {
   );
   const getData = () => plants?.map((plant) => plant);
   useEffect(() => {
-
     if (Object.keys(pFilter).length > 0) {
       dispatch(clearFilter());
     }
@@ -67,27 +66,34 @@ export const PlantsPage = () => {
         title: "Plants",
         toolbar: (
           <>
-            <Scanner />
+            <Scanner
+              trayButton={true}
+              addPhotoFast={true}
+              fastRelocationButton={true}
+              fastPickButton={true}
+            />
             <TrayButton />
           </>
         ),
         right: <FilterBar getData={getData} />,
       });
-  }
+    }
   }, [plants]);
-  
+
   return (
     <Box>
       {isError && <Alert severity="error">{error.message}</Alert>}
       {isLoading && <CircularProgress />}
       {plants && (
         <>
-          <Box sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            padding: 2,
-          }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              padding: 2,
+            }}
+          >
             <Typography variant="h6" component="h1" gutterBottom>
               {plants.length} Plants
             </Typography>

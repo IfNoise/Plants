@@ -102,10 +102,10 @@ const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
-    position: "relative", 
+    position: "relative",
     flexGrow: 1,
     top: "64px",
-    padding: theme.spacing(3),
+    padding: "5px",
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -120,18 +120,18 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  position: 'fixed',
+  position: "fixed",
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    left: drawerWidth+"px",
+    left: drawerWidth + "px",
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -164,7 +164,6 @@ const AppBar = styled(MuiAppBar, {
 //   }),
 // );
 
-
 export const Layout = () => {
   const navigate = useNavigate();
   const { appBar } = useContext(AppBarContext);
@@ -183,41 +182,41 @@ export const Layout = () => {
 
   React.useEffect(() => {
     if (isSmall) {
-      setOpen(!open);
+      setOpen(false);
     }
   }, [isSmall]);
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar open={open} position="absolute" >
-      <Toolbar>
-        <IconButton
-          aria-label="open drawer"
-          onClick={handleToggleDrawer}
-          edge="start"
-          sx={{ p: "10px", ml: 2, mr: 2, ...(open && { display: "none" }) }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <IconButton aria-label="back" onClick={() => navigate(-1)}>
-          <ChevronLeftIcon />
-        </IconButton>
-        {appBar?.toolbar && appBar.toolbar}
-        <Typography variant="h5" marginLeft={2} noWrap>
-          {appBar?.title}
-        </Typography>
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          {appBar?.right}
-        </Box>
-      </Toolbar>
+      <AppBar open={open} position="absolute">
+        <Toolbar>
+          <IconButton
+            aria-label="open drawer"
+            onClick={handleToggleDrawer}
+            edge="start"
+            sx={{ p: "10px", ml: 2, mr: 2, ...(open && { display: "none" }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <IconButton aria-label="back" onClick={() => navigate(-1)}>
+            <ChevronLeftIcon />
+          </IconButton>
+          {appBar?.toolbar && appBar.toolbar}
+          <Typography variant="h5" marginLeft={2} noWrap>
+            {appBar?.title}
+          </Typography>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            {appBar?.right}
+          </Box>
+        </Toolbar>
       </AppBar>
       <Drawer
         sx={{
@@ -232,18 +231,18 @@ export const Layout = () => {
         anchor="left"
         open={open}
       >
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
-            }}
-          >
-            <IconButton onClick={handleToggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
+        <Toolbar
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            px: [1],
+          }}
+        >
+          <IconButton onClick={handleToggleDrawer}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Toolbar>
         <Divider />
         <Box role="presentation">
           <List>

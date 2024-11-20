@@ -32,7 +32,7 @@ import {
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -54,26 +54,28 @@ export const FilterBar = (props) => {
 
   const handlerBuilding = (e) => {
     const { value } = e.target;
-    setAddress((prev)=>{return { ...prev, building: value }});
+    setAddress((prev) => {
+      return { ...prev, building: value };
+    });
     dispatch(addAddress({ ...address, building: value }));
-    setRooms(()=>[...buildRooms[value]]);
+    setRooms(() => [...buildRooms[value]]);
   };
 
   const handlerRoom = (e) => {
     const { value } = e.target;
-    setAddress((prev)=>({ ...prev, room: value }));
+    setAddress((prev) => ({ ...prev, room: value }));
     dispatch(addAddress({ ...address, room: value }));
   };
 
   const handlerRow = (e) => {
     const { value } = e.target;
-    setAddress((prev)=>({ ...prev, row: Number.parseInt(value) }));
+    setAddress((prev) => ({ ...prev, row: Number.parseInt(value) }));
     dispatch(addAddress({ ...address, row: Number.parseInt(value) }));
   };
 
   const handlerRack = (e) => {
     const { value } = e.target;
-    setAddress((prev)=>({ ...prev, rack: Number.parseInt(value) }));
+    setAddress((prev) => ({ ...prev, rack: Number.parseInt(value) }));
     dispatch(addAddress({ ...address, rack: Number.parseInt(value) }));
   };
 
@@ -96,7 +98,15 @@ export const FilterBar = (props) => {
   };
 
   const strains = [...new Set(getData().map((obj) => obj.strain))];
-  const states = ["Germination","Cloning","Growing","MotherPlant","Blooming","Stopped", "Harvested"];
+  const states = [
+    "Germination",
+    "Cloning",
+    "Growing",
+    "MotherPlant",
+    "Blooming",
+    "Stopped",
+    "Harvested",
+  ];
   useEffect(() => {
     setValues(() => [...Object.values(filter)]);
     if (!filter.strain) {
@@ -109,7 +119,7 @@ export const FilterBar = (props) => {
     setPhenos(uniquePhenos);
   }, [filter]);
 
-  const handleChangeStrain = (_,newValue) => {
+  const handleChangeStrain = (_, newValue) => {
     dispatch(addStrain(newValue));
   };
   const handleChangePotSize = (event) => {
@@ -119,7 +129,7 @@ export const FilterBar = (props) => {
   const handleChangePheno = (event) => {
     dispatch(addPheno(event.target.value));
   };
-  const handleChangeState = (_,newValue) => {
+  const handleChangeState = (_, newValue) => {
     dispatch(addState(newValue));
     setPhenos([]);
   };
@@ -133,13 +143,9 @@ export const FilterBar = (props) => {
     setBeforeDate(new Date(value.$d));
   };
 
-
   return (
     <>
-      <IconButton
-
-        onClick={() => setOpen(!open)}
-      >
+      <IconButton onClick={() => setOpen(!open)}>
         <TuneIcon />
       </IconButton>
       <Drawer
@@ -152,7 +158,13 @@ export const FilterBar = (props) => {
           p: 2,
         }}
       >
-        <Box sx={{ m: 1 ,width:{xs:"100%"},}}>
+        <Box
+          sx={{
+            m: 1,
+            marginTop: "64px",
+            width: { xs: "100%" },
+          }}
+        >
           <Typography variant="h5" mr={5}>
             Filter
           </Typography>
@@ -179,7 +191,6 @@ export const FilterBar = (props) => {
                 setValues([]);
                 setAfterDate(null);
                 setBeforeDate(null);
-
               }}
             >
               Clear
@@ -194,14 +205,16 @@ export const FilterBar = (props) => {
           >
             {values.map((value, index) => {
               if (typeof value === "object" && value !== null) {
-                  return Object.keys(value).map((key, index) => {
+                return Object.keys(value).map((key, index) => {
                   if (key === "$gte") {
                     return (
                       <Chip
                         color="primary"
                         size="small"
                         key={index}
-                        label={`After: ${dayjs(value[key]||0).format("DD/MM/YYYY")}`}
+                        label={`After: ${dayjs(value[key] || 0).format(
+                          "DD/MM/YYYY"
+                        )}`}
                       />
                     );
                   } else if (key === "$lte") {
@@ -210,15 +223,22 @@ export const FilterBar = (props) => {
                         color="primary"
                         size="small"
                         key={index}
-                        label={`Before: ${dayjs(value[key]||0).format("DD/MM/YYYY")}`}
+                        label={`Before: ${dayjs(value[key] || 0).format(
+                          "DD/MM/YYYY"
+                        )}`}
                       />
                     );
                   }
                 });
-              }else
-              return (
-                <Chip color="primary" size="small" key={index} label={value} />
-              );
+              } else
+                return (
+                  <Chip
+                    color="primary"
+                    size="small"
+                    key={index}
+                    label={value}
+                  />
+                );
             })}
           </Stack>
           <Box
@@ -240,7 +260,6 @@ export const FilterBar = (props) => {
                 <FormControl sx={{ m: "1px", width: "95%" }}>
                   <Autocomplete
                     onChange={handleChangeState}
-
                     id="state"
                     name="state"
                     options={states}
@@ -311,63 +330,61 @@ export const FilterBar = (props) => {
                     onClick={() => dispatch(addPheno(null))}
                   >
                     {" "}
-                    <CancelIcon fontSize="small"/>{" "}
+                    <CancelIcon fontSize="small" />{" "}
                   </Button>
                 </Stack>
               )}
               <Box>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack direction="row" spacing={1}>
-                  
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Stack direction="row" spacing={1}>
                     <DatePicker
                       sx={{ m: "1px" }}
                       disableFuture
                       closeOnSelect
                       size="small"
-                      value={afterDate||dayjs()}
+                      value={afterDate || dayjs()}
                       label="After"
                       onChange={handleChangeAfter}
                     />
-                  <Button
-                    sx={{
-                      display: afterDate ? "block" : "none",
-                    }}
-                    onClick={() => {dispatch(addAfterDate(null))
-                      setAfterDate(dayjs())}
-                    }
-                  >
-                    <CancelIcon fontSize="small" />
-                  </Button>
-                </Stack>
-                <Stack direction="row" spacing={1}>
+                    <Button
+                      sx={{
+                        display: afterDate ? "block" : "none",
+                      }}
+                      onClick={() => {
+                        dispatch(addAfterDate(null));
+                        setAfterDate(dayjs());
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
                     <DatePicker
                       sx={{ m: "1px" }}
                       disableFuture
                       closeOnSelect
                       size="small"
-                      value={beforeDate||dayjs()}
+                      value={beforeDate || dayjs()}
                       label="Before"
                       onChange={handleChangeBefore}
                     />
-                  
-                  <Button
-                    sx={{
-                      display: beforeDate ? "block" : "none",
-                    }}
-                    onClick={() => {dispatch(addBeforeDate(null))
-                      setBeforeDate(dayjs())}
-                    }
-                  >
-                    <CancelIcon fontSize="small" />
-                  </Button>
-                </Stack>
+
+                    <Button
+                      sx={{
+                        display: beforeDate ? "block" : "none",
+                      }}
+                      onClick={() => {
+                        dispatch(addBeforeDate(null));
+                        setBeforeDate(dayjs());
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
                 </LocalizationProvider>
               </Box>
               <Stack direction="row" spacing={1}>
-                <FormControl
-                  variant="outlined"
-                  sx={{ m: "2px", width: "90%" }}
-                >
+                <FormControl variant="outlined" sx={{ m: "2px", width: "90%" }}>
                   <InputLabel id="potsize-label">Pot Size</InputLabel>
                   <Select
                     labelId="potsize-label"
@@ -417,43 +434,41 @@ export const FilterBar = (props) => {
                   onClick={() => {
                     const tmp = { ...address };
                     delete tmp.building;
-                    if(tmp.room) delete tmp.room;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
+                    if (tmp.room) delete tmp.room;
+                    setAddress({ ...tmp });
+                    dispatch(addAddress(tmp));
                     setRooms([]);
-
                   }}
                 >
                   <CancelIcon fontSize="small" />
                 </Button>
               </Stack>
               <Stack direction="row" spacing={1}>
-              <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
-                <InputLabel id="room-label">Room</InputLabel>
-                <Select
-                  labelId="room-label"
-                  name="room"
-                  value={address.room ?? ""}
-                  label="Room"
-                  onChange={handlerRoom}
-
-                >
-                  {rooms.map((text, index) => {
-                    return (
-                      <MenuItem key={index} value={text}>
-                        {text}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-              <Button
+                <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>
+                  <InputLabel id="room-label">Room</InputLabel>
+                  <Select
+                    labelId="room-label"
+                    name="room"
+                    value={address.room ?? ""}
+                    label="Room"
+                    onChange={handlerRoom}
+                  >
+                    {rooms.map((text, index) => {
+                      return (
+                        <MenuItem key={index} value={text}>
+                          {text}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+                <Button
                   sx={{ display: address?.room ? "block" : "none" }}
                   onClick={() => {
                     const tmp = { ...address };
                     delete tmp.room;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
+                    setAddress({ ...tmp });
+                    dispatch(addAddress(tmp));
                   }}
                 >
                   <CancelIcon fontSize="small" />
@@ -461,136 +476,136 @@ export const FilterBar = (props) => {
               </Stack>
               {address?.room != "Laboratory" && (
                 <>
-                <Stack direction="row" spacing={1}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ m: "2px", width: "95%" }}
-                    label="Row"
-                    value={address?.row ?? 0}
-                    type="number"
-                    onChange={handlerRow}
-                  />
-                  <Button
-                  sx={{ display: address?.row ? "block" : "none" }}
-                  onClick={() => {
-                    const tmp = { ...address };
-                    delete tmp.row;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </Button>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ m: "2px", width: "95%" }}
-                    label="Tray"
-                    type="number"
-                    value={address?.tray ?? 0}
-                    onChange={handlerTray}
-                  />
-                <Button
-                  sx={{ display: address?.tray ? "block" : "none" }}
-                  onClick={() => {
-                    const tmp = { ...address };
-                    delete tmp.tray;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </Button>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ mx: "2px", width: "95%" }}
-                    label="Number"
-                    type="number"
-                    value={address?.number ?? 0}
-                    onChange={handlerNumber}
-                  />
-                                    <Button
-                  sx={{ display: address?.number ? "block" : "none" }}
-                  onClick={() => {
-                    const tmp = { ...address };
-                    delete tmp.number;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </Button>
-                </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ m: "2px", width: "95%" }}
+                      label="Row"
+                      value={address?.row ?? 0}
+                      type="number"
+                      onChange={handlerRow}
+                    />
+                    <Button
+                      sx={{ display: address?.row ? "block" : "none" }}
+                      onClick={() => {
+                        const tmp = { ...address };
+                        delete tmp.row;
+                        setAddress({ ...tmp });
+                        dispatch(addAddress(tmp));
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ m: "2px", width: "95%" }}
+                      label="Tray"
+                      type="number"
+                      value={address?.tray ?? 0}
+                      onChange={handlerTray}
+                    />
+                    <Button
+                      sx={{ display: address?.tray ? "block" : "none" }}
+                      onClick={() => {
+                        const tmp = { ...address };
+                        delete tmp.tray;
+                        setAddress({ ...tmp });
+                        dispatch(addAddress(tmp));
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ mx: "2px", width: "95%" }}
+                      label="Number"
+                      type="number"
+                      value={address?.number ?? 0}
+                      onChange={handlerNumber}
+                    />
+                    <Button
+                      sx={{ display: address?.number ? "block" : "none" }}
+                      onClick={() => {
+                        const tmp = { ...address };
+                        delete tmp.number;
+                        setAddress({ ...tmp });
+                        dispatch(addAddress(tmp));
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
                 </>
               )}
               {address?.room == "Laboratory" && (
                 <>
-                <Stack direction="row" spacing={1}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ m: "2px", width: "95%" }}
-                    label="Rack"
-                    type="number"
-                    value={address?.rack ?? 0}
-                    onChange={handlerRack}
-                  />
-                                    <Button
-                  sx={{ display: address?.rack ? "block" : "none" }}
-                  onClick={() => {
-                    const tmp = { ...address };
-                    delete tmp.rack;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </Button>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ mx: "2px", width: "95%" }}
-                    label="Shelf"
-                    type="number"
-                    value={address?.shelf ?? 0}
-                    onChange={handlerShelf}
-                  />
-                                    <Button
-                  sx={{ display: address?.shelf ? "block" : "none" }}
-                  onClick={() => {
-                    const tmp = { ...address };
-                    delete tmp.shelf;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </Button>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                  <TextField
-                    id="outlined-number"
-                    sx={{ mx: "2px", width: "95%" }}
-                    label="Number"
-                    type="number"
-                    value={address?.number ?? 0}
-                    onChange={handlerNumber}
-                  />
-                   <Button
-                  sx={{ display: address?.number ? "block" : "none" }}
-                  onClick={() => {
-                    const tmp = { ...address };
-                    delete tmp.number;
-                    setAddress({ ...tmp });   
-                    dispatch(addAddress(tmp))
-                  }}
-                >
-                  <CancelIcon fontSize="small" />
-                </Button>
-                </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ m: "2px", width: "95%" }}
+                      label="Rack"
+                      type="number"
+                      value={address?.rack ?? 0}
+                      onChange={handlerRack}
+                    />
+                    <Button
+                      sx={{ display: address?.rack ? "block" : "none" }}
+                      onClick={() => {
+                        const tmp = { ...address };
+                        delete tmp.rack;
+                        setAddress({ ...tmp });
+                        dispatch(addAddress(tmp));
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ mx: "2px", width: "95%" }}
+                      label="Shelf"
+                      type="number"
+                      value={address?.shelf ?? 0}
+                      onChange={handlerShelf}
+                    />
+                    <Button
+                      sx={{ display: address?.shelf ? "block" : "none" }}
+                      onClick={() => {
+                        const tmp = { ...address };
+                        delete tmp.shelf;
+                        setAddress({ ...tmp });
+                        dispatch(addAddress(tmp));
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    <TextField
+                      id="outlined-number"
+                      sx={{ mx: "2px", width: "95%" }}
+                      label="Number"
+                      type="number"
+                      value={address?.number ?? 0}
+                      onChange={handlerNumber}
+                    />
+                    <Button
+                      sx={{ display: address?.number ? "block" : "none" }}
+                      onClick={() => {
+                        const tmp = { ...address };
+                        delete tmp.number;
+                        setAddress({ ...tmp });
+                        dispatch(addAddress(tmp));
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </Button>
+                  </Stack>
                 </>
               )}
             </Stack>

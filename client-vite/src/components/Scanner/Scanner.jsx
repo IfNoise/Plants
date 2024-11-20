@@ -107,12 +107,9 @@ const PickingIcon = () => {
 };
 
 const PotIcon = ({ value, color = "black" }) => {
-  const displayValue = value.toString().replace(/^0+/, '');
+  const displayValue = value.toString().replace(/^0+/, "");
   return (
-    <SvgIcon
-      sx={{ color, width: "48px", height: "48px" }}
-      viewBox="0 0 24 24"
-    >
+    <SvgIcon sx={{ color, width: "48px", height: "48px" }} viewBox="0 0 24 24">
       <svg
         width="48"
         height="48"
@@ -136,7 +133,16 @@ const PotIcon = ({ value, color = "black" }) => {
             d="M 13.950823,43.428599 8.4573519,5.034763 l 31.9723931,0.0604 -4.973903,38.40775 z"
             id="path1600-3"
           />
-          <text x="24" y="24" textAnchor="middle" fontSize="10" fill="black" dy=".3em">{displayValue}</text>
+          <text
+            x="24"
+            y="24"
+            textAnchor="middle"
+            fontSize="10"
+            fill="black"
+            dy=".3em"
+          >
+            {displayValue}
+          </text>
         </g>
       </svg>
     </SvgIcon>
@@ -183,7 +189,7 @@ const addedSnd = () => {
 };
 
 const FastPickButton = () => {
-  const [addAction, { isSuccess,isError,error }] = useAddActionMutation();
+  const [addAction, { isSuccess, isError, error }] = useAddActionMutation();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const { data } = useGetTrayQuery({
@@ -206,7 +212,6 @@ const FastPickButton = () => {
     addAction(action);
   };
   const handleClose = () => {
-
     setAnchorEl(null);
   };
   useEffect(() => {
@@ -230,9 +235,10 @@ const FastPickButton = () => {
         <IconButton
           variant="outlined"
           onClick={(e) => {
-            if(anchorEl) return;
+            if (anchorEl) return;
             setAnchorEl(e.currentTarget);
-            setOpen(true)}}
+            setOpen(true);
+          }}
           sx={{
             backgroundColor: "transparent",
             borderStyle: "solid",
@@ -248,22 +254,20 @@ const FastPickButton = () => {
           <PickingIcon />
         </IconButton>
       )}
-      <Popover 
-      open={open} 
-      anchorEl={anchorEl}
-      onClose={handleClose}
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
+          vertical: "top",
+          horizontal: "center",
         }}
         transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
+          vertical: "bottom",
+          horizontal: "center",
         }}
       >
-        <Stack direction="column" spacing={1}
-        sx={{ p: 1 }}
-        >
+        <Stack direction="column" spacing={1} sx={{ p: 1 }}>
           <ToggleButtonGroup
             value={potSize}
             orientation="vertical"
@@ -276,7 +280,7 @@ const FastPickButton = () => {
               <PotIcon value={0.25} color="white" />
             </ToggleButton>
             <ToggleButton value={"1L"} aria-label="centered">
-              <PotIcon value={1} color="white"/>
+              <PotIcon value={1} color="white" />
             </ToggleButton>
             <ToggleButton value={"4L"} aria-label="right aligned">
               <PotIcon value={4} color="white" />
@@ -285,13 +289,17 @@ const FastPickButton = () => {
               <PotIcon value={7} color="white" />
             </ToggleButton>
           </ToggleButtonGroup>
-        
-        <Button variant="filled" onClick={handleClick} sx={{ width: '100%' }}>
-          ok
-        </Button>
-        <Button variant="filled" onClick={() => setOpen(false)} sx={{ width: '100%'}}>
-          cancel
-        </Button>
+
+          <Button variant="filled" onClick={handleClick} sx={{ width: "100%" }}>
+            ok
+          </Button>
+          <Button
+            variant="filled"
+            onClick={() => setOpen(false)}
+            sx={{ width: "100%" }}
+          >
+            cancel
+          </Button>
         </Stack>
       </Popover>
     </>
@@ -352,7 +360,13 @@ FastRelocationButton.propTypes = {
   address: PropTypes.object,
 };
 
-export default function Scanner({ output }) {
+export default function Scanner({
+  output,
+  trayButton,
+  addPhotoFast,
+  fastPickButton,
+  fastRelocationButton,
+}) {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null); //
   const [open, setOpen] = useState(false);
@@ -510,7 +524,7 @@ export default function Scanner({ output }) {
               width: "90%",
             }}
           >
-            <TrayButton />
+            {trayButton && <TrayButton />}
             <IconButton
               variant="outlined"
               onClick={close}
@@ -644,24 +658,26 @@ export default function Scanner({ output }) {
                 >
                   ADD
                 </Button>
-                <IconButton
-                  onClick={() => {
-                    setOpenPhoto(true);
-                  }}
-                  size="large"
-                  sx={{
-                    fontSize: "40px",
-                    borderColor: "red",
-                    borderWidth: "2px",
-                    borderBlockColor: "red",
-                    borderStyle: "solid",
-                    color: "red",
-                    borderRadius: "50%",
-                  }}
-                >
-                  <AddAPhotoIcon fontSize="28px" />
-                </IconButton>
-                <FastPickButton />
+                {addPhotoFast && (
+                  <IconButton
+                    onClick={() => {
+                      setOpenPhoto(true);
+                    }}
+                    size="large"
+                    sx={{
+                      fontSize: "40px",
+                      borderColor: "red",
+                      borderWidth: "2px",
+                      borderBlockColor: "red",
+                      borderStyle: "solid",
+                      color: "red",
+                      borderRadius: "50%",
+                    }}
+                  >
+                    <AddAPhotoIcon fontSize="28px" />
+                  </IconButton>
+                )}
+                {fastPickButton && <FastPickButton />}
               </>
             )}
             {addressRes && (
@@ -680,10 +696,12 @@ export default function Scanner({ output }) {
                 >
                   Details
                 </Button>
-                <FastRelocationButton
-                  plants={Array.from(store)}
-                  address={addressRes}
-                />
+                {fastRelocationButton && (
+                  <FastRelocationButton
+                    plants={Array.from(store)}
+                    address={addressRes}
+                  />
+                )}
                 {typeof output === "function" && (
                   <Button
                     variant="outlined"
@@ -720,14 +738,20 @@ export default function Scanner({ output }) {
           </DialogActions>
         </Box>
       </Dialog>
-      <AddPhotoFast
-        open={openPhoto}
-        onClose={() => setOpenPhoto(false)}
-        plants={[{ _id: idResult }]}
-      />
+      {addPhotoFast && (
+        <AddPhotoFast
+          open={openPhoto}
+          onClose={() => setOpenPhoto(false)}
+          plants={[{ _id: idResult }]}
+        />
+      )}
     </>
   );
 }
 Scanner.propTypes = {
   output: PropTypes.func,
+  trayButton: PropTypes.bool,
+  addPhotoFast: PropTypes.bool,
+  fastPickButton: PropTypes.bool,
+  fastRelocationButton: PropTypes.bool,
 };

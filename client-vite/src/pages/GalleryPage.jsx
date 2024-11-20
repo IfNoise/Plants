@@ -101,13 +101,10 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
           height: "100vh",
           overflow: "hidden",
         }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         <Box
           sx={{
-            position: "relative",
+            position: "revert",
             height: "100%",
             width: "100%",
             overflow: "auto",
