@@ -221,11 +221,15 @@ export default function TimelineAction({ action }) {
                 variant="quilted"
               >
                 {action.photos.map((item, i) => (
-                  <ImageListItem sx={{ borderRadius: "2px" }} key={i}>
+                  <ImageListItem
+                    component={"a"}
+                    href={`https://ddweed.org/gallery/${item}`}
+                    sx={{ borderRadius: "2px" }}
+                    key={i}
+                  >
                     <img
                       src={`https://ddweed.org/gallery/${item}`}
                       alt={`Photo ${i}`}
-                      href={`https://ddweed.org/gallery/${item}`}
                     />
                   </ImageListItem>
                 ))}

@@ -50,49 +50,213 @@ DownloadButton.propTypes = {
   photo: PropTypes.object,
 };
 
+// const ImageView = ({ photo, open, onClose, next, prev }) => {
+//   const { src, strain, pheno, state, ageOfState, plantId } = photo;
+//   const imgNode = useRef(null);
+//   const [zoom, setZoom] = useState(1);
+//   const handleZoomIn = () => {
+//     const { width, height } = imgNode.current;
+//     setZoom((prevZoom) => Math.min(prevZoom + 0.2, 2)); // Максимальный зум 3x
+//   };
+
+//   const handleZoomOut = () => {
+//     const { width, height } = imgNode.current;
+//     setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0)); // Минимальный зум 1x
+//   };
+//   const href = src.includes("gallery/") ? src.split("/")[1] : src;
+
+//   return (
+//     <Dialog
+//       sx={{
+//         display: "flex",
+//         backgroundColor: "black",
+//         alignContent: "center",
+//         alignItems: "center",
+//         justifyContent: "center",
+//       }}
+//       fullScreen
+//       open={open}
+//     >
+//       <Box
+//         sx={{
+//           position: "relative",
+//           width: "100vw",
+//           height: "100vh",
+//           overflow: "hidden",
+//         }}
+//       >
+//         <Box
+//           sx={{
+//             position: "revert",
+//             height: "100vh",
+//             width: "100%",
+//             overflow: "auto",
+//           }}
+//         >
+//           <img
+//             ref={imgNode}
+//             style={{
+//               height: "auto",
+//               width: "auto",
+//               objectFit: "contain", // Change to 'contain' to prevent cropping
+//               transform: `scale(${zoom})`,
+//               transformPosition: "center",
+//               transition: "transform 0.3s ease",
+//             }}
+//             src={`https://ddweed.org/gallery/${href}`}
+//             alt={strain}
+//           />
+//         </Box>
+//         <Box
+//           sx={{
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             p: 2,
+//             backgroundColor: "rgba(255,255,255,0.5)",
+//             color: "black",
+//           }}
+//         >
+//           <Typography variant="h6" component="h6" gutterBottom>
+//             {strain}
+//           </Typography>
+//           <Typography variant="h6" component="h6" gutterBottom>
+//             {pheno}
+//           </Typography>
+//           <Typography variant="body1" component="p" gutterBottom>
+//             {`${ageOfState} days of ${state}`}
+//           </Typography>
+//           <Link href={`/plant/${plantId}`}>Plant</Link>
+//         </Box>
+//         <Box
+//           sx={{
+//             position: "absolute",
+//             bottom: {
+//               xs: "calc(50% - 24px)",
+//               sm: "calc(50% - 32px)",
+//               md: 0,
+//               lg: 0,
+//               xl: 0,
+//             },
+//             left: 0,
+//             p: 2,
+//             backgroundColor: "tranparent",
+//             width: "100%",
+//             color: "black",
+//             justifyContent: "center",
+//             display: "flex",
+//           }}
+//         >
+//           <Tooltip title="Previous">
+//             <IconButton onClick={prev} sx={buttonStyle}>
+//               <NavigateBeforeIcon />
+//             </IconButton>
+//           </Tooltip>
+//           <Tooltip title="Next">
+//             <IconButton onClick={next}>
+//               <NavigateNextIcon />
+//             </IconButton>
+//           </Tooltip>
+//         </Box>
+//         <Box
+//           sx={{
+//             position: "absolute",
+//             top: 0,
+//             right: 0,
+//             p: 2,
+//             backgroundColor: "transparent",
+//             color: "black",
+//           }}
+//         >
+//           <Tooltip title="Close">
+//             <IconButton onClick={onClose}>
+//               <CloseIcon />
+//             </IconButton>
+//           </Tooltip>
+//           <Box
+//             sx={{
+//               display: "flex",
+//               flexDirection: "column",
+//               alignItems: "center",
+//             }}
+//           >
+//             <Tooltip title="Zoom In" placement="left">
+//               <IconButton size="large" onClick={handleZoomIn}>
+//                 <ZoomInIcon fontSize="large" />
+//               </IconButton>
+//             </Tooltip>
+//             <Tooltip title="Zoom Out" placement="left">
+//               <IconButton size="large" onClick={handleZoomOut}>
+//                 <ZoomOutIcon fontSize="large" />
+//               </IconButton>
+//             </Tooltip>
+//             <DownloadButton photo={photo} />
+//           </Box>
+//         </Box>
+//       </Box>
+//     </Dialog>
+//   );
+// };
+
+// ImageView.propTypes = {
+//   photo: PropTypes.object,
+//   open: PropTypes.bool,
+//   onClose: PropTypes.func,
+//   next: PropTypes.func,
+//   prev: PropTypes.func,
+// };
+
 const ImageView = ({ photo, open, onClose, next, prev }) => {
   const { src, strain, pheno, state, ageOfState, plantId } = photo;
-  const [touchStart, setTouchStart] = useState(null);
-  const imgNode = useRef(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  const imgRef = useRef(null);
   const [zoom, setZoom] = useState(1);
-  const minSwipe = 100;
-  const handleTouchStart = (e) => {
-    setTouchStart(e.touches[0].clientX);
-  };
-  const handleZoomIn = () => {
-    const { width, height } = imgNode.current;
-    setZoom((prevZoom) => Math.min(prevZoom + 0.2, 2)); // Максимальный зум 3x
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.2, 3));
+  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.2, 1));
+
+  const handleMouseDown = (e) => {
+    const startX = e.clientX || e.touches?.[0]?.clientX;
+    const startY = e.clientY || e.touches?.[0]?.clientY;
+
+    const initialPosition = { ...position };
+
+    const handleMouseMove = (moveEvent) => {
+      const currentX = moveEvent.clientX || moveEvent.touches?.[0]?.clientX;
+      const currentY = moveEvent.clientY || moveEvent.touches?.[0]?.clientY;
+
+      setPosition({
+        x: initialPosition.x + (currentX - startX),
+        y: initialPosition.y + (currentY - startY),
+      });
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleMouseMove);
+      document.removeEventListener("touchend", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("touchmove", handleMouseMove);
+    document.addEventListener("touchend", handleMouseUp);
   };
 
-  const handleZoomOut = () => {
-    const { width, height } = imgNode.current;
-    setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0)); // Минимальный зум 1x
-  };
   const href = src.includes("gallery/") ? src.split("/")[1] : src;
-  const handleTouchMove = (e) => {
-    setTouchEnd(e.touches[0].clientX);
-  };
-  const handleTouchEnd = () => {
-    if (touchStart - touchEnd > minSwipe) {
-      next();
-    }
-    if (touchStart - touchEnd < -minSwipe) {
-      prev();
-    }
-  };
 
   return (
     <Dialog
+      open={open}
+      onClose={onClose}
+      fullScreen
       sx={{
         display: "flex",
-        backgroundColor: "black",
-        alignContent: "center",
-        alignItems: "center",
         justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
       }}
-      fullScreen
-      open={open}
     >
       <Box
         sx={{
@@ -100,72 +264,57 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
           width: "100vw",
           height: "100vh",
           overflow: "hidden",
+          backgroundColor: "black",
         }}
       >
-        <Box
-          sx={{
-            position: "revert",
-            height: "100%",
+        <img
+          ref={imgRef}
+          src={`https://ddweed.org/gallery/${href}`}
+          alt={strain}
+          style={{
+            transform: `scale(${zoom}) translate(${position.x / zoom}px, ${
+              position.y / zoom
+            }px)`,
+            transition: zoom === 1 ? "transform 0.3s ease" : "none",
+            cursor: zoom > 1 ? "grab" : "auto",
+            objectFit: "contain",
             width: "100%",
-            overflow: "auto",
+            height: "100%",
           }}
-        >
-          <img
-            ref={imgNode}
-            style={{
-              height: "auto",
-              width: "auto",
-              objectFit: "contain", // Change to 'contain' to prevent cropping
-              transform: `scale(${zoom})`,
-              transformPosition: "center",
-              transition: "transform 0.3s ease",
-            }}
-            src={`https://ddweed.org/gallery/${href}`}
-            alt={strain}
-          />
-        </Box>
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleMouseDown}
+        />
         <Box
           sx={{
             position: "absolute",
             top: 0,
             left: 0,
             p: 2,
-            backgroundColor: "rgba(255,255,255,0.5)",
-            color: "black",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            color: "white",
           }}
         >
-          <Typography variant="h6" component="h6" gutterBottom>
-            {strain}
-          </Typography>
-          <Typography variant="h6" component="h6" gutterBottom>
-            {pheno}
-          </Typography>
-          <Typography variant="body1" component="p" gutterBottom>
+          <Typography variant="h6">{strain}</Typography>
+          <Typography variant="body1">{pheno}</Typography>
+          <Typography variant="body2">
             {`${ageOfState} days of ${state}`}
           </Typography>
-          <Link href={`/plant/${plantId}`}>Plant</Link>
+          <Link href={`/plant/${plantId}`} color="inherit">
+            Plant Details
+          </Link>
         </Box>
         <Box
           sx={{
             position: "absolute",
-            bottom: {
-              xs: "calc(50% - 24px)",
-              sm: "calc(50% - 32px)",
-              md: 0,
-              lg: 0,
-              xl: 0,
-            },
-            left: 0,
-            p: 2,
-            backgroundColor: "tranparent",
-            width: "100%",
-            color: "black",
-            justifyContent: "center",
+            bottom: "16px",
+            left: "50%",
+            transform: "translateX(-50%)",
             display: "flex",
+            gap: "16px",
           }}
         >
           <Tooltip title="Previous">
-            <IconButton onClick={prev} sx={buttonStyle}>
+            <IconButton onClick={prev}>
               <NavigateBeforeIcon />
             </IconButton>
           </Tooltip>
@@ -178,11 +327,12 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
         <Box
           sx={{
             position: "absolute",
-            top: 0,
-            right: 0,
-            p: 2,
-            backgroundColor: "transparent",
-            color: "black",
+            top: "16px",
+            right: "16px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            gap: "8px",
           }}
         >
           <Tooltip title="Close">
@@ -190,25 +340,17 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
               <CloseIcon />
             </IconButton>
           </Tooltip>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Tooltip title="Zoom In" placement="left">
-              <IconButton size="large" onClick={handleZoomIn}>
-                <ZoomInIcon fontSize="large" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Zoom Out" placement="left">
-              <IconButton size="large" onClick={handleZoomOut}>
-                <ZoomOutIcon fontSize="large" />
-              </IconButton>
-            </Tooltip>
-            <DownloadButton photo={photo} />
-          </Box>
+          <Tooltip title="Zoom In">
+            <IconButton onClick={handleZoomIn}>
+              <ZoomInIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Zoom Out">
+            <IconButton onClick={handleZoomOut}>
+              <ZoomOutIcon />
+            </IconButton>
+          </Tooltip>
+          <DownloadButton photo={photo} />
         </Box>
       </Box>
     </Dialog>
@@ -216,12 +358,21 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
 };
 
 ImageView.propTypes = {
-  photo: PropTypes.object,
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
-  next: PropTypes.func,
-  prev: PropTypes.func,
+  photo: PropTypes.shape({
+    src: PropTypes.string.isRequired,
+    strain: PropTypes.string,
+    pheno: PropTypes.string,
+    state: PropTypes.string,
+    ageOfState: PropTypes.number,
+    plantId: PropTypes.string,
+  }),
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  prev: PropTypes.func.isRequired,
 };
+
+export default ImageView;
 
 export const GalleryPage = () => {
   const location = useLocation();
