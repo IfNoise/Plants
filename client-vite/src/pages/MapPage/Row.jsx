@@ -1,12 +1,22 @@
 import { Box, Link, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import Tray from "./Tray";
-export const Row = ({ index, trays, direction, address }) => {
+export const Row = ({ index, trays, direction, address, orientation }) => {
   const plants = trays.map((tray) => tray.plants).flat().length;
   const { building, room } = address;
   const row = index + 1;
   const params = new URLSearchParams({ building, room, row }).toString();
-  const Banner = () => (
+  const direct = () => {
+    if (orientation === "horizontal") {
+      return direction === "Down" ? "row" : "row-reverse";
+    }
+    if (orientation === "vertical") {
+      return direction === "Down" ? "column" : "column-reverse";
+    }
+  };
+  const isHorizontal = orientation === "horizontal";
+  const isVertical = orientation === "vertical";
+  const Banner = (orientation) => (
     <Box
       sx={{
         borderRadius: "4px",
@@ -24,8 +34,9 @@ export const Row = ({ index, trays, direction, address }) => {
           padding: "1px",
         }}
         variant="caption"
+        display={isVertical ? "inline" : "block"}
       >
-        {index + 1}
+        {row}
       </Typography>
       <Link
         href={`/plants?${params}`}
@@ -35,7 +46,8 @@ export const Row = ({ index, trays, direction, address }) => {
           color: "black",
         }}
       >
-        {plants}plants
+        {plants}
+        {"\n"} plants
       </Link>
     </Box>
   );
@@ -49,18 +61,16 @@ export const Row = ({ index, trays, direction, address }) => {
         backgroundColor: "#f8ffff",
         m: "2px",
         p: "2px",
-        width: "117px",
-        height: "auto",
+        width: isHorizontal ? "auto" : "120px",
+        height: isHorizontal ? "145px" : "auto",
         alignSelf: "baseline",
       }}
     >
       {direction === "Down" && (
         <>
-          <Banner />
-          <Stack
-            direction={direction === "Down" ? "column" : "column-reverse"}
-            spacing={0.5}
-          >
+          {isVertical && <Banner orientation={orientation} />}
+          <Stack direction={direct()} spacing={0.5}>
+            {isHorizontal && <Banner orientation={orientation} />}
             {trays?.length > 0 &&
               trays?.map((tray, index) => (
                 <Tray
@@ -70,6 +80,7 @@ export const Row = ({ index, trays, direction, address }) => {
                   plants={tray.plants}
                   address={{ ...address, row }}
                   direction={direction}
+                  orientation={orientation}
                 />
               ))}
           </Stack>{" "}
@@ -77,23 +88,24 @@ export const Row = ({ index, trays, direction, address }) => {
       )}
       {direction === "Up" && (
         <>
-          <Stack
-            direction={direction === "Down" ? "column" : "column-reverse"}
-            spacing={0.5}
-          >
+          <Stack direction={direct()} spacing={0.5}>
             {trays?.length > 0 &&
-              trays.toReversed().map((tray, index) => (
-                <Tray
-                  size={tray.size}
-                  key={index}
-                  index={index}
-                  plants={tray.plants}
-                  address={{ ...address, row }}
-                  direction={direction}
-                />
-              ))}
+              trays
+                .toReversed()
+                .map((tray, index) => (
+                  <Tray
+                    size={tray.size}
+                    key={index}
+                    index={index}
+                    plants={tray.plants}
+                    address={{ ...address, row }}
+                    direction={direction}
+                    orientation={orientation}
+                  />
+                ))}
+            {isHorizontal && <Banner orientation={orientation} />}
           </Stack>
-          <Banner />{" "}
+          {isVertical && <Banner orientation={orientation} />}{" "}
         </>
       )}
     </Box>
@@ -104,4 +116,5 @@ Row.propTypes = {
   trays: PropTypes.array,
   direction: PropTypes.string,
   address: PropTypes.object,
+  orientation: PropTypes.string,
 };

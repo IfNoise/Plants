@@ -2,9 +2,18 @@ import { Stack, Typography, Link, Paper } from "@mui/material";
 import PropTypes from "prop-types";
 import Plant from "./Plant";
 
-export default function Tray({ index, size, plants, address, direction }) {
-  const height = size === "4x4" ? 140 : 282;
-  const width = 111;
+export default function Tray({
+  index,
+  size,
+  plants,
+  address,
+  direction,
+  orientation,
+}) {
+  const height =
+    orientation === "horizontal" ? 138 : size === "4x4" ? 140 : 287;
+  const width =
+    orientation === "horizontal" ? (size === "4x4" ? 140 : 300) : 112;
   const tray = index + 1;
   const plantCount = plants.length;
   const { building, room, row } = address;
@@ -20,8 +29,8 @@ export default function Tray({ index, size, plants, address, direction }) {
       <Paper
         sx={{
           //border: "1px solid green",
-          p: "1px",
-          m: "3px",
+          p: "2px",
+          m: 0,
           height: "25px",
           justifyContent: "flex-start",
         }}
@@ -55,12 +64,12 @@ export default function Tray({ index, size, plants, address, direction }) {
       </Paper>
       {plants?.length > 0 && (
         <Stack
-          direction="row"
+          direction={orientation === "horizontal" ? "column" : "row"}
           useFlexGap
           flexWrap="wrap"
-          spacing={"1"}
-          margin="1px"
+          spacing={0.1}
           sx={{
+            p: "3px",
             display: "flex",
             justifyContent: "space-around",
             height: "calc(100% - 25px)",
@@ -82,4 +91,6 @@ Tray.propTypes = {
   size: PropTypes.string,
   plants: PropTypes.array,
   address: PropTypes.object,
+  direction: PropTypes.string,
+  orientation: PropTypes.string,
 };

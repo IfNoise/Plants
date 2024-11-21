@@ -46,9 +46,15 @@ function stringToColor(string) {
 
 export const MapPage = () => {
   const appBar = useContext(AppBarContext);
+  const isSmall = window.innerWidth < 600;
   const building = useParams().building;
   const room = useParams().room;
   const roomName = room.split("_").join(" ");
+  const getOrientation = (threshold = 1) =>
+    window.innerHeight / window.innerWidth > threshold
+      ? "vertical"
+      : "horizontal";
+  const orientation = useMemo(() => getOrientation(1.3), []);
   const params = new URLSearchParams({ building, room: roomName }).toString();
   const {
     data: map,
@@ -61,6 +67,7 @@ export const MapPage = () => {
   });
 
   const [open, setOpen] = useState(false);
+  const [rows, setRows] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -101,6 +108,16 @@ export const MapPage = () => {
       }))
       .sort((a, b) => b.value - a.value);
   };
+
+  useEffect(() => {
+    if (map && map[building] && map[building][room]) {
+      setRows(
+        orientation === "horizontal"
+          ? map[building][room].rows.toReversed()
+          : map[building][room].rows
+      );
+    }
+  }, [map, building, room, orientation]);
 
   const data = useMemo(() => {
     if (!map) return [];
@@ -163,13 +180,14 @@ export const MapPage = () => {
           ))}
         {Object.keys(map).length > 0 &&
           map[building][room]?.rows &&
-          map[building][room].rows.map((row, index) => (
+          rows.map((row, index) => (
             <Row
               key={index}
               index={index}
               trays={row.trays}
               direction={row.numeration}
               address={{ building, room }}
+              orientation={orientation}
             />
           ))}
       </Box>
@@ -179,8 +197,9 @@ export const MapPage = () => {
             open={open}
             onClose={handleClose}
             width="100%"
-            maxWidth="lg"
+            maxWidth={isSmall ? "md" : "lg"}
             fullWidth
+            fullScreen={isSmall}
           >
             <DialogTitle>Pie Chart</DialogTitle>
             <DialogContent>
@@ -210,19 +229,14 @@ export const MapPage = () => {
                     <PieChart
                       series={[
                         {
-                          outerRadius: 200,
+                          outerRadius: isSmall ? 70 : 200,
                           data,
-                          highlightScope: { highlight: "item", fade: "global" },
-                          faded: {
-                            innerRadius: 30,
-                            additionalRadius: 30,
-                            color: "gray",
-                          },
                           arcLabel: (d) => `${d.label}`,
-                          arcLabelMinAngle: 10,
+                          arcLabelMinAngle: isSmall ? 20 : 10,
+                          arcLabelRadius: isSmall ? 70 : 100,
                         },
                       ]}
-                      height="400"
+                      height={isSmall ? 450 : 500}
                     />
                   </Grid>
                 </Grid>
