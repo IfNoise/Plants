@@ -151,7 +151,7 @@ export default function TimelineAction({ action }) {
         </TimelineContent>
       </TimelineItem>
       {isManyInfo && (
-        <Popper open={open} anchorEl={anchorEl}>
+        <Popper open={open} anchorEl={anchorEl} transition>
           <Paper
             sx={{
               padding: "5px",

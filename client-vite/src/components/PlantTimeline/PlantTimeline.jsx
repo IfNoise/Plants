@@ -18,13 +18,14 @@ export default function PlantTimeline({ actions }) {
   const filteredActions = actions?.filter((a) => filter.includes(a.type));
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ display: "block", position: "absolute", right: 0 }}>
         <FormControl sx={{ m: 1, width: 300 }}>
           <InputLabel id="action-filter-label">Filter Actions</InputLabel>
           <Select
             labelId="action-filter-label"
             multiple
             value={filter}
+            label="Filter Actions"
             onChange={(e) => setFilter(e.target.value)}
             renderValue={(selected) => selected.join(", ")}
           >
