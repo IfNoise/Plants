@@ -14,11 +14,13 @@ import { useState } from "react";
 
 export default function PlantTimeline({ actions }) {
   const initialFilter = Array.from(new Set(actions?.map((a) => a.type)));
-  const [filter, setFilter] = useState([...initialFilter]);
+  console.log(initialFilter);
+  const [filter, setFilter] = useState(initialFilter);
+  console.log(filter);
   const filteredActions = actions?.filter((a) => filter.includes(a.type));
   return (
     <Box>
-      <Box sx={{ display: "block", position: "absolute", right: 0 }}>
+      <Box sx={{ display: "block", position: "relative", right: 0 }}>
         <FormControl sx={{ m: 1, width: 300 }}>
           <InputLabel id="action-filter-label">Filter Actions</InputLabel>
           <Select
@@ -29,8 +31,8 @@ export default function PlantTimeline({ actions }) {
             onChange={(e) => setFilter(e.target.value)}
             renderValue={(selected) => selected.join(", ")}
           >
-            {Array.from(new Set(actions?.map((a) => a.type))).map((type) => (
-              <MenuItem key={type} value={type}>
+            {initialFilter.map((type, i) => (
+              <MenuItem key={i} value={type}>
                 <Checkbox checked={filter.includes(type)} />
                 <ListItemText primary={type} />
               </MenuItem>

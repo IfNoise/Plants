@@ -88,7 +88,7 @@ PlantGroup.propTypes = {
 export default function TimelineAction({ action }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
-  const handleEnter = (event) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setOpen(true);
   };
@@ -98,13 +98,13 @@ export default function TimelineAction({ action }) {
     action?.newAddress ||
     action?.clonesNumber ||
     action?.group;
-  const handleLeave = () => {
+  const handleClose = () => {
     setAnchorEl(null);
-    setOpen(false);
+    setOpen(!open);
   };
   return (
     <>
-      <TimelineItem onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+      <TimelineItem onClick={handleClick}>
         <TimelineOppositeContent
           sx={{ m: "auto 0" }}
           align="center"
@@ -151,7 +151,7 @@ export default function TimelineAction({ action }) {
         </TimelineContent>
       </TimelineItem>
       {isManyInfo && (
-        <Popper open={open} anchorEl={anchorEl} transition>
+        <Popper open={open} anchorEl={anchorEl} onClose={handleClose}>
           <Paper
             sx={{
               padding: "5px",

@@ -51,10 +51,10 @@ export const MapPage = () => {
   const room = useParams().room;
   const roomName = room.split("_").join(" ");
   const getOrientation = (threshold = 1) =>
-    window.innerHeight / window.innerWidth > threshold
+    window.innerWidth / window.innerHeight < threshold
       ? "vertical"
       : "horizontal";
-  const orientation = useMemo(() => getOrientation(1.3), []);
+  const orientation = useMemo(() => getOrientation(2.3), []);
   const params = new URLSearchParams({ building, room: roomName }).toString();
   const {
     data: map,
