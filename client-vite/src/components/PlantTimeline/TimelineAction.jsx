@@ -12,6 +12,7 @@ import {
   ImageListItem,
   Link,
   Paper,
+  Popover,
   Popper,
 } from "@mui/material";
 import propsTypes from "prop-types";
@@ -151,7 +152,7 @@ export default function TimelineAction({ action }) {
         </TimelineContent>
       </TimelineItem>
       {isManyInfo && (
-        <Popper open={open} anchorEl={anchorEl} onClose={handleClose}>
+        <Popover open={open} anchorEl={anchorEl} onClose={handleClose}>
           <Paper
             sx={{
               padding: "5px",
@@ -242,7 +243,7 @@ export default function TimelineAction({ action }) {
             )}
             {action?.group && <PlantGroup group={action.group} />}
           </Paper>
-        </Popper>
+        </Popover>
       )}
     </>
   );
