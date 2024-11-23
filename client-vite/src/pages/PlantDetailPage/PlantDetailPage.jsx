@@ -121,7 +121,7 @@ const PlantStages = ({ plant }) => {
     motherPlantStage: 0,
   };
   const [stages, setStages] = useState(initialState);
-  const calcStages = useMemo(() => {
+  useMemo(() => {
     const now = new Date();
     const startDate = new Date(
       actions?.find((action) => action.type === "Start")?.date

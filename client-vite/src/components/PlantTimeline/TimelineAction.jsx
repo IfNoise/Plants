@@ -13,7 +13,6 @@ import {
   Link,
   Paper,
   Popover,
-  Popper,
 } from "@mui/material";
 import propsTypes from "prop-types";
 

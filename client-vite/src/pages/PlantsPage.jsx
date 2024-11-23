@@ -61,24 +61,22 @@ export const PlantsPage = () => {
     refetch();
   }, []);
   useEffect(() => {
-    if (plants?.length > 0) {
-      appBar.setAppBar({
-        title: "Plants",
-        toolbar: (
-          <>
-            <Scanner
-              trayButton={true}
-              addPhotoFast={true}
-              fastRelocationButton={true}
-              fastPickButton={true}
-            />
-            <TrayButton />
-          </>
-        ),
-        right: <FilterBar getData={getData} />,
-      });
-    }
-  }, [plants]);
+    appBar.setAppBar({
+      title: "Plants",
+      toolbar: (
+        <>
+          <Scanner
+            trayButton={true}
+            addPhotoFast={true}
+            fastRelocationButton={true}
+            fastPickButton={true}
+          />
+          <TrayButton />
+        </>
+      ),
+      right: <FilterBar getData={getData} />,
+    });
+  }, []);
 
   return (
     <Box>

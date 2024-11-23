@@ -278,7 +278,7 @@ export const FilterBar = (props) => {
                   <CancelIcon fontSize="small" />
                 </Button>
               </Stack>
-              {strains && (
+              {strains?.length > 0 && (
                 <Stack direction="row" spacing={1}>
                   <FormControl sx={{ m: "1px", width: "95%" }}>
                     <Autocomplete
