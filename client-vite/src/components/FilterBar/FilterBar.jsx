@@ -38,12 +38,14 @@ import { InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { buildRooms, pots } from "../../config/config";
+import { get } from "mongoose";
 
 export const FilterBar = (props) => {
   const { getData } = props;
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter);
   const [address, setAddress] = useState({});
+  const [strains, setStrains] = useState([]);
   const [values, setValues] = useState([...Object.values(filter)]);
   const [phenos, setPhenos] = useState([]);
   const [afterDate, setAfterDate] = useState(dayjs());
@@ -97,7 +99,6 @@ export const FilterBar = (props) => {
     dispatch(addAddress({ ...address, shelf: Number.parseInt(value) }));
   };
 
-  const strains = [...new Set(getData().map((obj) => obj.strain))];
   const states = [
     "Germination",
     "Cloning",
@@ -118,6 +119,11 @@ export const FilterBar = (props) => {
     const uniquePhenos = [...new Set(pheno)];
     setPhenos(uniquePhenos);
   }, [filter]);
+  useEffect(() => {
+    if (getData()?.length === 0) return;
+    const strains = [...new Set(getData()?.map((obj) => obj.strain))];
+    setStrains(strains);
+  }, [getData]);
 
   const handleChangeStrain = (_, newValue) => {
     dispatch(addStrain(newValue));
