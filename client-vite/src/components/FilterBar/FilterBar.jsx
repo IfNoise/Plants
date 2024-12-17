@@ -38,12 +38,12 @@ import { InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { buildRooms, pots } from "../../config/config";
-import { get } from "mongoose";
 
 export const FilterBar = (props) => {
   const { getData } = props;
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter);
+  const [data, setData] = useState([]);
   const [address, setAddress] = useState({});
   const [strains, setStrains] = useState([]);
   const [values, setValues] = useState([...Object.values(filter)]);
@@ -109,21 +109,23 @@ export const FilterBar = (props) => {
     "Harvested",
   ];
   useEffect(() => {
+    setData(getData());
+    if (data?.length < 1) return;
+    const strains = [...new Set(data?.map((obj) => obj.strain))];
+    setStrains(strains);
     setValues(() => [...Object.values(filter)]);
     if (!filter.strain) {
       return;
     }
-    const pheno = getData()
+    const pheno = data
       .filter((plant) => plant.strain === filter.strain)
       .map((obj) => obj.pheno);
     const uniquePhenos = [...new Set(pheno)];
     setPhenos(uniquePhenos);
   }, [filter]);
   useEffect(() => {
-    if (getData()?.length === 0) return;
-    const strains = [...new Set(getData()?.map((obj) => obj.strain))];
-    setStrains(strains);
-  }, [getData]);
+    setData(getData());
+  }, []);
 
   const handleChangeStrain = (_, newValue) => {
     dispatch(addStrain(newValue));

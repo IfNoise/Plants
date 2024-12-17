@@ -35,7 +35,7 @@ export const PlantsPage = () => {
       refetchOnFocus: true,
     }
   );
-  const getData = () => plants?.map((plant) => plant);
+  const getData = () => plants || [];
   useEffect(() => {
     if (Object.keys(pFilter).length > 0) {
       dispatch(clearFilter());
