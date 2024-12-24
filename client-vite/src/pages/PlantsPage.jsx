@@ -74,7 +74,7 @@ export const PlantsPage = () => {
           <TrayButton />
         </>
       ),
-      right: <FilterBar getData={getData} />,
+      right: <FilterBar data={plants || []} />,
     });
   }, []);
 

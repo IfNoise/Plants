@@ -40,12 +40,10 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import { buildRooms, pots } from "../../config/config";
 
 export const FilterBar = (props) => {
-  const { getData } = props;
+  const { data } = props;
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter);
-  const [data, setData] = useState([]);
   const [address, setAddress] = useState({});
-  const [strains, setStrains] = useState([]);
   const [values, setValues] = useState([...Object.values(filter)]);
   const [phenos, setPhenos] = useState([]);
   const [afterDate, setAfterDate] = useState(dayjs());
@@ -53,6 +51,8 @@ export const FilterBar = (props) => {
   const [rooms, setRooms] = useState([]);
   const [open, setOpen] = useState(false);
   const theme = useTheme();
+
+  const strains = [...new Set(data?.map((obj) => obj.strain))];
 
   const handlerBuilding = (e) => {
     const { value } = e.target;
@@ -108,24 +108,20 @@ export const FilterBar = (props) => {
     "Stopped",
     "Harvested",
   ];
+  // useEffect(() => {
+  //   setData(getData());
+
+  //   console.log("Data", data.length);
+  // }, [filter]);
   useEffect(() => {
-    setData(getData());
-    if (data?.length < 1) return;
-    const strains = [...new Set(data?.map((obj) => obj.strain))];
-    setStrains(strains);
-    setValues(() => [...Object.values(filter)]);
-    if (!filter.strain) {
-      return;
-    }
-    const pheno = data
-      .filter((plant) => plant.strain === filter.strain)
-      .map((obj) => obj.pheno);
-    const uniquePhenos = [...new Set(pheno)];
-    setPhenos(uniquePhenos);
+    if (!filter.strain) return;
+    const pheno = [
+      ...new Set(
+        data?.filter((i) => i.strain == filter.strain).map((obj) => obj.pheno)
+      ),
+    ];
+    setPhenos(pheno);
   }, [filter]);
-  useEffect(() => {
-    setData(getData());
-  }, []);
 
   const handleChangeStrain = (_, newValue) => {
     dispatch(addStrain(newValue));
@@ -626,5 +622,5 @@ export const FilterBar = (props) => {
 
 FilterBar.propTypes = {
   setOutputFilter: PropTypes.func,
-  getData: PropTypes.func,
+  data: PropTypes.array,
 };

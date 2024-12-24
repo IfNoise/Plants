@@ -148,6 +148,10 @@ const PotIcon = ({ value, color = "black" }) => {
     </SvgIcon>
   );
 };
+PotIcon.propTypes = {
+  value: PropTypes.number,
+  color: PropTypes.string,
+};
 
 var audioCtx = new (window.AudioContext ||
   window.webkitAudioContext ||

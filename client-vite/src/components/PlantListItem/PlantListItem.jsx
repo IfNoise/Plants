@@ -19,32 +19,42 @@ export default function PlantListItem(props) {
           secondaryAction={
             <Checkbox
               edge="end"
-              onChange={(e)=>{ props?.onChange(e.target.checked)}}
+              onChange={(e) => {
+                props?.onChange(e.target.checked);
+              }}
               checked={props?.checked || false}
             />
           }
           disablePadding
         >
-          <ListItemButton onClick={()=>{props?.onClick(plant._id)}}>
+          <ListItemButton
+            onClick={() => {
+              props?.onClick(plant._id);
+            }}
+          >
             <ListItemAvatar>
               <PlantAvatar pheno={plant.pheno} />
             </ListItemAvatar>
             <ListItemText
               primary={plant.pheno}
               secondary={
-                <>
-                  <Typography sx={{mr:'5px'}}  variant="body2" color="text.secondary">
-                    {plant.strain}
-                  </Typography>
-                  <Typography  variant="h7" component='div' color="#AAFFAA">
-                   {plant.state}
-                  </Typography>
-                  <Typography variant="body" color="text.secondary">
-                   Start date: {new Date(plant.startDate).toLocaleDateString()}
-                  </Typography>
-                </>
+                <Typography
+                  sx={{ mr: "5px" }}
+                  variant="body2"
+                  color="text.secondary"
+                >
+                  {plant.strain}
+                </Typography>
               }
             />
+            <>
+              <Typography variant="h7" color="#AAFFAA">
+                {plant.state}
+              </Typography>
+              <Typography variant="body" color="text.secondary">
+                Start date: {new Date(plant.startDate).toLocaleDateString()}
+              </Typography>
+            </>
           </ListItemButton>
         </ListItem>
       )}

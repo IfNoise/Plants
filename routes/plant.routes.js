@@ -240,7 +240,7 @@ router.post("/new_action", async (req, res) => {
             newClones.push({
               strain: plant.strain,
               pheno: plant.pheno,
-              generation: (plant?.generation||1) + 1,
+              generation: (plant?.generation || 1) + 1,
               gender: plant?.gender || "undefined",
               type: "Clone",
               group,
@@ -388,12 +388,11 @@ router.get("/plants_map", async (req, res) => {
 
 router.get("/test", async (req, res) => {
   try {
-   const id =['66f673c59b6daa7b71bfcdcb','66f673c59b6daa7b71bfcdd4']
-    const plants = await Plant.find({ _id: { $in: id} });
+    const plants = await Plant.find({ group: "13433c36d4f2a172" });
     const result = await Promise.all(
       plants.map(async (plant) => {
         plant.set("state", "Growing");
-        plant.actions.pop();
+        //plant.actions.pop();
         return await plant.save();
       })
     );
