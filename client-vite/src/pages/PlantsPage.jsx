@@ -35,7 +35,6 @@ export const PlantsPage = () => {
       refetchOnFocus: true,
     }
   );
-  const getData = () => plants || [];
   useEffect(() => {
     if (Object.keys(pFilter).length > 0) {
       dispatch(clearFilter());
@@ -74,9 +73,9 @@ export const PlantsPage = () => {
           <TrayButton />
         </>
       ),
-      right: <FilterBar data={plants || []} />,
+      right: <FilterBar data={plants} />,
     });
-  }, []);
+  }, [plants]);
 
   return (
     <Box>
