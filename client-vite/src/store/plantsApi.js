@@ -1,17 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import {baseUrl} from "../config/config"
+import { baseUrl } from "../config/config";
 
 export const plantsApi = createApi({
   reducerPath: "plants/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl+"/api/plant",
+    baseUrl: baseUrl + "/api/plant",
     refetchOnFocus: true,
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token
+      const token = getState().auth.token;
       if (token) {
-        headers.set('authorization', `Bearer ${token}`)
+        headers.set("authorization", `Bearer ${token}`);
       }
-      return headers
+      return headers;
     },
   }),
   endpoints: (build) => ({
@@ -22,45 +22,75 @@ export const plantsApi = createApi({
           filter: JSON.stringify(filter),
         },
       }),
-      providesTags:['Action','Plants'],
+      providesTags: ["Action", "Plants"],
     }),
     getStrains: build.query({
       query: () => ({
-        url: "strains"
-      })
+        url: "strains",
+      }),
     }),
     getMap: build.query({
       query: () => ({
-        url: "plants_map"
+        url: "plants_map",
       }),
-      providesTags:['Action','Plants'],
+      providesTags: ["Action", "Plants"],
+    }),
+    getEmptyMap: build.query({
+      query: () => ({
+        url: "empty_map",
+      }),
+    }),
+    saveMap: build.mutation({
+      query(body) {
+        return {
+          url: `save_map`,
+          method: "POST",
+          body,
+        };
+      },
+    }),
+    getMaps: build.query({
+      query: () => ({
+        url: "maps",
+      }),
     }),
     getPlantCounts: build.query({
       query: () => ({
-        url: "plant_counts"
-      })
+        url: "plant_counts",
+      }),
     }),
     addAction: build.mutation({
       query(body) {
         return {
           url: `new_action`,
-          method: 'POST',
-          body
-        }
+          method: "POST",
+          body,
+        };
       },
-      invalidatesTags: ['Action'],
+      invalidatesTags: ["Action"],
     }),
     newPlant: build.mutation({
       query(body) {
         return {
           url: `new_plant`,
-          method: 'POST',
-          body
-        }
+          method: "POST",
+          body,
+        };
       },
-      invalidatesTags: ['Plants'],
-    })
+      invalidatesTags: ["Plants"],
+    }),
   }),
 });
 
-export const { useGetPlantsQuery,useGetStrainsQuery ,useGetMapQuery,useGetPlantCountsQuery, useAddActionMutation,useNewPlantMutation, refetch } = plantsApi;
+export const {
+  useGetPlantsQuery,
+  useGetStrainsQuery,
+  useGetMapQuery,
+  useGetEmptyMapQuery,
+  useSaveMapMutation,
+  useGetMapsQuery,
+  useGetPlantCountsQuery,
+  useAddActionMutation,
+  useNewPlantMutation,
+  refetch,
+} = plantsApi;

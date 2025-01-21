@@ -1,10 +1,15 @@
 import { Box, Link, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import Tray from "./Tray";
-export const Row = ({ index, trays, direction, address, orientation }) => {
-  const plants = trays.map((tray) => tray.plants).flat().length;
-  const { building, room } = address;
-  const row = index + 1;
+import { MapContext } from "../../../../context/MapContext";
+import { useContext } from "react";
+export const Row = ({ direction, address, orientation }) => {
+  const { map } = useContext(MapContext);
+  const { building, room, row } = address;
+  const plants = map[building][room].rows[row - 1].trays
+    .map((tray) => tray.plants)
+    .flat().length;
+  const trays = map[building][room].rows[row - 1].trays;
   const params = new URLSearchParams({ building, room, row }).toString();
   const direct = () => {
     if (orientation === "horizontal") {
@@ -78,7 +83,7 @@ export const Row = ({ index, trays, direction, address, orientation }) => {
                   key={index}
                   index={index}
                   plants={tray.plants}
-                  address={{ ...address, row, tray: index + 1 }}
+                  address={{ ...address, tray: index + 1 }}
                   direction={direction}
                   orientation={orientation}
                 />
@@ -98,7 +103,7 @@ export const Row = ({ index, trays, direction, address, orientation }) => {
                     key={index}
                     index={index}
                     plants={tray.plants}
-                    address={{ ...address, row }}
+                    address={{ ...address, tray: index + 1 }}
                     direction={direction}
                     orientation={orientation}
                   />

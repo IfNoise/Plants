@@ -199,10 +199,10 @@ const PlantStages = ({ plant }) => {
         padding: "5px",
       }}
     >
-      <Typography variant="h2" color="text.secondary" display="inline">
+      <Typography variant="h1" color="text.secondary" display="inline">
         {age}
       </Typography>
-      <Typography variant="caption" color="text.secondary" display="inline">
+      <Typography variant="body" color="text.secondary" display="inline">
         days
       </Typography>
       {Object.keys(stages).map((stage) => {
@@ -210,7 +210,7 @@ const PlantStages = ({ plant }) => {
           return (
             <Typography
               key={stage}
-              variant="body2"
+              variant="subtitle1"
               color="text.secondary"
               display="block"
             >

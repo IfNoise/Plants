@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const router = Router();
 const Strain = require("../models/Strain");
 const plantMap = require("../config/map");
+const Map = require("../models/Map");
 
 router.post("/new_plant", async (req, res) => {
   try {
@@ -381,6 +382,37 @@ router.get("/plants_map", async (req, res) => {
       }
     });
     res.json(map);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+router.get("/empty_map", async (req, res) => {
+  try {
+    const map = JSON.parse(JSON.stringify(plantMap));
+    res.json(map);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("save_map", async (req, res) => {
+  try {
+    const { map, name, description } = req.body;
+    const result = await Map.create({
+      name,
+      description,
+      map,
+    });
+    res.json(result);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/maps", async (req, res) => {
+  try {
+    const maps = await Map.find();
+    res.json(maps);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

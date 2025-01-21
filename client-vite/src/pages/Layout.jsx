@@ -5,8 +5,7 @@ import {
   //useLocation,
   useNavigate,
 } from "react-router-dom";
-import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,7 +16,6 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListItem from "@mui/material/ListItem";
@@ -36,7 +34,7 @@ import PrintDialog from "../components/PrintDialog";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import PropTypes from "prop-types";
 import { AppBarContext } from "../context/AppBarContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // function PrivateOutlet() {
 //   const { isAuth } = useAuth();
@@ -50,7 +48,7 @@ import { useContext } from "react";
 // }
 
 const CollapseList = ({ obj, onClick }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   return (
     <>
       <ListItem>
@@ -168,7 +166,7 @@ export const Layout = () => {
   const navigate = useNavigate();
   const { appBar } = useContext(AppBarContext);
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const [open, setOpen] = React.useState(!isSmall && true);
+  const [open, setOpen] = useState(!isSmall && true);
   const handleToggleDrawer = () => {
     if (isSmall) {
       setOpen(!open);
@@ -180,7 +178,7 @@ export const Layout = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isSmall) {
       setOpen(false);
     }
