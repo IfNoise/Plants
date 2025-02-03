@@ -320,6 +320,7 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         default: {
+          action = null;
           throw new Error("Action type not found");
         }
       }
