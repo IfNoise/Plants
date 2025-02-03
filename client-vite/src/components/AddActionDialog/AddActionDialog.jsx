@@ -41,6 +41,7 @@ import dayjs from "dayjs";
 import { AddPhotoFields } from "./AddPhotoFields";
 import { useAddActionMutation } from "../../store/plantsApi";
 import CheckBox from "@mui/material/Checkbox";
+import { RedoFields } from "./RedoFields";
 const PickingIcon = ({ width = "48px", height = "48px", color = "red" }) => {
   return (
     <SvgIcon sx={{ color: "white", width, height }} viewBox="0 0 24 24">
@@ -162,7 +163,7 @@ const states = {
     ],
   },
   Stopped: {
-    actions: [{ text: "Note" }, { text: "AddPhoto" }],
+    actions: [{ text: "Note" }, { text: "AddPhoto" }, { text: "Redo" }],
   },
   Harvested: {
     actions: [{ text: "Note" }, { text: "AddPhoto" }],
@@ -227,6 +228,11 @@ const actionFields = {
     name: "AddPhoto",
     icon: <AddPhotoAlternateIcon fontSize="large" />,
     fields: <AddPhotoFields />,
+  },
+  Redo: {
+    name: "Redo",
+    icon: <ArrowOutwardIcon fontSize="large" />,
+    fields: <RedoFields />,
   },
 };
 

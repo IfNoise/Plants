@@ -65,6 +65,9 @@ export const newActionSlice = createSlice({
     addNote: (state, action) => {
       state["note"] = action.payload;
     },
+    addNewState: (state, action) => {
+      state["newState"] = action.payload;
+    },
   },
 });
 
@@ -86,6 +89,7 @@ export const {
   addUserReason,
   addPhotos,
   addNote,
+  addNewState,
   addGender,
   clear,
 } = newActionSlice.actions;

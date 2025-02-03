@@ -310,6 +310,12 @@ router.post("/new_action", async (req, res) => {
         case "Insecticide": {
           break;
         }
+        case "Redo": {
+          if (!data.newState) {
+            action = null;
+            break;
+          }
+        }
         default: {
           throw new Error("Action type not found");
         }

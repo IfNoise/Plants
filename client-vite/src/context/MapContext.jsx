@@ -41,6 +41,7 @@ const MapProvider = ({ children }) => {
           { ...plant, id: newId() },
         ];
       }
+      console.log("New map", newMap);
       return newMap;
     });
   };
@@ -50,15 +51,15 @@ const MapProvider = ({ children }) => {
     const row = address?.row - 1 || undefined;
     const rack = address?.rack - 1 || undefined;
     const shelf = address?.shelf - 1 || undefined;
-    const tray = address?.tray - 1 || undefined;
+    const tray = address?.tray - 1;
     setMap((prevMap) => {
       // Создаем глубокую копию карты
       const newMap = JSON.parse(JSON.stringify(prevMap));
-      if (rack > 1)
+      if (rack !== undefined)
         newMap[building][room].racks[rack].shelfs[shelf].plants = newMap[
           building
         ][room].racks[rack].shelfs[shelf].plants.filter((p) => p !== plant);
-      else if (row > 1)
+      else if (row !== undefined)
         newMap[building][room].rows[row].trays[tray].plants = newMap[building][
           room
         ].rows[row].trays[tray].plants.filter((p) => p !== plant);
