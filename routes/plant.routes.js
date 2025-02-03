@@ -322,7 +322,7 @@ router.post("/new_action", async (req, res) => {
           }
           default: {
             action = null;
-            throw new Error("Action type not found");
+            console.log("Action not found");
           }
         }
         if (action !== null) {
@@ -335,7 +335,7 @@ router.post("/new_action", async (req, res) => {
     );
     res.json({ result: result.filter((el) => el !== null) });
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 });
 
