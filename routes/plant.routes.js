@@ -320,7 +320,7 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         default: {
-          res.status(401).json({ message: "Action type not found" });
+          throw new Error("Action type not found");
         }
       }
       if (action !== null) {
