@@ -329,7 +329,7 @@ router.post("/new_action", async (req, res) => {
         await plant.save();
         return res.json({ message: "Ok" });
       } else {
-        return res.status(401).json({ message: "newState is not defined" });
+        throw new Error("Action type not found");
       }
     });
   } catch (error) {
