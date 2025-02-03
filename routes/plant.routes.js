@@ -324,7 +324,7 @@ router.post("/new_action", async (req, res) => {
         }
       }
       if (action !== null) {
-        plant.actions.push(action);
+        if (action.type !== "Redo") plant.actions.push(action);
         await plant.save();
         return res.json({ message: "Ok" });
       } else {
