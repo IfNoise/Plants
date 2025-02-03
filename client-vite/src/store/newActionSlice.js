@@ -63,10 +63,10 @@ export const newActionSlice = createSlice({
       return {};
     },
     addNote: (state, action) => {
-      state["note"] = action.payload;
+      state.note = action.payload;
     },
     addNewState: (state, action) => {
-      state["newState"] = action.payload;
+      state.newState = action.payload;
     },
   },
 });

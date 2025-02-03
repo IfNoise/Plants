@@ -320,7 +320,7 @@ router.post("/new_action", async (req, res) => {
           break;
         }
         default: {
-          throw new Error("Action type not found");
+          res.status(401).json({ message: "Action type not found" });
         }
       }
       if (action !== null) {
@@ -328,11 +328,11 @@ router.post("/new_action", async (req, res) => {
         await plant.save();
         return res.json({ message: "Ok" });
       } else {
-        throw new Error("Action not created");
+        res.status(401).json({ message: "newState is not defined" });
       }
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(401).json({ message: error.message });
   }
 });
 
