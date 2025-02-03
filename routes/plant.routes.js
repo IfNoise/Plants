@@ -315,6 +315,9 @@ router.post("/new_action", async (req, res) => {
             action = null;
             break;
           }
+          plant.actions.pop();
+          plant.set("state", data.newState);
+          break;
         }
         default: {
           throw new Error("Action type not found");

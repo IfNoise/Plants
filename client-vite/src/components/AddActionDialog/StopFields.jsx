@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
+import { addReason } from "../../store/newActionSlice";
 import {
-  addReason
-} from "../../store/newActionSlice";
-import {
-  Box,
   FormControl,
   InputLabel,
   Select,
@@ -12,14 +9,22 @@ import {
   TextField,
 } from "@mui/material";
 
-const reasons=[
-  ' ','Hermofrodite','Seeds','Root infectioin','Mildew','Mutation','Virus','Pests','Other'
-]
+const reasons = [
+  " ",
+  "Hermofrodite",
+  "Seeds",
+  "Root infectioin",
+  "Mildew",
+  "Mutation",
+  "Virus",
+  "Pests",
+  "Other",
+];
 
-export const StopFields=()=>{
+export const StopFields = () => {
   const dispatch = useDispatch();
-  const [reason, setReason] = useState(' ');
-  const [userReason,setUserReason]=useState(' ')
+  const [reason, setReason] = useState(" ");
+  const [userReason, setUserReason] = useState(" ");
 
   const handlerReason = (e) => {
     const { value } = e.target;
@@ -32,10 +37,12 @@ export const StopFields=()=>{
     dispatch(addReason(value));
   };
 
-  return(
+  return (
     <>
-    <FormControl variant="outlined" required sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="reason-label" readOnly={true}>Reason</InputLabel>
+      <FormControl variant="outlined" required sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="reason-label" readOnly={true}>
+          Reason
+        </InputLabel>
         <Select
           labelId="reason-label"
           value={reason}
@@ -52,17 +59,20 @@ export const StopFields=()=>{
           })}
         </Select>
       </FormControl>
-      {   reason=='Other'&&<FormControl variant="outlined" required sx={{ m: 1, minWidth: 120 }}>
-            <TextField
-              id="outlined-number"
-              label="User variant"
-              type="text"
-              onChange={handlerUserReason}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </FormControl>}
+      {reason == "Other" && (
+        <FormControl variant="outlined" required sx={{ m: 1, minWidth: 120 }}>
+          <TextField
+            id="outlined-number"
+            label="User variant"
+            type="text"
+            value={userReason}
+            onChange={handlerUserReason}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </FormControl>
+      )}
     </>
-  )
-}
+  );
+};
