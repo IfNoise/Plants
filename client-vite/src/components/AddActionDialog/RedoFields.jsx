@@ -18,14 +18,14 @@ export const RedoFields = () => {
   return (
     <>
       <FormControl variant="outlined" required sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="reason-label" readOnly={true}>
-          Reason
+        <InputLabel id="newState-label" readOnly={true}>
+          new State
         </InputLabel>
         <Select
-          labelId="reason-label"
+          labelId="newState-label"
           value={newState}
-          name="reason"
-          label="Reason"
+          name="newState"
+          label="newState"
           onChange={handlerNewState}
         >
           {states.map((text, index) => {
