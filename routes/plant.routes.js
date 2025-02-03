@@ -153,184 +153,186 @@ router.post("/new_action", async (req, res) => {
     const date = data?.date || Date.now();
     let action;
     const group = crypto.randomBytes(8).toString("hex");
-    const result = await id.map(async (idx) => {
-      action = { type: data.actionType, date };
-      const plant = await Plant.findById(idx);
+    const result = await Promise.all(
+      id.map(async (idx) => {
+        action = { type: data.actionType, date };
+        const plant = await Plant.findById(idx);
 
-      switch (data.actionType) {
-        case "Note": {
-          if (data.note) action.note = data.note;
-          break;
-        }
-        case "Picking": {
-          if (plant?.potSize && plant.potSize === data.potSize) {
-            console.log("same pot size");
-            action = null;
+        switch (data.actionType) {
+          case "Note": {
+            if (data.note) action.note = data.note;
             break;
           }
-          if (plant.state === "Cloning" || plant.state === "Germination") {
-            plant.set("state", "Growing");
-          }
-          action.potSize = data.potSize;
-          plant.set("potSize", data.potSize);
-          break;
-        }
-        case "Relocation": {
-          if (plant.currentAddress === data.address) {
-            action = null;
+          case "Picking": {
+            if (plant?.potSize && plant.potSize === data.potSize) {
+              console.log("same pot size");
+              action = null;
+              break;
+            }
+            if (plant.state === "Cloning" || plant.state === "Germination") {
+              plant.set("state", "Growing");
+            }
+            action.potSize = data.potSize;
+            plant.set("potSize", data.potSize);
             break;
           }
-          action.oldAddress = { ...plant.currentAddress };
-          action.newAddress = { ...data.address };
+          case "Relocation": {
+            if (plant.currentAddress === data.address) {
+              action = null;
+              break;
+            }
+            action.oldAddress = { ...plant.currentAddress };
+            action.newAddress = { ...data.address };
 
-          plant.set("currentAddress", data.address);
-          break;
-        }
-        case "Blooming": {
-          if (plant.state === "Blooming") {
-            action = null;
+            plant.set("currentAddress", data.address);
             break;
           }
-          plant.set("state", "Blooming");
-          break;
-        }
-        case "Stop": {
-          if (plant.state === "Stopped") {
-            action = null;
+          case "Blooming": {
+            if (plant.state === "Blooming") {
+              action = null;
+              break;
+            }
+            plant.set("state", "Blooming");
             break;
           }
-          plant.set("state", "Stopped");
-          if (data?.reason === "Other") {
-            action.userReason = data.userReason;
-          }
-          plant.set("currentAddress", {});
-          action.reason = data.reason;
+          case "Stop": {
+            if (plant.state === "Stopped") {
+              action = null;
+              break;
+            }
+            plant.set("state", "Stopped");
+            if (data?.reason === "Other") {
+              action.userReason = data.userReason;
+            }
+            plant.set("currentAddress", {});
+            action.reason = data.reason;
 
-          break;
-        }
-        case "Harvest": {
-          plant.set("state", "Harvested");
-          plant.set("currentAddress", {});
-          break;
-        }
-        case "MakeMother": {
-          if (plant.state === "MotherPlant") {
-            action = null;
             break;
           }
-          plant.set("state", "MotherPlant");
-          plant.set("cloneCounter", 0);
-          break;
-        }
-        case "SetGender": {
-          plant.set("gender", data.gender);
-          break;
-        }
-        case "CuttingClones": {
-          const number = data.clonesNumber;
-          action.clonesNumber = number;
-          action.group = group;
-          const newClones = [];
-          for (let index = 0; index < number; index++) {
-            let firstAction = {
-              date,
-              type: "Start",
-              source: plant._id,
-              address: data.address,
-            };
-            newClones.push({
-              strain: plant.strain,
-              pheno: plant.pheno,
-              generation: (plant?.generation || 1) + 1,
-              gender: plant?.gender || "undefined",
-              type: "Clone",
-              group,
-              motherPlant: plant._id,
-              startDate: date,
-              state: "Cloning",
-              currentAddress: data.address,
-              actions: [firstAction],
-            });
+          case "Harvest": {
+            plant.set("state", "Harvested");
+            plant.set("currentAddress", {});
+            break;
           }
-
-          await Plant.insertMany(newClones);
-          const current = plant?.cloneCounter || 0;
-          const newCounter = current + number;
-          const currentMaxClones = plant?.maxClones || 0;
-          const maxClones =
-            currentMaxClones < number ? number : currentMaxClones;
-          plant.set("cloneCounter", newCounter);
-          plant.set("maxClones", maxClones);
-          break;
-        }
-        case "AddPhoto": {
-          if (data?.photos?.length === 0) {
-            action = null;
-            throw new Error("No photos to add");
+          case "MakeMother": {
+            if (plant.state === "MotherPlant") {
+              action = null;
+              break;
+            }
+            plant.set("state", "MotherPlant");
+            plant.set("cloneCounter", 0);
+            break;
           }
-          action.photos = data.photos;
-          const newPhotos = data.photos.map((photo) => {
-            if (plant.photos.indexOf(photo) === -1) {
-              //days from last state change
-              const chAct = plant.actions.filter(
-                (action) =>
-                  action.type === "Start" ||
-                  action.type === "Picking" ||
-                  action.type === "Blooming" ||
-                  action.type === "MakeMother"
-              );
-              const LastStateChenge = new Date(chAct[chAct.length - 1].date);
-              //days from last state change
-              const ageOfState = Math.floor(
-                (Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24)
-              );
-              plant.photos.push(photo);
-              return {
-                src: `${photo}`,
-                date: Date.now(),
+          case "SetGender": {
+            plant.set("gender", data.gender);
+            break;
+          }
+          case "CuttingClones": {
+            const number = data.clonesNumber;
+            action.clonesNumber = number;
+            action.group = group;
+            const newClones = [];
+            for (let index = 0; index < number; index++) {
+              let firstAction = {
+                date,
+                type: "Start",
+                source: plant._id,
+                address: data.address,
+              };
+              newClones.push({
                 strain: plant.strain,
                 pheno: plant.pheno,
-                state: plant.state,
-                plantId: plant._id,
-                ageOfState,
-              };
+                generation: (plant?.generation || 1) + 1,
+                gender: plant?.gender || "undefined",
+                type: "Clone",
+                group,
+                motherPlant: plant._id,
+                startDate: date,
+                state: "Cloning",
+                currentAddress: data.address,
+                actions: [firstAction],
+              });
             }
-          });
-          const result = await Photo.insertMany(newPhotos);
-          console.log(result);
-          if (result.length === 0) {
-            action = null;
-            throw new Error("Error while adding photos");
-          }
-          break;
-        }
-        case "Cutting": {
-          break;
-        }
-        case "Insecticide": {
-          break;
-        }
-        case "Redo": {
-          if (!data.newState) {
-            action = null;
+
+            await Plant.insertMany(newClones);
+            const current = plant?.cloneCounter || 0;
+            const newCounter = current + number;
+            const currentMaxClones = plant?.maxClones || 0;
+            const maxClones =
+              currentMaxClones < number ? number : currentMaxClones;
+            plant.set("cloneCounter", newCounter);
+            plant.set("maxClones", maxClones);
             break;
           }
-          plant.actions.pop();
-          plant.set("state", data.newState);
-          break;
+          case "AddPhoto": {
+            if (data?.photos?.length === 0) {
+              action = null;
+              throw new Error("No photos to add");
+            }
+            action.photos = data.photos;
+            const newPhotos = data.photos.map((photo) => {
+              if (plant.photos.indexOf(photo) === -1) {
+                //days from last state change
+                const chAct = plant.actions.filter(
+                  (action) =>
+                    action.type === "Start" ||
+                    action.type === "Picking" ||
+                    action.type === "Blooming" ||
+                    action.type === "MakeMother"
+                );
+                const LastStateChenge = new Date(chAct[chAct.length - 1].date);
+                //days from last state change
+                const ageOfState = Math.floor(
+                  (Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24)
+                );
+                plant.photos.push(photo);
+                return {
+                  src: `${photo}`,
+                  date: Date.now(),
+                  strain: plant.strain,
+                  pheno: plant.pheno,
+                  state: plant.state,
+                  plantId: plant._id,
+                  ageOfState,
+                };
+              }
+            });
+            const result = await Photo.insertMany(newPhotos);
+            console.log(result);
+            if (result.length === 0) {
+              action = null;
+              throw new Error("Error while adding photos");
+            }
+            break;
+          }
+          case "Cutting": {
+            break;
+          }
+          case "Insecticide": {
+            break;
+          }
+          case "Redo": {
+            if (!data.newState) {
+              action = null;
+              break;
+            }
+            plant.actions.pop();
+            plant.set("state", data.newState);
+            break;
+          }
+          default: {
+            action = null;
+            throw new Error("Action type not found");
+          }
         }
-        default: {
-          action = null;
-          throw new Error("Action type not found");
+        if (action !== null) {
+          if (action.type !== "Redo") plant.actions.push(action);
+          return await plant.save();
+        } else {
+          return null;
         }
-      }
-      if (action !== null) {
-        if (action.type !== "Redo") plant.actions.push(action);
-        return await plant.save();
-      } else {
-        return null;
-      }
-    });
+      })
+    );
     res.json({ result: result.filter((el) => el !== null) });
   } catch (error) {
     res.status(401).json({ message: error.message });
