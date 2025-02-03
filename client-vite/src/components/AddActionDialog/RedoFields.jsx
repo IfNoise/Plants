@@ -7,7 +7,7 @@ const states = ["Cloning", "Growing", "Blooming", "MotherPlant", "Harvested"];
 
 export const RedoFields = () => {
   const dispatch = useDispatch();
-  const [newState, setNewState] = useState("Growing");
+  const [newState, setNewState] = useState("");
 
   const handlerNewState = (e) => {
     const { value } = e.target;

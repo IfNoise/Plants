@@ -328,10 +328,10 @@ router.post("/new_action", async (req, res) => {
         if (action.type !== "Redo") plant.actions.push(action);
         return await plant.save();
       } else {
-        throw new Error("Action type not found");
+        return null;
       }
     });
-    res.json({ result });
+    res.json({ result: result.filter((el) => el !== null) });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
