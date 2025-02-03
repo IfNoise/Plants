@@ -153,7 +153,7 @@ router.post("/new_action", async (req, res) => {
     const date = data?.date || Date.now();
     let action;
     const group = crypto.randomBytes(8).toString("hex");
-    id.map(async (idx) => {
+    const result = id.map(async (idx) => {
       action = { type: data.actionType, date };
       const plant = await Plant.findById(idx);
 
@@ -326,14 +326,14 @@ router.post("/new_action", async (req, res) => {
       }
       if (action !== null) {
         if (action.type !== "Redo") plant.actions.push(action);
-        await plant.save();
-        return res.json({ message: "Ok" });
+        return await plant.save();
       } else {
         throw new Error("Action type not found");
       }
     });
+    res.json({ result });
   } catch (error) {
-    return res.status(401).json({ message: error.message });
+    res.status(401).json({ message: error.message });
   }
 });
 
