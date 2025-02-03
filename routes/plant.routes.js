@@ -152,11 +152,10 @@ router.post("/new_action", async (req, res) => {
     const data = req.body.action;
     const id = req.body.id;
     const date = data?.date || Date.now();
-    let action;
     const group = crypto.randomBytes(8).toString("hex");
     const result = await Promise.all(
       id.map(async (idx) => {
-        action = { type: data.actionType, date };
+        let action = { type: data.actionType, date };
         const plant = await Plant.findById(idx);
 
         switch (data.actionType) {
