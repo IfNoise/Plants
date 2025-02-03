@@ -6,6 +6,7 @@ const router = Router();
 const Strain = require("../models/Strain");
 const plantMap = require("../config/map");
 const Map = require("../models/Map");
+const c = require("config");
 
 router.post("/new_plant", async (req, res) => {
   try {
@@ -333,6 +334,7 @@ router.post("/new_action", async (req, res) => {
         }
       })
     );
+    console.log(result);
     res.json({ result: result.filter((el) => el !== null) });
   } catch (error) {
     res.status(400).json({ message: error.message });
