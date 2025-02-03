@@ -328,7 +328,7 @@ router.post("/new_action", async (req, res) => {
         await plant.save();
         return res.json({ message: "Ok" });
       } else {
-        res.status(401).json({ message: "newState is not defined" });
+        return res.status(401).json({ message: "newState is not defined" });
       }
     });
   } catch (error) {
