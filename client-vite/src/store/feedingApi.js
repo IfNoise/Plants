@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-//const baseUrl = "https://ddweed.org/api/v1/feeding";
-const baseUrl = "http://localhost:3000/api/v1/feeding";
+const baseUrl = "https://ddweed.org/api/v1/feeding";
+//const baseUrl = "http://localhost:3000/api/v1/feeding";
 
 export const feedingApi = createApi({
   reducerPath: "feeding/api",
