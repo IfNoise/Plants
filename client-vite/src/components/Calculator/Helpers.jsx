@@ -35,10 +35,10 @@ import {
 
 export function ContentTable({ content }) {
   return (
-    <Table 
+    <Table
       size="small"
       sx={{
-        width: "auto"
+        width: "auto",
       }}
     >
       <TableHead>
@@ -62,81 +62,103 @@ ContentTable.propTypes = {
   content: PropTypes.array,
 };
 
-export function Ballance({kationes,aniones}){
-
+export function Ballance({ kationes, aniones }) {
   return (
-    <Box
-    >
-    <Typography
-      variant="body"
-      color="#ffa7eb"
-      fontFamily={"revert"}
-      fontWeight={"bold"}
-      component={"div"}
-    >
-      Kationes:+{kationes.toFixed(1)}
-    </Typography>
-    <Typography
-      variant="body"
-      color="#a7ebff"
-      fontFamily={"revert"}
-      fontWeight={"bold"}
-      component={"div"}
-    >
-      Aniones:-{aniones.toFixed(1)}
-    </Typography>
-    <Typography
-      variant="h5"
-      color="#a7ffeb"
-      fontFamily={"revert"}
-      fontWeight={"bold"}
-      component={"div"}
-    >
-      Ballance:{kationes>aniones?"+":""}{`   `}{(kationes-aniones).toFixed(1)}
-    </Typography>
+    <Box>
+      <Typography
+        variant="body"
+        color="#ffa7eb"
+        fontFamily={"revert"}
+        fontWeight={"bold"}
+        component={"div"}
+      >
+        Kationes:+{kationes.toFixed(1)}
+      </Typography>
+      <Typography
+        variant="body"
+        color="#a7ebff"
+        fontFamily={"revert"}
+        fontWeight={"bold"}
+        component={"div"}
+      >
+        Aniones:-{aniones.toFixed(1)}
+      </Typography>
+      <Typography
+        variant="h5"
+        color="#a7ffeb"
+        fontFamily={"revert"}
+        fontWeight={"bold"}
+        component={"div"}
+      >
+        Ballance:{kationes > aniones ? "+" : ""}
+        {`   `}
+        {(kationes - aniones).toFixed(1)}
+      </Typography>
     </Box>
-  )
+  );
 }
 Ballance.propTypes = {
   kationes: PropTypes.number,
   aniones: PropTypes.number,
 };
 
-export function RecipeTable({ content,recipe:recipeProp }) {
-  const {name,description,_id:id,__v,...ingridients} = recipeProp;
-  const recipe = Object.entries(ingridients).map(([element,concentration])=>({element,concentration}));
+export function RecipeTable({ content, recipe: recipeProp }) {
+  const { name, description, _id: id, __v, ...ingridients } = recipeProp;
+  if (!ingridients) {
+    return null;
+  }
+
+  const recipe = Object.entries(ingridients).map(
+    ([element, concentration]) => ({ element, concentration })
+  );
   return (
-    <Table size="small" sx={{ width: "auto" }}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Element</TableCell>
-          {recipe.map((r, i) => (
-            <TableCell key={i}>{r.element}</TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        <TableRow>
-          <TableCell>Recipe ppm/g</TableCell>
-          {recipe.map((r, i) => (
-            <TableCell key={i}>{r.concentration.toFixed(1)}</TableCell>
-          ))}
-        </TableRow>
-        <TableRow>
-          <TableCell>Actual ppm/g</TableCell>
-          {recipe.map((r, i) => {
-            const actualContent = content.find((c) => c.element === r.element) || { concentration: 0 };
-            const actualConcentration = actualContent.concentration;
-            const isMismatch = Math.abs(actualConcentration - r.concentration) > (r.concentration * 0.1);
-            return (
-              <TableCell key={i} sx={{ color: isMismatch ? "red" : "lime" }}>
-                {actualConcentration.toFixed(1)}
-              </TableCell>
-            );
-          })}
-        </TableRow>
-      </TableBody>
-    </Table>
+    <>
+      {recipe?.length > 0 && (
+        <Table size="small" sx={{ width: "auto" }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Element</TableCell>
+              {recipe?.length > 0 &&
+                recipe.map((r, i) => (
+                  <TableCell key={i}>{r.element}</TableCell>
+                ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>Recipe ppm/g</TableCell>
+              {recipe?.length > 0 &&
+                recipe.map((r, i) => (
+                  <TableCell key={i}>
+                    {r?.concentration?.toFixed(1) || "error"}
+                  </TableCell>
+                ))}
+            </TableRow>
+            <TableRow>
+              <TableCell>Actual ppm/g</TableCell>
+              {recipe?.length > 0 &&
+                recipe.map((r, i) => {
+                  const actualContent = content.find(
+                    (c) => c.element === r.element
+                  ) || { concentration: 0 };
+                  const actualConcentration = actualContent.concentration;
+                  const isMismatch =
+                    Math.abs(actualConcentration - r.concentration) >
+                    r.concentration * 0.1;
+                  return (
+                    <TableCell
+                      key={i}
+                      sx={{ color: isMismatch ? "red" : "lime" }}
+                    >
+                      {actualConcentration.toFixed(1)}
+                    </TableCell>
+                  );
+                })}
+            </TableRow>
+          </TableBody>
+        </Table>
+      )}
+    </>
   );
 }
 RecipeTable.propTypes = {
@@ -144,11 +166,11 @@ RecipeTable.propTypes = {
   recipe: PropTypes.array,
 };
 
-export function NPK({content}){
-  const n=content.find(c=>c.name==="Nitrogen")?.concentration||0;
-  const p=content.find(c=>c.name==="Phosphorus")?.concentration||0;
-  const k=content.find(c=>c.name==="Potassium")?.concentration||0;
-  const mg=content.find(c=>c.name==="Magnesium")?.concentration||0;
+export function NPK({ content }) {
+  const n = content.find((c) => c.name === "Nitrogen")?.concentration || 0;
+  const p = content.find((c) => c.name === "Phosphorus")?.concentration || 0;
+  const k = content.find((c) => c.name === "Potassium")?.concentration || 0;
+  const mg = content.find((c) => c.name === "Magnesium")?.concentration || 0;
   return (
     <Typography
       variant="h4"
@@ -156,20 +178,22 @@ export function NPK({content}){
       fontFamily={"revert"}
       fontWeight={"bold"}
     >
-      {"  "}{n.toFixed(n% 1 === 0?0:1)}-{p.toFixed(p% 1 === 0?0:1)}-{k.toFixed(k% 1 === 0?0:1)}+{mg.toFixed(mg% 1 === 0?0:1)}
+      {"  "}
+      {n.toFixed(n % 1 === 0 ? 0 : 1)}-{p.toFixed(p % 1 === 0 ? 0 : 1)}-
+      {k.toFixed(k % 1 === 0 ? 0 : 1)}+{mg.toFixed(mg % 1 === 0 ? 0 : 1)}
     </Typography>
-  )
+  );
 }
 NPK.propTypes = {
   content: PropTypes.array,
 };
 
-export function SelectRecipe({onChange}){
+export function SelectRecipe({ onChange }) {
   const { data: recipes } = useGetAllRecieptsQuery();
   return (
     <Select
       label="Recipe"
-      onChange={(e) => onChange(recipes.find(r=>r._id===e.target.value))}
+      onChange={(e) => onChange(recipes.find((r) => r._id === e.target.value))}
     >
       {recipes?.length > 0 &&
         recipes.map((r, i) => (
@@ -184,12 +208,12 @@ SelectRecipe.propTypes = {
   onChange: PropTypes.func,
 };
 
-export function SelectWater({onChange}){
+export function SelectWater({ onChange }) {
   const { data: waters } = useGetAllWatersQuery();
   return (
     <Select
       label="Water"
-      onChange={(e) => onChange(waters.find(w=>w._id===e.target.value))}
+      onChange={(e) => onChange(waters.find((w) => w._id === e.target.value))}
     >
       {waters?.length > 0 &&
         waters.map((w, i) => (
@@ -204,7 +228,6 @@ SelectWater.propTypes = {
   onChange: PropTypes.func,
 };
 
-
 export function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -216,8 +239,7 @@ export function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box 
-      >{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }
@@ -277,13 +299,20 @@ export function AddFertilizerDialog({ open, concentrateId, onClose }) {
   const { data: fertilizers } = useGetAllFertilizersQuery();
   const [addFertilizer] = useAddFertilizerMutation();
   const [fertilizer, setFertilizer] = useState(null);
+  const [concentration, setConcentration] = useState(0);
   const handleAddFertilizer = () => {
-    if (fertilizer?.concentration && fertilizer?.id) {
+    if (concentration && fertilizer) {
+      const fertilizerId = fertilizers.find((f) => f.name === fertilizer)._id;
+      if (!fertilizerId) {
+        alert("Fertilizer not found");
+        return;
+      }
+
       addFertilizer({
         id: concentrateId,
         body: {
-          fertilizer: fertilizer.id,
-          concentration: fertilizer.concentration,
+          fertilizer: fertilizerId,
+          concentration,
         },
       });
       setFertilizer(null);
@@ -302,38 +331,26 @@ export function AddFertilizerDialog({ open, concentrateId, onClose }) {
           <Select
             sx={{ width: "100%" }}
             value={fertilizer}
-            renderValue={(value) => {
-              if (!value) {
-                return "Select Fertilizer";
-              }
-              return fertilizers.find((f) => f._id === value)?.name;
-            }}
-            onChange={(e) =>
-              setFertilizer({ ...fertilizer, id: e.target.value })
-            }
+            onChange={(e) => setFertilizer(e.target.value)}
           >
             <MenuItem value={null}>None</MenuItem>
             {fertilizers?.length > 0 &&
               fertilizers.map((f, i) => (
-                <MenuItem key={i} value={f._id}>
+                <MenuItem key={i} value={f.name}>
                   {f.name}
                 </MenuItem>
               ))}
           </Select>
           <TextField
+            sx={{ width: "60%" }}
             label="Concentration g/L"
             type="number"
             min={0}
             max={1000}
-            onChange={(e) =>
-              setFertilizer({
-                ...fertilizer,
-                concentration: parseFloat(e.target.value),
-              })
-            }
+            onChange={(e) => setConcentration(parseFloat(e.target.value))}
           />
           <Button
-            disabled={!fertilizer?.id || !fertilizer?.concentration}
+            disabled={!fertilizer || !concentration}
             onClick={handleAddFertilizer}
           >
             Add Fertilizer
@@ -644,11 +661,11 @@ export function AddRecipeDialog({ open, onClose }) {
     B: 0,
     Mo: 0,
   };
- const initialState = {
-  name: "",
-  description: "",
-  ...ingredients,
-}
+  const initialState = {
+    name: "",
+    description: "",
+    ...ingredients,
+  };
   const [newRecipe, setNewRecipe] = useState(initialState);
   const [createRecipe] = useCreateRecieptMutation();
   const handleAddRecipe = () => {
@@ -692,8 +709,7 @@ export function AddRecipeDialog({ open, onClose }) {
                 })
               }
             />
-          ))  
-          }
+          ))}
           <Button onClick={handleAddRecipe}>Add Recipe</Button>
         </Box>
       </DialogContent>
@@ -706,12 +722,12 @@ AddRecipeDialog.propTypes = {
 };
 
 export function EditRecipeDialog({ open, recipe, onClose }) {
-  const { name, description, _id: id,__v, ...ingredients } = recipe;
-  const [changes,setChanges] = useState(ingredients);
+  const { name, description, _id: id, __v, ...ingredients } = recipe;
+  const [changes, setChanges] = useState(ingredients);
   const [updateRecipe] = useUpdateRecieptMutation();
   const handleEditRecipe = () => {
     if (changes) {
-      updateRecipe({id, body:changes});
+      updateRecipe({ id, body: changes });
       setChanges(ingredients);
       if (onClose) {
         onClose();
@@ -722,10 +738,7 @@ export function EditRecipeDialog({ open, recipe, onClose }) {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Edit Recipe {name}</DialogTitle>
       <DialogContent>
-        <Stack
-          direction="column"
-          spacing={1}
-        >
+        <Stack direction="column" spacing={1}>
           {Object.keys(changes).map((element, i) => (
             <TextField
               key={i}
@@ -739,8 +752,7 @@ export function EditRecipeDialog({ open, recipe, onClose }) {
                 })
               }
             />
-          ))  
-          }
+          ))}
           <Button onClick={handleEditRecipe}>Edit Recipe</Button>
         </Stack>
       </DialogContent>
@@ -757,7 +769,7 @@ export function AddWaterDialog({ open, onClose }) {
   const [newWater, setNewWater] = useState(null);
   const [createWater] = useCreateWaterMutation();
   const handleAddWater = () => {
-    if (newWater.name&&newWater.description) {
+    if (newWater.name && newWater.description) {
       createWater(newWater);
       setNewWater(null);
       if (onClose) {
@@ -809,7 +821,6 @@ AddWaterDialog.propTypes = {
   onClose: PropTypes.func,
 };
 
-
 export function AddFertigationUnitDialog({ open, onClose }) {
   const [newUnit, setNewUnit] = useState(null);
   const [createUnit] = useCreateFertilizerUnitMutation();
@@ -839,8 +850,12 @@ export function AddFertigationUnitDialog({ open, onClose }) {
               setNewUnit({ ...newUnit, description: e.target.value })
             }
           />
-          <SelectWater onChange={(water) => setNewUnit({ ...newUnit, water })} />
-          <SelectRecipe onChange={(recipe) => setNewUnit({ ...newUnit, recipe })} />
+          <SelectWater
+            onChange={(water) => setNewUnit({ ...newUnit, water })}
+          />
+          <SelectRecipe
+            onChange={(recipe) => setNewUnit({ ...newUnit, recipe })}
+          />
           <Button onClick={handleAddUnit}>Add Fertigation Unit</Button>
         </Box>
       </DialogContent>

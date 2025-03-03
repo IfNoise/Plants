@@ -1,14 +1,33 @@
-import { Card, CardContent, CardHeader, Table, TableHead, TableRow, TableCell, Typography, TableBody, CardActions, Stack, Box, CircularProgress, Alert, Button } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  Typography,
+  TableBody,
+  CardActions,
+  Stack,
+  Box,
+  CircularProgress,
+  Alert,
+  Button,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import IconButton from "@mui/material/IconButton";
 import PropTypes from "prop-types";
-import { useDeleteRecieptMutation, useGetAllRecieptsQuery } from "../../store/feedingApi";
+import {
+  useDeleteRecieptMutation,
+  useGetAllRecieptsQuery,
+} from "../../store/feedingApi";
 import { AddRecipeDialog, EditRecipeDialog } from "./Helpers";
 import { useState } from "react";
 
 export function RecipeCard({ recipe }) {
-  const { name, discription, _id: id,__v, ...ingridients } = recipe;
+  const { name, discription, _id: id, __v, ...ingridients } = recipe;
   const [open, setOpen] = useState(false);
   const [deleteRecipe] = useDeleteRecieptMutation();
   const deleteHandler = () => {
@@ -39,18 +58,18 @@ export function RecipeCard({ recipe }) {
         </Table>
       </CardContent>
       <CardActions>
-        <IconButton 
-          onClick={() => setOpen(true)}
-        >
+        <IconButton onClick={() => setOpen(true)}>
           <EditIcon />
         </IconButton>
-        <IconButton
-          onClick={deleteHandler}
-        >
+        <IconButton onClick={deleteHandler}>
           <DeleteForeverIcon />
         </IconButton>
       </CardActions>
-      <EditRecipeDialog open={open} onClose={() => setOpen(false)} recipe={recipe} />
+      <EditRecipeDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        recipe={recipe}
+      />
     </Card>
   );
 }
@@ -60,21 +79,25 @@ RecipeCard.propTypes = {
 
 export default function RecipeList() {
   const [open, setOpen] = useState(false);
-  const { isLoading,isSuccess,isError,data:recipes } = useGetAllRecieptsQuery();  
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    data: recipes,
+  } = useGetAllRecieptsQuery();
   return (
     <Box>
-    {isLoading && <CircularProgress />}
-    {isError && <Alert severity="error">Error</Alert>}
-    {isSuccess && recipes?.length>0 &&<Stack
-      spacing={2}
-      direction="row"
-    >
-      {recipes.map((recipe) => (
-        <RecipeCard key={recipe._id} recipe={recipe} />
-      ))}
-    </Stack>}
-    <Button onClick={() => setOpen(true)}>Add Recipe</Button>
-    <AddRecipeDialog open={open} onClose={() => setOpen(false)} />
+      {isLoading && <CircularProgress />}
+      {isError && <Alert severity="error">Error</Alert>}
+      {isSuccess && recipes?.length > 0 && (
+        <Stack spacing={2} direction="column">
+          {recipes.map((recipe) => (
+            <RecipeCard key={recipe._id} recipe={recipe} />
+          ))}
+        </Stack>
+      )}
+      <Button onClick={() => setOpen(true)}>Add Recipe</Button>
+      <AddRecipeDialog open={open} onClose={() => setOpen(false)} />
     </Box>
   );
 }

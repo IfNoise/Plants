@@ -300,16 +300,6 @@ const ChannalCard = ({ channel }) => {
               >
                 {name}
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: "8px",
-                  maxWidth: "90px",
-                }}
-                variant="caption"
-                component={"div"}
-              >
-                {device || ""} port: {port || 0}
-              </Typography>
             </Box>
           </Stack>
           {manual && (

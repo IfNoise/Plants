@@ -15,9 +15,10 @@ import {
   MenuItem,
   TextField,
   FormControl,
+  Box,
 } from "@mui/material";
 
-import { buildRooms } from "../../config/config";
+import { buildRooms, plantMap } from "../../config/config";
 import Scanner from "../Scanner/Scanner";
 
 const fieldsActions = {
@@ -82,9 +83,19 @@ export const AddressFields = () => {
   }, []);
 
   return (
-    <>
-      <Scanner output={dispatchAddress} />
-      <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
+    <Box>
+      <Box
+        sx={{
+          m: "7px",
+          border: "1px solid ",
+          borderRadius: "3px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Scanner output={dispatchAddress} />
+      </Box>
+      <FormControl variant="outlined" sx={{ m: "7px", width: "auto" }}>
         <InputLabel id="building-label">Building</InputLabel>
         <Select
           labelId="building-label"
@@ -92,20 +103,15 @@ export const AddressFields = () => {
           name="building"
           label="Building"
           onChange={handlerBuilding}
-          InputLabelProps={{
-            shrink: true,
-          }}
         >
-          {Object.keys(buildRooms).map((obj, index) => {
-            return (
-              <MenuItem key={index} value={obj}>
-                {obj}
-              </MenuItem>
-            );
-          })}
+          {Object.keys(buildRooms).map((obj, index) => (
+            <MenuItem key={index} value={obj}>
+              {obj}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
-      <FormControl variant="outlined" sx={{ m: "2px", width: "98%" }}>
+      <FormControl variant="outlined" sx={{ m: "7px", width: "200px" }}>
         <InputLabel id="room-label">Room</InputLabel>
         <Select
           labelId="room-label"
@@ -114,20 +120,18 @@ export const AddressFields = () => {
           label="Room"
           onChange={handlerRoom}
         >
-          {rooms.map((text, index) => {
-            return (
-              <MenuItem key={index} value={text}>
-                {text}
-              </MenuItem>
-            );
-          })}
+          {rooms.map((text, index) => (
+            <MenuItem key={index} value={text}>
+              {text}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
-      {newAction.address?.room != "Laboratory" && (
+      {newAction.address?.room && newAction.address?.room !== "Laboratory" && (
         <>
           <TextField
             id="outlined-number"
-            sx={{ m: "2px", width: "98%" }}
+            sx={{ m: "7px", width: "70px" }}
             label="Row"
             value={newAction.address?.row ?? ""}
             type="number"
@@ -136,10 +140,9 @@ export const AddressFields = () => {
               shrink: true,
             }}
           />
-
           <TextField
             id="outlined-number"
-            sx={{ m: "2px", width: "98%" }}
+            sx={{ m: "7px", width: "70px" }}
             label="Tray"
             value={newAction.address?.tray ?? ""}
             type="number"
@@ -150,14 +153,15 @@ export const AddressFields = () => {
           />
         </>
       )}
-      {newAction.address?.room == "Laboratory" && (
+      {newAction.address?.room === "Laboratory" && (
         <>
           <TextField
             id="outlined-number"
-            sx={{ m: "2px", width: "98%" }}
+            sx={{ m: "7px", width: "70px" }}
             label="Tray"
             value={newAction.address?.tray ?? ""}
             type="number"
+            disabled={newAction.address?.rack}
             onChange={handlerTray}
             InputLabelProps={{
               shrink: true,
@@ -165,10 +169,11 @@ export const AddressFields = () => {
           />
           <TextField
             id="outlined-number"
-            sx={{ m: "2px", width: "98%" }}
+            sx={{ m: "7px", width: "70px" }}
             label="Rack"
             value={newAction.address?.rack ?? ""}
             type="number"
+            disabled={newAction.address?.tray}
             onChange={handlerRack}
             InputLabelProps={{
               shrink: true,
@@ -176,8 +181,10 @@ export const AddressFields = () => {
           />
           <TextField
             id="outlined-number"
-            sx={{ mx: "2px", width: "98%" }}
+            sx={{ m: "7px", width: "70px" }}
             label="Shelf"
+            error={newAction.address?.shelf < 1}
+            required={newAction.address?.rack}
             value={newAction.address?.shelf ?? ""}
             type="number"
             onChange={handlerShelf}
@@ -187,6 +194,6 @@ export const AddressFields = () => {
           />
         </>
       )}
-    </>
+    </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Accordion,
   AccordionActions,
@@ -36,9 +36,9 @@ import {
   useDeleteConcentrateMutation,
   useDeleteFertilizerFromConcMutation,
   useGetAllConcentratesQuery,
-  useGetAllFertilizersQuery,
   useUpdateFertilizerMutation,
 } from "../../store/feedingApi";
+import { PrintAllConcentratesDialog, PrintConcentrateDialog } from "./Print";
 
 const ConcentrateCard = ({ concentrate }) => {
   const {
@@ -50,18 +50,19 @@ const ConcentrateCard = ({ concentrate }) => {
     aniones,
     kationes,
   } = concentrate;
-  const { data: fertilizerList = [] } = useGetAllFertilizersQuery();
+  //const { data: fertilizerList = [] } = useGetAllFertilizersQuery();
   const [deleteConcentrate] = useDeleteConcentrateMutation();
   const [deleteFertilizerFromConc] = useDeleteFertilizerFromConcMutation();
   const [updateFertilizer] = useUpdateFertilizerMutation();
   const [volume, setVolume] = useState(1);
 
   const [open, setOpen] = useState(false);
+  const [openPrint, setOpenPrint] = useState(false);
   const [openEdit, setOpenEdit] = useState(() => {
     return Array(fertilizers.length).fill(false);
   });
 
-  const [elementsList, setElementsList] = useState([]);
+  //const [elementsList, setElementsList] = useState([]);
   const openDialog = (index) => {
     setOpenEdit((prev) => {
       return prev.map((v, j) => (index === j ? true : v));
@@ -84,25 +85,6 @@ const ConcentrateCard = ({ concentrate }) => {
   const deleteConcentrateHandler = (id) => {
     deleteConcentrate(id);
   };
-  useMemo(() => {
-    if (fertilizers?.length === 0 || fertilizerList?.length === 0) return;
-
-    const ferts = fertilizers
-      .map((fert) => {
-        const fertilizer = fertilizerList.find(
-          (f) => f._id === fert.fertilizer
-        );
-        if (!fertilizer) return null;
-        return {
-          _id: fert._id,
-          name: fertilizer.name,
-          concentration: fert.concentration,
-        };
-      })
-      .filter((f) => f !== null);
-
-    setElementsList(ferts);
-  }, [fertilizers, fertilizerList]);
 
   return (
     <Card>
@@ -141,11 +123,11 @@ const ConcentrateCard = ({ concentrate }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {elementsList?.length > 0 &&
-                  elementsList.map((element, i) => (
+                {fertilizers.length > 0 &&
+                  fertilizers.map((element, i) => (
                     <TableRow key={i}>
-                      <TableCell>{element.name}</TableCell>
-                      <TableCell>{element.concentration}g</TableCell>
+                      <TableCell>{element.fertilizer.name}</TableCell>
+                      <TableCell>{element.concentration}</TableCell>
                       <TableCell>
                         {(element.concentration * volume).toFixed(2)}g
                       </TableCell>
@@ -191,19 +173,30 @@ const ConcentrateCard = ({ concentrate }) => {
         {aniones && kationes && (
           <Ballance aniones={aniones / 1000} kationes={kationes / 1000} />
         )}
-
+        <PrintConcentrateDialog
+          open={openPrint}
+          onClose={() => setOpenPrint(false)}
+          concentrate={{
+            name,
+            description,
+            content,
+            fertilizers,
+          }}
+          volume={volume}
+        />
         <AddFertilizerDialog
           open={open}
           onClose={() => setOpen(false)}
           concentrateId={id}
         />
         <Button onClick={() => deleteConcentrateHandler(id)}>Delete</Button>
+        <Button onClick={() => setOpenPrint(true)}>Print</Button>
       </CardContent>
     </Card>
   );
 };
 ConcentrateCard.propTypes = {
-  concentrate: PropTypes.string.isRequired,
+  concentrate: PropTypes.object.isRequired,
 };
 
 export default function ConcentrateList() {
@@ -214,6 +207,8 @@ export default function ConcentrateList() {
     data: concentrates,
   } = useGetAllConcentratesQuery();
   const [open, setOpen] = useState(false);
+  const [openPrint, setOpenPrint] = useState(false);
+
   if (isLoading) return <CircularProgress />;
   if (isError) return <Alert severity="error">{error.message}</Alert>;
   return (
@@ -231,6 +226,13 @@ export default function ConcentrateList() {
         Add Concentrate
       </Button>
       <AddConcentrateDialog open={open} onClose={() => setOpen(false)} />
+      <PrintAllConcentratesDialog
+        open={openPrint}
+        onClose={() => setOpenPrint(false)}
+        concentrates={concentrates}
+        volume={40}
+      />
+      <Button onClick={() => setOpenPrint(true)}>Print All</Button>
     </Box>
   );
 }

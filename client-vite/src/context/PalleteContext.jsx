@@ -1,4 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+"use strict";
+import { createContext, useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useGetPlantsQuery } from "../store/plantsApi";
 
@@ -10,12 +11,11 @@ const PalleteProvider = ({ children }) => {
     isLoading,
     isError,
     error,
-  } = useGetPlantsQuery({ state: "Growing" });
+  } = useGetPlantsQuery({ state: "Cloning" });
+
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [items, setItems] = useState([]);
-  const findByGroup = (group) => {
-    return items.find((item) => item.group === group);
-  };
+
   const selectNext = () => {
     const nextIndex =
       items.findIndex(
@@ -27,71 +27,83 @@ const PalleteProvider = ({ children }) => {
       setSelectedGroup(items[nextIndex]);
     }
   };
+
   const incrementCounter = (group) => {
     setItems((prev) => {
+      const index = prev.findIndex((item) => item.group === group);
       const newItems = [...prev];
-      const item = findByGroup(group);
-      item.counter++;
+      if (index !== -1) {
+        newItems[index].counter++;
+      }
       return newItems;
     });
   };
+
   const decrementCounter = (group) => {
     setItems((prev) => {
+      const index = prev.findIndex((item) => item.group === group);
       const newItems = [...prev];
-      const item = findByGroup(group);
-      item.counter--;
-      return newItems;
+      if (index !== -1) {
+        newItems[index].counter--;
+        if (newItems[index].counter <= 0 && selectedGroup) {
+          selectNext();
+        }
+        return newItems;
+      }
     });
   };
-  useEffect(() => {
-    if (clones) {
-      setItems(() => {
-        const groupedByPhenotype = clones.reduce((acc, clone) => {
-          const { pheno, startDate, group } = clone;
-          if (!acc[pheno]) {
-            acc[pheno] = [];
-          }
-          acc[pheno].push({
-            pheno,
-            startDate,
-            group,
-          });
-          return acc;
-        }, {});
-        const itemsTmp = [];
-        Object.values(groupedByPhenotype).reduce((acc, phenotype) => {
-          const groupedByGroup = phenotype.reduce((acc, clone) => {
-            const { group, startDate } = clone;
-            if (!acc[group]) {
-              acc[group] = [];
-            }
-            acc[group].push({
-              group,
-              startDate,
-            });
-            return acc;
-          }, {});
 
-          Object.values(groupedByGroup).reduce((acc, clones) => {
-            const counter = clones.length;
-            const { group, startDate } = clones[0];
-            const age = Math.floor(
-              (new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24)
-            );
-            itemsTmp.push({
-              pheno: phenotype[0].pheno,
-              group,
-              age,
-              counter,
-            });
-            return acc;
-          }, []);
-          return;
-        }, itemsTmp);
-        return itemsTmp;
+  const memoizedItems = useMemo(() => {
+    if (!clones) return [];
+    const groupedByPhenotype = clones.reduce((acc, clone) => {
+      const { pheno, startDate, group } = clone;
+      if (!acc[pheno]) {
+        acc[pheno] = [];
+      }
+      acc[pheno].push({
+        pheno,
+        startDate,
+        group,
       });
-    }
+      return acc;
+    }, {});
+    const itemsTmp = [];
+    Object.values(groupedByPhenotype).reduce((acc, phenotype) => {
+      const groupedByGroup = phenotype.reduce((acc, clone) => {
+        const { group, startDate } = clone;
+        if (!acc[group]) {
+          acc[group] = [];
+        }
+        acc[group].push({
+          group,
+          startDate,
+        });
+        return acc;
+      }, {});
+
+      Object.values(groupedByGroup).reduce((acc, clones) => {
+        const counter = clones.length;
+        const { group, startDate } = clones[0];
+        const age = Math.floor(
+          (new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24)
+        );
+        itemsTmp.push({
+          pheno: phenotype[0].pheno,
+          group,
+          age,
+          counter,
+        });
+        return acc;
+      }, []);
+      return;
+    }, itemsTmp);
+    return itemsTmp;
   }, [clones]);
+
+  useEffect(() => {
+    setItems(memoizedItems);
+  }, [memoizedItems]);
+
   useEffect(() => {
     setItems((prev) => {
       return prev.map((item) => {
@@ -104,9 +116,6 @@ const PalleteProvider = ({ children }) => {
         return item;
       });
     });
-    if (selectedGroup?.counter < 1) {
-      selectNext();
-    }
   }, [selectedGroup]);
 
   return (

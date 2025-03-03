@@ -45,7 +45,6 @@ import PropTypes from "prop-types";
 import ChannelsList from "./ChannelsList";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import AvTimerIcon from "@mui/icons-material/AvTimer";
 import StyledSwitch from "../StyledSwitch";
 
 const includes = (arr1, arr2) => {
@@ -73,7 +72,14 @@ const AddTimerDialog = () => {
   });
   const [open, setOpen] = useState(false);
   const handleAddTimer = () => {
-    addTimer(newTimer);
+    addTimer({
+      name: newTimer.name,
+      steps: newTimer.steps,
+      stepTime: newTimer.stepTime,
+      sunriseTime: dateToMinutes(newTimer.sunriseTime),
+      sunsetTime: dateToMinutes(newTimer.sunsetTime),
+      channels: newTimer.channels,
+    });
     setNewTimer({
       name: "",
       steps: 0,
@@ -139,7 +145,9 @@ const AddTimerDialog = () => {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
-          <pre style={{ overflow: "auto", maxHeight: "200px", fontSize: "10px" }}>
+          <pre
+            style={{ overflow: "auto", maxHeight: "200px", fontSize: "10px" }}
+          >
             {JSON.stringify(newTimer, null, 2)}
           </pre>
           <Button variant="contained" color="primary" onClick={handleAddTimer}>
@@ -159,8 +167,7 @@ const TimerSettings = ({ timer }) => {
   const [setSunsetTime] = useSetSunsetTimeMutation();
   const [haveModifications, setHaveModifications] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [settings, setSettings] = useState({
-  });
+  const [settings, setSettings] = useState({});
   const [removeTimer] = useRemoveTimerMutation();
 
   const handleSetSteps = (e) => {
@@ -196,11 +203,11 @@ const TimerSettings = ({ timer }) => {
   useEffect(() => {
     setSettings({
       steps,
-    stepTime,
-    sunriseTime: minutesToDate(sunriseTime),
-    sunsetTime: minutesToDate(sunsetTime),
+      stepTime,
+      sunriseTime: minutesToDate(sunriseTime),
+      sunsetTime: minutesToDate(sunsetTime),
     });
-  },[])
+  }, []);
   useEffect(() => {
     if (
       settings.steps !== steps ||
@@ -302,7 +309,12 @@ const SubscribeChannelDialog = ({ timer }) => {
   const [unsubscribe] = useUnsubscribeMutation();
   const handlerSubcribe = () => {
     if (channelsList.length > 0 && !includes(timer.channels, channelsList)) {
-      subscribe({ name: timer.name, channels: channelsList.filter((ch)=>timer.channels.indexOf(ch)===-1) });
+      subscribe({
+        name: timer.name,
+        channels: channelsList.filter(
+          (ch) => timer.channels.indexOf(ch) === -1
+        ),
+      });
     }
     if (unsubscribeList.length > 0) {
       unsubscribe({ name: timer.name, channels: [...unsubscribeList] });
@@ -323,73 +335,80 @@ const SubscribeChannelDialog = ({ timer }) => {
       <IconButton variant="contained" onClick={() => setOpenDialog(true)}>
         <PlaylistAddIcon />
       </IconButton>
-    <Dialog TransitionComponent={Slide} open={openDialog} onClose={() => setChannelsList([])}>
-      <Stack direction="column" spacing={1} margin={1}>
-        <List>
-          {availbleChannels?.length > 0 &&
-            availbleChannels.map((channel, idx) => (
-              <ListItem key={idx} variant="contained" color="primary">
-                {channel.name}
-                <Checkbox
-                  checked={channelsList.includes(channel.name)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      if (
-                        channelsList.includes(channel.name) &&
-                        timer?.channels.includes(channel.name)
-                      ) {
-                        return;
-                      }
-                      if(!timer?.channels.includes(channel.name)){
-                      setChannelsList([...channelsList, channel.name]);
-                      }
-                      if (unsubscribeList.includes(channel.name)) {
-                        setUnsubscribeList(
-                          unsubscribeList.filter(
-                            (item) => item !== channel.name
-                          )
+      <Dialog
+        TransitionComponent={Slide}
+        open={openDialog}
+        onClose={() => setChannelsList([])}
+      >
+        <Stack direction="column" spacing={1} margin={1}>
+          <List>
+            {availbleChannels?.length > 0 &&
+              availbleChannels.map((channel, idx) => (
+                <ListItem key={idx} variant="contained" color="primary">
+                  {channel.name}
+                  <Checkbox
+                    checked={channelsList.includes(channel.name)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (
+                          channelsList.includes(channel.name) &&
+                          timer?.channels.includes(channel.name)
+                        ) {
+                          return;
+                        }
+                        if (!timer?.channels.includes(channel.name)) {
+                          setChannelsList([...channelsList, channel.name]);
+                        }
+                        if (unsubscribeList.includes(channel.name)) {
+                          setUnsubscribeList(
+                            unsubscribeList.filter(
+                              (item) => item !== channel.name
+                            )
+                          );
+                        }
+                      } else {
+                        setChannelsList(
+                          channelsList.filter((item) => item !== channel.name)
                         );
+                        if (timer?.channels.includes(channel.name)) {
+                          setUnsubscribeList([
+                            ...unsubscribeList,
+                            channel.name,
+                          ]);
+                        }
                       }
-                    } else {
-                      setChannelsList(
-                        channelsList.filter((item) => item !== channel.name)
-                      );
-                      if (timer?.channels.includes(channel.name)) {
-                        setUnsubscribeList([...unsubscribeList, channel.name]);
-                      }
-                    }
-                  }}
-                />
-              </ListItem>
-            ))}
-        </List>
-        <pre
-          style={{ overflow: "auto", maxHeight: "200px", fontSize: "10px" }}
-        >
-          {JSON.stringify(channelsList, null, 2)}
-        </pre>
-        <pre
-          style={{ overflow: "auto", maxHeight: "200px", fontSize: "10px" }}
-        >
-          {JSON.stringify(unsubscribeList, null, 2)}
-        </pre>
-        <Button
-          disabled={!haveModifications}
-          variant="contained"
-          color="primary"
-          onClick={handlerSubcribe}
-        >
-          Subscribe
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => setOpenDialog(false)}
-        >
-          Close
-        </Button>
-      </Stack>
-    </Dialog>
+                    }}
+                  />
+                </ListItem>
+              ))}
+          </List>
+          <pre
+            style={{ overflow: "auto", maxHeight: "200px", fontSize: "10px" }}
+          >
+            {JSON.stringify(channelsList, null, 2)}
+          </pre>
+          <pre
+            style={{ overflow: "auto", maxHeight: "200px", fontSize: "10px" }}
+          >
+            {JSON.stringify(unsubscribeList, null, 2)}
+          </pre>
+          <Button
+            disabled={!haveModifications}
+            variant="contained"
+            color="primary"
+            onClick={handlerSubcribe}
+          >
+            Subscribe
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => setOpenDialog(false)}
+          >
+            Close
+          </Button>
+        </Stack>
+      </Dialog>
     </>
   );
 };
@@ -398,10 +417,9 @@ SubscribeChannelDialog.propTypes = {
   timer: PropTypes.object.isRequired,
 };
 
-
-
 const TimerCard = ({ timer }) => {
-  const { name, steps, stepTime, sunriseTime, sunsetTime, state, channels } =timer;
+  const { name, steps, stepTime, sunriseTime, sunsetTime, state, channels } =
+    timer;
   const [starTimer] = useStartTimerMutation();
   const [stopTimer] = useStopTimerMutation();
   const [setMaxLevel] = useSetMaxLevelMutation();
@@ -411,115 +429,127 @@ const TimerCard = ({ timer }) => {
   const [faderMode, setFaderMode] = useState("fadeLevel");
 
   useEffect(() => {
-    if(channels.length>0){
-      channels.forEach((channel)=>{
-        const channelData=lightChannels?.find((item)=>item.name===channel)
-        let level=0
-        if(channelData===undefined){return}
-        if(faderMode==="maxLevel"){
-          level = Math.floor(32767*masterLevel/100)
-          console.log(masterLevel,level)
-          setMaxLevel({name:channel,maxLevel:level})
-        }else if(faderMode==="fadeLevel"){
-          if(oldMasterLevel>masterLevel){
-            level=channelData.maxLevel-32767*(oldMasterLevel-masterLevel)/100
-
-          }else if(oldMasterLevel<masterLevel){
-            level=channelData.maxLevel+32767*(masterLevel-oldMasterLevel)/100
-          }else{
-            level=channelData.maxLevel
+    if (channels.length > 0) {
+      channels.forEach((channel) => {
+        const channelData = lightChannels?.find(
+          (item) => item.name === channel
+        );
+        let level = 0;
+        if (channelData === undefined) {
+          return;
+        }
+        if (faderMode === "maxLevel") {
+          level = Math.floor((32767 * masterLevel) / 100);
+          console.log(masterLevel, level);
+          setMaxLevel({ name: channel, maxLevel: level });
+        } else if (faderMode === "fadeLevel") {
+          if (oldMasterLevel > masterLevel) {
+            level =
+              channelData.maxLevel -
+              (32767 * (oldMasterLevel - masterLevel)) / 100;
+          } else if (oldMasterLevel < masterLevel) {
+            level =
+              channelData.maxLevel +
+              (32767 * (masterLevel - oldMasterLevel)) / 100;
+          } else {
+            level = channelData.maxLevel;
           }
         }
-        if(level>32767){level=32767}
-          if(level<0){level=0}
-          console.log(level)
-          setOldMasterLevel(masterLevel)
-          setMaxLevel({name:channel,maxLevel:Math.floor(level)})
-      })}
+        if (level > 32767) {
+          level = 32767;
+        }
+        if (level < 0) {
+          level = 0;
+        }
+        console.log(level);
+        setOldMasterLevel(masterLevel);
+        setMaxLevel({ name: channel, maxLevel: Math.floor(level) });
+      });
     }
-    , [masterLevel, faderMode, channels, setMaxLevel]
-      )
-  
-
+  }, [masterLevel, faderMode, channels, setMaxLevel]);
 
   return (
-      <Card
-        sx={{
-          m: "2px",
-          p: "10px",
-          width: "100%",
+    <Card
+      sx={{
+        m: "2px",
+        p: "10px",
+        width: "100%",
+      }}
+    >
+      {name && (
+        <Typography variant="h6" component="span">
+          Timer:{name || ""}
+        </Typography>
+      )}
+      <StyledSwitch
+        sx={{ float: "right", margin: "5px" }}
+        checked={state === "started"}
+        onChange={(e) => {
+          if (e.target.checked) {
+            starTimer({ name });
+          }
+          if (!e.target.checked) {
+            stopTimer({ name });
+          }
         }}
-      >
-        {name && (
-          <Typography variant="h6" component="span">
-            Timer:{name || ""}
-          </Typography>
-        )}
-        <StyledSwitch
-          sx={{ float: "right", margin: "5px" }}
-          checked={state === "started"}
-          onChange={(e) => {
-            if (e.target.checked) {
-              starTimer({ name });
-            }
-            if (!e.target.checked) {
-              stopTimer({ name });
-            }
-          }}
-        />
-        {steps && (
-          <Typography variant="caption" component={"div"}>
-            Steps:{steps || ""}
-          </Typography>
-        )}
-        {stepTime && (
-          <Typography variant="caption" component={"div"}>
-            stepTime{stepTime || ""}
-          </Typography>
-        )}
-        {sunriseTime && (
-          <Typography variant="caption" component={"div"}>
-            Sunrise
-            {dayjs(minutesToDate(sunriseTime)).format("HH:mm").toString() || ""}
-          </Typography>
-        )}
-        {(sunsetTime!==""||sunriseTime!==undefined )&& (
-          <Typography variant="caption" component={"div"}>
-            Sunset
-            {dayjs(minutesToDate(sunsetTime)).format("HH:mm").toString() || ""}
-          </Typography>
-        )}
-        <Slider
-          sx={{ width: "60%" ,
-            color:"green",
-            ml:"10px",
-            height:"10px",
-          }}
-          value={masterLevel}
-          valueLabelDisplay="on"
-          step={5}
-          marks
-          min={faderMode === "maxLevel" ? 0 : 0}
-          max={faderMode === "maxLevel" ? 100 : 100}
-          onChange={(e, value) => setMasterLevel(value)}
-        />
-        <FormControl component={"block"} sx={{ml:"15px"}}>
+      />
+      {steps && (
+        <Typography variant="caption" component={"div"}>
+          Steps:{steps || ""}
+        </Typography>
+      )}
+      {stepTime && (
+        <Typography variant="caption" component={"div"}>
+          stepTime{stepTime || ""}
+        </Typography>
+      )}
+      {sunriseTime && (
+        <Typography variant="caption" component={"div"}>
+          Sunrise
+          {dayjs(minutesToDate(sunriseTime)).format("HH:mm").toString() || ""}
+        </Typography>
+      )}
+      {(sunsetTime !== "" || sunriseTime !== undefined) && (
+        <Typography variant="caption" component={"div"}>
+          Sunset
+          {dayjs(minutesToDate(sunsetTime)).format("HH:mm").toString() || ""}
+        </Typography>
+      )}
+      <Slider
+        sx={{ width: "60%", color: "green", ml: "10px", height: "10px" }}
+        value={masterLevel}
+        valueLabelDisplay="on"
+        step={5}
+        marks
+        min={faderMode === "maxLevel" ? 0 : 0}
+        max={faderMode === "maxLevel" ? 100 : 100}
+        onChange={(e, value) => setMasterLevel(value)}
+      />
+      <FormControl component={"block"} sx={{ ml: "15px" }}>
         <RadioGroup
-         row
+          row
           value={faderMode}
           onChange={(e) => setFaderMode(e.target.value)}
         >
-          <FormControlLabel value={"maxLevel"} control={<Radio size="small" margin="2px" />} label="MaxLevel" />
-          <FormControlLabel value={"fadeLevel"} control={<Radio size="small"/>} label="FadeLevel" />
+          <FormControlLabel
+            value={"maxLevel"}
+            control={<Radio size="small" margin="2px" />}
+            label="MaxLevel"
+          />
+          <FormControlLabel
+            value={"fadeLevel"}
+            control={<Radio size="small" />}
+            label="FadeLevel"
+          />
         </RadioGroup>
-        </FormControl>
-        {channels?.length > 0 && <ChannelsList channelNames={channels} />}
-        
-        <CardActions>
-          <SubscribeChannelDialog timer={timer} />
-          <TimerSettings timer={timer} />
-        </CardActions>
-      </Card>
+      </FormControl>
+      {channels?.length > 0 && <ChannelsList channelNames={channels} />}
+
+      <CardActions>
+        <SubscribeChannelDialog timer={timer} />
+        <TimerSettings timer={timer} />
+      </CardActions>
+    </Card>
   );
 };
 TimerCard.propTypes = {
@@ -534,7 +564,7 @@ export default function TimerList() {
       {isError && <Alert severity="error">{error.message}</Alert>}
       {timers?.length > 0 &&
         timers.map((timer, idx) => <TimerCard key={idx} timer={timer} />)}
-        <AddTimerDialog />
+      <AddTimerDialog />
     </Box>
   );
 }

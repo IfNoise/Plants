@@ -370,6 +370,7 @@ export default function Scanner({
   addPhotoFast,
   fastPickButton,
   fastRelocationButton,
+  size,
 }) {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [plant, setPlant] = useState(null); //
@@ -435,10 +436,10 @@ export default function Scanner({
     close();
   }
   const initScanner = () => {
-    if (Object.keys(video.current).length !== 0) {
-      let target = video.current;
+    const qr_video = document.getElementById("qr-video");
+    if (qr_video) {
       const newQrScanner = new QrScanner(
-        target,
+        qr_video,
         (result) => handleScan(result),
         {
           highlightScanRegion: true,
@@ -446,8 +447,10 @@ export default function Scanner({
           maxScansPerSecond: 10,
         }
       );
-      setQrScanner(newQrScanner);
-      newQrScanner.start();
+      setQrScanner(() => {
+        newQrScanner.start();
+        return newQrScanner;
+      });
     }
   };
 
@@ -465,7 +468,7 @@ export default function Scanner({
         const json = JSON.parse(scanResult);
         if (json.type === "plant") id = json.id;
         if (json.type === "address") {
-          const { type, room, ...scAddr } = json;
+          const { room, ...scAddr } = json;
           const roomWithSpace = room.replace(/_/g, " ");
           address = { room: roomWithSpace, ...scAddr };
         }
@@ -504,8 +507,8 @@ export default function Scanner({
   };
   return (
     <>
-      <IconButton onClick={toggleScan}>
-        <QrCode2Icon />
+      <IconButton onClick={toggleScan} size={size}>
+        <QrCode2Icon fontSize={size} />
       </IconButton>
       <Dialog
         open={open}
@@ -513,9 +516,11 @@ export default function Scanner({
         style={style}
         fullScreen={isSmall}
         maxWidth="sm"
+        position="relative"
       >
         <Box component="div" style={{ position: "relative", height: "100%" }}>
           <video
+            id="qr-video"
             ref={video}
             style={{ width: "100%", height: "auto", display: "block" }}
           ></video>
@@ -552,6 +557,7 @@ export default function Scanner({
               <Typography variant="caption">{error.message}</Typography>
             )}
             {isLoading && <Typography variant="caption">Loading...</Typography>}
+
             {plant && (
               <Box
                 sx={{
@@ -587,8 +593,49 @@ export default function Scanner({
                   `}
                   </Typography>
                 </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "transparent",
+                    position: "absolute",
+                    right: 0,
+                    bottom: "0px",
+                    border: "1px solid",
+                  }}
+                >
+                  <Stack spacing={2}>
+                    {addPhotoFast && (
+                      <IconButton
+                        onClick={() => {
+                          setOpenPhoto(true);
+                        }}
+                        size="large"
+                        sx={{
+                          fontSize: "40px",
+                          borderColor: "red",
+                          borderWidth: "2px",
+                          borderBlockColor: "red",
+                          borderStyle: "solid",
+                          color: "red",
+                          borderRadius: "50%",
+                          width: "100px",
+                          height: "100px",
+                        }}
+                      >
+                        <AddAPhotoIcon fontSize="28px" />
+                      </IconButton>
+                    )}
+                    {fastPickButton && <FastPickButton />}
+                    {fastRelocationButton && addressRes && (
+                      <FastRelocationButton
+                        plants={Array.from(store)}
+                        address={addressRes}
+                      />
+                    )}
+                  </Stack>
+                </Box>
               </Box>
             )}
+
             {addressRes && (
               <Card
                 variant="outlined"
@@ -615,6 +662,18 @@ export default function Scanner({
               </Card>
             )}
           </Box>
+          {!video.current && (
+            <Typography
+              variant="h5"
+              color="yellow"
+              sx={{
+                textAlign: "center",
+                fontWeight: "bold",
+              }}
+            >
+              Press next button for start scanning
+            </Typography>
+          )}
           <DialogActions
             sx={{
               left: 30,
@@ -662,26 +721,6 @@ export default function Scanner({
                 >
                   ADD
                 </Button>
-                {addPhotoFast && (
-                  <IconButton
-                    onClick={() => {
-                      setOpenPhoto(true);
-                    }}
-                    size="large"
-                    sx={{
-                      fontSize: "40px",
-                      borderColor: "red",
-                      borderWidth: "2px",
-                      borderBlockColor: "red",
-                      borderStyle: "solid",
-                      color: "red",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <AddAPhotoIcon fontSize="28px" />
-                  </IconButton>
-                )}
-                {fastPickButton && <FastPickButton />}
               </>
             )}
             {addressRes && (
@@ -700,12 +739,6 @@ export default function Scanner({
                 >
                   Details
                 </Button>
-                {fastRelocationButton && (
-                  <FastRelocationButton
-                    plants={Array.from(store)}
-                    address={addressRes}
-                  />
-                )}
                 {typeof output === "function" && (
                   <Button
                     variant="outlined"
@@ -758,4 +791,5 @@ Scanner.propTypes = {
   addPhotoFast: PropTypes.bool,
   fastPickButton: PropTypes.bool,
   fastRelocationButton: PropTypes.bool,
+  size: PropTypes.string,
 };

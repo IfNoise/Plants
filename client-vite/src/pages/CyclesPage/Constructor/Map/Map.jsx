@@ -2,19 +2,7 @@ import {
   Box,
   Link,
   Typography,
-  // Dialog,
-  // DialogTitle,
-  // DialogContent,
-  // DialogActions,
   Button,
-  // Table,
-  // TableBody,
-  // TableCell,
-  // TableContainer,
-  // TableHead,
-  // TableRow,
-  // Paper,
-  // Grid,
   FormControl,
   InputLabel,
   Select,
@@ -32,6 +20,40 @@ import { buildRooms } from "../../../../config/config";
 //import { PieChart } from "@mui/x-charts";
 import { MapContext } from "../../../../context/MapContext";
 //import { stringToColor } from "../../../../utilites/color";
+
+const LoadMapDialog = ({ onChange = () => {} }) => {
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data && onChange) onChange(() => data);
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+  return (
+    <>
+      <input
+        accept="application/json"
+        id="file"
+        type="file"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+      <label htmlFor="file">
+        <Button variant="contained" component="span">
+          Load
+        </Button>
+      </label>
+    </>
+  );
+};
 
 export default function Map() {
   const mapContext = useContext(MapContext);
@@ -92,8 +114,26 @@ export default function Map() {
   const logMap = () => {
     console.log(mapContext.map);
   };
-  const saveMaphandler = (name, description) => {
-    saveMap({ name, description, map: mapContext.map });
+  const handleSaveMap = () => {
+    // 1. Преобразование данных в JSON
+    const jsonData = JSON.stringify(mapContext.ma);
+
+    // 2. Создание Blob-объекта
+    const blob = new Blob([jsonData], { type: "application/json" });
+
+    // 3. Создание ссылки для скачивания
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "mapData.json";
+
+    // 4. Имитация клика по ссылке
+    document.body.appendChild(link);
+    link.click();
+
+    // Очистка
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handlerRoom = (e) => {
@@ -126,6 +166,14 @@ export default function Map() {
             })}
           </Select>
         </FormControl>
+        <Button onClick={() => handleSaveMap()}>Save</Button>
+        <LoadMapDialog
+          onChange={(e) => {
+            setBuilding(Object.keys(e)[0]);
+            setRoom(Object.keys(e[Object.keys(e)[0]])[0]);
+            mapContext.setMap(e);
+          }}
+        />
       </Stack>
       <Stack direction="row" spacing={1}>
         <FormControl variant="outlined" sx={{ m: "2px", width: "95%" }}>

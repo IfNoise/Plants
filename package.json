@@ -28,6 +28,7 @@
     "node-cups": "^1.2.3",
     "qrcode": "^1.5.4",
     "querystring": "^0.2.1",
+    "react-to-print": "^3.0.5",
     "sharp": "^0.33.5",
     "workbox-core": "^7.1.0"
   },

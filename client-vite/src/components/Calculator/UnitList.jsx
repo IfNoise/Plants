@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -19,22 +19,36 @@ import {
   CircularProgress,
   Alert,
   IconButton,
-
+  InputLabel,
+  OutlinedInput,
+  FormControl,
+  Popper,
+  Paper,
+  ClickAwayListener,
+  TextField,
+  Popover,
 } from "@mui/material";
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
-import { AddPumpToUnitDialog, AddFertigationUnitDialog, RecipeTable, Ballance } from "./Helpers";
-import { elements } from "../../config/config";
-import { useDeleteFertilizerUnitMutation, useGetAllConcentratesQuery, useGetAllFertilizersQuery, useGetConcentrateByIdQuery, useGetFertilizerUnitsQuery, useRemovePumpFromFertilizerUnitMutation, useUpdatePumpFromFertilizerUnitMutation } from "../../store/feedingApi";
+import {
+  AddPumpToUnitDialog,
+  AddFertigationUnitDialog,
+  RecipeTable,
+  Ballance,
+} from "./Helpers";
+import {
+  useDeleteFertilizerUnitMutation,
+  useGetAllConcentratesQuery,
+  useGetAllFertilizersQuery,
+  useGetAllRecieptsQuery,
+  useGetConcentrateByIdQuery,
+  useGetFertilizerUnitsQuery,
+  useRemovePumpFromFertilizerUnitMutation,
+  useUpdateFertilizerUnitMutation,
+  useUpdatePumpFromFertilizerUnitMutation,
+} from "../../store/feedingApi";
 import AreYouSure from "../AreYouSure";
-import { set } from "mongoose";
-import RecipeList, { RecipeCard } from "./RecipeList";
-const units=[
-  "ppm",
-  "mM",
-  "%w/v"
-]
 
 // const ElementsTable=({solution}) => {
 // const [unit, setUnit] = useState('mM');//ppm,mM,%w/v
@@ -92,9 +106,8 @@ const units=[
 //           name: element.name,
 //           concentration: element.concentration/1000*(ionesMmass.find((e)=>element.name===e.element).mmass),
 //         };
-//       } 
+//       }
 
-      
 //     }
 //     )
 //     // .map((element) => {
@@ -121,9 +134,9 @@ const units=[
 //     //     return acc;
 //     //   }, []);
 //     setElementsList(eList);
-  
+
 //   }
-  
+
 // }, [solution,unit]);
 // return (
 // <Box
@@ -140,7 +153,7 @@ const units=[
 
 // >
 // {units.map((u,i)=>(
-//   <ToggleButton 
+//   <ToggleButton
 //     key={i}
 //     value={u}
 //   >
@@ -177,38 +190,162 @@ const units=[
 // ElementsTable.propTypes={
 //   solution:PropTypes.array.isRequired,
 // }
+const InputPopper = forwardRef(
+  ({ label, anchorEl, open, onClose = () => {}, onChange }) => {
+    const [value, setValue] = useState("");
+    const handleChange = (e) => {
+      setValue(e.target.value);
+    };
+    const handleOk = () => {
+      if (value) onChange(value);
+      onClose();
+    };
+    return (
+      <Popover
+        open={open}
+        onClose={onClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <Paper
+          sx={{
+            p: "6px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <TextField
+            variant="outlined"
+            label={label}
+            onChange={handleChange}
+            value={value}
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleOk();
+              }
+            }}
+          />
+          <Button variant="outlined" onClick={handleOk} sx={{ ml: 1 }}>
+            Ok
+          </Button>
+        </Paper>
+      </Popover>
+    );
+  }
+);
+InputPopper.displayName = "InputPopper";
+InputPopper.propTypes = {
+  label: PropTypes.string,
+  anchorEl: PropTypes.object,
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  onChange: PropTypes.func,
+};
 
+const SelectRecipe = ({ recipe, onChange }) => {
+  const [recipeValue, setRecipeValue] = useState(recipe);
+  const { data: recipes } = useGetAllRecieptsQuery();
+  const changeRecipe = (e) => {
+    const { value } = e.target;
+    setRecipeValue(value);
+    if (onChange) onChange({ recipe: value });
+  };
+  return (
+    <>
+      <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="select-recipe-label">Select Recipe</InputLabel>
+        <Select
+          labelId="select-recipe-label"
+          input={<OutlinedInput label="Name" />}
+          value={recipeValue}
+          onChange={changeRecipe}
+        >
+          {recipes?.length > 0 &&
+            recipes.map((r, i) => (
+              <MenuItem key={i} value={r._id}>
+                {r.name}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
+    </>
+  );
+};
+SelectRecipe.propTypes = {
+  onChange: PropTypes.func,
+};
 
+const SelectConcentrate = ({ concentrate, onChange }) => {
+  const [concentrateValue, setConcentrateValue] = useState(concentrate);
+  const { data: concentrates } = useGetAllConcentratesQuery();
+  const changeConcentrate = (e) => {
+    const { value } = e.target;
+    setConcentrateValue(value);
+    if (onChange) onChange({ concentrate: value });
+  };
+  return (
+    <>
+      <Select
+        sx={{ m: 1, p: 0, maxWidth: 120 }}
+        input={<OutlinedInput label="Name" />}
+        value={concentrateValue}
+        onChange={changeConcentrate}
+      >
+        {concentrates?.length > 0 &&
+          concentrates.map((c, i) => (
+            <MenuItem key={i} value={c._id}>
+              {c.name}
+            </MenuItem>
+          ))}
+      </Select>
+    </>
+  );
+};
+SelectConcentrate.propTypes = {
+  onChange: PropTypes.func,
+};
 
-
-const DosingPump = ({ unitId,pump, onChange }) => {
-  const { _id,name,factor:factorProp , flowRate: flowRateProp,concentrate:concentrateId} = pump;
-  const {data:concentrate}=useGetConcentrateByIdQuery(concentrateId);
+const DosingPump = ({ unitId, pump, onChange }) => {
+  const {
+    _id,
+    name,
+    factor: factorProp,
+    flowRate: flowRateProp,
+    concentrate: concentrateId,
+  } = pump;
+  const { data: concentrate } = useGetConcentrateByIdQuery(concentrateId);
   const [flowRate, setFlowRate] = useState(flowRateProp);
-  const [deletePump]=useRemovePumpFromFertilizerUnitMutation();
-  const [sliderRate,setSliderRate]=useState(flowRateProp);
-  const [factor, setFactor] = useState(factorProp||1);
+  const [updatePump] = useUpdatePumpFromFertilizerUnitMutation();
+  const [deletePump] = useRemovePumpFromFertilizerUnitMutation();
+  const [sliderRate, setSliderRate] = useState(flowRateProp);
+  const [factor, setFactor] = useState(factorProp || 1);
   const [del, setDel] = useState(false);
-  const factors =[
-    {factor:1.0,name:"1x"},
-    {factor:0.5,name:"1/2x"},
-    {factor:0.33,name:"1/3x"},
-    {factor:0.25,name:"1/4x"},
-    {factor:0.2,name:"1/5x"},
-    {factor:0.1,name:"1/10x"},
-  ]
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const factors = [
+    { factor: 1.0, name: "1x" },
+    { factor: 0.5, name: "1/2x" },
+    { factor: 0.33, name: "1/3x" },
+    { factor: 0.25, name: "1/4x" },
+    { factor: 0.2, name: "1/5x" },
+    { factor: 0.1, name: "1/10x" },
+  ];
   const changeFlowRate = (flowRate) => {
     setFlowRate(flowRate);
-    if (onChange) onChange({flowRate});
+    updatePump({ id: unitId, pumpId: _id, body: { flowRate } });
   };
   const changeFactor = (e) => {
     const factor = e.target.value;
     setFactor(factor);
-    if (onChange) onChange({factor});
+    updatePump({ id: unitId, pumpId: _id, body: { factor } });
   };
 
   const deletePumpHandler = () => {
-    deletePump({id:unitId,pumpId:_id});
+    deletePump({ id: unitId, pumpId: _id });
     setDel(false);
   };
 
@@ -237,62 +374,88 @@ const DosingPump = ({ unitId,pump, onChange }) => {
 
   return (
     <Card>
-      <CardHeader variant="h4" title={<>
-        {name}
-        <IconButton
-          aria-label="delete"
-          sx={{ float: "right",m:-2,p:0.5 }}
-          onClick={() => {setDel(true)}}
-        >
-          <DeleteIcon/>
-        </IconButton>
-        </>}
-        subheader={concentrate?.name}
-        ></CardHeader>
-      <CardContent 
+      <CardHeader
+        variant="h4"
+        title={
+          <>
+            {name}
+            <IconButton
+              aria-label="delete"
+              sx={{ float: "right", m: -2, p: 0.5 }}
+              onClick={() => {
+                setDel(true);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+        }
+        subheader={
+          <SelectConcentrate
+            concentrate={concentrateId}
+            onChange={(changes) => {
+              updatePump({ id: unitId, pumpId: _id, body: changes });
+            }}
+          />
+        }
+        onDoubleClick={(e) => {
+          e.preventDefault();
+          setOpen(true);
+          setAnchorEl(e.target);
+        }}
+      ></CardHeader>
+      <CardContent
         sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Slider
           orientation="vertical"
-          sx={{ height: 200,mb:"1rem" }}
+          sx={{ height: 200, mb: "1rem" }}
           min={0.4}
           marks={marks}
           max={4.0}
           step={0.1}
           value={sliderRate}
-          onChange={(_, value) => {
+          onChangeCommitted={(_, value) => {
             setSliderRate(value);
             changeFlowRate(value);
           }}
         />
 
-        <Typography variant="h4" color="yellowgreen" display={"block"} >{sliderRate}</Typography>
-          <Select
-            value={factor}
-            onChange={changeFactor}
-          >
-            {factors.map((f, i) => (
-              <MenuItem key={i} value={f.factor}>
-                {f.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <AreYouSure 
-            show={del}
-            onCancel={() => {
-              setDel(false);
-            }}
-            onConfirm={deletePumpHandler}
-            message="Are you sure you want to delete this pump?"
-          />
-
+        <Typography variant="h4" color="yellowgreen" display={"block"}>
+          {sliderRate}
+        </Typography>
+        <Select value={factor} onChange={changeFactor}>
+          {factors.map((f, i) => (
+            <MenuItem key={i} value={f.factor}>
+              {f.name}
+            </MenuItem>
+          ))}
+        </Select>
+        <AreYouSure
+          show={del}
+          onCancel={() => {
+            setDel(false);
+          }}
+          onConfirm={deletePumpHandler}
+          message="Are you sure you want to delete this pump?"
+        />
       </CardContent>
+      <InputPopper
+        label="Name"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        onChange={(value) => {
+          updatePump({ id: unitId, pumpId: _id, body: { name: value } });
+        }}
+      />
     </Card>
   );
 };
@@ -302,73 +465,82 @@ DosingPump.propTypes = {
 };
 
 const FertigationUnit = ({ unit }) => {
-  const [updatePump]=useUpdatePumpFromFertilizerUnitMutation();
-  const [deleteFertilizerUnit]=useDeleteFertilizerUnitMutation(); 
-  const { _id,name,pumps,recipe,water,solution} = unit;
+  const [updatePump] = useUpdatePumpFromFertilizerUnitMutation();
+  const [deleteFertilizerUnit] = useDeleteFertilizerUnitMutation();
+  const [updateUnit] = useUpdateFertilizerUnitMutation();
+  const { _id, name, pumps, recipe, water, solution } = unit;
 
-  const editPumpHandler = (id,changes) => {
-    updatePump({id:_id,pumpId:id,body:changes});
+  const editPumpHandler = (id, changes) => {
+    updatePump({ id: _id, pumpId: id, body: changes });
+  };
+  const onRecipeChange = (changes) => {
+    updateUnit({ id: _id, body: changes });
   };
 
   const [open, setOpen] = useState(false);
   return (
     <Card>
-      <CardHeader variant="h4" title={name}/>
+      <CardHeader variant="h4" title={name} />
       <CardContent>
         <Box>
-          {pumps.length>0 &&<RecipeTable recipe={recipe} content={solution?.elements||[]}/>}
-          {water && <Typography variant="h6">Water: {water.name}L</Typography>}
-          {solution.kationes&&solution.aniones&&<Ballance kationes={solution.kationes} aniones={solution.aniones}/>}
-        <Stack
-        direction="row"
-        margin={2}
-        spacing={2}
+          {recipe && (
+            <>
+              <SelectRecipe
+                recipe={recipe}
+                onChange={(changes) => {
+                  onRecipeChange(changes);
+                }}
+              />
 
-        
-        >
-        {pumps?.length > 0 &&
-          pumps.map((pump, i) => (
-            <DosingPump
-              key={i}
-              pump={pump}
-              unitId={_id}
-              onChange={(changes) => {
-                editPumpHandler(pump._id,changes);
-              }}
-            />
-          ))}
-      </Stack>
-      <Table 
-        sx={{
-          width:"auto",
-        }}
-      >
-        <TableHead 
-        
-        >
-          <TableRow>
-            {solution?.length > 0 &&
-              solution.map((element, i) => (
-                <TableCell key={i}>{element.name}</TableCell>
+              <RecipeTable recipe={recipe} content={solution?.elements || []} />
+            </>
+          )}
+          {water && <Typography variant="h6">Water: {water.name}L</Typography>}
+          {solution.kationes && solution.aniones && (
+            <Ballance kationes={solution.kationes} aniones={solution.aniones} />
+          )}
+          <Stack direction="row" margin={2} spacing={2}>
+            {pumps?.length > 0 &&
+              pumps.map((pump, i) => (
+                <DosingPump
+                  key={i}
+                  pump={pump}
+                  unitId={_id}
+                  onChange={(changes) => {
+                    editPumpHandler(pump._id, changes);
+                  }}
+                />
               ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            {solution?.length > 0 &&
-              solution.map((element, i) => (
-                <TableCell key={i}>
-                  {element.concentration.toFixed(1)}
-                </TableCell>
-              ))}
-          </TableRow>
-        </TableBody>
-        </Table>
-        {/* <ElementsTable solution={solution}/> */}
-           </Box>
+          </Stack>
+          <Table
+            sx={{
+              width: "auto",
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                {solution?.length > 0 &&
+                  solution.map((element, i) => (
+                    <TableCell key={i}>{element.name}</TableCell>
+                  ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                {solution?.length > 0 &&
+                  solution.map((element, i) => (
+                    <TableCell key={i}>
+                      {element.concentration.toFixed(1)}
+                    </TableCell>
+                  ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+          {/* <ElementsTable solution={solution}/> */}
+        </Box>
       </CardContent>
       <CardActions>
-        <Button 
+        <Button
           onClick={() => {
             setOpen(true);
           }}
@@ -388,39 +560,33 @@ const FertigationUnit = ({ unit }) => {
             setOpen(false);
           }}
           unit={unit._id}
-        
         />
       </CardActions>
     </Card>
   );
-
-}
+};
 FertigationUnit.propTypes = {
-  unit: PropTypes.object.isRequired,  
+  unit: PropTypes.object.isRequired,
 };
 
 export default function FertigationUnitList() {
-  const {isLoading,isError,error,data:units}=useGetFertilizerUnitsQuery();
+  const {
+    isLoading,
+    isError,
+    error,
+    data: units,
+  } = useGetFertilizerUnitsQuery();
   const [open, setOpen] = useState(false);
   return (
     <Box>
       {isLoading && <CircularProgress />}
       {isError && <Alert severity="error">{error.message}</Alert>}
-      <Stack
-        direction="column"
-        margin={2}
-        spacing={2}
-        justifyContent="center"
-      >
-      {units?.length > 0 &&
-        units.map((unit, i) => <FertigationUnit key={i} unit={unit} />)}
+      <Stack direction="column" margin={2} spacing={2} justifyContent="center">
+        {units?.length > 0 &&
+          units.map((unit, i) => <FertigationUnit key={i} unit={unit} />)}
       </Stack>
       <Button onClick={() => setOpen(true)}>Add Fertigation Unit</Button>
-      <AddFertigationUnitDialog
-        open={open}
-        onClose={() => setOpen(false)}
-      />
-
+      <AddFertigationUnitDialog open={open} onClose={() => setOpen(false)} />
     </Box>
   );
 }

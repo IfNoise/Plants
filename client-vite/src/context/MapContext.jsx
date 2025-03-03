@@ -10,10 +10,10 @@ const MapProvider = ({ children }) => {
 
   const addplant = (plant, address) => {
     const { building, room } = address;
-    const row = address?.row - 1 || undefined;
-    const rack = address?.rack - 1 || undefined;
-    const shelf = address?.shelf - 1 || undefined;
-    const tray = address?.tray - 1 || undefined;
+    const row = address?.row ? address?.row - 1 : undefined;
+    const rack = address?.rack ? address?.rack - 1 : undefined;
+    const shelf = address?.shelf ? address?.shelf - 1 : undefined;
+    const tray = address?.tray ? address?.tray - 1 : undefined;
     setMap((prevMap) => {
       // Создаем глубокую копию карты
       const newMap = JSON.parse(JSON.stringify(prevMap));
@@ -48,21 +48,23 @@ const MapProvider = ({ children }) => {
 
   const removePlant = (plant, address) => {
     const { building, room } = address;
-    const row = address?.row - 1 || undefined;
-    const rack = address?.rack - 1 || undefined;
-    const shelf = address?.shelf - 1 || undefined;
-    const tray = address?.tray - 1;
+    const row = address?.row ? address?.row - 1 : undefined;
+    const rack = address?.rack ? address?.rack - 1 : undefined;
+    const shelf = address?.shelf ? address?.shelf - 1 : undefined;
+    const tray = address?.tray ? address?.tray - 1 : undefined;
     setMap((prevMap) => {
       // Создаем глубокую копию карты
       const newMap = JSON.parse(JSON.stringify(prevMap));
       if (rack !== undefined)
         newMap[building][room].racks[rack].shelfs[shelf].plants = newMap[
           building
-        ][room].racks[rack].shelfs[shelf].plants.filter((p) => p !== plant);
+        ][room].racks[rack].shelfs[shelf].plants.filter(
+          (p) => p.id !== plant.id
+        );
       else if (row !== undefined)
         newMap[building][room].rows[row].trays[tray].plants = newMap[building][
           room
-        ].rows[row].trays[tray].plants.filter((p) => p !== plant);
+        ].rows[row].trays[tray].plants.filter((p) => p.id !== plant.id);
       console.log("New map", newMap);
       return newMap;
     });
