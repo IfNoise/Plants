@@ -51,13 +51,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@emotion/react", "@emotion/styled", "@mui/material/Tooltip"],
   },
-  server: {
-    hmr: {
-      host: "localhost",
-    },
-    host: "localhost",
-    watch: {
-      usePolling: true,
-    },
-  },
 });
