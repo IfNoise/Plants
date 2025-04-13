@@ -1,4 +1,4 @@
-export const baseUrl = "https://ddweeed.org/api/v1";
+export const baseUrl = "https://ddweeed.org";
 export const printerUrl = "https://ddweed.org";
 export const buildRooms = {
   Hangar1: ["Main room", "Laboratory"],
