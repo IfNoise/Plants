@@ -51,10 +51,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@emotion/react", "@emotion/styled", "@mui/material/Tooltip"],
   },
-  server: {
-    headers: {
-      "Content-Security-Policy":
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval';",
-    },
-  },
 });
