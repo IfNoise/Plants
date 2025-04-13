@@ -315,6 +315,8 @@ const DosingPump = ({ unitId, pump, onChange }) => {
     name,
     factor: factorProp,
     flowRate: flowRateProp,
+    maxFlowRate,
+    minFlowRate,
     concentrate: concentrateId,
   } = pump;
   const { data: concentrate } = useGetConcentrateByIdQuery(concentrateId);
@@ -349,28 +351,13 @@ const DosingPump = ({ unitId, pump, onChange }) => {
     setDel(false);
   };
 
-  const marks = [
-    {
-      value: 0.4,
-      label: "0.4",
-    },
-    {
-      value: 1.0,
-      label: "1.0",
-    },
-    {
-      value: 2.0,
-      label: "2.0",
-    },
-    {
-      value: 3.0,
-      label: "3.0",
-    },
-    {
-      value: 4.0,
-      label: "4.0",
-    },
-  ];
+  const marks = useMemo(() => {
+    const marks = [];
+    for (let i = minFlowRate; i <= maxFlowRate; i += 1.0) {
+      marks.push({ value: i, label: `${i.toFixed(0)}` });
+    }
+    return marks;
+  }, [minFlowRate, maxFlowRate]);
 
   return (
     <Card>
@@ -415,9 +402,9 @@ const DosingPump = ({ unitId, pump, onChange }) => {
         <Slider
           orientation="vertical"
           sx={{ height: 200, mb: "1rem" }}
-          min={0.4}
+          min={minFlowRate || 0.4}
           marks={marks}
-          max={4.0}
+          max={maxFlowRate || 4.0}
           step={0.1}
           value={sliderRate}
           onChangeCommitted={(_, value) => {

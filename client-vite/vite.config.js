@@ -60,9 +60,5 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
-    https: {
-      key: fs.readFileSync(`../ssl/homeserver.key`),
-      cert: fs.readFileSync(`../ssl/homeserver.crt`),
-    },
   },
 });

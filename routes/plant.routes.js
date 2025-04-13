@@ -6,7 +6,6 @@ const router = Router();
 const Strain = require("../models/Strain");
 const plantMap = require("../config/map");
 const Map = require("../models/Map");
-const c = require("config");
 
 router.post("/new_plant", async (req, res) => {
   try {

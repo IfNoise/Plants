@@ -15,7 +15,6 @@ import {
   TableHead,
   TableRow,
   Stack,
-  Divider,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { elements } from "../../config/config";
