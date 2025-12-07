@@ -515,4 +515,4 @@ const plantMap2 = {
 },
 };
 
-module.exports = plantMap;
+module.exports = plantMap2;
