@@ -1,5 +1,11 @@
 /node_modules
 /ssl
 
+# Environment variables
+.env
+.env.local
+.env.production
+
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+/.codacy

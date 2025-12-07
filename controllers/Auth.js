@@ -2,7 +2,6 @@ import User from "../models/User";
 import bcrypt from "bcryptjs";
 import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-import config from "config";
 
 
 
@@ -51,7 +50,7 @@ const Login= async (req, res,next) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Passwords dont match" });
     }
-    const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "72h",
     });
     res.json({ token, user: user.id });

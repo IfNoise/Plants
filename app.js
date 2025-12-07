@@ -1,6 +1,6 @@
+require('dotenv').config();
 const express=require("express")
 const multer  = require('multer')
-const config=require("config")
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const querystring = require('querystring');
@@ -10,7 +10,7 @@ const sharp = require('sharp');
 const Photo=require('./models/Photo')
 const fs=require('fs')
 
-const PORT=config.get("port")||5000
+const PORT=process.env.PORT||5000
 
 const app=express()
 app.use(cors())
@@ -85,7 +85,7 @@ if (process.env.NODE_ENV === 'production') {
 
 async function start(){
   try {
-    await mongoose.connect(config.get('mongodbUri'),{
+    await mongoose.connect(process.env.MONGODB_URI,{
       useNewUrlParser: true,
       useUnifiedTopology: true
     })

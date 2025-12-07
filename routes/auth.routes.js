@@ -4,7 +4,6 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
-const config = require("config");
 router.post(
   "/register",
   [
@@ -63,7 +62,7 @@ router.post(
       if (!isMatch) {
         return res.status(400).json({ message: "Passwords dont match" });
       }
-      const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
         expiresIn: "72h",
       });
       res.json({ token, user: user.id });
