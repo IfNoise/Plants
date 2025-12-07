@@ -1,10 +1,7 @@
-export const baseUrl = "http://localhost:5000";
+export const baseUrl = "http://ddweed.org";
 export const printerUrl = "https://ddweed.org";
 export const buildRooms = {
-  Hangar1: ["Main room", "Laboratory"],
-  Hangar2: ["Main room", "Small room"],
-  Outdoor: ["Backyard"],
-  Expo: ["Expohall"],
+  Hangar: ["Room1","Room2","Laboratory"],
 };
 export const pots = ["0,25 L", "1 L", "4 L", "7 L", "Slab"];
 
