@@ -13,20 +13,35 @@ import { useRemoveDeviceMutation } from "../../store/lightApi";
 
 
 const DeviceCard = ({ device}) => {
-  const { name, host, port} = device.options;
+  const { name, options } = device;
   const [removeDevice] = useRemoveDeviceMutation();
-  const {ports}=device;
+  
   const handleRemoveDevice = () => {
     removeDevice(name);
   }
+  
+  const getDeviceInfo = () => {
+    if (options.type === "rtu") {
+      return `RTU: ${options.path} (${options.baudRate} baud, ${options.dataBits}${options.parity[0].toUpperCase()}${options.stopBits})`;
+    } else {
+      return `TCP: ${options.host}:${options.port}`;
+    }
+  };
+  
   return (
     <Card>
       <CardHeader
         title={name}
-        subheader={`${host}:${port}`}
+        subheader={getDeviceInfo()}
         action={<Checkbox icon={<LockIcon />} checkedIcon={<LockOpenIcon/>} />}
       />
       <CardContent>
+        {options.type === "rtu" && (
+          <>Unit ID: {options.unitId}</>
+        )}
+        {options.timeout && (
+          <> • Timeout: {options.timeout}ms</>
+        )}
       </CardContent>
       <CardActions>
         <Button

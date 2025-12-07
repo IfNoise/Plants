@@ -48,56 +48,201 @@ const AddDeviceDialog = () => {
   const [addDevice] = useAddDeviceMutation();
   const [newDevice, setNewDevice] = useState({
     name: "",
+    type: "tcp",
     address: "",
-    port: "",
+    port: "502",
+    path: "",
+    baudRate: "9600",
+    dataBits: "8",
+    stopBits: "1",
+    parity: "none",
+    unitId: "1",
+    timeout: "1000"
   });
   const [open, setOpen] = useState(false);
+  
   const handleAddDevice = () => {
-    const { name, address, port } = newDevice;
-    if (!name || !address || !port) {
+    const { name, type, address, port, path, baudRate, dataBits, stopBits, parity, unitId, timeout } = newDevice;
+    
+    if (!name) {
       return;
-    } else {
-      addDevice({ name, address, port });
-      setNewDevice({ name: "", address: "", port: "" });
-      setOpen(false);
     }
+    
+    if (type === "tcp" && !address) {
+      return;
+    }
+    
+    if (type === "rtu" && !path) {
+      return;
+    }
+    
+    const deviceData = {
+      name,
+      type,
+      timeout: parseInt(timeout)
+    };
+    
+    if (type === "tcp") {
+      deviceData.address = address;
+      deviceData.port = port;
+    } else {
+      deviceData.path = path;
+      deviceData.baudRate = parseInt(baudRate);
+      deviceData.dataBits = parseInt(dataBits);
+      deviceData.stopBits = parseInt(stopBits);
+      deviceData.parity = parity;
+      deviceData.unitId = parseInt(unitId);
+    }
+    
+    addDevice(deviceData);
+    setNewDevice({
+      name: "",
+      type: "tcp",
+      address: "",
+      port: "502",
+      path: "",
+      baudRate: "9600",
+      dataBits: "8",
+      stopBits: "1",
+      parity: "none",
+      unitId: "1",
+      timeout: "1000"
+    });
+    setOpen(false);
   };
+  
   const handleClose = () => {
     setOpen(false);
   };
+  
   return (
     <>
       <IconButton onClick={() => setOpen(!open)}>
         <DeveloperBoardIcon />
       </IconButton>
-      <Dialog open={open} onClose={handleClose}>
-        <Stack sx={{ m: 2 }} spacing={1} direction="row">
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <Stack sx={{ m: 2 }} spacing={2}>
+          <Typography variant="h6">Add New Device</Typography>
+          
           <TextField
-            label="Name"
+            label="Device Name"
             required
+            fullWidth
             value={newDevice.name}
             onChange={(e) =>
               setNewDevice({ ...newDevice, name: e.target.value })
             }
           />
-          <TextField
-            label="Address"
-            required
-            value={newDevice.address}
+          
+          <Select
+            label="Device Type"
+            value={newDevice.type}
             onChange={(e) =>
-              setNewDevice({ ...newDevice, address: e.target.value })
+              setNewDevice({ ...newDevice, type: e.target.value })
             }
-          />
+            fullWidth
+          >
+            <MenuItem value="tcp">Modbus TCP</MenuItem>
+            <MenuItem value="rtu">Modbus RTU (Serial)</MenuItem>
+          </Select>
+          
+          {newDevice.type === "tcp" ? (
+            <>
+              <TextField
+                label="IP Address"
+                required
+                fullWidth
+                value={newDevice.address}
+                onChange={(e) =>
+                  setNewDevice({ ...newDevice, address: e.target.value })
+                }
+                placeholder="192.168.1.100"
+              />
+              <TextField
+                label="Port"
+                required
+                fullWidth
+                value={newDevice.port}
+                onChange={(e) =>
+                  setNewDevice({ ...newDevice, port: e.target.value })
+                }
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                label="Serial Port Path"
+                required
+                fullWidth
+                value={newDevice.path}
+                onChange={(e) =>
+                  setNewDevice({ ...newDevice, path: e.target.value })
+                }
+                placeholder="/dev/ttyUSB0"
+              />
+              <Stack direction="row" spacing={1}>
+                <TextField
+                  label="Baud Rate"
+                  fullWidth
+                  value={newDevice.baudRate}
+                  onChange={(e) =>
+                    setNewDevice({ ...newDevice, baudRate: e.target.value })
+                  }
+                />
+                <TextField
+                  label="Data Bits"
+                  fullWidth
+                  value={newDevice.dataBits}
+                  onChange={(e) =>
+                    setNewDevice({ ...newDevice, dataBits: e.target.value })
+                  }
+                />
+              </Stack>
+              <Stack direction="row" spacing={1}>
+                <TextField
+                  label="Stop Bits"
+                  fullWidth
+                  value={newDevice.stopBits}
+                  onChange={(e) =>
+                    setNewDevice({ ...newDevice, stopBits: e.target.value })
+                  }
+                />
+                <Select
+                  label="Parity"
+                  fullWidth
+                  value={newDevice.parity}
+                  onChange={(e) =>
+                    setNewDevice({ ...newDevice, parity: e.target.value })
+                  }
+                >
+                  <MenuItem value="none">None</MenuItem>
+                  <MenuItem value="even">Even</MenuItem>
+                  <MenuItem value="odd">Odd</MenuItem>
+                </Select>
+              </Stack>
+              <TextField
+                label="Unit ID"
+                fullWidth
+                value={newDevice.unitId}
+                onChange={(e) =>
+                  setNewDevice({ ...newDevice, unitId: e.target.value })
+                }
+              />
+            </>
+          )}
+          
           <TextField
-            label="Port"
-            required
-            value={newDevice.port}
+            label="Timeout (ms)"
+            fullWidth
+            value={newDevice.timeout}
             onChange={(e) =>
-              setNewDevice({ ...newDevice, port: e.target.value })
+              setNewDevice({ ...newDevice, timeout: e.target.value })
             }
           />
         </Stack>
-        <Button onClick={handleAddDevice}>Add Device</Button>
+        <Button onClick={handleAddDevice} variant="contained" sx={{ m: 2 }}>
+          Add Device
+        </Button>
       </Dialog>
     </>
   );
@@ -251,7 +396,7 @@ LockWrapper.propTypes = {
 };
 
 const ChannalCard = ({ channel }) => {
-  const { name, device, port, maxLevel, manual } = channel;
+  const { name, maxLevel, manual } = channel;
   const [contextMenu, setContextMenu] = useState(null);
   const [maxValue, setMaxValue] = useState((maxLevel / 32767) * 100);
   const { data: state } = useGetLightChannelStateQuery(name, {
@@ -388,7 +533,6 @@ ChannalCard.propTypes = {
 export default function ChannelsList({
   channelNames,
   addButton,
-  defaultCollapsed,
 }) {
   const { data, isLoading, isSuccess, isError, error } =
     useGetLightChannelsQuery({});
