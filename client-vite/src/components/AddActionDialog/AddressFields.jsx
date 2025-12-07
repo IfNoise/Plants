@@ -18,7 +18,7 @@ import {
   Box,
 } from "@mui/material";
 
-import { buildRooms, plantMap } from "../../config/config";
+import { buildRooms } from "../../config/config";
 import Scanner from "../Scanner/Scanner";
 
 const fieldsActions = {
