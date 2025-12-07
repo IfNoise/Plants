@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = "https://ddweed.org/api/v1/feeding";
-//const baseUrl = "http://localhost:3000/api/v1/feeding";
+//const baseUrl = "https://ddweed.org/api/v1/feeding";
+const baseUrl = "http://localhost:3000/api/v1/feeding";
 
 export const feedingApi = createApi({
   reducerPath: "feeding/api",
@@ -412,6 +412,101 @@ export const feedingApi = createApi({
       invalidatesTags: ["FertilizerUnits"],
     }),
     //================================================================================================
+    createProgram: build.mutation({
+      query: (body) => {
+        return {
+          url: "/programs",
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["Program"],
+    }),
+    getAllPrograms: build.query({
+      query: () => {
+        return {
+          url: "/programs",
+          method: "GET",
+        };
+      },
+      providesTags: ["Program"],
+    }),
+    getProgramById: build.query({
+      query: (id) => {
+        return {
+          url: `/programs/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Program"],
+    }),
+    updateProgram: build.mutation({
+      query: ({ id, body }) => {
+        return {
+          url: `/programs/${id}`,
+          method: "PATCH",
+          body,
+        };
+      },
+      invalidatesTags: ["Program"],
+    }),
+    deleteProgram: build.mutation({
+      query: (id) => {
+        return {
+          url: `/programs/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["Program"],
+    }),
+    //================================================================================================
+    createStage: build.mutation({
+      query: (body, programId, id) => {
+        return {
+          url: `/programs/${programId}/stages/${id}`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["Stage"],
+    }),
+    getAllStages: build.query({
+      query: (id) => {
+        return {
+          url: `/programs/${id}/stages`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Stage"],
+    }),
+    getStageById: build.query({
+      query: (id) => {
+        return {
+          url: `/stages/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Stage"],
+    }),
+    updateStage: build.mutation({
+      query: ({ id, body }) => {
+        return {
+          url: `/stages/${id}`,
+          method: "PATCH",
+          body,
+        };
+      },
+      invalidatesTags: ["Stage"],
+    }),
+    deleteStage: build.mutation({
+      query: (id) => {
+        return {
+          url: `/stages/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["Stage"],
+    }),
   }),
 });
 
@@ -454,4 +549,14 @@ export const {
   useAddPumpToFertilizerUnitMutation,
   useRemovePumpFromFertilizerUnitMutation,
   useUpdatePumpFromFertilizerUnitMutation,
+  useCreateProgramMutation,
+  useGetAllProgramsQuery,
+  useGetProgramByIdQuery,
+  useUpdateProgramMutation,
+  useDeleteProgramMutation,
+  useCreateStageMutation,
+  useGetAllStagesQuery,
+  useGetStageByIdQuery,
+  useUpdateStageMutation,
+  useDeleteStageMutation,
 } = feedingApi;

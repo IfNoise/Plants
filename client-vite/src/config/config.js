@@ -1,4 +1,4 @@
-export const baseUrl = "https://ddweed.org";
+export const baseUrl = "http://localhost:5000";
 export const printerUrl = "https://ddweed.org";
 export const buildRooms = {
   Hangar1: ["Main room", "Laboratory"],

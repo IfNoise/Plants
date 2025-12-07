@@ -50,15 +50,7 @@ const FertilizerCard = ({ fertilizer }) => {
   const deleteFertilizerHandler = (id) => {
     deleteFertilizer(id);
   };
-  const {
-    name,
-    description,
-    elements,
-    _id: id,
-    content,
-    aniones,
-    kationes,
-  } = fertilizer;
+  const { name, description, elements, _id: id, solution } = fertilizer;
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(() => {
     return Array(elements.length).fill(false);
@@ -152,9 +144,11 @@ const FertilizerCard = ({ fertilizer }) => {
             <Button onClick={() => setOpen(true)}>Add Element</Button>
           </AccordionActions>
         </Accordion>
-        {content?.length > 0 && <ContentTable content={content} />}
-        {aniones && kationes && (
-          <Ballance aniones={aniones} kationes={kationes} />
+        {solution?.content?.length > 0 && (
+          <ContentTable content={solution.content} />
+        )}
+        {solution?.aniones && solution?.kationes && (
+          <Ballance aniones={solution?.aniones} kationes={solution?.kationes} />
         )}
       </CardContent>
       <CardActions>

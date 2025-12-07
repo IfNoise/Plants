@@ -1,10 +1,6 @@
-import {
-  Box,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
-import { CustomTabPanel} from "../../components/Calculator/Helpers";
+import { CustomTabPanel } from "../../components/Calculator/Helpers";
 import FertilizerList from "../../components/Calculator/FertilizerList";
 import ConcentrateList from "../../components/Calculator/ConcentrateList";
 import FertigationUnitList from "../../components/Calculator/UnitList";
@@ -12,6 +8,7 @@ import { AppBarContext } from "../../context/AppBarContext";
 import { useContext } from "react";
 import RecipeList from "../../components/Calculator/RecipeList";
 import WaterList from "../../components/Calculator/WaterList";
+import ProgramList from "../../components/Calculator/ProgrammList";
 
 export default function NutrientCalculator() {
   const [tab, setTab] = useState(0);
@@ -20,16 +17,13 @@ export default function NutrientCalculator() {
     appBar.setAppBar({ title: "Nutrient Calculator" });
   }, []);
   return (
-    <Box
-    >
+    <Box>
       <Tabs
         sx={{
-          maxWidth: "100vw",
+          width: "100%",
           m: 0,
           p: 0,
         }}
-        variant="scrollable"
-        scrollButtons="auto"
         value={tab}
         onChange={(e, value) => setTab(value)}
       >
@@ -38,6 +32,7 @@ export default function NutrientCalculator() {
         <Tab label="Fertigation Units" value={2} />
         <Tab label="Recipes" value={3} />
         <Tab label="Waters" value={4} />
+        <Tab label="Programs" value={5} />
       </Tabs>
       <CustomTabPanel value={tab} index={0}>
         <FertilizerList />
@@ -54,6 +49,9 @@ export default function NutrientCalculator() {
       <CustomTabPanel value={tab} index={4}>
         <WaterList />
       </CustomTabPanel>
-    </Box>  
+      <CustomTabPanel value={tab} index={5}>
+        <ProgramList />
+      </CustomTabPanel>
+    </Box>
   );
 }

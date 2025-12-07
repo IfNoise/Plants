@@ -23,6 +23,7 @@ import {
   useAddPumpToFertilizerUnitMutation,
   useCreateConcentrateMutation,
   useCreateFertilizerUnitMutation,
+  useCreateProgramMutation,
   useCreateRecieptMutation,
   useCreateWaterMutation,
   useGetAllConcentratesQuery,
@@ -32,7 +33,48 @@ import {
   useUpdateRecieptMutation,
 } from "../../store/feedingApi";
 
+const sortIndex = {
+  N: 0,
+  P: 1,
+  K: 2,
+  Mg: 3,
+  Ca: 4,
+  S: 5,
+  Fe: 6,
+  Cu: 7,
+  Mn: 8,
+  Zn: 9,
+  B: 10,
+  Mo: 11,
+  Cl: 12,
+  Na: 13,
+  Si: 14,
+  Co: 15,
+  Ti: 16,
+};
+
 export function ContentTable({ content }) {
+  if (!content) {
+    return null;
+  }
+  let contentWithRequiredElements = [...content];
+
+  // Проверяем наличие обязательных элементов (N, P, K)
+  const requiredElements = ["N", "P", "K"];
+
+  requiredElements.forEach((element) => {
+    if (!contentWithRequiredElements.some((item) => item.element === element)) {
+      // Добавляем отсутствующий элемент с нулевой концентрацией
+      contentWithRequiredElements.push({
+        element: element,
+        concentration: 0,
+      });
+    }
+  });
+
+  const sortedContent = contentWithRequiredElements.sort(
+    (a, b) => sortIndex[a.element] - sortIndex[b.element]
+  );
   return (
     <Table
       size="small"
@@ -42,15 +84,19 @@ export function ContentTable({ content }) {
     >
       <TableHead>
         <TableRow>
-          {content.map((c, i) => (
+          {sortedContent.map((c, i) => (
             <TableCell key={i}>{c.element}</TableCell>
           ))}
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
-          {content.map((c, i) => (
-            <TableCell key={i}>{c.concentration.toFixed(1)}</TableCell>
+          {sortedContent.map((c, i) => (
+            <TableCell key={i}>
+              {c.concentration.toFixed(
+                c.concentration === 0 ? 0 : c.concentration > 1 ? 1 : 3
+              )}
+            </TableCell>
           ))}
         </TableRow>
       </TableBody>
@@ -59,6 +105,50 @@ export function ContentTable({ content }) {
 }
 ContentTable.propTypes = {
   content: PropTypes.array,
+};
+export function AddProgramDialog({ open, onClose }) {
+  const [newProgram, setNewProgram] = useState(null);
+  const [createProgram] = useCreateProgramMutation();
+  const handleAddProgram = () => {
+    if (newProgram) {
+      createProgram(newProgram);
+      setNewProgram(null);
+      if (onClose) {
+        onClose();
+      }
+    }
+  };
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Add Program</DialogTitle>
+      <DialogContent>
+        <Box>
+          <TextField
+            label="Name"
+            value={newProgram?.name}
+            onChange={(e) =>
+              setNewProgram({ ...newProgram, name: e.target.value })
+            }
+          />
+          <TextField
+            label="Description"
+            value={newProgram?.description}
+            onChange={(e) =>
+              setNewProgram({
+                ...newProgram,
+                description: e.target.value,
+              })
+            }
+          />
+          <Button onClick={handleAddProgram}>Add Program</Button>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+}
+AddProgramDialog.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 export function Ballance({ kationes, aniones }) {
@@ -71,7 +161,7 @@ export function Ballance({ kationes, aniones }) {
         fontWeight={"bold"}
         component={"div"}
       >
-        Kationes:+{kationes.toFixed(1)}
+        Kationes:+{kationes.toFixed(3)}
       </Typography>
       <Typography
         variant="body"
@@ -80,7 +170,7 @@ export function Ballance({ kationes, aniones }) {
         fontWeight={"bold"}
         component={"div"}
       >
-        Aniones:-{aniones.toFixed(1)}
+        Aniones:-{aniones.toFixed(3)}
       </Typography>
       <Typography
         variant="h5"
@@ -91,7 +181,7 @@ export function Ballance({ kationes, aniones }) {
       >
         Ballance:{kationes > aniones ? "+" : ""}
         {`   `}
-        {(kationes - aniones).toFixed(1)}
+        {(kationes - aniones).toFixed(3)}
       </Typography>
     </Box>
   );
@@ -484,12 +574,13 @@ AddElementDialog.propTypes = {
 };
 
 export function NewFertilizerDialog({ open, onChange, onClose }) {
-  const [newFertilizer, setNewFertilizer] = useState(null);
+  const initial = { type: "solid" };
+  const [newFertilizer, setNewFertilizer] = useState(initial);
 
   const handleAddFertilizer = () => {
     if (newFertilizer) {
       onChange(newFertilizer);
-      setNewFertilizer(null);
+      setNewFertilizer(initial);
       if (onClose) {
         onClose();
       }
@@ -517,6 +608,16 @@ export function NewFertilizerDialog({ open, onChange, onClose }) {
               })
             }
           />
+          <Select
+            label="Type"
+            value={newFertilizer?.type || "solid"}
+            onChange={(e) =>
+              setNewFertilizer({ ...newFertilizer, type: e.target.value })
+            }
+          >
+            <MenuItem value="solid">Solid</MenuItem>
+            <MenuItem value="liquid">Liquid</MenuItem>
+          </Select>
 
           <Button
             disabled={!newFertilizer?.name || !newFertilizer?.description}

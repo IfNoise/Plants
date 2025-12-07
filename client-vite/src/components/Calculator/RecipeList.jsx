@@ -26,15 +26,19 @@ import {
 import { AddRecipeDialog, EditRecipeDialog } from "./Helpers";
 import { useState } from "react";
 
-export function RecipeCard({ recipe }) {
+export function RecipeCard({ recipe, onSelect = () => {} }) {
   const { name, discription, _id: id, __v, ...ingridients } = recipe;
   const [open, setOpen] = useState(false);
   const [deleteRecipe] = useDeleteRecieptMutation();
+  const handleSelect = () => {
+    onSelect(recipe);
+  };
   const deleteHandler = () => {
     deleteRecipe(id);
   };
+  if (!recipe) return null;
   return (
-    <Card>
+    <Card onClick={handleSelect} sx={{ width: "100%" }}>
       <CardHeader title={name} />
       <CardContent>
         <Typography>{discription}</Typography>
@@ -75,9 +79,10 @@ export function RecipeCard({ recipe }) {
 }
 RecipeCard.propTypes = {
   recipe: PropTypes.object.isRequired,
+  onSelect: PropTypes.func,
 };
 
-export default function RecipeList() {
+export default function RecipeList({ onSelect }) {
   const [open, setOpen] = useState(false);
   const {
     isLoading,
@@ -85,6 +90,11 @@ export default function RecipeList() {
     isError,
     data: recipes,
   } = useGetAllRecieptsQuery();
+
+  const handleSelectRecipe = (selectedRecipe) => {
+    onSelect(selectedRecipe);
+  };
+
   return (
     <Box>
       {isLoading && <CircularProgress />}
@@ -92,7 +102,11 @@ export default function RecipeList() {
       {isSuccess && recipes?.length > 0 && (
         <Stack spacing={2} direction="column">
           {recipes.map((recipe) => (
-            <RecipeCard key={recipe._id} recipe={recipe} />
+            <RecipeCard
+              key={recipe._id}
+              recipe={recipe}
+              onSelect={handleSelectRecipe}
+            />
           ))}
         </Stack>
       )}
@@ -102,5 +116,5 @@ export default function RecipeList() {
   );
 }
 RecipeList.propTypes = {
-  recipes: PropTypes.array.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };

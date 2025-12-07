@@ -45,10 +45,8 @@ const ConcentrateCard = ({ concentrate }) => {
     _id: id,
     name,
     description,
-    content,
     fertilizers,
-    aniones,
-    kationes,
+    solution: { content, aniones, kationes },
   } = concentrate;
   //const { data: fertilizerList = [] } = useGetAllFertilizersQuery();
   const [deleteConcentrate] = useDeleteConcentrateMutation();
@@ -126,7 +124,7 @@ const ConcentrateCard = ({ concentrate }) => {
                 {fertilizers.length > 0 &&
                   fertilizers.map((element, i) => (
                     <TableRow key={i}>
-                      <TableCell>{element.fertilizer.name}</TableCell>
+                      <TableCell>{element.fertilizer?.name || ""}</TableCell>
                       <TableCell>{element.concentration}</TableCell>
                       <TableCell>
                         {(element.concentration * volume).toFixed(2)}g
