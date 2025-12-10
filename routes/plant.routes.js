@@ -48,7 +48,7 @@ router.post("/new_plant", async (req, res) => {
           group,
           startDate,
           currentAddress: {
-            building: "Hangar1",
+            building: "Hangar",
             room: "Laboratory",
             row: 0,
             shelf: 0,
@@ -74,7 +74,7 @@ router.post("/new_plant", async (req, res) => {
           group,
 
           currentAddress: {
-            building: "Hangar1",
+            building: "Hangar",
             room: "Laboratory",
             row: 0,
             shelf: 0,

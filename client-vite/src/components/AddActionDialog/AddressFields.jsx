@@ -78,8 +78,8 @@ export const AddressFields = () => {
   };
 
   useEffect(() => {
-    dispatch(addBuilding("Hangar1"));
-    setRooms(buildRooms[newAction.address?.building ?? "Hangar1"]);
+    dispatch(addBuilding("Hangar"));
+    setRooms(buildRooms[newAction.address?.building ?? "Hangar"]);
   }, []);
 
   return (
@@ -120,7 +120,7 @@ export const AddressFields = () => {
           label="Room"
           onChange={handlerRoom}
         >
-          {rooms.map((text, index) => (
+          {rooms?.map((text, index) => (
             <MenuItem key={index} value={text}>
               {text}
             </MenuItem>

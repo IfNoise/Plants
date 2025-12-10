@@ -264,39 +264,22 @@ export const Layout = () => {
                 text: "Map",
                 icon: <InboxIcon />,
                 collapsed: [
-                  {
-                    text: "Hangar1",
-                    icon: <InboxIcon />,
-                    collapsed: [
                       {
-                        text: "Main room",
-                        href: "/map/Hangar1/Main_room",
+                        text: "Room1",
+                        href: "/map/Hangar/Room1",
+                        icon: <InboxIcon />,
+                      },
+                      {
+                        text: "Room2",
+                        href: "/map/Hangar/Room2",
                         icon: <InboxIcon />,
                       },
                       {
                         text: "Laboratory",
-                        href: "/map/Hangar1/Laboratory",
+                        href: "/map/Hangar/Laboratory",
                         icon: <InboxIcon />,
                       },
                     ],
-                  },
-                  {
-                    text: "Hangar2",
-                    icon: <InboxIcon />,
-                    collapsed: [
-                      {
-                        text: "Main room",
-                        href: "/map/Hangar2/Main_room",
-                        icon: <InboxIcon />,
-                      },
-                      {
-                        text: "Small room",
-                        href: "/map/Hangar2/Small_room",
-                        icon: <InboxIcon />,
-                      },
-                    ],
-                  },
-                ],
               },
               {
                 text: "Mothers",
