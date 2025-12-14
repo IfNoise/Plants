@@ -46,7 +46,9 @@ const ConcentrateCard = ({ concentrate }) => {
     name,
     description,
     fertilizers,
-    solution: { content, aniones, kationes },
+    content,
+    aniones,
+    kationes,
   } = concentrate;
   //const { data: fertilizerList = [] } = useGetAllFertilizersQuery();
   const [deleteConcentrate] = useDeleteConcentrateMutation();
@@ -167,11 +169,11 @@ const ConcentrateCard = ({ concentrate }) => {
           </AccordionActions>
         </Accordion>
 
-        {content?.length > 0 && <ContentTable content={content} />}
+        {content && content?.length > 0 && <ContentTable content={content||[]} />}
         {aniones && kationes && (
           <Ballance aniones={aniones / 1000} kationes={kationes / 1000} />
         )}
-        <PrintConcentrateDialog
+       {content && content?.length > 0 && <PrintConcentrateDialog
           open={openPrint}
           onClose={() => setOpenPrint(false)}
           concentrate={{
@@ -181,7 +183,7 @@ const ConcentrateCard = ({ concentrate }) => {
             fertilizers,
           }}
           volume={volume}
-        />
+        />}
         <AddFertilizerDialog
           open={open}
           onClose={() => setOpen(false)}

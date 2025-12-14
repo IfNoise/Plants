@@ -127,7 +127,7 @@ export const AddressFields = () => {
           ))}
         </Select>
       </FormControl>
-      {newAction.address?.room && newAction.address?.room !== "Laboratory" && (
+      {newAction.address?.room && (
         <>
           <TextField
             id="outlined-number"
