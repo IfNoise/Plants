@@ -69,9 +69,16 @@ export const lightApi = createApi({
     }),
     removeDevice: build.mutation({
       query: (name) => ({
-        url: "devices/remove",
-        method: "POST",
-        body: { name },
+        url: `devices/${name}`,
+        method: "DELETE",
+      }),
+      invalidatesTags:['devices']
+    }),
+    updateDevice: build.mutation({
+      query: ({ name, device }) => ({
+        url: `devices/${name}`,
+        method: "PATCH",
+        body: device,
       }),
       invalidatesTags:['devices']
     }),
@@ -183,7 +190,7 @@ export const lightApi = createApi({
 
 export const { useGetDevicesQuery,useGetTimersQuery,useGetLightChannelsQuery,
   useGetDeviceQuery,useGetTimerQuery,useGetLightChannelQuery,useSetStepTimeMutation,
-  useAddDeviceMutation,useRemoveDeviceMutation,useStartTimerMutation,useStopTimerMutation,
+  useAddDeviceMutation,useRemoveDeviceMutation,useUpdateDeviceMutation,useStartTimerMutation,useStopTimerMutation,
   useAddTimerMutation,useRemoveTimerMutation,useGetLightChannelStateQuery,
   useSetStepsMutation,useSubscribeMutation,useUnsubscribeMutation,
   useAddChannelMutation,useRemoveChannelMutation,

@@ -31,8 +31,10 @@ import {
 } from "../../store/lightApi";
 import DeveloperBoardIcon from "@mui/icons-material/DeveloperBoard";
 import TungstenIcon from "@mui/icons-material/Tungsten";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import DevicesManagerDialog from "./DevicesManagerDialog";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
 import CircularProgressWithLabel from "../CircularProgress";
@@ -564,10 +566,27 @@ export default function ChannelsList({
             ))}
         </Stack>
       </AccordionDetails>
-      <AccordionActions>{addButton && <AddChannelDialog />}</AccordionActions>
+      <AccordionActions>
+        {addButton && <AddChannelDialog />}
+        {addButton && <DevicesManagerButton />}
+      </AccordionActions>
     </Accordion>
   );
 }
+
+const DevicesManagerButton = () => {
+  const [open, setOpen] = useState(false);
+  
+  return (
+    <>
+      <IconButton onClick={() => setOpen(true)} title="Управление устройствами">
+        <SettingsIcon />
+      </IconButton>
+      <DevicesManagerDialog open={open} onClose={() => setOpen(false)} />
+    </>
+  );
+};
+
 ChannelsList.propTypes = {
   channelNames: PropTypes.array,
   addButton: PropTypes.bool,
