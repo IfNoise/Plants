@@ -46,6 +46,7 @@ function valuetext(value) {
   return `${value}%`;
 }
 
+const MAX_LEVEL = 10000;
 const AddDeviceDialog = () => {
   const [addDevice] = useAddDeviceMutation();
   const [newDevice, setNewDevice] = useState({
@@ -400,14 +401,14 @@ LockWrapper.propTypes = {
 const ChannalCard = ({ channel }) => {
   const { name, maxLevel, manual } = channel;
   const [contextMenu, setContextMenu] = useState(null);
-  const [maxValue, setMaxValue] = useState((maxLevel / 32767) * 100);
+  const [maxValue, setMaxValue] = useState((maxLevel / MAX_LEVEL) * 100);
   const { data: state } = useGetLightChannelStateQuery(name, {
     pollingInterval: 60000,
   });
   const [setMaxLevel] = useSetMaxLevelMutation();
   const [removeChannel] = useRemoveChannelMutation();
   useEffect(() => {
-    setMaxValue((maxLevel / 32767) * 100);
+    setMaxValue((maxLevel / MAX_LEVEL) * 100);
   }, [maxLevel]);
 
   const handleContextMenu = (event) => {
@@ -476,7 +477,7 @@ const ChannalCard = ({ channel }) => {
           >
             <CircularProgressWithLabel
               variant="determinate"
-              value={Math.floor((state?.state / 32767) * 100) || 0}
+              value={Math.floor((state?.state / MAX_LEVEL) * 100) || 0}
               sx={{
                 color: "lime",
               }}
@@ -499,7 +500,7 @@ const ChannalCard = ({ channel }) => {
               onChange={(e) => setMaxValue(e.target.value)}
               onChangeCommitted={(e) => {
                 console.log(e);
-                setMaxLevel({ name, maxLevel: (32767 * maxValue) / 100 });
+                setMaxLevel({ name, maxLevel: (MAX_LEVEL * maxValue) / 100 });
               }}
             />
           </Stack>

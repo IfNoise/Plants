@@ -9,7 +9,6 @@ import {
   Dialog,
   FormControl,
   FormControlLabel,
-  FormLabel,
   IconButton,
   List,
   ListItem,
@@ -46,6 +45,8 @@ import ChannelsList from "./ChannelsList";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import StyledSwitch from "../StyledSwitch";
+
+const MAX_LEVEL = 10000;
 
 const includes = (arr1, arr2) => {
   return arr2.every((item) => arr1.includes(item));
@@ -439,24 +440,24 @@ const TimerCard = ({ timer }) => {
           return;
         }
         if (faderMode === "maxLevel") {
-          level = Math.floor((32767 * masterLevel) / 100);
+          level = Math.floor((MAX_LEVEL * masterLevel) / 100);
           console.log(masterLevel, level);
           setMaxLevel({ name: channel, maxLevel: level });
         } else if (faderMode === "fadeLevel") {
           if (oldMasterLevel > masterLevel) {
             level =
               channelData.maxLevel -
-              (32767 * (oldMasterLevel - masterLevel)) / 100;
+              (MAX_LEVEL * (oldMasterLevel - masterLevel)) / 100;
           } else if (oldMasterLevel < masterLevel) {
             level =
               channelData.maxLevel +
-              (32767 * (masterLevel - oldMasterLevel)) / 100;
+              (MAX_LEVEL * (masterLevel - oldMasterLevel)) / 100;
           } else {
             level = channelData.maxLevel;
           }
         }
-        if (level > 32767) {
-          level = 32767;
+        if (level > MAX_LEVEL) {
+          level = MAX_LEVEL;
         }
         if (level < 0) {
           level = 0;
