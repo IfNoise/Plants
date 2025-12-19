@@ -25,11 +25,9 @@ import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
-import { useDispatch, useSelector } from "react-redux";
-import { clear, addType, addDate } from "../../store/newActionSlice";
 import { SnackbarContext } from "../../context/SnackbarContext";
+import { useNewAction } from "../../context/NewActionContext";
 import { StopFields } from "./StopFields";
 import { NoteFields } from "./NoteFields";
 import { CuttingClonesFields } from "./CuttingClonesFields";
@@ -38,8 +36,6 @@ import { PickingFields } from "./PickingFields";
 import { AddressFields } from "./AddressFields";
 import { useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { AddPhotoFields } from "./AddPhotoFields";
-import { useAddActionMutation } from "../../store/plantsApi";
 import CheckBox from "@mui/material/Checkbox";
 import { RedoFields } from "./RedoFields";
 const PickingIcon = ({ width = "48px", height = "48px", color = "red" }) => {
@@ -129,7 +125,6 @@ const states = {
       { text: "Picking" },
       { text: "Relocation" },
       { text: "Stop" },
-      { text: "AddPhoto" },
     ],
   },
   Cloning: {
@@ -138,7 +133,6 @@ const states = {
       { text: "Picking" },
       { text: "Relocation" },
       { text: "Stop" },
-      { text: "AddPhoto" },
     ],
   },
   Growing: {
@@ -150,7 +144,6 @@ const states = {
       { text: "Blooming" },
       { text: "MakeMother" },
       { text: "Stop" },
-      { text: "AddPhoto" },
     ],
   },
   Blooming: {
@@ -159,14 +152,13 @@ const states = {
       { text: "Relocation" },
       { text: "Stop" },
       { text: "Harvest" },
-      { text: "AddPhoto" },
     ],
   },
   Stopped: {
-    actions: [{ text: "Note" }, { text: "AddPhoto" }, { text: "Redo" }],
+    actions: [{ text: "Note" }, { text: "Redo" }],
   },
   Harvested: {
-    actions: [{ text: "Note" }, { text: "AddPhoto" }],
+    actions: [{ text: "Note" }],
   },
   MotherPlant: {
     actions: [
@@ -177,7 +169,6 @@ const states = {
       { text: "CuttingClones" },
       { text: "Blooming" },
       { text: "Stop" },
-      { text: "AddPhoto" },
     ],
   },
 };
@@ -185,7 +176,7 @@ const actionFields = {
   Note: {
     name: "Note",
     icon: <NoteAddIcon fontSize="large" />,
-    fields: <NoteFields />,
+    component: NoteFields,
   },
   Picking: {
     name: "Picking",
@@ -224,11 +215,6 @@ const actionFields = {
     icon: <ContentCutIcon fontSize="large" />,
     fields: <CuttingClonesFields />,
   },
-  AddPhoto: {
-    name: "AddPhoto",
-    icon: <AddPhotoAlternateIcon fontSize="large" />,
-    fields: <AddPhotoFields />,
-  },
   Redo: {
     name: "Redo",
     icon: <ArrowOutwardIcon fontSize="large" />,
@@ -237,55 +223,63 @@ const actionFields = {
 };
 
 export default function AddActionDialog({ open, onClose, plants }) {
-  const dispatch = useDispatch();
+  const { newAction, clear, addType, addDate, submitAction, isSuccess, isError, error, isUploadingPhotos } = useNewAction();
   const { setSnack } = useContext(SnackbarContext);
   const [date, setDate] = useState(dayjs());
   const [showPicker, setShowPicker] = useState(false);
-  const newAction = useSelector((state) => state.newAction);
+  const [pendingPhotos, setPendingPhotos] = useState([]);
   const isSmall = window.innerWidth < 600;
-  const [addAction, { isSuccess, isError, error }] = useAddActionMutation();
   const state = plants[0]?.state;
 
   const actions = states[state].actions;
 
   useEffect(() => {
-    dispatch(clear());
+    clear();
+    setPendingPhotos([]);
     console.log(newAction);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (isError) {
       setSnack({ open: true, severity: "error", message: error.data.message });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError]);
 
   useEffect(() => {
     if (isSuccess) {
       setSnack({ open: true, severity: "success", message: "Action is added" });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 
   const handleChangeDate = (value) => {
-    dispatch(addDate(new Date(value.$d)));
+    addDate(new Date(value.$d));
     setDate(null);
   };
   const handleActionType = (e) => {
     const { value } = e.target;
     if (newAction) {
-      dispatch(clear());
+      clear();
     }
-    dispatch(addType(value));
+    addType(value);
   };
 
   const handleCancel = () => {
-    dispatch(clear());
+    clear();
+    setPendingPhotos([]);
     onClose();
   };
   const handleChange = (e) => {
     setShowPicker(e.target.checked);
   };
 
-  const newActionFunc = () => {
+  const handlePhotosChange = (photos) => {
+    setPendingPhotos(photos);
+  };
+
+  const newActionFunc = async () => {
     if (plants.length < 1) {
       setSnack({
         open: true,
@@ -294,12 +288,16 @@ export default function AddActionDialog({ open, onClose, plants }) {
       });
       return;
     }
-    const id = plants.map((plant) => plant._id);
-
-    const body = { id, action: newAction };
-    addAction(body);
-    dispatch(clear());
-    onClose();
+    
+    try {
+      const id = plants.map((plant) => plant._id);
+      await submitAction(id, pendingPhotos);
+      clear();
+      setPendingPhotos([]);
+      onClose();
+    } catch (err) {
+      console.error('Error submitting action:', err);
+    }
   };
   return (
     <Dialog
@@ -368,7 +366,14 @@ export default function AddActionDialog({ open, onClose, plants }) {
             </LocalizationProvider>
           )}
         </Stack>
-        {newAction?.actionType && actionFields[newAction.actionType]?.fields}
+        {newAction?.actionType && (() => {
+          const field = actionFields[newAction.actionType];
+          if (field?.component) {
+            const Component = field.component;
+            return <Component onPhotosChange={handlePhotosChange} />;
+          }
+          return field?.fields;
+        })()}
       </DialogContent>
       <DialogActions
         sx={{ justifyContent: "center", position: "sticky", bottom: 0 }}
@@ -376,11 +381,11 @@ export default function AddActionDialog({ open, onClose, plants }) {
         <Button
           onClick={newActionFunc}
           role="submit"
-          disabled={!newAction.actionType}
+          disabled={!newAction.actionType || isUploadingPhotos}
         >
-          Ok
+          {isUploadingPhotos ? "Uploading photos..." : "Ok"}
         </Button>
-        <Button onClick={handleCancel}>Cancel</Button>
+        <Button onClick={handleCancel} disabled={isUploadingPhotos}>Cancel</Button>
       </DialogActions>
     </Dialog>
   );

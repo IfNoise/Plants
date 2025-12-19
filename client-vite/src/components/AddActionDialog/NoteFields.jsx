@@ -1,8 +1,11 @@
-import { useDispatch } from "react-redux";
-import { addNote } from "../../store/newActionSlice";
-import { Box, FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/material";
+import { useNewAction } from "../../context/NewActionContext";
+import { Box, FormControl, InputLabel, Select, MenuItem, TextField, Divider, Button, IconButton, ImageList, ImageListItem, ImageListItemBar, Input } from "@mui/material";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import CameraDialog from "../CameraDialog";
+import CancelIcon from '@mui/icons-material/Cancel';
+import PhotoIcon from '@mui/icons-material/Photo';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 // Компонент для выбора дефицита элементов
 const Deficiencies = ({ onChange }) => {
@@ -305,9 +308,10 @@ const CustomNote = ({ onChange }) => {
   );
 };
 
-export const NoteFields = () => {
-  const dispatch = useDispatch();
+export const NoteFields = ({ onPhotosChange }) => {
+  const { addNote } = useNewAction();
   const [note, setNote] = useState({});
+  const [photos, setPhotos] = useState([]);
 
   // Конфигурация типов заметок
   const types = {
@@ -365,14 +369,47 @@ export const NoteFields = () => {
   };
 
   useEffect(() => {
-    // Отправляем заметку в Redux только когда есть необходимые данные
+    // Отправляем заметку в Context только когда есть необходимые данные
     if (note.type && note.variant && note.item) {
-      dispatch(addNote(note));
+      addNote(note);
     }
-  }, [note, dispatch]);
+  }, [note, addNote]);
+
+  // Обработчики для фотографий
+  const handleTakePhoto = (dataUri) => {
+    const newPhotos = [...photos, dataUri];
+    setPhotos(newPhotos);
+    if (onPhotosChange) {
+      onPhotosChange(newPhotos);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const newPhotos = [...photos, e.target.result];
+      setPhotos(newPhotos);
+      if (onPhotosChange) {
+        onPhotosChange(newPhotos);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemovePhoto = (index) => {
+    const newPhotos = photos.filter((_, i) => i !== index);
+    setPhotos(newPhotos);
+    if (onPhotosChange) {
+      onPhotosChange(newPhotos);
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 300 }}>
+      {/* Секция заметок */}
       <FormControl variant="outlined" fullWidth>
         <InputLabel id="noteType-label">Тип записи</InputLabel>
         <Select
@@ -414,11 +451,83 @@ export const NoteFields = () => {
       )}
 
       {note?.variant && note?.type && types[note.type]?.items[note.variant]}
+
+      {/* Разделитель */}
+      {note?.type && <Divider sx={{ my: 2 }} />}
+
+      {/* Секция фотографий */}
+      {note?.type && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <AddPhotoAlternateIcon color="action" />
+            <Box component="span" sx={{ fontWeight: 'medium' }}>
+              Добавить фотографии (опционально)
+            </Box>
+          </Box>
+          
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <CameraDialog onTakePhoto={handleTakePhoto} />
+            <Button 
+              component="label"
+              variant="outlined"
+              size="small"
+              startIcon={<PhotoIcon/>}
+            >
+              Выбрать фото
+              <Input 
+                sx={{
+                  clip: 'rect(0 0 0 0)',
+                  clipPath: 'inset(50%)',
+                  height: 1,
+                  overflow: 'hidden',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  whiteSpace: 'nowrap',
+                  width: 1,
+                }}
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileSelect}
+              />
+            </Button>
+          </Box>
+          
+          {photos.length > 0 && (
+            <ImageList
+              cols={4}
+              rowHeight={120}
+              style={{width:"100%"}}
+            >
+              {photos.map((photo, index) => (
+                <ImageListItem key={index}>
+                  <ImageListItemBar 
+                    title={`Фото ${index + 1}`} 
+                    actionIcon={
+                      <IconButton 
+                        onClick={() => handleRemovePhoto(index)}
+                        size="small"
+                      >
+                        <CancelIcon/>
+                      </IconButton>
+                    }
+                    actionPosition="top"
+                  />
+                  <img src={photo} alt={`Preview ${index + 1}`} />
+                </ImageListItem>
+              ))}
+            </ImageList>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
 
 // PropTypes для валидации props
+NoteFields.propTypes = {
+  onPhotosChange: PropTypes.func,
+};
 Deficiencies.propTypes = {
   onChange: PropTypes.func.isRequired
 };

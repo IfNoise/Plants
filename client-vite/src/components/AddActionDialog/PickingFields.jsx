@@ -1,5 +1,4 @@
-import { useDispatch,useSelector } from "react-redux";
-import { addPotSize } from "../../store/newActionSlice";
+import { useNewAction } from "../../context/NewActionContext";
 import {
   Box,
   FormControl,
@@ -9,12 +8,12 @@ import {
 } from "@mui/material";
 
 export const PickingFields = () => {
-  const dispatch = useDispatch();
-  const potSize=useSelector((state)=>state.newAction.potSize)
+  const { newAction, addPotSize } = useNewAction();
+  const potSize = newAction.potSize
   const pots = ["0,25 L", "1 L", "4 L", "7 L", "Slab"];
   const handleInput = (e) => {
     const {value}=e.target    
-      dispatch(addPotSize(value))
+      addPotSize(value)
   };
   return (
     <Box>

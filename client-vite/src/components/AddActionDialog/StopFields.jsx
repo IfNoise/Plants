@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addReason } from "../../store/newActionSlice";
+import { useNewAction } from "../../context/NewActionContext";
 import {
   FormControl,
   InputLabel,
@@ -22,19 +21,19 @@ const reasons = [
 ];
 
 export const StopFields = () => {
-  const dispatch = useDispatch();
+  const { addReason } = useNewAction();
   const [reason, setReason] = useState(" ");
   const [userReason, setUserReason] = useState(" ");
 
   const handlerReason = (e) => {
     const { value } = e.target;
     setReason(value);
-    dispatch(addReason(value));
+    addReason(value);
   };
   const handlerUserReason = (e) => {
     const { value } = e.target;
     setUserReason(value);
-    dispatch(addReason(value));
+    addReason(value);
   };
 
   return (

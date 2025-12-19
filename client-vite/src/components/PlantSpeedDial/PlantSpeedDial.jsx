@@ -15,6 +15,7 @@ import { usePrintTrayMutation } from "../../store/printApi";
 
 import { useDispatch } from "react-redux";
 import { SnackbarContext } from "../../context/SnackbarContext";
+import { NewActionProvider } from "../../context/NewActionContext";
 import { useState } from "react";
 import { PrinterContext } from "../../context/PrinterContext";
 import AddActionDialog from "../AddActionDialog/AddActionDialog";
@@ -170,11 +171,13 @@ export default function PlantSpeedDial(props) {
             />
           )}
           {props.addAction && (
-            <AddActionDialog
-              open={open}
-              onClose={() => setOpen(false)}
-              plants={plants}
-            />
+            <NewActionProvider>
+              <AddActionDialog
+                open={open}
+                onClose={() => setOpen(false)}
+                plants={plants}
+              />
+            </NewActionProvider>
           )}
         </>
       )}

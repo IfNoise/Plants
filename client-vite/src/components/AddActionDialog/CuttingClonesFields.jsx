@@ -1,8 +1,4 @@
-import { useDispatch} from "react-redux";
-import {
-
-  addClonesNumber,
-} from "../../store/newActionSlice";
+import { useNewAction } from "../../context/NewActionContext";
 import {
   FormControl,
   TextField,
@@ -10,11 +6,11 @@ import {
 import { AddressFields } from "./AddressFields";
 
 export const CuttingClonesFields=()=>{
-  const dispatch=useDispatch()
+  const { addClonesNumber } = useNewAction()
 
   const handlerClonesNumber = (e) => {
     const { value } = e.target;
-    dispatch(addClonesNumber(Number.parseInt(value)));
+    addClonesNumber(Number.parseInt(value));
   }
   return (
     <>

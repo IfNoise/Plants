@@ -1,5 +1,4 @@
-import { useDispatch,useSelector } from "react-redux";
-import { addGender } from "../../store/newActionSlice";
+import { useNewAction } from "../../context/NewActionContext";
 import {
   Box,
   FormControl,
@@ -9,12 +8,12 @@ import {
 } from "@mui/material";
 
 export const SetGenderFields = () => {
-  const dispatch = useDispatch();
-  const gender=useSelector((state)=>state.newAction.gender)
+  const { newAction, addGender } = useNewAction();
+  const gender = newAction.gender
   const variants = ["Male", "Female","Herm."];
   const handleInput = (e) => {
     const {value}=e.target    
-      dispatch(addGender(value))
+      addGender(value)
   };
   return (
     <Box>

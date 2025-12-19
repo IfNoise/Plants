@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addAddress,
-  addBuilding,
-  addRoom,
-  addRow,
-  addRack,
-  addTray,
-  addShelf,
-} from "../../store/newActionSlice";
+import { useNewAction } from "../../context/NewActionContext";
 import {
   InputLabel,
   Select,
@@ -21,64 +12,63 @@ import {
 import { buildRooms } from "../../config/config";
 import Scanner from "../Scanner/Scanner";
 
-const fieldsActions = {
-  bulding: addBuilding,
-  room: addRoom,
-  row: addRow,
-  rack: addRack,
-  tray: addTray,
-  shelf: addShelf,
-};
-
 export const AddressFields = () => {
-  const dispatch = useDispatch();
-  const newAction = useSelector((state) => state.newAction);
+  const { newAction, addAddress, addBuilding, addRoom, addRow, addRack, addTray, addShelf } = useNewAction();
   const [rooms, setRooms] = useState([]);
+
+  const fieldsActions = {
+    bulding: addBuilding,
+    room: addRoom,
+    row: addRow,
+    rack: addRack,
+    tray: addTray,
+    shelf: addShelf,
+  };
 
   const dispatchAddress = (address) => {
     setRooms(buildRooms[address.building]);
-    dispatch(addAddress(address));
+    addAddress(address);
   };
 
   const fieldHandler = (e) => {
     const { value, name } = e.target;
-    if (typeof value == String) dispatch(fieldsActions[name](value));
+    if (typeof value == String) fieldsActions[name](value);
     else if (typeof value == Number)
-      dispatch(fieldsActions[name](Number.parseInt(value)));
+      fieldsActions[name](Number.parseInt(value));
   };
   const handlerBuilding = (e) => {
     const { value } = e.target;
-    dispatch(addBuilding(value));
+    addBuilding(value);
     setRooms(buildRooms[value]);
   };
 
   const handlerRoom = (e) => {
     const { value } = e.target;
-    dispatch(addRoom(value));
+    addRoom(value);
   };
 
   const handlerRow = (e) => {
     const { value } = e.target;
-    dispatch(addRow(Number.parseInt(value)));
+    addRow(Number.parseInt(value));
   };
 
   const handlerRack = (e) => {
     const { value } = e.target;
-    dispatch(addRack(Number.parseInt(value)));
+    addRack(Number.parseInt(value));
   };
 
   const handlerTray = (e) => {
     const { value } = e.target;
-    dispatch(addTray(Number.parseInt(value)));
+    addTray(Number.parseInt(value));
   };
 
   const handlerShelf = (e) => {
     const { value } = e.target;
-    dispatch(addShelf(Number.parseInt(value)));
+    addShelf(Number.parseInt(value));
   };
 
   useEffect(() => {
-    dispatch(addBuilding("Hangar"));
+    addBuilding("Hangar");
     setRooms(buildRooms[newAction.address?.building ?? "Hangar"]);
   }, []);
 

@@ -1,18 +1,17 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addNewState } from "../../store/newActionSlice";
+import { useNewAction } from "../../context/NewActionContext";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const states = ["Cloning", "Growing", "Blooming", "MotherPlant", "Harvested"];
 
 export const RedoFields = () => {
-  const dispatch = useDispatch();
+  const { addNewState } = useNewAction();
   const [newState, setNewState] = useState("");
 
   const handlerNewState = (e) => {
     const { value } = e.target;
     setNewState(value);
-    dispatch(addNewState(value));
+    addNewState(value);
   };
 
   return (
