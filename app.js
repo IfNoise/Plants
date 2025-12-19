@@ -40,21 +40,37 @@ const upload = multer({ storage: storage });
 const thumbnailsDir = path.join(__dirname, 'uploads', 'thumbnails');
 if (!fs.existsSync(thumbnailsDir)) {
   fs.mkdirSync(thumbnailsDir, { recursive: true });
+  console.log(`[INIT] Created thumbnails directory: ${thumbnailsDir}`);
+} else {
+  console.log(`[INIT] Thumbnails directory exists: ${thumbnailsDir}`);
 }
 
 app.post('/api/photos/upload', upload.array('photos', 12), async function (req, res, next) {
   // req.files - массив файлов `photos`
   // req.body сохранит текстовые поля, если они будут
-  if (!req.files) {
+  if (!req.files || req.files.length === 0) {
     return res.status(400).send({ message: 'No files uploaded.' });
   }
   
+  console.log(`[UPLOAD] Received ${req.files.length} file(s)`);
+  
   try {
-    // Используем Promise.all для параллельного создания миниатюр
-    await Promise.all(
-      req.files.map(async (file) => {
-        console.log(file);
+    // Создаем миниатюры последовательно для лучшей отладки
+    const results = [];
+    for (const file of req.files) {
+      try {
+        console.log(`[UPLOAD] Processing file: ${file.filename}`);
+        console.log(`[UPLOAD] Original path: ${file.path}`);
+        
         const thumbnailPath = path.join(__dirname, 'uploads', 'thumbnails', file.filename);
+        console.log(`[UPLOAD] Thumbnail path: ${thumbnailPath}`);
+        
+        // Проверяем существование исходного файла
+        if (!fs.existsSync(file.path)) {
+          console.error(`[UPLOAD] Source file not found: ${file.path}`);
+          results.push({ filename: file.filename, success: false, error: 'Source file not found' });
+          continue;
+        }
         
         await sharp(file.path)
           .resize(200, 200, {
@@ -63,13 +79,24 @@ app.post('/api/photos/upload', upload.array('photos', 12), async function (req, 
           })
           .toFile(thumbnailPath);
         
-        console.log(`Thumbnail created: ${thumbnailPath}`);
-      })
-    );
+        console.log(`[UPLOAD] ✓ Thumbnail created successfully: ${file.filename}`);
+        results.push({ filename: file.filename, success: true });
+      } catch (fileError) {
+        console.error(`[UPLOAD] ✗ Error processing ${file.filename}:`, fileError.message);
+        results.push({ filename: file.filename, success: false, error: fileError.message });
+      }
+    }
     
-    res.status(200).send({ message: 'Files uploaded successfully.', files: req.files });
+    const successCount = results.filter(r => r.success).length;
+    console.log(`[UPLOAD] Complete: ${successCount}/${req.files.length} thumbnails created`);
+    
+    res.status(200).send({ 
+      message: 'Files uploaded successfully.', 
+      files: req.files,
+      thumbnails: results 
+    });
   } catch (error) {
-    console.error('Error creating thumbnails:', error);
+    console.error('[UPLOAD] Fatal error:', error);
     res.status(500).send({ message: 'Error creating thumbnails', error: error.message });
   }
 });

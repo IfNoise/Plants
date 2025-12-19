@@ -276,10 +276,12 @@ export default function AddActionDialog({ open, onClose, plants }) {
   };
 
   const handlePhotosChange = (photos) => {
+    console.log('Photos changed:', photos.length);
     setPendingPhotos(photos);
   };
 
   const newActionFunc = async () => {
+    console.log('Submitting action with photos:', pendingPhotos.length);
     if (plants.length < 1) {
       setSnack({
         open: true,

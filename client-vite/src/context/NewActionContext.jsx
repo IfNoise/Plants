@@ -216,11 +216,14 @@ export const NewActionProvider = ({ children }) => {
 
   // Функция для отправки действия на сервер (с загрузкой фотографий если нужно)
   const submitAction = useCallback(async (plantIds, pendingPhotos = []) => {
+    console.log('submitAction called with photos:', pendingPhotos.length);
     try {
       // Если есть фотографии для загрузки, загружаем их сначала
       let uploadedFilenames = [];
       if (pendingPhotos && pendingPhotos.length > 0) {
+        console.log('Uploading photos to server...');
         uploadedFilenames = await uploadPhotosToServer(pendingPhotos);
+        console.log('Uploaded filenames:', uploadedFilenames);
         
         // Добавляем загруженные файлы в состояние действия
         if (uploadedFilenames.length > 0) {
@@ -234,6 +237,7 @@ export const NewActionProvider = ({ children }) => {
         photos: [...(state.photos || []), ...uploadedFilenames]
       };
       
+      console.log('Submitting final action:', finalAction);
       const body = { id: plantIds, action: finalAction };
       return addAction(body);
     } catch (err) {

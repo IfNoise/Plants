@@ -313,6 +313,8 @@ export const NoteFields = ({ onPhotosChange }) => {
   const [note, setNote] = useState({});
   const [photos, setPhotos] = useState([]);
 
+  console.log('NoteFields rendered, onPhotosChange:', typeof onPhotosChange);
+
   // Конфигурация типов заметок
   const types = {
     Problem: {
@@ -379,6 +381,7 @@ export const NoteFields = ({ onPhotosChange }) => {
   const handleTakePhoto = (dataUri) => {
     const newPhotos = [...photos, dataUri];
     setPhotos(newPhotos);
+    console.log('NoteFields: Photo taken, total photos:', newPhotos.length);
     if (onPhotosChange) {
       onPhotosChange(newPhotos);
     }
@@ -392,6 +395,7 @@ export const NoteFields = ({ onPhotosChange }) => {
     reader.onload = (e) => {
       const newPhotos = [...photos, e.target.result];
       setPhotos(newPhotos);
+      console.log('NoteFields: File selected, total photos:', newPhotos.length);
       if (onPhotosChange) {
         onPhotosChange(newPhotos);
       }
@@ -402,6 +406,7 @@ export const NoteFields = ({ onPhotosChange }) => {
   const handleRemovePhoto = (index) => {
     const newPhotos = photos.filter((_, i) => i !== index);
     setPhotos(newPhotos);
+    console.log('NoteFields: Photo removed, total photos:', newPhotos.length);
     if (onPhotosChange) {
       onPhotosChange(newPhotos);
     }
