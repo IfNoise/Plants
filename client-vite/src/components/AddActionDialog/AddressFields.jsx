@@ -158,18 +158,6 @@ export const AddressFields = () => {
           <TextField
             id="outlined-number"
             sx={{ m: "7px", width: "70px" }}
-            label="Tray"
-            value={newAction.address?.tray ?? ""}
-            type="number"
-            disabled={newAction.address?.rack}
-            onChange={handlerTray}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            id="outlined-number"
-            sx={{ m: "7px", width: "70px" }}
             label="Rack"
             value={newAction.address?.rack ?? ""}
             type="number"

@@ -1,6 +1,6 @@
 {
   "port": 5000,
   "jwtSecret": "surinagro ddweed chueaploeng",
-  "mongodbUri": "mongodb://localhost:27017/SurinAgro",
+  "mongodbUri": "mongodb://ddweed.org:27017/plants",
   "baseUrl": "https://localhost:5000"
 }
