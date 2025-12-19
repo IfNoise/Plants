@@ -36,40 +36,79 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post('/api/photos/upload', upload.array('photos', 12), function (req, res, next) {
+// Создаем папку для миниатюр если её нет
+const thumbnailsDir = path.join(__dirname, 'uploads', 'thumbnails');
+if (!fs.existsSync(thumbnailsDir)) {
+  fs.mkdirSync(thumbnailsDir, { recursive: true });
+}
+
+app.post('/api/photos/upload', upload.array('photos', 12), async function (req, res, next) {
   // req.files - массив файлов `photos`
   // req.body сохранит текстовые поля, если они будут
   if (!req.files) {
     return res.status(400).send({ message: 'No files uploaded.' });
   }
-  req.files.forEach(async (file) => {
-    console.log(file)
-    sharp(file.path)
-      .resize(200, 200)
-      .toFile(`uploads/thumbnails/${file.originalname}`,(err,info)=>{
-        if(err)console.log(err)
-          else console.log(info)
-      });
-
+  
+  try {
+    // Используем Promise.all для параллельного создания миниатюр
+    await Promise.all(
+      req.files.map(async (file) => {
+        console.log(file);
+        const thumbnailPath = path.join(__dirname, 'uploads', 'thumbnails', file.filename);
+        
+        await sharp(file.path)
+          .resize(200, 200, {
+            fit: 'cover',
+            position: 'center'
+          })
+          .toFile(thumbnailPath);
+        
+        console.log(`Thumbnail created: ${thumbnailPath}`);
+      })
+    );
+    
+    res.status(200).send({ message: 'Files uploaded successfully.', files: req.files });
+  } catch (error) {
+    console.error('Error creating thumbnails:', error);
+    res.status(500).send({ message: 'Error creating thumbnails', error: error.message });
   }
-  );
-  res.status(200).send({ message: 'Files uploaded successfully.', files: req.files });
 });
 app.get('/api/photos/make_thumbnails', async(req, res) => {
-  const photos=await Photo.find({})
-  photos.forEach(async (photo) => {
-    const filename= photo.src?.includes("gallery/")?photo.src.split("/")[1]:photo.src
-    console.log("Filename",filename)
-    const path="uploads/"+filename
-    console.log("Path:",path)
-    const thumb=`uploads/thumbnails/${filename}`
-    console.log("Thumb:",thumb)
-    await sharp(path)
-      .resize(200)
-      .toFile(thumb)
-
-  });
-
+  try {
+    const photos = await Photo.find({});
+    
+    await Promise.all(
+      photos.map(async (photo) => {
+        const filename = photo.src?.includes("gallery/") ? photo.src.split("/")[1] : photo.src;
+        console.log("Filename", filename);
+        
+        const filePath = path.join(__dirname, 'uploads', filename);
+        console.log("Path:", filePath);
+        
+        const thumbPath = path.join(__dirname, 'uploads', 'thumbnails', filename);
+        console.log("Thumb:", thumbPath);
+        
+        // Проверяем существование исходного файла
+        if (fs.existsSync(filePath)) {
+          await sharp(filePath)
+            .resize(200, 200, {
+              fit: 'cover',
+              position: 'center'
+            })
+            .toFile(thumbPath);
+          
+          console.log(`Thumbnail created for ${filename}`);
+        } else {
+          console.log(`File not found: ${filePath}`);
+        }
+      })
+    );
+    
+    res.status(200).send({ message: 'Thumbnails created successfully.' });
+  } catch (error) {
+    console.error('Error creating thumbnails:', error);
+    res.status(500).send({ message: 'Error creating thumbnails', error: error.message });
+  }
 });
 app.use('/gallery', express.static(path.join(__dirname, 'uploads')))
 app.use('/gallery/thumbnails', express.static(path.join(__dirname, 'uploads','thumbnails')))
