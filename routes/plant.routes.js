@@ -156,28 +156,25 @@ router.post("/new_action", async (req, res) => {
       id.map(async (idx) => {
         let action = { type: data.actionType, date };
         const plant = await Plant.findById(idx);
-
+        const chAct = plant.actions.filter(
+          (action) =>
+            action.type === "Start" ||
+            action.type === "Picking" ||
+            action.type === "Blooming" ||
+            action.type === "MakeMother"
+        );
+        const LastStateChenge = new Date(chAct[chAct.length - 1].date);
+        //days from last state change
+        const ageOfState = Math.floor(
+          (Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24)
+        );
         switch (data.actionType) {
           case "Note": {
             if (data.note) action.note = data.note;
-            if (data.photos && data.photos.length > 0){
-            action.photos = data.photos;
-            const newPhotos = data.photos.map((photo) => {
-              if (plant.photos.indexOf(photo) === -1) {
-                //days from last state change
-                const chAct = plant.actions.filter(
-                  (action) =>
-                    action.type === "Start" ||
-                    action.type === "Picking" ||
-                    action.type === "Blooming" ||
-                    action.type === "MakeMother"
-                );
-                const LastStateChenge = new Date(chAct[chAct.length - 1].date);
-                //days from last state change
-                const ageOfState = Math.floor(
-                  (Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24)
-                );
-                plant.photos.push(photo);
+            if (data.photos && data.photos.length > 0) {
+              console.logh("adding photos");
+              action.photos = data.photos;
+              const newPhotos = data.photos.map((photo) => {
                 return {
                   src: `${photo}`,
                   date: Date.now(),
@@ -187,14 +184,13 @@ router.post("/new_action", async (req, res) => {
                   plantId: plant._id,
                   ageOfState,
                 };
+              });
+              const result = await Photo.insertMany(newPhotos);
+              console.log(result);
+              if (result.length === 0) {
+                action = null;
+                throw new Error("Error while adding photos");
               }
-            });
-            const result = await Photo.insertMany(newPhotos);
-            console.log(result);
-            if (result.length === 0) {
-              action = null;
-              throw new Error("Error while adding photos");
-            }
             }
             break;
           }
@@ -306,21 +302,6 @@ router.post("/new_action", async (req, res) => {
             }
             action.photos = data.photos;
             const newPhotos = data.photos.map((photo) => {
-              if (plant.photos.indexOf(photo) === -1) {
-                //days from last state change
-                const chAct = plant.actions.filter(
-                  (action) =>
-                    action.type === "Start" ||
-                    action.type === "Picking" ||
-                    action.type === "Blooming" ||
-                    action.type === "MakeMother"
-                );
-                const LastStateChenge = new Date(chAct[chAct.length - 1].date);
-                //days from last state change
-                const ageOfState = Math.floor(
-                  (Date.now() - LastStateChenge) / (1000 * 60 * 60 * 24)
-                );
-                plant.photos.push(photo);
                 return {
                   src: `${photo}`,
                   date: Date.now(),
@@ -330,7 +311,6 @@ router.post("/new_action", async (req, res) => {
                   plantId: plant._id,
                   ageOfState,
                 };
-              }
             });
             const result = await Photo.insertMany(newPhotos);
             console.log(result);
