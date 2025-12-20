@@ -172,7 +172,7 @@ router.post("/new_action", async (req, res) => {
           case "Note": {
             if (data.note) action.note = data.note;
             if (data.photos && data.photos.length > 0) {
-              console.logh("adding photos");
+              console.log("adding photos");
               action.photos = data.photos;
               const newPhotos = data.photos.map((photo) => {
                 return {
