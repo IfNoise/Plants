@@ -1,8 +1,9 @@
 import { Stack, Typography, Link, Paper } from "@mui/material";
 import PropTypes from "prop-types";
+import { useMemo, memo } from "react";
 import Plant from "./Plant";
 
-export default function Tray({
+const Tray = memo(function Tray({
   index,
   size,
   plants,
@@ -10,14 +11,31 @@ export default function Tray({
   direction,
   orientation,
 }) {
-  const height =
-    orientation === "horizontal" ? 138 : size === "4x4" ? 140 : 287;
-  const width =
-    orientation === "horizontal" ? (size === "4x4" ? 140 : 300) : 112;
+  const height = useMemo(
+    () => (orientation === "horizontal" ? 138 : size === "4x4" ? 140 : 287),
+    [orientation, size]
+  );
+  
+  const width = useMemo(
+    () => (orientation === "horizontal" ? (size === "4x4" ? 140 : 300) : 112),
+    [orientation, size]
+  );
+  
   const tray = index + 1;
   const plantCount = plants.length;
   const { building, room, row } = address;
   const params = new URLSearchParams({ building, room, row, tray }).toString();
+  
+  const reversedPlants = useMemo(
+    () => direction === "Up" ? [...plants].reverse() : plants,
+    [plants, direction]
+  );
+  
+  const stackDirection = useMemo(
+    () => orientation === "horizontal" ? "column" : "row",
+    [orientation]
+  );
+  
   return (
     <Paper
       sx={{
@@ -64,7 +82,7 @@ export default function Tray({
       </Paper>
       {plants?.length > 0 && (
         <Stack
-          direction={orientation === "horizontal" ? "column" : "row"}
+          direction={stackDirection}
           useFlexGap
           flexWrap="wrap"
           spacing={0.1}
@@ -76,16 +94,17 @@ export default function Tray({
           }}
         >
           {direction === "Down" &&
-            plants.map((plant, i) => <Plant key={i} plant={plant} />)}
+            plants.map((plant, i) => <Plant key={plant._id || i} plant={plant} />)}
           {direction === "Up" &&
-            plants
-              .toReversed()
-              .map((plant, i) => <Plant key={i} plant={plant} />)}
+            reversedPlants.map((plant, i) => <Plant key={plant._id || i} plant={plant} />)}
         </Stack>
       )}
     </Paper>
   );
-}
+});
+
+Tray.displayName = 'Tray';
+
 Tray.propTypes = {
   index: PropTypes.number,
   size: PropTypes.string,
@@ -94,3 +113,5 @@ Tray.propTypes = {
   direction: PropTypes.string,
   orientation: PropTypes.string,
 };
+
+export default Tray;

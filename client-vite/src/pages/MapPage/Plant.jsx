@@ -1,6 +1,6 @@
 import { Box, Paper, Popper, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 function stringToColor(string) {
@@ -24,18 +24,25 @@ function stringToColor(string) {
 }
 
 
-export default function Plant({ plant }) {
+const Plant = memo(function Plant({ plant }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   
-  const handleClick = () => {
+  const backgroundColor = useMemo(() => stringToColor(plant.pheno), [plant.pheno]);
+  
+  const handleClick = useCallback(() => {
     navigate(`/plant/${plant.id}`);
-  };
-  const handleEnter = (event) => {
+  }, [navigate, plant.id]);
+  
+  const handleEnter = useCallback((event) => {
     setAnchorEl(event.currentTarget);
     setOpen(true);
-  };
+  }, []);
+  
+  const handleLeave = useCallback(() => {
+    setOpen(false);
+  }, []);
 
   return (
     <Box
@@ -43,16 +50,13 @@ export default function Plant({ plant }) {
         width: "34px",
         height: "34px",
         borderRadius: "4px",
-        backgroundColor: stringToColor(plant.pheno),
+        backgroundColor,
         p: "1px",
         cursor: "pointer",
         border: "1px solid #555",
       }}
       onMouseEnter={handleEnter}
-      onMouseLeave={() => {
-        setAnchorEl(null);
-        setOpen(false);
-      }}
+      onMouseLeave={handleLeave}
       onClick={handleClick}
     >
       <Typography
@@ -94,8 +98,12 @@ export default function Plant({ plant }) {
       </Popper>
     </Box>
   );
-}
+});
+
+Plant.displayName = 'Plant';
+
 Plant.propTypes = {
-  onClick: PropTypes.func,
-  plant: PropTypes.object,
+  plant: PropTypes.object.isRequired,
 };
+
+export default Plant;
