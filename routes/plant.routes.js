@@ -370,7 +370,6 @@ router.get("/plants_map", async (req, res) => {
       }
     );
     const map = JSON.parse(JSON.stringify(plantMap));
-    Object.assign;
     plants.forEach((plant) => {
       const { building, room, row, shelf, rack, tray } = plant.currentAddress;
       const { id, pheno, state, strain, startDate, potSize, currentAddress } =
