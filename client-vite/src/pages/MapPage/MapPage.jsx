@@ -15,7 +15,7 @@ import { Row } from "./Row";
 import { useGetMapQuery } from "../../store/plantsApi";
 import { useParams } from "react-router-dom";
 import { Rack } from "./Rack";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { AppBarContext } from "../../context/AppBarContext";
 
 import { PieChart } from "@mui/x-charts";
@@ -32,22 +32,24 @@ PrintOnly.propTypes = {
 const PlantsStat = ({ plants }) => {
   const isSmall = window.innerWidth < 600;
   const data = useMemo(() => {
-    if (plants?.length < 1) return [];
-    const res = plants.reduce((acc, plant) => {
-      if (!acc?.length) acc = [];
-      if (acc?.find((p) => p.pheno === plant.pheno)) {
-        acc.find((p) => p.pheno === plant.pheno).value += 1;
+    if (!plants?.length) return [];
+    
+    const phenoMap = new Map();
+    plants.forEach((plant) => {
+      const key = plant.pheno;
+      if (phenoMap.has(key)) {
+        phenoMap.get(key).value += 1;
       } else {
-        acc.push({
+        phenoMap.set(key, {
           label: `${plant.strain}-${plant.pheno}`,
           pheno: plant.pheno,
           value: 1,
           color: stringToColor(plant.pheno),
         });
       }
-      return acc;
-    }, []);
-    return res?.sort((a, b) => b.value - a.value) || [];
+    });
+    
+    return Array.from(phenoMap.values()).sort((a, b) => b.value - a.value);
   }, [plants]);
 
   return (
@@ -129,7 +131,8 @@ export const MapPage = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const calculatePlants = (map) => {
+  
+  const calculatePlants = useCallback((map) => {
     let plantCount = [];
 
     if (map && map[building] && map[building][room]) {
@@ -153,52 +156,70 @@ export const MapPage = () => {
           });
         });
       }
-      console.log(plantCount);
 
       return plantCount;
     }
-  };
+    return [];
+  }, [building, room]);
 
   const data = useMemo(() => {
     if (!map) return [];
     return calculatePlants(map);
-  }, [map, building, room]);
+  }, [map, calculatePlants]);
 
   useEffect(() => {
-    if (map && map[building] && map[building][room]) {
-      const columns = map[building][room].columns;
-      const rows = map[building][room].rows
-        .map((row) => row.trays.length)
-        .sort((a, b) => a > b);
-      const width = map[building][room].width;
-      let maxWidth = 0;
-      let maxHeight = 0;
-      if (orientation === "vertical" && rows.length / columns > 1) {
-        maxWidth = Math.max(width, 500);
-        maxHeight = (rows[0] + rows[1]) * 64;
-        setRows(map[building][room].rows);
-      } else if (orientation === "vertical" && rows.length / columns === 1) {
-        maxWidth = Math.max(width, 500);
-        maxHeight = rows[0] * 64;
-        setRows(map[building][room].rows);
-      } else if (orientation === "horizontal") {
-        setRows(map[building][room].rows.toReversed());
-        maxWidth = columns * 150;
-        maxHeight = columns * 70;
-      }
-      console.log(`maxWidth: ${maxWidth}`);
-      console.log(`maxHeight: ${maxHeight}`);
-      setPageWidth(maxWidth / 1.8 + 150);
-      setPageHeight(maxHeight + 100);
+    if (!map?.[building]?.[room]) return;
+
+    const roomData = map[building][room];
+    const { columns, width, rows: roomRows } = roomData;
+    const trayLengths = roomRows
+      .map((row) => row.trays.length)
+      .sort((a, b) => b - a); // Сортировка по убыванию
+
+    let maxWidth = 0;
+    let maxHeight = 0;
+
+    if (orientation === "vertical") {
+      setRows(roomRows);
+      maxWidth = Math.max(width, 500);
+      maxHeight = trayLengths.length / columns > 1 
+        ? (trayLengths[0] + trayLengths[1]) * 64 
+        : trayLengths[0] * 64;
+    } else {
+      setRows([...roomRows].reverse());
+      maxWidth = columns * 150;
+      maxHeight = columns * 70;
     }
+
+    setPageWidth(maxWidth / 1.8 + 150);
+    setPageHeight(maxHeight + 100);
   }, [map, building, room, orientation]);
 
   useEffect(() => {
     appBar.setAppBar({ title: "Map" });
-  }, []);
+  }, [appBar]);
 
-  if (isError) return <Box>Error: {error.message}</Box>;
-  if (isLoading) return <Box>Loading...</Box>;
+  if (isError) return (
+    <Box sx={{ p: 2 }}>
+      <Typography color="error" variant="h6">
+        Error loading map: {error?.message || 'Unknown error'}
+      </Typography>
+    </Box>
+  );
+  
+  if (isLoading) return (
+    <Box sx={{ p: 2 }}>
+      <Typography>Loading...</Typography>
+    </Box>
+  );
+
+  if (!map?.[building]?.[room]) return (
+    <Box sx={{ p: 2 }}>
+      <Typography>No map data available for {building}.{roomName}</Typography>
+    </Box>
+  );
+
+  const currentRoom = map[building][room];
 
   return (
     <Box>
@@ -220,7 +241,7 @@ export const MapPage = () => {
         }}
         href={`/plants?${params}`}
       >
-        Total:{map[building][room].totalPlants || "0"}plants
+        Total:{currentRoom.totalPlants || "0"}plants
       </Link>
 
       <Link
@@ -265,11 +286,11 @@ export const MapPage = () => {
           <Box
             sx={{
               width:
-                orientation === "vertical" ? map[building][room].width : "auto",
+                orientation === "vertical" ? currentRoom.width : "auto",
               height:
                 orientation === "vertical"
                   ? "auto"
-                  : map[building][room].columns * 150 + "px",
+                  : currentRoom.columns * 150 + "px",
               display: "flex",
               justifyContent: "flex-start",
               alignItems: "baseline",
@@ -279,9 +300,8 @@ export const MapPage = () => {
               flex: "0 0 0",
             }}
           >
-            {Object.keys(map).length > 0 &&
-              map[building][room]?.racks &&
-              map[building][room].racks.map((rack, index) => (
+            {currentRoom.racks?.length > 0 &&
+              currentRoom.racks.map((rack, index) => (
                 <Rack
                   key={index}
                   index={index}
