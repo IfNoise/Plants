@@ -25,6 +25,9 @@ import { Scaler } from "../../components/Scaler";
 const PrintOnly = ({ children }) => {
   return <div className="print-only">{children}</div>;
 };
+PrintOnly.propTypes = {
+  children: PropTypes.node,
+};
 
 const PlantsStat = ({ plants }) => {
   const isSmall = window.innerWidth < 600;
@@ -159,7 +162,7 @@ export const MapPage = () => {
   const data = useMemo(() => {
     if (!map) return [];
     return calculatePlants(map);
-  }, [map, building, room, calculatePlants]);
+  }, [map, building, room]);
 
   useEffect(() => {
     if (map && map[building] && map[building][room]) {
@@ -177,6 +180,7 @@ export const MapPage = () => {
       } else if (orientation === "vertical" && rows.length / columns === 1) {
         maxWidth = Math.max(width, 500);
         maxHeight = rows[0] * 64;
+        setRows(map[building][room].rows);
       } else if (orientation === "horizontal") {
         setRows(map[building][room].rows.toReversed());
         maxWidth = columns * 150;
