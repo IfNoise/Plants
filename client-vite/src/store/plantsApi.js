@@ -5,7 +5,6 @@ export const plantsApi = createApi({
   reducerPath: "plants/api",
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl + "/api/plant",
-    refetchOnFocus: true,
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {

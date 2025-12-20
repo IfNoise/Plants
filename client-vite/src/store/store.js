@@ -40,7 +40,13 @@ export const store = configureStore({
   reducer,
   preloadedState: reHydrateStore(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Игнорируем проверки для больших объектов
+        ignoredActions: ['plants/api/executeQuery/fulfilled'],
+        ignoredPaths: ['plants.api', 'gallery.api'],
+      },
+    }).concat([
       localStorageMiddleware,
       plantsApi.middleware,
       deviceApi.middleware,
@@ -54,6 +60,11 @@ export const store = configureStore({
       galleryApi.middleware,
       feedingApi.middleware,
     ]),
+  devTools: process.env.NODE_ENV !== 'production' && {
+    maxAge: 50, // Ограничиваем количество действий в истории
+    trace: false, // Отключаем stack traces
+    traceLimit: 25,
+  },
 });
 
 setupListeners(store.dispatch);

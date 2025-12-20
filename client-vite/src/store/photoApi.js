@@ -15,7 +15,7 @@ export const photoApi = createApi({
   reducerPath: "photo/api",
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl + "/api/photos",
-    refetchOnFocus: true,
+
     // prepareHeaders: (headers, { getState }) => {
     //   const token = getState().auth.token;
     //   if (token) {

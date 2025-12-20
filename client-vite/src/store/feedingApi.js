@@ -7,7 +7,6 @@ export const feedingApi = createApi({
   reducerPath: "feeding/api",
   baseQuery: fetchBaseQuery({
     baseUrl,
-    refetchOnFocus: true,
     // prepareHeaders: (headers, { getState }) => {
     //   const token = getState().auth.token;
     //   if (token) {

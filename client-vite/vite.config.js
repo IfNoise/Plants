@@ -16,10 +16,21 @@ export default defineConfig({
       injectRegister: "auto",
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/ddweed\.org\/api\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 5 * 60, // 5 минут
+              },
+            },
+          },
+        ],
       },
-      // devOptions: {
-      //   enabled: true
-      // },
+      disable: process.env.NODE_ENV === 'development', // Отключаем PWA в dev режиме
       manifest: {
         name: "Plants Database",
         short_name: "Plants Database",

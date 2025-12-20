@@ -6,7 +6,7 @@ export const galleryApi = createApi({
   reducerPath: "gallery/api",
   baseQuery: fetchBaseQuery({
     baseUrl: baseUrl + "/api/gallery",
-    refetchOnFocus: true,
+
     // prepareHeaders: (headers, { getState }) => {
     //   const token = getState().auth.token;
     //   if (token) {
