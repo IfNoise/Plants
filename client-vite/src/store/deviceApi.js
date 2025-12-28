@@ -58,6 +58,31 @@ export const deviceApi = createApi({
       },
       invalidatesTags: ["Config", "State"],
     }),
+    getIrrigationTable: build.query({
+      query: ({ deviceId, irrigator }) => ({
+        url: `devices/${deviceId}/rpc`,
+        method: "POST",
+        body: {
+          method: "Get.IrrigationTable",
+          params: { irrigator },
+        },
+      }),
+      providesTags: ["IrrigationTable"],
+    }),
+    setIrrigationTable: build.mutation({
+      query: ({ deviceId, irrigator, regMap }) => ({
+        url: `devices/${deviceId}/rpc`,
+        method: "POST",
+        body: {
+          method: "Set.IrrigationTable",
+          params: {
+            irrigator,
+            reg_map: JSON.stringify(regMap),
+          },
+        },
+      }),
+      invalidatesTags: ["IrrigationTable"],
+    }),
   }),
 });
 
@@ -68,5 +93,7 @@ export const {
   useGetConfigQuery,
   useGetOutputsQuery,
   useGetStateQuery,
+  useGetIrrigationTableQuery,
+  useSetIrrigationTableMutation,
   refetch,
 } = deviceApi;

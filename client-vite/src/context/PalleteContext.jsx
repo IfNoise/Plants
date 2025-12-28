@@ -11,7 +11,7 @@ const PalleteProvider = ({ children }) => {
     isLoading,
     isError,
     error,
-  } = useGetPlantsQuery({ state: "Cloning" });
+  } = useGetPlantsQuery({ state:{$in: ["Cloning","Growing"]} });
 
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [items, setItems] = useState([]);
