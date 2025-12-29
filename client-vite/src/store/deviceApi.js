@@ -60,7 +60,7 @@ export const deviceApi = createApi({
     }),
     getIrrigationTable: build.query({
       query: ({ deviceId, irrigator }) => ({
-        url: `devices/${deviceId}/rpc`,
+        url: `devices/${deviceId}/call`,
         method: "POST",
         body: {
           method: "Get.IrrigationTable",
@@ -71,13 +71,13 @@ export const deviceApi = createApi({
     }),
     setIrrigationTable: build.mutation({
       query: ({ deviceId, irrigator, regMap }) => ({
-        url: `devices/${deviceId}/rpc`,
+        url: `devices/${deviceId}/call`,
         method: "POST",
         body: {
           method: "Set.IrrigationTable",
           params: {
             irrigator,
-            reg_map: JSON.stringify(regMap),
+            reg_map: regMap,
           },
         },
       }),

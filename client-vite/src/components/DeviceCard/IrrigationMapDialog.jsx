@@ -1,23 +1,26 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
+  Grid,
   TextField,
   Typography,
+  Tabs,
+  Tab,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import EditIcon from "@mui/icons-material/Edit";
 import IrrigationTimeline from "./IrrigationTimeline";
+import { calculateIrrigationSchedule, defaultIrrigationParams } from "./irrigationCalculator";
 
 /**
  * Irrigation map editor dialog
@@ -37,58 +40,27 @@ const IrrigationMapDialog = ({
   deviceId,
   irrigatorName,
 }) => {
+  const [tabValue, setTabValue] = useState(0);
   const [periods, setPeriods] = useState(initialMap);
-  const [newStart, setNewStart] = useState("");
-  const [newStop, setNewStop] = useState("");
+  const [params, setParams] = useState(defaultIrrigationParams);
 
-  // Convert HH:MM to seconds
-  const timeToSeconds = (timeStr) => {
-    const [hours, minutes] = timeStr.split(":").map(Number);
-    return hours * 3600 + minutes * 60;
+  const handleParamChange = (field, value) => {
+    setParams((prev) => ({
+      ...prev,
+      [field]: parseFloat(value) || 0,
+    }));
   };
 
-  // Convert seconds to HH:MM
-  const secondsToTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  };
-
-  const handleAddPeriod = () => {
-    if (!newStart || !newStop) {
-      return;
+  const handleCalculate = () => {
+    try {
+      const calculatedPeriods = calculateIrrigationSchedule(params);
+      setPeriods(calculatedPeriods);
+    } catch (error) {
+      console.error("Ошибка расчёта расписания:", error);
+      alert("Ошибка при расчёте расписания полива");
     }
-
-    const start = timeToSeconds(newStart);
-    const stop = timeToSeconds(newStop);
-
-    if (start >= stop) {
-      alert("Время начала должно быть меньше времени окончания");
-      return;
-    }
-
-    // Check for overlaps
-    const hasOverlap = periods.some(
-      (period) =>
-        (start >= period.start && start < period.stop) ||
-        (stop > period.start && stop <= period.stop) ||
-        (start <= period.start && stop >= period.stop)
-    );
-
-    if (hasOverlap) {
-      alert("Периоды не должны пересекаться");
-      return;
-    }
-
-    const newPeriods = [...periods, { start, stop }].sort((a, b) => a.start - b.start);
-    setPeriods(newPeriods);
-    setNewStart("");
-    setNewStop("");
   };
 
-  const handleDeletePeriod = (index) => {
-    setPeriods(periods.filter((_, i) => i !== index));
-  };
 
   const handleSave = () => {
     onSave(periods);
@@ -97,101 +69,361 @@ const IrrigationMapDialog = ({
 
   const handleClose = () => {
     setPeriods(initialMap);
-    setNewStart("");
-    setNewStop("");
+    setParams(defaultIrrigationParams);
+    setTabValue(0);
     onClose();
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
       <DialogTitle>
-        Карта полива - {irrigatorName}
+        Генератор карты полива - {irrigatorName}
         <Typography variant="caption" display="block">
           Устройство: {deviceId}
         </Typography>
       </DialogTitle>
       <DialogContent>
+        <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)} sx={{ mb: 2 }}>
+          <Tab icon={<CalculateIcon />} label="Расчёт" />
+          <Tab icon={<EditIcon />} label="Ручной ввод" />
+        </Tabs>
+
         {/* Timeline visualization */}
-        <IrrigationTimeline regMap={periods} />
+        <IrrigationTimeline regMap={periods} lightsOnTimeSeconds={params.lightsOnTimeSeconds} lightsOffTimeSeconds={params.lightsOffTimeSeconds} />
 
-        {/* Add new period */}
-        <Box sx={{ my: 2, p: 2, border: "1px solid #ccc", borderRadius: "4px" }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Добавить период полива
-          </Typography>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <TextField
-              type="time"
-              label="Начало"
-              value={newStart}
-              onChange={(e) => setNewStart(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ step: 300 }}
-              size="small"
-            />
-            <TextField
-              type="time"
-              label="Конец"
-              value={newStop}
-              onChange={(e) => setNewStop(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ step: 300 }}
-              size="small"
-            />
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAddPeriod}
-              disabled={!newStart || !newStop}
-            >
-              Добавить
-            </Button>
-          </Stack>
-        </Box>
+        {tabValue === 0 && (
+          <Box sx={{ mt: 2 }}>
+            {/* Время */}
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  ⏰ Световой режим
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Включение света (часы)"
+                      type="number"
+                      value={params.lightsOnTimeSeconds / 3600}
+                      onChange={(e) =>
+                        handleParamChange("lightsOnTimeSeconds", e.target.value * 3600)
+                      }
+                      inputProps={{ step: 0.5, min: 0, max: 24 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Выключение света (часы)"
+                      type="number"
+                      value={params.lightsOffTimeSeconds / 3600}
+                      onChange={(e) =>
+                        handleParamChange("lightsOffTimeSeconds", e.target.value * 3600)
+                      }
+                      inputProps={{ step: 0.5, min: 0, max: 24 }}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
 
-        {/* Periods list */}
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Периоды полива ({periods.length})
-          </Typography>
-          {periods.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
-              Нет настроенных периодов
+            {/* Горшок и оборудование */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  🪴 Горшок и оборудование
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Ёмкость субстрата (л)"
+                      type="number"
+                      value={params.substrateWaterCapacityLiters}
+                      onChange={(e) =>
+                        handleParamChange("substrateWaterCapacityLiters", e.target.value)
+                      }
+                      inputProps={{ step: 0.1, min: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Расход капельницы (л/ч)"
+                      type="number"
+                      value={params.dripperFlowRateLph}
+                      onChange={(e) => handleParamChange("dripperFlowRateLph", e.target.value)}
+                      inputProps={{ step: 0.1, min: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Капельниц на горшок"
+                      type="number"
+                      value={params.emittersPerPot}
+                      onChange={(e) => handleParamChange("emittersPerPot", e.target.value)}
+                      inputProps={{ step: 1, min: 1 }}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Потери воды */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  💧 Потери воды
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Потери воды (л/ч)"
+                      type="number"
+                      value={params.waterLossRateLitersPerHour}
+                      onChange={(e) =>
+                        handleParamChange("waterLossRateLitersPerHour", e.target.value)
+                      }
+                      inputProps={{ step: 0.01, min: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Коэффициент испарения"
+                      type="number"
+                      value={params.evaporationCoefficient}
+                      onChange={(e) =>
+                        handleParamChange("evaporationCoefficient", e.target.value)
+                      }
+                      inputProps={{ step: 0.1, min: 0 }}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Стратегия */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  📊 Стратегия полива (%)
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={6} md={3}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Начальная просушка (%)"
+                      type="number"
+                      value={params.initialDrybackPercent}
+                      onChange={(e) =>
+                        handleParamChange("initialDrybackPercent", e.target.value)
+                      }
+                      inputProps={{ step: 1, min: 0, max: 100 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={3}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Целевой пик (%)"
+                      type="number"
+                      value={params.targetPeakPercent}
+                      onChange={(e) => handleParamChange("targetPeakPercent", e.target.value)}
+                      inputProps={{ step: 1, min: 0, max: 100 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={3}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Мин. поддержание (%)"
+                      type="number"
+                      value={params.maintenanceMinPercent}
+                      onChange={(e) =>
+                        handleParamChange("maintenanceMinPercent", e.target.value)
+                      }
+                      inputProps={{ step: 1, min: 0, max: 100 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={3}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Макс. поддержание (%)"
+                      type="number"
+                      value={params.maintenanceMaxPercent}
+                      onChange={(e) =>
+                        handleParamChange("maintenanceMaxPercent", e.target.value)
+                      }
+                      inputProps={{ step: 1, min: 0, max: 100 }}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Фаза P1 */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  🌱 Фаза P1 - Насыщение (маленькие шоты)
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Задержка старта (мин)"
+                      type="number"
+                      value={params.p1StartDelayMinutes}
+                      onChange={(e) => handleParamChange("p1StartDelayMinutes", e.target.value)}
+                      inputProps={{ step: 5, min: 0 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Объём шота (%)"
+                      type="number"
+                      value={params.p1ShotVolumePercent}
+                      onChange={(e) => handleParamChange("p1ShotVolumePercent", e.target.value)}
+                      inputProps={{ step: 0.5, min: 0, max: 100 }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Интервал (мин)"
+                      type="number"
+                      value={params.p1ShotIntervalMinutes}
+                      onChange={(e) =>
+                        handleParamChange("p1ShotIntervalMinutes", e.target.value)
+                      }
+                      inputProps={{ step: 5, min: 1 }}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Фаза P2 */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  ☀️ Фаза P2 - Дневная (длинные поливы)
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Интервалы рассчитываются автоматически на основе влагоёмкости горшка и потерь воды
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Целевой дренаж (%)"
+                      type="number"
+                      value={params.p2TargetDrainagePercent}
+                      onChange={(e) => handleParamChange("p2TargetDrainagePercent", e.target.value)}
+                      inputProps={{ step: 1, min: 0, max: 50 }}
+                      helperText="Процент воды, вытекающей из горшка при каждом поливе"
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Фаза P3 — Конечный dryback */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  🌑 Фаза P3 — Конечный dryback
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Сухой период перед выкл. света (мин)"
+                      type="number"
+                      value={params.p3DrybackMinutes}
+                      onChange={(e) => handleParamChange("p3DrybackMinutes", e.target.value)}
+                      inputProps={{ step: 5, min: 0, max: 240 }}
+                      helperText="Время до выключения света, когда поливы запрещены (dryback)"
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Box sx={{ mt: 2, textAlign: "center" }}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<CalculateIcon />}
+                onClick={handleCalculate}
+                color="primary"
+              >
+                Рассчитать расписание
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {tabValue === 1 && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Ручной режим пока недоступен. Используйте расчёт для генерации расписания.
             </Typography>
-          ) : (
-            <List dense>
-              {periods.map((period, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleDeletePeriod(index)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                  sx={{
-                    border: "1px solid #eee",
-                    borderRadius: "4px",
-                    mb: 1,
-                  }}
-                >
-                  <ListItemText
-                    primary={`${secondsToTime(period.start)} - ${secondsToTime(period.stop)}`}
-                    secondary={`Продолжительность: ${Math.floor((period.stop - period.start) / 60)} мин`}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          )}
-        </Box>
+          </Box>
+        )}
+
+        {/* Результат */}
+        {periods.length > 0 && (
+          <Box sx={{ mt: 3, p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              📋 Результат: {periods.length} событий полива
+            </Typography>
+            <Typography variant="caption" display="block">
+              Общее время полива:{" "}
+              {Math.floor(
+                periods.reduce((sum, p) => sum + (p.stop - p.start), 0) / 60
+              )}{" "}
+              минут
+            </Typography>
+          </Box>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Отмена</Button>
         <Button onClick={handleSave} variant="contained" disabled={periods.length === 0}>
-          Сохранить и отправить
+          Сохранить на устройство
         </Button>
       </DialogActions>
     </Dialog>
@@ -202,7 +434,12 @@ IrrigationMapDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  initialMap: PropTypes.array,
+  initialMap: PropTypes.arrayOf(
+    PropTypes.shape({
+      start: PropTypes.number.isRequired,
+      stop: PropTypes.number.isRequired,
+    })
+  ),
   deviceId: PropTypes.string.isRequired,
   irrigatorName: PropTypes.string.isRequired,
 };
