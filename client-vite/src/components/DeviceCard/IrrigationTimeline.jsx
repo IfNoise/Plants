@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Box, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from "@mui/material";
 
 /**
  * Irrigation timeline visualization component
@@ -182,6 +182,13 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
 
       {/* Period list: 2 columns */}
       {periods.length > 0 && (
+        <Accordion defaultExpanded={false} sx={{ mt: 1 }} >
+          <AccordionSummary aria-controls="irrigation-periods-content" id="irrigation-periods-header">
+            <Typography variant="caption" display="block">
+              Показать периоды полива
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 2 }}>
         <Box sx={{ mt: 1 }}>
           <Typography variant="caption" display="block">
             Периоды полива:
@@ -211,6 +218,8 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
             })}
           </Box>
         </Box>
+        </AccordionDetails>
+        </Accordion>
       )}
     </Box>
   );

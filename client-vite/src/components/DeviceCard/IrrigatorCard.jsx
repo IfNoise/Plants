@@ -67,13 +67,23 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
     setMapDialogOpen(true);
   };
 
-  const handleSaveMap = async (regMap) => {
+  const handleSaveMap = async ({start,stop,periods:regMap}) => {
     try {
       await setIrrigationTable({
         deviceId,
         irrigator: name,
         regMap,
       }).unwrap();
+      // Also update start and stop times in config
+      onSave(
+        {
+          [name]: {
+            start,
+            stop,
+          },
+        },
+        false
+      );  
       setMapDialogOpen(false);
     } catch (error) {
       console.error("Failed to save irrigation table:", error);
@@ -81,7 +91,7 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
     }
   };
 
-  const currentRegMap = irrigationTableData?.result?.reg_map || [];
+  const currentRegMap = irrigationTableData?.result?.items || [];
 
   return (
     <>
@@ -201,7 +211,7 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
               >
                 Настроить карту полива
               </Button>
-              <IrrigationTimeline regMap={currentRegMap} />
+              <IrrigationTimeline regMap={currentRegMap} lightsOnTimeSeconds={newConfig.start} lightsOffTimeSeconds={newConfig.stop} />
             </Box>
           )}
         </DialogContent>
@@ -239,6 +249,7 @@ IrrigatorCard.propTypes = {
   config: PropTypes.object.isRequired,
   onSave: PropTypes.func.isRequired,
   deviceId: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default IrrigatorCard;

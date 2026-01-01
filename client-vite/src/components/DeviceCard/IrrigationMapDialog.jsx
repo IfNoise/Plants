@@ -63,7 +63,7 @@ const IrrigationMapDialog = ({
 
 
   const handleSave = () => {
-    onSave(periods);
+    onSave({start: params.lightsOnTimeSeconds, stop: params.lightsOffTimeSeconds, periods});
     onClose();
   };
 
