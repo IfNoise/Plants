@@ -222,7 +222,8 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
     console.log("Save", changes);
     setConfig({
       deviceId,
-      params: { reboot: reboot || false, params: changes },
+      config: changes,
+      reboot: reboot || false,
     });
     setChanges({});
     refetch();
@@ -284,7 +285,16 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
         )}
       </Box>
       <Box
-        sx={{ alignContent: "center", position: "relative", bottom: 0, left: 0, p: "20px",m:"20px",border: "1px solid #ccc",width:"calc(100% - 40px)"}}
+        sx={{
+          alignContent: "center",
+          position: "relative",
+          bottom: 0,
+          left: 0,
+          p: "20px",
+          m: "20px",
+          border: "1px solid #ccc",
+          width: "calc(100% - 40px)",
+        }}
       >
         <Typography sx={{}} variant="caption" component="div">
           {JSON.stringify(changes)}

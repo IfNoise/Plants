@@ -1,5 +1,12 @@
+import { useMemo } from "react";
 import PropTypes from "prop-types";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Typography,
+} from "@mui/material";
 
 /**
  * Irrigation timeline visualization component
@@ -9,19 +16,31 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from "
  * @param {Array} props.regMap - Array of irrigation periods [{start: number, stop: number}]
  * @param {number} [props.lightsOnTimeSeconds] - Время включения света (сек)
  * @param {number} [props.lightsOffTimeSeconds] - Время выключения света (сек)
+ * @param {Object} [props.strategyParams] - Параметры стратегии полива для расчета объема воды
  */
-const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffTimeSeconds = 20 * 3600 }) => {
+const IrrigationTimeline = ({
+  regMap,
+  lightsOnTimeSeconds = 8 * 3600,
+  lightsOffTimeSeconds = 20 * 3600,
+  strategyParams = null,
+}) => {
   const SECONDS_IN_DAY = 86400;
-  // Parse reg_map if it's a string
-  let periods = typeof regMap === "string" ? JSON.parse(regMap) : regMap || [];
 
-  // Логичная сортировка для ночного режима
-  if (lightsOnTimeSeconds > lightsOffTimeSeconds) {
-    periods = [
-      ...periods.filter(p => p.start >= lightsOnTimeSeconds),
-      ...periods.filter(p => p.start < lightsOffTimeSeconds)
-    ];
-  }
+  // Мемоизация обработанных периодов
+  const periods = useMemo(() => {
+    let parsedPeriods =
+      typeof regMap === "string" ? JSON.parse(regMap) : regMap || [];
+
+    // Логичная сортировка для ночного режима
+    if (lightsOnTimeSeconds > lightsOffTimeSeconds) {
+      return [
+        ...parsedPeriods.filter((p) => p.start >= lightsOnTimeSeconds),
+        ...parsedPeriods.filter((p) => p.start < lightsOffTimeSeconds),
+      ];
+    }
+
+    return parsedPeriods;
+  }, [regMap, lightsOnTimeSeconds, lightsOffTimeSeconds]);
 
   // Convert seconds to percentage of day
   const secToPercent = (seconds) => (seconds / SECONDS_IN_DAY) * 100;
@@ -31,24 +50,61 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-
   };
+
+  // Мемоизация расчета общего времени полива
+  const totalIrrigationSeconds = useMemo(() => {
+    return periods.reduce((sum, period) => {
+      let duration = period.stop - period.start;
+      if (duration < 0) {
+        duration = SECONDS_IN_DAY - period.start + period.stop;
+      }
+      return sum + duration;
+    }, 0);
+  }, [periods]);
+
+  const totalIrrigationMinutes = Math.floor(totalIrrigationSeconds / 60);
+  const totalIrrigationSecondsRemainder = totalIrrigationSeconds % 60;
+
+  // Мемоизация расчета объема воды
+  const totalWaterLiters = useMemo(() => {
+    if (
+      strategyParams &&
+      strategyParams.dripperFlowRateLph &&
+      strategyParams.emittersPerPot
+    ) {
+      const flowRatePerPotLph =
+        strategyParams.dripperFlowRateLph * strategyParams.emittersPerPot;
+      const totalIrrigationHours = totalIrrigationSeconds / 3600;
+      return (flowRatePerPotLph * totalIrrigationHours).toFixed(2);
+    }
+    return null;
+  }, [strategyParams, totalIrrigationSeconds]);
 
   return (
     <Box sx={{ width: "100%", my: 2 }}>
-      <Typography variant="caption" display="block" sx={{ mb: "15px" }}>
-        Карта полива (24 часа)
-      </Typography>
-      
-      {/* Timeline container */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 1,
+          mt: 1,
+          p: 1,
+        }}
+      >
+        <Typography variant="caption" display="block">
+          Карта полива (24 часа)
+        </Typography>
+      </Box>
       <Box
         sx={{
           position: "relative",
           width: "100%",
           height: "60px",
-          backgroundColor: "#eeeeee",
+          backgroundColor: "#464957",
           borderRadius: "4px",
-          border: "1px solid #ccc",
+          border: "1px solid #3a3f4f",
         }}
       >
         {/* Hour markers */}
@@ -61,7 +117,7 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
               top: 0,
               bottom: 0,
               width: "1px",
-              backgroundColor: "#999",
+              backgroundColor: "#555",
             }}
           >
             <Typography
@@ -71,7 +127,7 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
                 top: "-18px",
                 left: "-8px",
                 fontSize: "10px",
-                
+                color: "#e6e3e3",
               }}
             >
               {hour}:00
@@ -93,7 +149,7 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
                   width: `${secToPercent(off - on)}%`,
                   top: 0,
                   bottom: 0,
-                  background: "rgba(255, 241, 118, 0.35)",
+                  background: "rgba(245, 222, 12, 0.45)",
                   zIndex: 0,
                   borderRadius: "4px 0 0 4px",
                   pointerEvents: "none",
@@ -112,7 +168,7 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
                     width: `${secToPercent(SECONDS_IN_DAY - on)}%`,
                     top: 0,
                     bottom: 0,
-                    background: "rgba(255, 241, 118, 0.35)",
+                    background: "rgba(245, 222, 12, 0.45)",
                     zIndex: 0,
                     borderRadius: "4px 0 0 4px",
                     pointerEvents: "none",
@@ -126,7 +182,7 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
                     width: `${secToPercent(off)}%`,
                     top: 0,
                     bottom: 0,
-                    background: "rgba(255, 241, 118, 0.35)",
+                    background: "rgba(245, 222, 12, 0.45)",
                     zIndex: 0,
                     borderRadius: "0 4px 4px 0",
                     pointerEvents: "none",
@@ -141,7 +197,7 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
         {periods.map((period, index) => {
           const leftPercent = secToPercent(period.start);
           const widthPercent = secToPercent(period.stop - period.start);
-          
+
           return (
             <Box
               key={index}
@@ -151,9 +207,9 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
                 width: `${widthPercent}%`,
                 top: "6px",
                 bottom: "6px",
-                backgroundColor: "#55a117ff",
+                backgroundColor: "#6fcdf9",
                 borderRadius: "2px",
-                border: "1px solid #376819ff",
+                border: "1px solid #059def",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -169,67 +225,104 @@ const IrrigationTimeline = ({ regMap, lightsOnTimeSeconds = 8 * 3600, lightsOffT
                   fontWeight: "bold",
                 }}
               >
-                {widthPercent > 5 ? `${formatTime(period.start)} - ${formatTime(period.stop)}` : ""}
+                {widthPercent > 5
+                  ? `${formatTime(period.start)} - ${formatTime(period.stop)}`
+                  : ""}
               </Typography>
             </Box>
-
           );
-
         })}
-
       </Box>
-
-
+      <Box sx={{ display: "flex", gap: 2 }}>
+        {periods.length > 0 && (
+          <>
+            <Typography
+              variant="caption"
+              sx={{ color: "#4fc3f7", fontWeight: "bold" }}
+            >
+              ⏱️ {totalIrrigationMinutes} мин {totalIrrigationSecondsRemainder}{" "}
+              сек
+            </Typography>
+            {totalWaterLiters && (
+              <Typography
+                variant="caption"
+                sx={{ color: "#4fc3f7", fontWeight: "bold" }}
+              >
+                💧 {totalWaterLiters} л
+              </Typography>
+            )}
+          </>
+        )}
+      </Box>
       {/* Period list: 2 columns */}
       {periods.length > 0 && (
-        <Accordion defaultExpanded={false} sx={{ mt: 1 }} >
-          <AccordionSummary aria-controls="irrigation-periods-content" id="irrigation-periods-header">
+        <Accordion defaultExpanded={false}>
+          <AccordionSummary
+            aria-controls="irrigation-periods-content"
+            id="irrigation-periods-header"
+          >
             <Typography variant="caption" display="block">
               Показать периоды полива
             </Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ p: 2 }}>
-        <Box sx={{ mt: 1 }}>
-          <Typography variant="caption" display="block">
-            Периоды полива:
-          </Typography>
-          <Box sx={{
-            columnCount: { xs: 1, sm: 2, md: 3 },
-            columnGap: 3,
-            maxWidth: "100%",
-            width: "100%",
-          }}>
-            {periods.map((period, index) => {
-              let durationSec = period.stop - period.start;
-              if (durationSec < 0) {
-                durationSec = (SECONDS_IN_DAY - period.start) + period.stop;
-              }
-              return (
-                <Typography
-                  key={index}
-                  variant="caption"
-                  display="block"
-                  sx={{ fontSize: "12px", color: "#c6c2c2ff", breakInside: "avoid" }}
-                >
-                  {index + 1}.💧 {formatTime(period.start)} - {formatTime(period.stop)} (
-                  {Math.floor(durationSec / 60)} мин)
-                </Typography>
-              );
-            })}
-          </Box>
-        </Box>
-        </AccordionDetails>
+          <AccordionDetails>
+            <Box>
+              <Box
+                sx={{
+                  columnCount: { xs: 1, sm: 2, md: 2 },
+                  columnGap: 2,
+                  maxWidth: "100%",
+                  width: "100%",
+                }}
+              >
+                {periods.map((period, index) => {
+                  let durationSec = period.stop - period.start;
+                  if (durationSec < 0) {
+                    durationSec = SECONDS_IN_DAY - period.start + period.stop;
+                  }
+                  const minutes = Math.floor(durationSec / 60);
+                  const seconds = durationSec % 60;
+
+                  // Форматирование длительности
+                  let durationText;
+                  if (minutes === 0) {
+                    durationText = `${seconds} сек`;
+                  } else if (seconds === 0) {
+                    durationText = `${minutes} мин`;
+                  } else {
+                    durationText = `${minutes} мин ${seconds} сек`;
+                  }
+
+                  return (
+                    <Typography
+                      key={index}
+                      variant="caption"
+                      display="block"
+                      sx={{
+                        fontSize: "11px",
+                        color: "#7abede",
+                        breakInside: "avoid",
+                      }}
+                    >
+                      {index + 1}.💧{formatTime(period.start)}-
+                      {formatTime(period.stop)}({durationText})
+                    </Typography>
+                  );
+                })}
+              </Box>
+            </Box>
+          </AccordionDetails>
         </Accordion>
       )}
     </Box>
   );
-}
-
+};
 
 IrrigationTimeline.propTypes = {
   regMap: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   lightsOnTimeSeconds: PropTypes.number,
   lightsOffTimeSeconds: PropTypes.number,
+  strategyParams: PropTypes.object,
 };
 
 export default IrrigationTimeline;

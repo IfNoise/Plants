@@ -43,7 +43,11 @@ const DeviceCard = ({ device }) => {
           m: "2px",
         }}
       >
-        <CardHeader avatar={<Status status={status} />} title={id} subheader={address} />
+        <CardHeader
+          avatar={<Status status={status} />}
+          title={id}
+          subheader={address}
+        />
         <CardContent>
           <Outputs deviceId={id} updateInterval={60000} />
           <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
@@ -52,13 +56,15 @@ const DeviceCard = ({ device }) => {
               .map((key, i) => (
                 <IrrigatorCard
                   key={i}
+                  id={key}
                   name={key}
                   deviceId={id}
                   config={config[key]}
                   onSave={(changes, reboot) =>
                     setConfig({
                       deviceId: id,
-                      params: { reboot, params: changes },
+                      config: changes,
+                      reboot,
                     })
                   }
                 />
@@ -73,7 +79,8 @@ const DeviceCard = ({ device }) => {
                   onSave={(changes, reboot) =>
                     setConfig({
                       deviceId: id,
-                      params: { reboot, params: changes },
+                      config: changes,
+                      reboot,
                     })
                   }
                 />

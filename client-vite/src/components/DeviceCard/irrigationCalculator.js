@@ -32,26 +32,6 @@ export const calculateIrrigationSchedule = (params) => {
 
   // Вспомогательные функции для диапазонов светового дня
   const SECONDS_IN_DAY = 86400;
-  // true если t попадает в световой день
-  function isInLight(t) {
-    if (lightsOnTimeSeconds < lightsOffTimeSeconds) {
-      return t >= lightsOnTimeSeconds && t < lightsOffTimeSeconds;
-    } else {
-      // ночной режим: свет с вечера до утра
-      return t >= lightsOnTimeSeconds || t < lightsOffTimeSeconds;
-    }
-  }
-  // Получить массив диапазонов светового дня
-  function getLightRanges() {
-    if (lightsOnTimeSeconds < lightsOffTimeSeconds) {
-      return [[lightsOnTimeSeconds, lightsOffTimeSeconds]];
-    } else {
-      return [
-        [lightsOnTimeSeconds, SECONDS_IN_DAY],
-        [0, lightsOffTimeSeconds],
-      ];
-    }
-  }
 
   // Начальное состояние в 00:00
   let currentWaterLiters = substrateWaterCapacityLiters * (1 - initialDrybackPercent / 100);

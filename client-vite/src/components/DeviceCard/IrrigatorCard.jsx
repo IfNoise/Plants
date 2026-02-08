@@ -43,8 +43,8 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
 
   // Fetch irrigation table for Map mode
   const { data: irrigationTableData } = useGetIrrigationTableQuery(
-    { deviceId, irrigator: name },
-    { skip: config.mode !== 3 }
+    { deviceId, irrigatorKey: name },
+    { skip: config.mode !== 3 },
   );
 
   const [setIrrigationTable] = useSetIrrigationTableMutation();
@@ -67,12 +67,18 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
     setMapDialogOpen(true);
   };
 
-  const handleSaveMap = async ({start,stop,periods:regMap}) => {
+  const handleSaveMap = async ({
+    start,
+    stop,
+    periods: regMap,
+    strategyParams,
+  }) => {
     try {
       await setIrrigationTable({
         deviceId,
-        irrigator: name,
-        regMap,
+        irrigatorKey: name,
+        irrigationTable: regMap,
+        strategyParams: strategyParams || {},
       }).unwrap();
       // Also update start and stop times in config
       onSave(
@@ -82,8 +88,8 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
             stop,
           },
         },
-        false
-      );  
+        false,
+      );
       setMapDialogOpen(false);
     } catch (error) {
       console.error("Failed to save irrigation table:", error);
@@ -91,7 +97,14 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
     }
   };
 
-  const currentRegMap = irrigationTableData?.result?.items || [];
+  const currentRegMap = irrigationTableData?.data?.irrigationTable || [];
+  const currentStrategyParams =
+    irrigationTableData?.data?.strategyParams || null;
+
+  // Debug: log irrigation table data
+  console.log("IrrigatorCard - irrigationTableData:", irrigationTableData);
+  console.log("IrrigatorCard - currentRegMap:", currentRegMap);
+  console.log("IrrigatorCard - currentStrategyParams:", currentStrategyParams);
 
   return (
     <>
@@ -115,7 +128,11 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
           <SettingsIcon />
         </IconButton>
         {config.mode === 3 && (
-          <IconButton onClick={handleOpenMapDialog} size="small" color="primary">
+          <IconButton
+            onClick={handleOpenMapDialog}
+            size="small"
+            color="primary"
+          >
             <MapIcon />
           </IconButton>
         )}
@@ -136,7 +153,12 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
             </Typography>
           </>
         ) : (
-          <IrrigationTimeline regMap={currentRegMap} />
+          <IrrigationTimeline
+            regMap={currentRegMap}
+            lightsOnTimeSeconds={config.start}
+            lightsOffTimeSeconds={config.stop}
+            strategyParams={currentStrategyParams}
+          />
         )}
       </Card>
 
@@ -184,7 +206,10 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
                 type="number"
                 value={newConfig.win}
                 onChange={(event) => {
-                  setNewConfig({ ...newConfig, win: parseInt(event.target.value) });
+                  setNewConfig({
+                    ...newConfig,
+                    win: parseInt(event.target.value),
+                  });
                 }}
               />
               <TextField
@@ -194,7 +219,10 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
                 type="number"
                 value={newConfig.num}
                 onChange={(event) => {
-                  setNewConfig({ ...newConfig, num: parseInt(event.target.value) });
+                  setNewConfig({
+                    ...newConfig,
+                    num: parseInt(event.target.value),
+                  });
                 }}
               />
             </>
@@ -211,11 +239,18 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
               >
                 Настроить карту полива
               </Button>
-              <IrrigationTimeline regMap={currentRegMap} lightsOnTimeSeconds={newConfig.start} lightsOffTimeSeconds={newConfig.stop} />
+              <IrrigationTimeline
+                regMap={currentRegMap}
+                lightsOnTimeSeconds={newConfig.start}
+                lightsOffTimeSeconds={newConfig.stop}
+                strategyParams={currentStrategyParams}
+              />
             </Box>
           )}
         </DialogContent>
-        <DialogActions sx={{ m: "2px", alignContent: "center", justifyContent: "center" }}>
+        <DialogActions
+          sx={{ m: "2px", alignContent: "center", justifyContent: "center" }}
+        >
           <Button onClick={handleSave}>Save</Button>
           <Checkbox
             checked={reboot}
@@ -237,6 +272,7 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
         onClose={() => setMapDialogOpen(false)}
         onSave={handleSaveMap}
         initialMap={currentRegMap}
+        initialStrategyParams={currentStrategyParams}
         deviceId={deviceId}
         irrigatorName={config.name}
       />
