@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   Accordion,
@@ -26,29 +26,69 @@ const IrrigationTimeline = ({
 }) => {
   const SECONDS_IN_DAY = 86400;
 
-  // Мемоизация обработанных периодов
+  // Вычисляем смещение для центрирования светового периода
+  const timelineOffset = useMemo(() => {
+    // Длительность светового дня
+    let lightDuration;
+    if (lightsOnTimeSeconds < lightsOffTimeSeconds) {
+      // Обычный режим
+      lightDuration = lightsOffTimeSeconds - lightsOnTimeSeconds;
+    } else {
+      // Ночной режим (через полночь)
+      lightDuration =
+        SECONDS_IN_DAY - lightsOnTimeSeconds + lightsOffTimeSeconds;
+    }
+
+    // Середина светового дня (в секундах от полуночи)
+    let lightMiddle;
+    if (lightsOnTimeSeconds < lightsOffTimeSeconds) {
+      lightMiddle = lightsOnTimeSeconds + lightDuration / 2;
+    } else {
+      lightMiddle = (lightsOnTimeSeconds + lightDuration / 2) % SECONDS_IN_DAY;
+    }
+
+    // Смещение: центр экрана (12:00) должен совпадать с серединой светового дня
+    const centerOfTimeline = SECONDS_IN_DAY / 2; // 12:00
+    return lightMiddle - centerOfTimeline;
+  }, [lightsOnTimeSeconds, lightsOffTimeSeconds]);
+
+  // Функция для применения смещения к времени
+  const applyOffset = useCallback(
+    (seconds) => {
+      let shifted = seconds - timelineOffset;
+      // Нормализация в диапазон 0-86400
+      while (shifted < 0) shifted += SECONDS_IN_DAY;
+      while (shifted >= SECONDS_IN_DAY) shifted -= SECONDS_IN_DAY;
+      return shifted;
+    },
+    [timelineOffset],
+  );
+
+  // Мемоизация обработанных периодов с применением смещения
   const periods = useMemo(() => {
     let parsedPeriods =
       typeof regMap === "string" ? JSON.parse(regMap) : regMap || [];
 
-    // Логичная сортировка для ночного режима
-    if (lightsOnTimeSeconds > lightsOffTimeSeconds) {
-      return [
-        ...parsedPeriods.filter((p) => p.start >= lightsOnTimeSeconds),
-        ...parsedPeriods.filter((p) => p.start < lightsOffTimeSeconds),
-      ];
-    }
-
-    return parsedPeriods;
-  }, [regMap, lightsOnTimeSeconds, lightsOffTimeSeconds]);
+    // Применяем смещение к каждому периоду
+    return parsedPeriods
+      .map((p) => ({
+        start: applyOffset(p.start),
+        stop: applyOffset(p.stop),
+        originalStart: p.start,
+        originalStop: p.stop,
+      }))
+      .sort((a, b) => a.start - b.start);
+  }, [regMap, applyOffset]);
 
   // Convert seconds to percentage of day
   const secToPercent = (seconds) => (seconds / SECONDS_IN_DAY) * 100;
 
   // Format seconds to HH:MM
   const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+    const normalized =
+      ((seconds % SECONDS_IN_DAY) + SECONDS_IN_DAY) % SECONDS_IN_DAY;
+    const hours = Math.floor(normalized / 3600);
+    const minutes = Math.floor((normalized % 3600) / 60);
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
   };
 
@@ -81,6 +121,30 @@ const IrrigationTimeline = ({
     return null;
   }, [strategyParams, totalIrrigationSeconds]);
 
+  // Вычисляем часовые метки с учетом смещения
+  const hourMarkers = useMemo(() => {
+    // Левый край таймлайна (позиция 0) соответствует времени,
+    // которое после применения applyOffset даст 0
+    // applyOffset(realTime) = 0 => realTime = timelineOffset
+    let timeAtLeftEdge = timelineOffset;
+    // Нормализуем в диапазон 0-86400
+    while (timeAtLeftEdge < 0) timeAtLeftEdge += SECONDS_IN_DAY;
+    while (timeAtLeftEdge >= SECONDS_IN_DAY) timeAtLeftEdge -= SECONDS_IN_DAY;
+
+    return [0, 6, 12, 18, 24].map((relativeHour) => {
+      // Время в секундах на этой позиции таймлайна
+      const timeInSeconds = timeAtLeftEdge + relativeHour * 3600;
+      // Нормализуем до 0-86400 и конвертируем в часы
+      const normalizedSeconds = timeInSeconds % SECONDS_IN_DAY;
+      const hours = Math.floor(normalizedSeconds / 3600);
+
+      return {
+        position: relativeHour,
+        label: hours,
+      };
+    });
+  }, [timelineOffset]);
+
   return (
     <Box sx={{ width: "100%", my: 2 }}>
       <Box
@@ -108,12 +172,12 @@ const IrrigationTimeline = ({
         }}
       >
         {/* Hour markers */}
-        {[0, 6, 12, 18, 24].map((hour) => (
+        {hourMarkers.map((marker) => (
           <Box
-            key={hour}
+            key={marker.position}
             sx={{
               position: "absolute",
-              left: `${(hour / 24) * 100}%`,
+              left: `${(marker.position / 24) * 100}%`,
               top: 0,
               bottom: 0,
               width: "1px",
@@ -130,68 +194,45 @@ const IrrigationTimeline = ({
                 color: "#e6e3e3",
               }}
             >
-              {hour}:00
+              {marker.label}:00
             </Typography>
           </Box>
         ))}
         {/* Light period highlight */}
         {(() => {
-          const on = lightsOnTimeSeconds;
-          const off = lightsOffTimeSeconds;
-          if (on === off) return null; // no light period
-          if (on < off) {
-            // Обычный световой день
-            return (
-              <Box
-                sx={{
-                  position: "absolute",
-                  left: `${secToPercent(on)}%`,
-                  width: `${secToPercent(off - on)}%`,
-                  top: 0,
-                  bottom: 0,
-                  background: "rgba(245, 222, 12, 0.45)",
-                  zIndex: 0,
-                  borderRadius: "4px 0 0 4px",
-                  pointerEvents: "none",
-                }}
-                title={`Световой день: ${formatTime(on)} - ${formatTime(off)}`}
-              />
-            );
+          const on = applyOffset(lightsOnTimeSeconds);
+
+          if (lightsOnTimeSeconds === lightsOffTimeSeconds) return null;
+
+          // Вычисляем длительность светового дня
+          let lightDuration;
+          if (lightsOnTimeSeconds < lightsOffTimeSeconds) {
+            lightDuration = lightsOffTimeSeconds - lightsOnTimeSeconds;
           } else {
-            // Свет через полночь: две полосы
-            return (
-              <>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    left: `${secToPercent(on)}%`,
-                    width: `${secToPercent(SECONDS_IN_DAY - on)}%`,
-                    top: 0,
-                    bottom: 0,
-                    background: "rgba(245, 222, 12, 0.45)",
-                    zIndex: 0,
-                    borderRadius: "4px 0 0 4px",
-                    pointerEvents: "none",
-                  }}
-                  title={`Световой день: ${formatTime(on)} - 24:00`}
-                />
-                <Box
-                  sx={{
-                    position: "absolute",
-                    left: `0%`,
-                    width: `${secToPercent(off)}%`,
-                    top: 0,
-                    bottom: 0,
-                    background: "rgba(245, 222, 12, 0.45)",
-                    zIndex: 0,
-                    borderRadius: "0 4px 4px 0",
-                    pointerEvents: "none",
-                  }}
-                  title={`Световой день: 00:00 - ${formatTime(off)}`}
-                />
-              </>
-            );
+            lightDuration =
+              SECONDS_IN_DAY - lightsOnTimeSeconds + lightsOffTimeSeconds;
           }
+
+          // Рисуем одну непрерывную полосу
+          const lightWidth = secToPercent(lightDuration);
+          const lightLeft = secToPercent(on);
+
+          return (
+            <Box
+              sx={{
+                position: "absolute",
+                left: `${lightLeft}%`,
+                width: `${lightWidth}%`,
+                top: 0,
+                bottom: 0,
+                background: "rgba(245, 222, 12, 0.45)",
+                zIndex: 0,
+                borderRadius: "4px",
+                pointerEvents: "none",
+              }}
+              title={`Световой день: ${formatTime(lightsOnTimeSeconds)} - ${formatTime(lightsOffTimeSeconds)}`}
+            />
+          );
         })()}
         {/* Irrigation periods */}
         {periods.map((period, index) => {
@@ -215,7 +256,7 @@ const IrrigationTimeline = ({
                 justifyContent: "center",
                 zIndex: 1,
               }}
-              title={`${formatTime(period.start)} - ${formatTime(period.stop)}`}
+              title={`${formatTime(period.originalStart)} - ${formatTime(period.originalStop)}`}
             >
               <Typography
                 variant="caption"
@@ -226,22 +267,22 @@ const IrrigationTimeline = ({
                 }}
               >
                 {widthPercent > 5
-                  ? `${formatTime(period.start)} - ${formatTime(period.stop)}`
+                  ? `${formatTime(period.originalStart)} - ${formatTime(period.originalStop)}`
                   : ""}
               </Typography>
             </Box>
           );
         })}
       </Box>
-      <Box sx={{ display: "flex", gap: 2 }}>
+      <Box sx={{ display: "flex", gap: 2, m: 1, alignItems: "center" }}>
         {periods.length > 0 && (
           <>
             <Typography
               variant="caption"
               sx={{ color: "#4fc3f7", fontWeight: "bold" }}
             >
-              ⏱️ {totalIrrigationMinutes} мин {totalIrrigationSecondsRemainder}{" "}
-              сек
+              Total:⏱️ {totalIrrigationMinutes} мин{" "}
+              {totalIrrigationSecondsRemainder} сек
             </Typography>
             {totalWaterLiters && (
               <Typography
@@ -304,8 +345,8 @@ const IrrigationTimeline = ({
                         breakInside: "avoid",
                       }}
                     >
-                      {index + 1}.💧{formatTime(period.start)}-
-                      {formatTime(period.stop)}({durationText})
+                      {index + 1}.💧{formatTime(period.originalStart)}-
+                      {formatTime(period.originalStop)}({durationText})
                     </Typography>
                   );
                 })}

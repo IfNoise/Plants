@@ -20,6 +20,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import EditIcon from "@mui/icons-material/Edit";
 import IrrigationTimeline from "./IrrigationTimeline";
+import TimeField from "./TimeField";
+import { timeToSec } from "./utils";
 import {
   calculateIrrigationSchedule,
   defaultIrrigationParams,
@@ -140,35 +142,27 @@ const IrrigationMapDialog = ({
               <AccordionDetails>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label="Включение света (часы)"
-                      type="number"
-                      value={params.lightsOnTimeSeconds / 3600}
-                      onChange={(e) =>
+                    <TimeField
+                      name="Включение света"
+                      value={params.lightsOnTimeSeconds}
+                      onChange={(time) =>
                         handleParamChange(
                           "lightsOnTimeSeconds",
-                          e.target.value * 3600,
+                          timeToSec(time),
                         )
                       }
-                      inputProps={{ step: 0.5, min: 0, max: 24 }}
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label="Выключение света (часы)"
-                      type="number"
-                      value={params.lightsOffTimeSeconds / 3600}
-                      onChange={(e) =>
+                    <TimeField
+                      name="Выключение света"
+                      value={params.lightsOffTimeSeconds}
+                      onChange={(time) =>
                         handleParamChange(
                           "lightsOffTimeSeconds",
-                          e.target.value * 3600,
+                          timeToSec(time),
                         )
                       }
-                      inputProps={{ step: 0.5, min: 0, max: 24 }}
                     />
                   </Grid>
                 </Grid>
@@ -495,10 +489,21 @@ const IrrigationMapDialog = ({
             </Typography>
             <Typography variant="caption" display="block">
               Общее время полива:{" "}
-              {Math.floor(
-                periods.reduce((sum, p) => sum + (p.stop - p.start), 0) / 60,
-              )}{" "}
-              минут
+              {(() => {
+                const SECONDS_IN_DAY = 86400;
+                const totalSeconds = periods.reduce((sum, p) => {
+                  let duration = p.stop - p.start;
+                  if (duration < 0) {
+                    duration = SECONDS_IN_DAY - p.start + p.stop;
+                  }
+                  return sum + duration;
+                }, 0);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                return seconds === 0 
+                  ? `${minutes} мин` 
+                  : `${minutes} мин ${seconds} сек`;
+              })()}
             </Typography>
           </Box>
         )}
