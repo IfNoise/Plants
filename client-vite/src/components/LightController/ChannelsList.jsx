@@ -4,542 +4,34 @@ import {
   AccordionDetails,
   AccordionSummary,
   Alert,
-  Box,
-  Button,
-  Card,
-  Checkbox,
   CircularProgress,
-  Dialog,
   IconButton,
-  Menu,
-  MenuItem,
-  Select,
-  Slide,
-  Slider,
   Stack,
-  TextField,
-  Typography,
 } from "@mui/material";
-import {
-  useAddChannelMutation,
-  useAddDeviceMutation,
-  useGetDevicesQuery,
-  useGetLightChannelsQuery,
-  useGetLightChannelStateQuery,
-  useRemoveChannelMutation,
-  useSetMaxLevelMutation,
-} from "../../store/lightApi";
-import DeveloperBoardIcon from "@mui/icons-material/DeveloperBoard";
-import TungstenIcon from "@mui/icons-material/Tungsten";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import DevicesManagerDialog from "./DevicesManagerDialog";
-import AvTimerIcon from "@mui/icons-material/AvTimer";
-import TouchAppIcon from "@mui/icons-material/TouchApp";
-import CircularProgressWithLabel from "../CircularProgress";
+import { useGetLightChannelsQuery } from "../../store/lightApi";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+import SettingsIcon from "@mui/icons-material/Settings";
+import DevicesManagerDialog from "./DevicesManagerDialog";
+import AddChannelDialog from "./AddChannelDialog";
+import ChannelCard from "./ChannelCard";
+import ChannelEditDialog from "./ChannelEditDialog";
 
-function valuetext(value) {
-  return `${value}%`;
-}
-
-const MAX_LEVEL = 10000;
-const AddDeviceDialog = () => {
-  const [addDevice] = useAddDeviceMutation();
-  const [newDevice, setNewDevice] = useState({
-    name: "",
-    type: "tcp",
-    address: "",
-    port: "502",
-    path: "",
-    baudRate: "9600",
-    dataBits: "8",
-    stopBits: "1",
-    parity: "none",
-    unitId: "1",
-    timeout: "1000"
-  });
-  const [open, setOpen] = useState(false);
-  
-  const handleAddDevice = () => {
-    const { name, type, address, port, path, baudRate, dataBits, stopBits, parity, unitId, timeout } = newDevice;
-    
-    if (!name) {
-      return;
-    }
-    
-    if (type === "tcp" && !address) {
-      return;
-    }
-    
-    if (type === "rtu" && !path) {
-      return;
-    }
-    
-    const deviceData = {
-      name,
-      type,
-      timeout: parseInt(timeout)
-    };
-    
-    if (type === "tcp") {
-      deviceData.address = address;
-      deviceData.port = port;
-    } else {
-      deviceData.path = path;
-      deviceData.baudRate = parseInt(baudRate);
-      deviceData.dataBits = parseInt(dataBits);
-      deviceData.stopBits = parseInt(stopBits);
-      deviceData.parity = parity;
-      deviceData.unitId = parseInt(unitId);
-    }
-    
-    addDevice(deviceData);
-    setNewDevice({
-      name: "",
-      type: "tcp",
-      address: "",
-      port: "502",
-      path: "",
-      baudRate: "9600",
-      dataBits: "8",
-      stopBits: "1",
-      parity: "none",
-      unitId: "1",
-      timeout: "1000"
-    });
-    setOpen(false);
-  };
-  
-  const handleClose = () => {
-    setOpen(false);
-  };
-  
-  return (
-    <>
-      <IconButton onClick={() => setOpen(!open)}>
-        <DeveloperBoardIcon />
-      </IconButton>
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <Stack sx={{ m: 2 }} spacing={2}>
-          <Typography variant="h6">Add New Device</Typography>
-          
-          <TextField
-            label="Device Name"
-            required
-            fullWidth
-            value={newDevice.name}
-            onChange={(e) =>
-              setNewDevice({ ...newDevice, name: e.target.value })
-            }
-          />
-          
-          <Select
-            label="Device Type"
-            value={newDevice.type}
-            onChange={(e) =>
-              setNewDevice({ ...newDevice, type: e.target.value })
-            }
-            fullWidth
-          >
-            <MenuItem value="tcp">Modbus TCP</MenuItem>
-            <MenuItem value="rtu">Modbus RTU (Serial)</MenuItem>
-          </Select>
-          
-          {newDevice.type === "tcp" ? (
-            <>
-              <TextField
-                label="IP Address"
-                required
-                fullWidth
-                value={newDevice.address}
-                onChange={(e) =>
-                  setNewDevice({ ...newDevice, address: e.target.value })
-                }
-                placeholder="192.168.1.100"
-              />
-              <TextField
-                label="Port"
-                required
-                fullWidth
-                value={newDevice.port}
-                onChange={(e) =>
-                  setNewDevice({ ...newDevice, port: e.target.value })
-                }
-              />
-            </>
-          ) : (
-            <>
-              <TextField
-                label="Serial Port Path"
-                required
-                fullWidth
-                value={newDevice.path}
-                onChange={(e) =>
-                  setNewDevice({ ...newDevice, path: e.target.value })
-                }
-                placeholder="/dev/ttyUSB0"
-              />
-              <Stack direction="row" spacing={1}>
-                <TextField
-                  label="Baud Rate"
-                  fullWidth
-                  value={newDevice.baudRate}
-                  onChange={(e) =>
-                    setNewDevice({ ...newDevice, baudRate: e.target.value })
-                  }
-                />
-                <TextField
-                  label="Data Bits"
-                  fullWidth
-                  value={newDevice.dataBits}
-                  onChange={(e) =>
-                    setNewDevice({ ...newDevice, dataBits: e.target.value })
-                  }
-                />
-              </Stack>
-              <Stack direction="row" spacing={1}>
-                <TextField
-                  label="Stop Bits"
-                  fullWidth
-                  value={newDevice.stopBits}
-                  onChange={(e) =>
-                    setNewDevice({ ...newDevice, stopBits: e.target.value })
-                  }
-                />
-                <Select
-                  label="Parity"
-                  fullWidth
-                  value={newDevice.parity}
-                  onChange={(e) =>
-                    setNewDevice({ ...newDevice, parity: e.target.value })
-                  }
-                >
-                  <MenuItem value="none">None</MenuItem>
-                  <MenuItem value="even">Even</MenuItem>
-                  <MenuItem value="odd">Odd</MenuItem>
-                </Select>
-              </Stack>
-              <TextField
-                label="Unit ID"
-                fullWidth
-                value={newDevice.unitId}
-                onChange={(e) =>
-                  setNewDevice({ ...newDevice, unitId: e.target.value })
-                }
-              />
-            </>
-          )}
-          
-          <TextField
-            label="Timeout (ms)"
-            fullWidth
-            value={newDevice.timeout}
-            onChange={(e) =>
-              setNewDevice({ ...newDevice, timeout: e.target.value })
-            }
-          />
-        </Stack>
-        <Button onClick={handleAddDevice} variant="contained" sx={{ m: 2 }}>
-          Add Device
-        </Button>
-      </Dialog>
-    </>
-  );
-};
-export const AddChannelDialog = () => {
-  const { data: devices } = useGetDevicesQuery();
-  const [newChannel, setNewChannel] = useState({
-    name: "",
-    device: "",
-    port: "",
-  });
-  const [addChannel] = useAddChannelMutation();
-  const [open, setOpen] = useState(false);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleAddChannel = () => {
-    if (!newChannel.name || !newChannel.device || newChannel.port === "") {
-      Alert("All fields are required");
-      return;
-    }
-    addChannel(newChannel);
-    setNewChannel({ name: "", device: "", port: "" });
-    setOpen(false);
-  };
-
-  return (
-    <>
-      <IconButton onClick={() => setOpen(!open)}>
-        <TungstenIcon />
-      </IconButton>
-      <Dialog open={open} TransitionComponent={Slide} onClose={handleClose}>
-        <Typography variant="h6">Add Channel</Typography>
-        <Stack margin={"5px"} direction={"column"} spacing={1}>
-          <TextField
-            label="Name"
-            required
-            value={newChannel.name}
-            onChange={(e) =>
-              setNewChannel({ ...newChannel, name: e.target.value })
-            }
-          />
-          <Box>
-            <Select
-              label="Device"
-              required
-              value={newChannel.device}
-              onChange={(e) =>
-                setNewChannel({ ...newChannel, device: e.target.value })
-              }
-            >
-              {devices?.length > 0 &&
-                devices.map((device, idx) => (
-                  <MenuItem key={idx} value={device.name}>
-                    {device.name}
-                  </MenuItem>
-                ))}
-            </Select>
-            <AddDeviceDialog />
-          </Box>
-          <Select
-            label="Port"
-            required
-            value={newChannel.port}
-            onChange={(e) =>
-              setNewChannel({ ...newChannel, port: e.target.value })
-            }
-          >
-            {devices?.length > 0 &&
-              devices
-                .find((device) => device.name === newChannel.device)
-                ?.ports?.map((port, idx) => (
-                  <MenuItem key={idx} value={idx}>{`${idx}:${port}`}</MenuItem>
-                ))}
-          </Select>
-          <pre>{JSON.stringify(newChannel, null, 2)}</pre>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddChannel}
-          >
-            Add
-          </Button>
-        </Stack>
-      </Dialog>
-    </>
-  );
-};
-const LockWrapper = ({ children, lockedDefault }) => {
-  const [locked, setLocked] = useState(lockedDefault);
-  return (
-    <>
-      <Box
-        sx={{
-          position: "relative",
-          zIndex: 0,
-        }}
-      >
-        {children}
-        {locked && (
-          <>
-            <Box
-              sx={{
-                borderRadius: "10px",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                zIndex: 1100,
-                pointerEvents: "none",
-              }}
-            />
-            <Box
-              sx={{
-                borderRadius: "10px",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: 1101,
-                pointerEvents: "all",
-              }}
-            />
-          </>
-        )}
-        <Checkbox
-          checked={locked}
-          size="small"
-          sx={{
-            position: "absolute",
-            bottom: "0px",
-            right: "0px",
-            zIndex: 1102,
-          }}
-          icon={<LockOpenIcon />}
-          checkedIcon={<LockIcon />}
-          onChange={(e) => setLocked(e.target.checked)}
-        />
-      </Box>
-    </>
-  );
-};
-
-LockWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-  lockedDefault: PropTypes.bool,
-};
-
-const ChannalCard = ({ channel }) => {
-  const { name, maxLevel, manual } = channel;
-  const [contextMenu, setContextMenu] = useState(null);
-  const [maxValue, setMaxValue] = useState((maxLevel / MAX_LEVEL) * 100);
-  const { data: state } = useGetLightChannelStateQuery(name, {
-    pollingInterval: 60000,
-  });
-  const [setMaxLevel] = useSetMaxLevelMutation();
-  const [removeChannel] = useRemoveChannelMutation();
-  useEffect(() => {
-    setMaxValue((maxLevel / MAX_LEVEL) * 100);
-  }, [maxLevel]);
-
-  const handleContextMenu = (event) => {
-    event.preventDefault();
-    setContextMenu(
-      contextMenu === null
-        ? {
-            mouseX: event.clientX + 2,
-            mouseY: event.clientY - 6,
-          }
-        : null
-    );
-  };
-
-  return (
-    <>
-      <LockWrapper lockedDefault={true}>
-        <Card
-          sx={{
-            // m: "4px",
-            p: "8px",
-            display: "flex",
-            flexDirection: "column",
-            width: "100px",
-          }}
-          onContextMenu={handleContextMenu}
-        >
-          <Stack direction="row" spacing={1}>
-            <Box>
-              <Typography
-                variant="body"
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "10px",
-                  maxWidth: "90px",
-                }}
-              >
-                {name}
-              </Typography>
-            </Box>
-          </Stack>
-          {manual && (
-            <TouchAppIcon
-              sx={{
-                fontSize: "18px",
-                alignSelf: "flex-end",
-              }}
-              color="error"
-            />
-          )}
-          {!manual && (
-            <AvTimerIcon
-              sx={{
-                fontSize: "18px",
-                alignSelf: "flex-end",
-              }}
-              color="success"
-            />
-          )}
-          <Stack
-            sx={{
-              alignItems: "center",
-            }}
-            direction={"column"}
-            spacing={1}
-          >
-            <CircularProgressWithLabel
-              variant="determinate"
-              value={Math.floor((state?.state / MAX_LEVEL) * 100) || 0}
-              sx={{
-                color: "lime",
-              }}
-            />
-            <Slider
-              sx={{
-                height: "90px",
-                width: "35px",
-                color: "green",
-              }}
-              size="small"
-              orientation="vertical"
-              getAriaLabel={() => "Minimum distance"}
-              valueLabelDisplay="on"
-              getAriaValueText={valuetext}
-              disableSwap
-              min={0}
-              max={100}
-              value={Math.floor(maxValue) || 0}
-              onChange={(e) => setMaxValue(e.target.value)}
-              onChangeCommitted={(e) => {
-                console.log(e);
-                setMaxLevel({ name, maxLevel: (MAX_LEVEL * maxValue) / 100 });
-              }}
-            />
-          </Stack>
-        </Card>
-      </LockWrapper>
-      <Menu
-        open={contextMenu !== null}
-        onClose={() => setContextMenu(null)}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
-      >
-        <MenuItem
-          onClick={() => {
-            setContextMenu(null);
-            removeChannel(name);
-          }}
-        >
-          Remove
-        </MenuItem>
-      </Menu>
-    </>
-  );
-};
-
-ChannalCard.propTypes = {
-  channel: PropTypes.object.isRequired,
-};
-
-export default function ChannelsList({
-  channelNames,
-  addButton,
-}) {
+/**
+ * Компонент списка каналов освещения
+ * @param {Object} props - свойства компонента
+ * @param {Array} props.channelNames - массив имен каналов для отображения (если не указан, показываются все)
+ * @param {boolean} props.addButton - показывать кнопки добавления
+ */
+const ChannelsList = ({ channelNames, addButton }) => {
   const { data, isLoading, isSuccess, isError, error } =
     useGetLightChannelsQuery({});
+
   const [channels, setChannels] = useState([]);
+  const [editChannel, setEditChannel] = useState(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
   useEffect(() => {
     if (!data) {
       return;
@@ -552,32 +44,67 @@ export default function ChannelsList({
       setChannels(data);
     }
   }, [data, channelNames]);
-  return (
-    <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon color="red" />}>
-        Channels
-      </AccordionSummary>
-      <AccordionDetails>
-        {isLoading && <CircularProgress />}
-        {isError && <Alert severity="error">{error.message}</Alert>}
-        <Stack direction="row" useFlexGap flexWrap={"wrap"} spacing={1}>
-          {isSuccess &&
-            channels?.map((channel, idx) => (
-              <ChannalCard key={idx} channel={channel} />
-            ))}
-        </Stack>
-      </AccordionDetails>
-      <AccordionActions>
-        {addButton && <AddChannelDialog />}
-        {addButton && <DevicesManagerButton />}
-      </AccordionActions>
-    </Accordion>
-  );
-}
 
+  const handleEditChannel = (channel) => {
+    setEditChannel(channel);
+    setEditDialogOpen(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+    setEditChannel(null);
+  };
+
+  return (
+    <>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          Каналы освещения
+        </AccordionSummary>
+
+        <AccordionDetails>
+          {isLoading && <CircularProgress />}
+          {isError && (
+            <Alert severity="error">
+              {error?.message || "Ошибка загрузки"}
+            </Alert>
+          )}
+
+          <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1}>
+            {isSuccess &&
+              channels?.map((channel) => (
+                <ChannelCard
+                  key={channel.name}
+                  channel={channel}
+                  onEdit={handleEditChannel}
+                />
+              ))}
+          </Stack>
+        </AccordionDetails>
+
+        {addButton && (
+          <AccordionActions>
+            <AddChannelDialog />
+            <DevicesManagerButton />
+          </AccordionActions>
+        )}
+      </Accordion>
+
+      <ChannelEditDialog
+        open={editDialogOpen}
+        onClose={handleCloseEditDialog}
+        channel={editChannel}
+      />
+    </>
+  );
+};
+
+/**
+ * Кнопка открытия менеджера устройств
+ */
 const DevicesManagerButton = () => {
   const [open, setOpen] = useState(false);
-  
+
   return (
     <>
       <IconButton onClick={() => setOpen(true)} title="Управление устройствами">
@@ -591,5 +118,6 @@ const DevicesManagerButton = () => {
 ChannelsList.propTypes = {
   channelNames: PropTypes.array,
   addButton: PropTypes.bool,
-  defaultCollapsed: PropTypes.bool,
 };
+
+export default ChannelsList;

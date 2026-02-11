@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import DeviceStatusContext from '../context/DeviceStatusContext';
+import { useContext } from "react";
+import DeviceStatusContext from "../context/DeviceStatusContext";
 
 /**
  * Hook to access device status context
@@ -9,7 +9,9 @@ import DeviceStatusContext from '../context/DeviceStatusContext';
 export const useDeviceStatusContext = () => {
   const context = useContext(DeviceStatusContext);
   if (!context) {
-    throw new Error('useDeviceStatusContext must be used within DeviceStatusProvider');
+    throw new Error(
+      "useDeviceStatusContext must be used within DeviceStatusProvider",
+    );
   }
   return context;
 };

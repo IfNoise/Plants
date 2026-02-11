@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState } from "react";
 
 /**
  * Hook for connecting to device status WebSocket server
@@ -14,7 +14,7 @@ import { useEffect, useRef, useCallback, useState } from 'react';
  * @returns {Object} WebSocket connection state and methods
  */
 export const useDeviceStatusWebSocket = ({
-  url = 'ws://localhost:8081',
+  url = "ws://localhost:8081",
   deviceId = null,
   onStateChange = null,
   onStatusChange = null,
@@ -27,13 +27,13 @@ export const useDeviceStatusWebSocket = ({
   const reconnectTimeoutRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
   const shouldReconnectRef = useRef(true);
-  
+
   // Store callbacks in refs to avoid recreating connect function
   const onStateChangeRef = useRef(onStateChange);
   const onStatusChangeRef = useRef(onStatusChange);
   const onConfigChangeRef = useRef(onConfigChange);
   const onErrorRef = useRef(onError);
-  
+
   useEffect(() => {
     onStateChangeRef.current = onStateChange;
     onStatusChangeRef.current = onStatusChange;
@@ -53,10 +53,12 @@ export const useDeviceStatusWebSocket = ({
 
       // Subscribe to specific device if provided
       if (deviceId) {
-        ws.send(JSON.stringify({
-          type: 'subscribe',
-          deviceId,
-        }));
+        ws.send(
+          JSON.stringify({
+            type: "subscribe",
+            deviceId,
+          }),
+        );
       }
     };
 
@@ -65,58 +67,83 @@ export const useDeviceStatusWebSocket = ({
         const message = JSON.parse(event.data);
 
         // Handle subscription confirmation
-        if (message.type === 'subscribed') {
+        if (message.type === "subscribed") {
           return;
         }
 
         // Handle pong response
-        if (message.type === 'pong') {
+        if (message.type === "pong") {
           return;
         }
 
         // Handle device updates
-        if (message.type === 'device_update') {
+        if (message.type === "device_update") {
           const { deviceId: updatedDeviceId, data, timestamp } = message;
 
           switch (data.eventType) {
-            case 'state_changed':
+            case "state_changed":
               if (onStateChangeRef.current) {
-                onStateChangeRef.current({ deviceId: updatedDeviceId, data: data.state, timestamp });
+                onStateChangeRef.current({
+                  deviceId: updatedDeviceId,
+                  data: data.state,
+                  timestamp,
+                });
               }
               break;
 
-            case 'status_changed':
+            case "status_changed":
               if (onStatusChangeRef.current) {
-                onStatusChangeRef.current({ deviceId: updatedDeviceId, data: data.status, timestamp });
+                onStatusChangeRef.current({
+                  deviceId: updatedDeviceId,
+                  data: data.status,
+                  timestamp,
+                });
               }
               break;
 
-            case 'config_changed':
+            case "config_changed":
               if (onConfigChangeRef.current) {
-                onConfigChangeRef.current({ deviceId: updatedDeviceId, data: data.config, timestamp });
+                onConfigChangeRef.current({
+                  deviceId: updatedDeviceId,
+                  data: data.config,
+                  timestamp,
+                });
               }
               break;
 
-            case 'error':
+            case "error":
               if (onErrorRef.current) {
-                onErrorRef.current({ deviceId: updatedDeviceId, error: data.error, timestamp });
+                onErrorRef.current({
+                  deviceId: updatedDeviceId,
+                  error: data.error,
+                  timestamp,
+                });
               }
-              console.error(`[DeviceStatus WS] Device error from ${updatedDeviceId}:`, data.error);
+              console.error(
+                `[DeviceStatus WS] Device error from ${updatedDeviceId}:`,
+                data.error,
+              );
               break;
 
             default:
-              console.warn(`[DeviceStatus WS] Unknown event type: ${data.eventType}`);
+              console.warn(
+                `[DeviceStatus WS] Unknown event type: ${data.eventType}`,
+              );
           }
         }
       } catch (error) {
-        console.error('[DeviceStatus WS] Error parsing message:', error);
+        console.error("[DeviceStatus WS] Error parsing message:", error);
       }
     };
 
     ws.onerror = (error) => {
-      console.error('[DeviceStatus WS] WebSocket error:', error);
+      console.error("[DeviceStatus WS] WebSocket error:", error);
       if (onErrorRef.current) {
-        onErrorRef.current({ deviceId: null, error: 'WebSocket connection error', timestamp: new Date().toISOString() });
+        onErrorRef.current({
+          deviceId: null,
+          error: "WebSocket connection error",
+          timestamp: new Date().toISOString(),
+        });
       }
     };
 
@@ -137,7 +164,7 @@ export const useDeviceStatusWebSocket = ({
 
   const disconnect = useCallback(() => {
     shouldReconnectRef.current = false;
-    
+
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
       reconnectTimeoutRef.current = null;
@@ -153,25 +180,29 @@ export const useDeviceStatusWebSocket = ({
 
   const subscribe = useCallback((newDeviceId) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'subscribe',
-        deviceId: newDeviceId,
-      }));
+      wsRef.current.send(
+        JSON.stringify({
+          type: "subscribe",
+          deviceId: newDeviceId,
+        }),
+      );
     }
   }, []);
 
   const unsubscribe = useCallback((deviceIdToUnsubscribe) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'unsubscribe',
-        deviceId: deviceIdToUnsubscribe,
-      }));
+      wsRef.current.send(
+        JSON.stringify({
+          type: "unsubscribe",
+          deviceId: deviceIdToUnsubscribe,
+        }),
+      );
     }
   }, []);
 
   const ping = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ type: 'ping' }));
+      wsRef.current.send(JSON.stringify({ type: "ping" }));
     }
   }, []);
 

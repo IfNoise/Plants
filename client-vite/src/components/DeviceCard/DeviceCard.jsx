@@ -18,7 +18,10 @@ import LightTimerCard from "./LightTimerCard";
 import DeviceSettingsList from "../DeviceSettingsList/DeviceSettingsList";
 import { useSetConfigMutation } from "../../store/deviceApi";
 import useDeviceStatusContext from "../../hooks/useDeviceStatusContext";
-import { selectDeviceConfig, selectDeviceStatus } from "../../store/deviceStatusSlice";
+import {
+  selectDeviceConfig,
+  selectDeviceStatus,
+} from "../../store/deviceStatusSlice";
 
 /**
  * Main device card component
@@ -72,7 +75,9 @@ const DeviceCard = ({ device }) => {
           <Outputs deviceId={id} updateInterval={60000} />
           <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
             {Object.keys(currentConfig)
-              .filter((key) => key.startsWith("irr") && currentConfig[key].enable)
+              .filter(
+                (key) => key.startsWith("irr") && currentConfig[key].enable,
+              )
               .map((key, i) => (
                 <IrrigatorCard
                   key={i}
@@ -90,7 +95,9 @@ const DeviceCard = ({ device }) => {
                 />
               ))}
             {Object.keys(currentConfig)
-              .filter((key) => key.startsWith("light") && currentConfig[key].enable)
+              .filter(
+                (key) => key.startsWith("light") && currentConfig[key].enable,
+              )
               .map((key, i) => (
                 <LightTimerCard
                   key={i}
@@ -112,7 +119,9 @@ const DeviceCard = ({ device }) => {
         </CardActions>
       </Card>
       <Dialog fullScreen open={open} onClose={handleClose}>
-        {currentConfig && <DeviceSettingsList deviceId={id} onCancel={handleClose} />}
+        {currentConfig && (
+          <DeviceSettingsList deviceId={id} onCancel={handleClose} />
+        )}
       </Dialog>
     </>
   );

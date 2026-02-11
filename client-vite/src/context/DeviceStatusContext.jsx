@@ -23,30 +23,42 @@ export const DeviceStatusProvider = ({
   const subscribedDevices = useRef(new Set());
 
   // WebSocket callbacks
-  const handleStateChange = useCallback(({ deviceId, data, timestamp }) => {
-    dispatch(updateDeviceState({ deviceId, stateData: data, timestamp }));
-  }, [dispatch]);
+  const handleStateChange = useCallback(
+    ({ deviceId, data, timestamp }) => {
+      dispatch(updateDeviceState({ deviceId, stateData: data, timestamp }));
+    },
+    [dispatch],
+  );
 
-  const handleStatusChange = useCallback(({ deviceId, data, timestamp }) => {
-    dispatch(updateDeviceStatus({ deviceId, status: data, timestamp }));
-  }, [dispatch]);
+  const handleStatusChange = useCallback(
+    ({ deviceId, data, timestamp }) => {
+      dispatch(updateDeviceStatus({ deviceId, status: data, timestamp }));
+    },
+    [dispatch],
+  );
 
-  const handleConfigChange = useCallback(({ deviceId, data, timestamp }) => {
-    dispatch(updateDeviceConfig({ deviceId, config: data, timestamp }));
-  }, [dispatch]);
+  const handleConfigChange = useCallback(
+    ({ deviceId, data, timestamp }) => {
+      dispatch(updateDeviceConfig({ deviceId, config: data, timestamp }));
+    },
+    [dispatch],
+  );
 
-  const handleError = useCallback((eventData) => {
-    // Handle both WebSocket error events and device error messages
-    if (eventData && eventData.deviceId) {
-      // Device-specific error message from server
-      const { deviceId, error, timestamp } = eventData;
-      dispatch(setDeviceError({ deviceId, error, timestamp }));
-      console.error(`Device ${deviceId} error:`, error);
-    } else {
-      // Generic WebSocket error event
-      console.error("[DeviceStatus] WebSocket error:", eventData);
-    }
-  }, [dispatch]);
+  const handleError = useCallback(
+    (eventData) => {
+      // Handle both WebSocket error events and device error messages
+      if (eventData && eventData.deviceId) {
+        // Device-specific error message from server
+        const { deviceId, error, timestamp } = eventData;
+        dispatch(setDeviceError({ deviceId, error, timestamp }));
+        console.error(`Device ${deviceId} error:`, error);
+      } else {
+        // Generic WebSocket error event
+        console.error("[DeviceStatus] WebSocket error:", eventData);
+      }
+    },
+    [dispatch],
+  );
 
   // Initialize WebSocket hook
   const { subscribe, unsubscribe, isConnected } = useDeviceStatusWebSocket({

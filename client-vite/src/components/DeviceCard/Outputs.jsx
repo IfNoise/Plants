@@ -1,14 +1,21 @@
-import { Alert, Box, CircularProgress, Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Stack,
+  Typography,
+  Tooltip,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useGetStateQuery } from "../../store/deviceApi";
 import { selectDeviceState } from "../../store/deviceStatusSlice";
 
 /**
- * Device outputs display component
- * @param {Object} props
- * @param {string} props.deviceId - Device ID
- * @param {number} props.updateInterval - Polling interval in milliseconds
+ * Compact LED-style output indicator with depth + pulse
+ * - accessible: `aria-label` + hidden live region for screen readers
+ * - tooltip: shows name, state and optional lastChanged
+ * - graceful fallback to polling data
  */
 const Outputs = ({ deviceId, updateInterval }) => {
   // Fallback polling for initial data
@@ -17,7 +24,9 @@ const Outputs = ({ deviceId, updateInterval }) => {
   });
 
   // Real-time state from WebSocket
-  const realtimeState = useSelector((state) => selectDeviceState(state, deviceId));
+  const realtimeState = useSelector((state) =>
+    selectDeviceState(state, deviceId),
+  );
 
   // Use real-time data if available, otherwise fallback to polling
   const currentState = realtimeState || data?.result;
@@ -26,37 +35,165 @@ const Outputs = ({ deviceId, updateInterval }) => {
   return (
     <Box
       sx={{
-        m: "5px",
-        p: "5px",
+        m: 1,
+        p: 1,
         width: "100%",
       }}
     >
-      <Typography variant="h6">Outputs</Typography>
-      {isLoading && <CircularProgress />}
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        Outputs
+      </Typography>
+
+      {isLoading && <CircularProgress size={20} />}
       {isError && <Alert severity="error">{isError.message}</Alert>}
-      <Stack direction="row" useFlexGap flexWrap="wrap">
-        {outputs.map((output, i) => (
-          <Box
-            key={i}
-            sx={{
-              display: "inline",
-              fontSize: "8px",
-              fontFamily: "monospace",
-              fontWeight: "bold",
-              width: "45px",
-              color: "white",
-              m: "2px",
-              p: "2px",
-              height: "26px",
-              borderRadius: "5px",
-              borderStyle: "solid",
-              borderColor: output.state ? "#76ff03" : "#eeeeee",
-              borderWidth: "2px",
-            }}
-          >
-            {output.name}
-          </Box>
-        ))}
+
+      <Stack direction="row" useFlexGap flexWrap="wrap" alignItems="center">
+        {outputs.map((output, i) => {
+          const isOn = Boolean(output.state);
+          const color = isOn ? "success.main" : "grey.400";
+
+          return (
+            <Tooltip
+              key={i}
+              title={
+                <>
+                  <strong>{output.name}</strong>
+                  <div>{isOn ? "ON" : "OFF"}</div>
+                  {output.lastChanged && (
+                    <div style={{ fontSize: 12, opacity: 0.8 }}>
+                      {new Date(output.lastChanged).toLocaleTimeString()}
+                    </div>
+                  )}
+                </>
+              }
+              placement="top"
+            >
+              <Box
+                component="button"
+                onClick={(e) => e.preventDefault()}
+                aria-label={`Output ${output.name}: ${isOn ? "on" : "off"}`}
+                sx={(theme) => ({
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 1,
+                  p: "6px 8px",
+                  m: 0.5,
+                  borderRadius: 1.5,
+                  // subtle grouping border + gentle background
+                  border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(15,23,42,0.06)"}`,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "rgba(255,255,255,0.02)"
+                      : "rgba(15,23,42,0.01)",
+                  cursor: "default",
+                  transition:
+                    "transform 180ms ease, box-shadow 200ms ease, background 200ms",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow:
+                      theme.palette.mode === "dark"
+                        ? "0 6px 20px rgba(0,0,0,0.45)"
+                        : "0 6px 20px rgba(2,6,23,0.06)",
+                  },
+                })}
+              >
+                {/* LED (wrapper provides a slightly darker ring) */}
+                <Box
+                  aria-hidden
+                  sx={(theme) => ({
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 18,
+                    height: 18,
+                    borderRadius: "50%",
+                    // slightly dark, noticeable ring around LED
+                    border: `1.5px solid ${theme.palette.mode === "dark" ? "rgba(69, 66, 66, 0.6)" : "rgba(0,0,0,0.22)"}`,
+                    background:
+                      theme.palette.mode === "dark"
+                        ? "rgba(144, 136, 136, 0.57)"
+                        : "transparent",
+                    boxShadow: isOn
+                      ? `0 8px 18px -8px ${theme.palette.success.main}`
+                      : "none",
+                    // inner LED
+                    "& > span": {
+                      width: 16,
+                      height: 16,
+                      borderRadius: "50%",
+                      background: isOn
+                        ? `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), ${theme.palette.success.main} 30%, ${theme.palette.success.dark} 90%)`
+                        : `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), ${theme.palette.grey[400]} 30%, ${theme.palette.grey[600]} 90%)`,
+                      boxShadow: isOn
+                        ? `0 6px 18px -6px ${theme.palette.success.main}, 0 2px 6px -2px rgba(0,0,0,0.35)`
+                        : `inset 0 -2px 0 rgba(0,0,0,0.15)`,
+                      transform: "translateZ(0)",
+                      transition:
+                        "transform 220ms ease, box-shadow 300ms ease, opacity 220ms",
+                      opacity: isOn ? 1 : 0.9,
+                      ...(isOn && {
+                        animation: `pulse 1800ms infinite ease-in-out`,
+                      }),
+                    },
+                    "@keyframes pulse": {
+                      "0%": {
+                        transform: "scale(1)",
+                        boxShadow: `0 6px 18px -6px ${theme.palette.success.main}`,
+                      },
+                      "50%": {
+                        transform: "scale(1.08)",
+                        boxShadow: `0 18px 40px -18px ${theme.palette.success.main}`,
+                      },
+                      "100%": {
+                        transform: "scale(1)",
+                        boxShadow: `0 6px 18px -6px ${theme.palette.success.main}`,
+                      },
+                    },
+                  })}
+                >
+                  <Box component="span" />
+                </Box>
+
+                {/* Label (compact) */}
+                <Typography
+                  component="span"
+                  sx={(t) => ({
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: isOn
+                      ? t.palette.text.primary
+                      : t.palette.text.secondary,
+                    lineHeight: "16px",
+                    minWidth: 36,
+                    textAlign: "left",
+                    ml: 0.5,
+                  })}
+                >
+                  {output.name}
+                </Typography>
+
+                {/* Hidden live region for screen readers to announce state changes */}
+                <Box
+                  component="span"
+                  sx={{
+                    position: "absolute",
+                    width: 1,
+                    height: 1,
+                    padding: 0,
+                    margin: -1,
+                    overflow: "hidden",
+                    clip: "rect(0,0,0,0)",
+                    whiteSpace: "nowrap",
+                    border: 0,
+                  }}
+                  aria-live="polite"
+                >
+                  {`${output.name} ${isOn ? "on" : "off"}`}
+                </Box>
+              </Box>
+            </Tooltip>
+          );
+        })}
       </Stack>
     </Box>
   );
