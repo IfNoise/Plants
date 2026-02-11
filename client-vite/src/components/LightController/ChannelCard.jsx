@@ -10,11 +10,13 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import {
   useGetLightChannelStateQuery,
   useRemoveChannelMutation,
   useSetMaxLevelMutation,
 } from "../../store/lightApi";
+import { selectChannel } from "../../store/channelsSlice";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
 import CircularProgressWithLabel from "../CircularProgress";
@@ -41,16 +43,27 @@ const ChannelCard = ({ channel, onEdit }) => {
   const [maxValue, setMaxValue] = useState((maxLevel / MAX_LEVEL) * 100);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const { data: state } = useGetLightChannelStateQuery(name, {
+  // WebSocket integration - получаем реал-тайм данные
+  const realtimeChannel = useSelector((state) => selectChannel(state, name));
+
+  // Fallback к polling если WebSocket не предоставляет данные
+  const { data: polledState } = useGetLightChannelStateQuery(name, {
     pollingInterval: 60000,
+    skip: !!realtimeChannel, // Пропускаем polling если есть WebSocket данные
   });
+
+  // Используем реал-тайм данные если доступны, иначе polled данные
+  const currentChannel = realtimeChannel || channel;
+  const currentState = realtimeChannel?.level ?? polledState?.state;
+
+  useEffect(() => {
+    // Обновляем maxValue из текущих данных канала
+    const currentMaxLevel = currentChannel.maxLevel ?? maxLevel;
+    setMaxValue((currentMaxLevel / MAX_LEVEL) * 100);
+  }, [currentChannel.maxLevel, maxLevel]);
 
   const [setMaxLevel] = useSetMaxLevelMutation();
   const [removeChannel] = useRemoveChannelMutation();
-
-  useEffect(() => {
-    setMaxValue((maxLevel / MAX_LEVEL) * 100);
-  }, [maxLevel]);
 
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -106,8 +119,8 @@ const ChannelCard = ({ channel, onEdit }) => {
           }}
           onContextMenu={handleContextMenu}
         >
-          <Stack 
-            direction="row" 
+          <Stack
+            direction="row"
             spacing={0.5}
             sx={{
               justifyContent: "space-between",
@@ -151,7 +164,6 @@ const ChannelCard = ({ channel, onEdit }) => {
                   height: "16px",
                 }}
                 title="Удалить"
-                color="error"
               >
                 <DeleteIcon sx={{ fontSize: "12px" }} />
               </IconButton>
@@ -185,7 +197,7 @@ const ChannelCard = ({ channel, onEdit }) => {
           >
             <CircularProgressWithLabel
               variant="determinate"
-              value={Math.floor((state?.state / MAX_LEVEL) * 100) || 0}
+              value={Math.floor((currentState / MAX_LEVEL) * 100) || 0}
               sx={{
                 color: "lime",
               }}

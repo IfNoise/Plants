@@ -12,6 +12,7 @@ import {
 import PropTypes from "prop-types";
 import { useGetDevicesQuery } from "../../store/lightApi";
 import DeviceCard from "./DeviceCard";
+import AddDeviceDialog from "./AddDeviceDialog";
 import CloseIcon from "@mui/icons-material/Close";
 
 const DevicesManagerDialog = ({ open, onClose }) => {
@@ -20,11 +21,18 @@ const DevicesManagerDialog = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <DialogTitle>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography variant="h6">Управление устройствами</Typography>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
+          <Stack direction="row" spacing={1}>
+            <AddDeviceDialog />
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
         </Stack>
       </DialogTitle>
       <DialogContent>
@@ -33,19 +41,20 @@ const DevicesManagerDialog = ({ open, onClose }) => {
             <CircularProgress />
           </Stack>
         )}
-        
+
         {isError && (
           <Alert severity="error">
             Ошибка загрузки устройств: {error?.message || "Неизвестная ошибка"}
           </Alert>
         )}
-        
+
         {devices && devices.length === 0 && (
           <Alert severity="info">
-            Устройства не найдены. Добавьте новое устройство, нажав на кнопку + в списке каналов.
+            Устройства не найдены. Нажмите кнопку + в заголовке, чтобы добавить
+            новое устройство.
           </Alert>
         )}
-        
+
         {devices && devices.length > 0 && (
           <Grid container spacing={2}>
             {devices.map((device, idx) => (

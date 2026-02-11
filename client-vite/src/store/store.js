@@ -8,6 +8,7 @@ import nutrientsSliceReducer from "./nutrientsSlice";
 
 import authReducer from "./authSlice";
 import deviceStatusReducer from "./deviceStatusSlice";
+import channelsReducer from "./channelsSlice";
 import { trayApi } from "./trayApi";
 import { localStorageMiddleware, reHydrateStore } from "./localStoreMiddleware";
 import { strainApi } from "./strainApi";
@@ -36,6 +37,7 @@ const reducer = {
   nutrients: nutrientsSliceReducer,
   auth: authReducer,
   deviceStatus: deviceStatusReducer,
+  channels: channelsReducer,
 };
 
 export const store = configureStore({

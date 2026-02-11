@@ -50,7 +50,6 @@ const Outputs = ({ deviceId, updateInterval }) => {
       <Stack direction="row" useFlexGap flexWrap="wrap" alignItems="center">
         {outputs.map((output, i) => {
           const isOn = Boolean(output.state);
-          const color = isOn ? "success.main" : "grey.400";
 
           return (
             <Tooltip
@@ -86,15 +85,6 @@ const Outputs = ({ deviceId, updateInterval }) => {
                       ? "rgba(255,255,255,0.02)"
                       : "rgba(15,23,42,0.01)",
                   cursor: "default",
-                  transition:
-                    "transform 180ms ease, box-shadow 200ms ease, background 200ms",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow:
-                      theme.palette.mode === "dark"
-                        ? "0 6px 20px rgba(0,0,0,0.45)"
-                        : "0 6px 20px rgba(2,6,23,0.06)",
-                  },
                 })}
               >
                 {/* LED (wrapper provides a slightly darker ring) */}

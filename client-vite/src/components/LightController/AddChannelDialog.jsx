@@ -22,6 +22,7 @@ import {
 import TungstenIcon from "@mui/icons-material/Tungsten";
 
 const Transition = Slide;
+const MAX_LEVEL = 10000;
 
 /**
  * Диалог добавления нового канала освещения
@@ -36,6 +37,8 @@ const AddChannelDialog = () => {
     name: "",
     device: "",
     port: "",
+    maxLevel: 100,
+    minLevel: 0,
   });
 
   const handleOpen = () => {
@@ -45,7 +48,13 @@ const AddChannelDialog = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setNewChannel({ name: "", device: "", port: "" });
+    setNewChannel({
+      name: "",
+      device: "",
+      port: "",
+      maxLevel: 100,
+      minLevel: 0,
+    });
     setError("");
   };
 
@@ -68,6 +77,8 @@ const AddChannelDialog = () => {
         name: newChannel.name,
         device: newChannel.device,
         port: parseInt(newChannel.port),
+        maxLevel: Math.floor((MAX_LEVEL * newChannel.maxLevel) / 100),
+        minLevel: Math.floor((MAX_LEVEL * newChannel.minLevel) / 100),
       }).unwrap();
       handleClose();
     } catch (err) {
@@ -141,6 +152,25 @@ const AddChannelDialog = () => {
                   </MenuItem>
                 ))}
               </Select>
+              <TextField
+                label="Максимальный уровень (%)"
+                type="number"
+                fullWidth
+                value={newChannel.maxLevel}
+                onChange={handleChange("maxLevel")}
+                inputProps={{ min: 0, max: 100 }}
+                helperText="Максимальная яркость канала (0-100%)"
+              />
+
+              <TextField
+                label="Минимальный уровень (%)"
+                type="number"
+                fullWidth
+                value={newChannel.minLevel}
+                onChange={handleChange("minLevel")}
+                inputProps={{ min: 0, max: 100 }}
+                helperText="Минимальный уровень при включении"
+              />
             </FormControl>
 
             {!devices || devices.length === 0 ? (
