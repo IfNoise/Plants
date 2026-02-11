@@ -101,11 +101,6 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
   const currentStrategyParams =
     irrigationTableData?.data?.strategyParams || null;
 
-  // Debug: log irrigation table data
-  console.log("IrrigatorCard - irrigationTableData:", irrigationTableData);
-  console.log("IrrigatorCard - currentRegMap:", currentRegMap);
-  console.log("IrrigatorCard - currentStrategyParams:", currentStrategyParams);
-
   return (
     <>
       <Card

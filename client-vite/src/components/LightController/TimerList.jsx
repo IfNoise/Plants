@@ -526,7 +526,7 @@ const TimerCard = ({ timer }) => {
         max={faderMode === "maxLevel" ? 100 : 100}
         onChange={(e, value) => setMasterLevel(value)}
       />
-      <FormControl component={"block"} sx={{ ml: "15px" }}>
+      <FormControl component={"fieldset"} sx={{ ml: "15px" }}>
         <RadioGroup
           row
           value={faderMode}

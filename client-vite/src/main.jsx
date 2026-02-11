@@ -4,11 +4,14 @@ import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
 import { store } from './store/store';
+import { DeviceStatusProvider } from './context/DeviceStatusContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <Provider store={store}>
-    <App />
+    <DeviceStatusProvider>
+      <App />
+    </DeviceStatusProvider>
   </Provider>
 );  

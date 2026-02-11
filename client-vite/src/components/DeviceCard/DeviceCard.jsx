@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import {
   Alert,
   Button,
@@ -16,6 +17,8 @@ import IrrigatorCard from "./IrrigatorCard";
 import LightTimerCard from "./LightTimerCard";
 import DeviceSettingsList from "../DeviceSettingsList/DeviceSettingsList";
 import { useSetConfigMutation } from "../../store/deviceApi";
+import useDeviceStatusContext from "../../hooks/useDeviceStatusContext";
+import { selectDeviceConfig, selectDeviceStatus } from "../../store/deviceStatusSlice";
 
 /**
  * Main device card component
@@ -26,6 +29,23 @@ const DeviceCard = ({ device }) => {
   const [open, setOpen] = useState(false);
   const { id, address, config, status } = device;
   const [setConfig, { isError, error }] = useSetConfigMutation();
+
+  // WebSocket integration
+  const { subscribeToDevice, unsubscribeFromDevice } = useDeviceStatusContext();
+  const realtimeConfig = useSelector((state) => selectDeviceConfig(state, id));
+  const realtimeStatus = useSelector((state) => selectDeviceStatus(state, id));
+
+  // Subscribe to device updates on mount
+  useEffect(() => {
+    subscribeToDevice(id);
+    return () => {
+      unsubscribeFromDevice(id);
+    };
+  }, [id, subscribeToDevice, unsubscribeFromDevice]);
+
+  // Use real-time data if available, fallback to initial data
+  const currentConfig = realtimeConfig || config;
+  const currentStatus = realtimeStatus || status;
 
   const handleClose = () => {
     setOpen(false);
@@ -44,22 +64,22 @@ const DeviceCard = ({ device }) => {
         }}
       >
         <CardHeader
-          avatar={<Status status={status} />}
+          avatar={<Status status={currentStatus} />}
           title={id}
           subheader={address}
         />
         <CardContent>
           <Outputs deviceId={id} updateInterval={60000} />
           <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-            {Object.keys(config)
-              .filter((key) => key.startsWith("irr") && config[key].enable)
+            {Object.keys(currentConfig)
+              .filter((key) => key.startsWith("irr") && currentConfig[key].enable)
               .map((key, i) => (
                 <IrrigatorCard
                   key={i}
                   id={key}
                   name={key}
                   deviceId={id}
-                  config={config[key]}
+                  config={currentConfig[key]}
                   onSave={(changes, reboot) =>
                     setConfig({
                       deviceId: id,
@@ -69,13 +89,13 @@ const DeviceCard = ({ device }) => {
                   }
                 />
               ))}
-            {Object.keys(config)
-              .filter((key) => key.startsWith("light") && config[key].enable)
+            {Object.keys(currentConfig)
+              .filter((key) => key.startsWith("light") && currentConfig[key].enable)
               .map((key, i) => (
                 <LightTimerCard
                   key={i}
                   name={key}
-                  config={config[key]}
+                  config={currentConfig[key]}
                   onSave={(changes, reboot) =>
                     setConfig({
                       deviceId: id,
@@ -92,7 +112,7 @@ const DeviceCard = ({ device }) => {
         </CardActions>
       </Card>
       <Dialog fullScreen open={open} onClose={handleClose}>
-        {config && <DeviceSettingsList deviceId={id} onCancel={handleClose} />}
+        {currentConfig && <DeviceSettingsList deviceId={id} onCancel={handleClose} />}
       </Dialog>
     </>
   );

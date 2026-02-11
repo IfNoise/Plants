@@ -56,19 +56,11 @@ const IrrigationMapDialog = ({
   // Update state when dialog opens or props change
   useEffect(() => {
     if (open) {
-      console.log("IrrigationMapDialog - Dialog opened, updating state");
-      console.log("IrrigationMapDialog - initialMap:", initialMap);
-      console.log(
-        "IrrigationMapDialog - initialStrategyParams:",
-        initialStrategyParams,
-      );
       setPeriods(initialMap || []);
       setParams(initialStrategyParams || defaultIrrigationParams);
       setTabValue(0); // Reset to first tab
     }
   }, [open, initialMap, initialStrategyParams]);
-
-  console.log("IrrigationMapDialog - current state:", { periods, params });
 
   const handleParamChange = (field, value) => {
     setParams((prev) => ({

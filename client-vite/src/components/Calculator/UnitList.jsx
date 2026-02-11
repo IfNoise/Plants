@@ -191,7 +191,7 @@ import AreYouSure from "../AreYouSure";
 //   solution:PropTypes.array.isRequired,
 // }
 const InputPopper = forwardRef(
-  ({ label, anchorEl, open, onClose = () => {}, onChange }) => {
+  ({ label, anchorEl, open, onClose = () => {}, onChange }, ref) => {
     const [value, setValue] = useState("");
     const handleChange = (e) => {
       setValue(e.target.value);
@@ -202,6 +202,7 @@ const InputPopper = forwardRef(
     };
     return (
       <Popover
+        ref={ref}
         open={open}
         onClose={onClose}
         anchorEl={anchorEl}
