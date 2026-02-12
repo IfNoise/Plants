@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useGetStateQuery } from "../../store/deviceApi";
 import { selectDeviceState } from "../../store/deviceStatusSlice";
+import { subtleContainer } from "../../styles/commonStyles";
 
 /**
  * Compact LED-style output indicator with depth + pulse
@@ -72,18 +73,12 @@ const Outputs = ({ deviceId, updateInterval }) => {
                 onClick={(e) => e.preventDefault()}
                 aria-label={`Output ${output.name}: ${isOn ? "on" : "off"}`}
                 sx={(theme) => ({
+                  ...subtleContainer(theme),
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 1,
                   p: "6px 8px",
                   m: 0.5,
-                  borderRadius: 1.5,
-                  // subtle grouping border + gentle background
-                  border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(15,23,42,0.06)"}`,
-                  bgcolor:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255,255,255,0.02)"
-                      : "rgba(15,23,42,0.01)",
                   cursor: "default",
                 })}
               >

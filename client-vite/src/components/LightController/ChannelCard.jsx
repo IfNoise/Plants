@@ -199,14 +199,14 @@ const ChannelCard = ({ channel, onEdit }) => {
               variant="determinate"
               value={Math.floor((currentState / MAX_LEVEL) * 100) || 0}
               sx={{
-                color: "lime",
+                color: "success.light",
               }}
             />
             <Slider
               sx={{
                 height: "90px",
                 width: "35px",
-                color: "green",
+                color: "success.main",
               }}
               size="small"
               orientation="vertical"

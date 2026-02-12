@@ -4,14 +4,14 @@ export const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#3f51b5",
+      main: "#9a9eb1",
     },
     secondary: {
       main: "#f50057",
     },
     background: {
-      paper: "rgba(255,255,255,0.04)",
-      default: "rgba(31,39,45,0.86)",
+      paper: "rgba(100, 106, 113, 0.87)",
+      default: "rgba(65, 80, 91, 0.86)",
     },
     male: {
       main: "#AAAAFF",
@@ -26,19 +26,44 @@ export const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        root: {
+        root: () => ({
           background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
           border: 0,
           borderRadius: 10,
           color: "white",
           height: 38,
           padding: "0 20px",
-        },
+        }),
       },
     },
     MuiButtonBase: {
       defaultProps: {
         disableRipple: true,
+      },
+    },
+    MuiPaper: {
+      variants: [
+        {
+          props: { variant: "subtle" },
+          style: ({ theme }) => ({
+            border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(15,23,42,0.06)"}`,
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? "rgba(255,255,255,0.02)"
+                : "rgba(15,23,42,0.01)",
+            borderRadius: theme.spacing(1.5),
+          }),
+        },
+      ],
+    },
+    MuiCard: {
+      defaultProps: {
+        variant: "subtle",
+      },
+    },
+    MuiAccordion: {
+      defaultProps: {
+        variant: "subtle",
       },
     },
   },

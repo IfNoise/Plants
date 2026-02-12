@@ -28,21 +28,21 @@ import { TrayButton } from "../../components/TrayButton/TrayButton";
 const PlantGroup = ({ group }) => {
   const params = new URLSearchParams({ group });
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         width: "6rem",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "green",
-        color: "white",
+        color: "primary.main",
         borderRadius: "5px",
         padding: "5px",
         margin: "5px",
       }}
     >
       {group && (
-        <Link sx={{ color: "white" }} href={`/plants?${params}`}>
+        <Link sx={{ color: "primary.main" }} href={`/plants?${params}`}>
           Group
         </Link>
       )}
@@ -51,7 +51,7 @@ const PlantGroup = ({ group }) => {
           No Group
         </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 PlantGroup.propTypes = {
@@ -61,26 +61,26 @@ PlantGroup.propTypes = {
 const PlantSource = ({ plant }) => {
   const { type, source, motherPlant } = plant;
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         width: "6rem",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "green",
-        color: "white",
+        color: "primary.main",
         borderRadius: "5px",
         padding: "5px",
         margin: "5px",
       }}
     >
       {type === "Seed" && source && (
-        <Link sx={{ color: "white" }} to={`/strains/${source}`}>
+        <Link sx={{ color: "primary.main" }} to={`/strains/${source}`}>
           Source Strain
         </Link>
       )}
       {type === "Clone" && motherPlant && (
-        <Link sx={{ color: "white" }} href={`/plant/${motherPlant}`}>
+        <Link sx={{ color: "primary.main" }} href={`/plant/${motherPlant}`}>
           Mother Plant
         </Link>
       )}
@@ -89,7 +89,7 @@ const PlantSource = ({ plant }) => {
           No Source
         </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 PlantSource.propTypes = {
@@ -124,7 +124,7 @@ const PlantStages = ({ plant }) => {
   useMemo(() => {
     const now = new Date();
     const startDate = new Date(
-      actions?.find((action) => action.type === "Start")?.date
+      actions?.find((action) => action.type === "Start")?.date,
     );
 
     const plantAge = Math.floor((now - new Date(startDate)) / 86400000);
@@ -134,20 +134,20 @@ const PlantStages = ({ plant }) => {
           action.type === "Picking" &&
           (action.potSize === "1 L" ||
             action.potSize === "0.25 L" ||
-            action.potSize === undefined)
-      )?.date
+            action.potSize === undefined),
+      )?.date,
     );
     const bloomStartDate = new Date(
-      actions?.find((action) => action.type === "Blooming")?.date
+      actions?.find((action) => action.type === "Blooming")?.date,
     );
     const motherPlantStartDate = new Date(
-      actions?.find((action) => action.type === "MakeMother")?.date
+      actions?.find((action) => action.type === "MakeMother")?.date,
     );
     const harvestDate = new Date(
-      actions?.find((action) => action.type === "Harvest")?.date
+      actions?.find((action) => action.type === "Harvest")?.date,
     );
     const stopDate = new Date(
-      actions?.find((action) => action.type === "Stop")?.date
+      actions?.find((action) => action.type === "Stop")?.date,
     );
 
     const cloningStage =
@@ -158,25 +158,25 @@ const PlantStages = ({ plant }) => {
       state === "Germination"
         ? Math.floor((now - startDate) / 86400000)
         : plant.type === "Seed"
-        ? Math.floor((vegStartDate - startDate) / 86400000)
-        : 0;
+          ? Math.floor((vegStartDate - startDate) / 86400000)
+          : 0;
 
     const vegStage =
       state === "Growing"
         ? Math.floor((now - vegStartDate) / 86400000)
         : state === "Blooming"
-        ? Math.floor((bloomStartDate - vegStartDate) / 86400000)
-        : state === "MotherPlant"
-        ? Math.floor((now - vegStartDate) / 86400000)
-        : 0;
+          ? Math.floor((bloomStartDate - vegStartDate) / 86400000)
+          : state === "MotherPlant"
+            ? Math.floor((now - vegStartDate) / 86400000)
+            : 0;
     const bloomStage =
       state === "Blooming"
         ? Math.floor((now - bloomStartDate) / 86400000)
         : state === "Harvested"
-        ? Math.floor((now - harvestDate) / 86400000)
-        : state === "Stoped"
-        ? Math.floor((now - stopDate) / 86400000)
-        : 0;
+          ? Math.floor((now - harvestDate) / 86400000)
+          : state === "Stoped"
+            ? Math.floor((now - stopDate) / 86400000)
+            : 0;
     const motherPlantStage =
       state === "MotherPlant"
         ? Math.floor((now - motherPlantStartDate) / 86400000)
@@ -231,7 +231,7 @@ export const PlantDetailPage = () => {
   const [plant, setPlant] = useState({});
   const { isLoading, isError, error, data } = useGetPlantsQuery(
     { _id: id },
-    { refetchOnMountOrArgChange: true, refetchOnFocus: true }
+    { refetchOnMountOrArgChange: true, refetchOnFocus: true },
   );
   const getPlant = () => {
     if (data?.length < 1) return [];

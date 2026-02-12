@@ -80,11 +80,11 @@ const DeviceEditDialog = ({ device, open, onClose }) => {
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           {/* Отладочная информация */}
-          <details style={{ fontSize: '12px', color: '#666' }}>
+          <details style={{ fontSize: "12px", color: "text.secondary" }}>
             <summary>Данные устройства (для отладки)</summary>
             <pre>{JSON.stringify(device, null, 2)}</pre>
           </details>
-          
+
           <TextField
             label="Тип устройства"
             value={deviceType === "tcp" ? "Modbus TCP" : "Modbus RTU"}
@@ -184,7 +184,7 @@ const DeviceEditDialog = ({ device, open, onClose }) => {
               setDeviceData({ ...deviceData, timeout: e.target.value })
             }
           />
-          
+
           <TextField
             label="Количество портов"
             fullWidth

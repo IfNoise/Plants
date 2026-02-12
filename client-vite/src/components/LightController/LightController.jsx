@@ -15,7 +15,6 @@ const LightController = () => {
       )}
       <Card
         sx={{
-          background: "rgba(104,104,125,0.9)",
           p: "5px",
         }}
       >

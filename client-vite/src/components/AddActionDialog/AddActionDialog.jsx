@@ -40,7 +40,7 @@ import CheckBox from "@mui/material/Checkbox";
 import { RedoFields } from "./RedoFields";
 const PickingIcon = ({ width = "48px", height = "48px", color = "red" }) => {
   return (
-    <SvgIcon sx={{ color: "white", width, height }} viewBox="0 0 24 24">
+    <SvgIcon sx={{ color: "primary.main", width, height }} viewBox="0 0 24 24">
       <svg
         width={width}
         height={height}
@@ -223,7 +223,17 @@ const actionFields = {
 };
 
 export default function AddActionDialog({ open, onClose, plants }) {
-  const { newAction, clear, addType, addDate, submitAction, isSuccess, isError, error, isUploadingPhotos } = useNewAction();
+  const {
+    newAction,
+    clear,
+    addType,
+    addDate,
+    submitAction,
+    isSuccess,
+    isError,
+    error,
+    isUploadingPhotos,
+  } = useNewAction();
   const { setSnack } = useContext(SnackbarContext);
   const [date, setDate] = useState(dayjs());
   const [showPicker, setShowPicker] = useState(false);
@@ -237,21 +247,21 @@ export default function AddActionDialog({ open, onClose, plants }) {
     clear();
     setPendingPhotos([]);
     console.log(newAction);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (isError) {
       setSnack({ open: true, severity: "error", message: error.data.message });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError]);
 
   useEffect(() => {
     if (isSuccess) {
       setSnack({ open: true, severity: "success", message: "Action is added" });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 
   const handleChangeDate = (value) => {
@@ -276,12 +286,12 @@ export default function AddActionDialog({ open, onClose, plants }) {
   };
 
   const handlePhotosChange = (photos) => {
-    console.log('Photos changed:', photos.length);
+    console.log("Photos changed:", photos.length);
     setPendingPhotos(photos);
   };
 
   const newActionFunc = async () => {
-    console.log('Submitting action with photos:', pendingPhotos.length);
+    console.log("Submitting action with photos:", pendingPhotos.length);
     if (plants.length < 1) {
       setSnack({
         open: true,
@@ -290,7 +300,7 @@ export default function AddActionDialog({ open, onClose, plants }) {
       });
       return;
     }
-    
+
     try {
       const id = plants.map((plant) => plant._id);
       await submitAction(id, pendingPhotos);
@@ -298,7 +308,7 @@ export default function AddActionDialog({ open, onClose, plants }) {
       setPendingPhotos([]);
       onClose();
     } catch (err) {
-      console.error('Error submitting action:', err);
+      console.error("Error submitting action:", err);
     }
   };
   return (
@@ -368,14 +378,15 @@ export default function AddActionDialog({ open, onClose, plants }) {
             </LocalizationProvider>
           )}
         </Stack>
-        {newAction?.actionType && (() => {
-          const field = actionFields[newAction.actionType];
-          if (field?.component) {
-            const Component = field.component;
-            return <Component onPhotosChange={handlePhotosChange} />;
-          }
-          return field?.fields;
-        })()}
+        {newAction?.actionType &&
+          (() => {
+            const field = actionFields[newAction.actionType];
+            if (field?.component) {
+              const Component = field.component;
+              return <Component onPhotosChange={handlePhotosChange} />;
+            }
+            return field?.fields;
+          })()}
       </DialogContent>
       <DialogActions
         sx={{ justifyContent: "center", position: "sticky", bottom: 0 }}
@@ -387,7 +398,9 @@ export default function AddActionDialog({ open, onClose, plants }) {
         >
           {isUploadingPhotos ? "Uploading photos..." : "Ok"}
         </Button>
-        <Button onClick={handleCancel} disabled={isUploadingPhotos}>Cancel</Button>
+        <Button onClick={handleCancel} disabled={isUploadingPhotos}>
+          Cancel
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -313,7 +313,7 @@ const SubscribeChannelDialog = ({ timer }) => {
       subscribe({
         name: timer.name,
         channels: channelsList.filter(
-          (ch) => timer.channels.indexOf(ch) === -1
+          (ch) => timer.channels.indexOf(ch) === -1,
         ),
       });
     }
@@ -363,13 +363,13 @@ const SubscribeChannelDialog = ({ timer }) => {
                         if (unsubscribeList.includes(channel.name)) {
                           setUnsubscribeList(
                             unsubscribeList.filter(
-                              (item) => item !== channel.name
-                            )
+                              (item) => item !== channel.name,
+                            ),
                           );
                         }
                       } else {
                         setChannelsList(
-                          channelsList.filter((item) => item !== channel.name)
+                          channelsList.filter((item) => item !== channel.name),
                         );
                         if (timer?.channels.includes(channel.name)) {
                           setUnsubscribeList([
@@ -433,7 +433,7 @@ const TimerCard = ({ timer }) => {
     if (channels.length > 0) {
       channels.forEach((channel) => {
         const channelData = lightChannels?.find(
-          (item) => item.name === channel
+          (item) => item.name === channel,
         );
         let level = 0;
         if (channelData === undefined) {
@@ -517,7 +517,7 @@ const TimerCard = ({ timer }) => {
         </Typography>
       )}
       <Slider
-        sx={{ width: "60%", color: "green", ml: "10px", height: "10px" }}
+        sx={{ width: "60%", color: "success.main", ml: "10px", height: "10px" }}
         value={masterLevel}
         valueLabelDisplay="on"
         step={5}

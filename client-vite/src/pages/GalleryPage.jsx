@@ -291,7 +291,7 @@ const ImageView = ({ photo, open, onClose, next, prev }) => {
             left: 0,
             p: 2,
             backgroundColor: "rgba(0, 0, 0, 0.5)",
-            color: "white",
+            color: "primary.main",
           }}
         >
           <Typography variant="h6">{strain}</Typography>

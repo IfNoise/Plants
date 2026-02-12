@@ -105,7 +105,7 @@ const IrrigatorCard = ({ name, config, onSave, deviceId }) => {
     <>
       <Card
         sx={{
-          m: "3px",
+          m: "5px",
           p: "5px",
         }}
       >

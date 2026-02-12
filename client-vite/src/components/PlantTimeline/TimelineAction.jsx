@@ -60,13 +60,13 @@ const actionData = {
 const PlantGroup = ({ group }) => {
   const params = new URLSearchParams({ group });
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "green",
-        color: "white",
+        color: "primary.main",
         borderRadius: "5px",
         padding: "5px",
         margin: "5px",
@@ -78,7 +78,7 @@ const PlantGroup = ({ group }) => {
           No Group
         </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 PlantGroup.propTypes = {
