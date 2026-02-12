@@ -7,7 +7,7 @@ import { useEffect, useState,useContext } from "react";
 import { AppBarContext } from "../../context/AppBarContext";
 
 const Dashboard = () => {
-  const { isLoading, isError, error, data}=useGetDevicesQuery({refetchOnReconnect:true,
+  const { isLoading, isError, error, data, isFetching}=useGetDevicesQuery({refetchOnReconnect:true,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true});
   const appBar = useContext(AppBarContext);
@@ -16,9 +16,11 @@ const Dashboard = () => {
     appBar.setAppBar({ title: "Dashboard" });
   }, []);
   useEffect(() => {
-    if (data?.length > 0) {
+    // Обновляем devices только если данные есть и это не перезагрузка существующих данных
+    if (data && data.length > 0) {
       setDevices(data);
     }
+    // Не сбрасываем devices при рефетче, сохраняем предыдущие данные
   }, [data]); 
   return (
     <Box >

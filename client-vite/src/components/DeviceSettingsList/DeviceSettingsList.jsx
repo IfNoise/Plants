@@ -218,17 +218,22 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
   const [setConfig] = useSetConfigMutation();
   const [newConfig, setNewConfig] = useState({});
   const [reboot, setReboot] = useState(false);
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log("Save", changes);
-    setConfig({
-      deviceId,
-      config: changes,
-      reboot: reboot || false,
-    });
-    setChanges({});
-    refetch();
-    setNewConfig(JSON.parse(JSON.stringify(data)));
-    setReboot(false);
+    try {
+      await setConfig({
+        deviceId,
+        config: changes,
+        reboot: reboot || false,
+      }).unwrap();
+      setChanges({});
+      setReboot(false);
+      // Рефетч произойдет автоматически через инвалидацию тегов
+      await refetch();
+      setNewConfig(JSON.parse(JSON.stringify(data)));
+    } catch (error) {
+      console.error('Failed to save config:', error);
+    }
   };
   const handleChange = (path, value) => {
     setChanges((prev) => {

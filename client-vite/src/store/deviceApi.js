@@ -33,7 +33,14 @@ export const deviceApi = createApi({
         }
         return response;
       },
-      providesTags: ["Config"],
+      providesTags: (result) => 
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'DeviceConfig', id })),
+              { type: 'DeviceConfig', id: 'LIST' },
+            ]
+          : [{ type: 'DeviceConfig', id: 'LIST' }],
+      keepUnusedDataFor: 60,
     }),
     // Новый эндпоинт для получения конфигурации
     getConfig: build.query({
@@ -48,7 +55,10 @@ export const deviceApi = createApi({
         }
         return response;
       },
-      providesTags: ["Config"],
+      providesTags: (result, error, deviceId) => [
+        { type: 'DeviceConfig', id: deviceId },
+      ],
+      keepUnusedDataFor: 60,
     }),
     // Новый эндпоинт для обновления конфигурации
     setConfig: build.mutation({
@@ -57,7 +67,11 @@ export const deviceApi = createApi({
         method: "PATCH",
         body: { config, reboot },
       }),
-      invalidatesTags: ["Config", "State"],
+      // Инвалидируем только конкретное устройство, а не весь список
+      invalidatesTags: (result, error, { deviceId }) => [
+        { type: 'DeviceConfig', id: deviceId },
+        { type: 'DeviceState', id: deviceId },
+      ],
     }),
     getState: build.query({
       query: (deviceId) => ({
@@ -73,7 +87,10 @@ export const deviceApi = createApi({
         }
         return response;
       },
-      providesTags: ["Config", "State"],
+      providesTags: (result, error, deviceId) => [
+        { type: 'DeviceState', id: deviceId },
+      ],
+      keepUnusedDataFor: 60,
     }),
     getOutputs: build.query({
       query: (deviceId) => ({
@@ -86,7 +103,10 @@ export const deviceApi = createApi({
         }
         return response;
       },
-      providesTags: ["Config", "State"],
+      providesTags: (result, error, deviceId) => [
+        { type: 'DeviceState', id: deviceId },
+      ],
+      keepUnusedDataFor: 30,
     }),
     // Универсальный метод для работы с любым компонентом
     getComponentData: build.query({
@@ -123,7 +143,9 @@ export const deviceApi = createApi({
           body,
         };
       },
-      invalidatesTags: ["State", "Config"],
+      invalidatesTags: (result, error, deviceId) => [
+        { type: 'DeviceState', id: deviceId },
+      ],
     }),
     // Новый специализированный эндпоинт для irrigation table
     getIrrigationTable: build.query({

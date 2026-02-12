@@ -520,7 +520,7 @@ const TimerCard = ({ timer }) => {
         sx={{ width: "60%", color: "success.main", ml: "10px", height: "10px" }}
         value={masterLevel}
         valueLabelDisplay="on"
-        step={5}
+        step={1}
         marks
         min={faderMode === "maxLevel" ? 0 : 0}
         max={faderMode === "maxLevel" ? 100 : 100}
