@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -14,6 +14,11 @@ import { secToTime } from "./utils";
  */
 const TimeField = ({ name, value, onChange }) => {
   const [newValue, setNewValue] = useState(secToTime(value));
+
+  // Sync internal state with external value changes
+  useEffect(() => {
+    setNewValue(secToTime(value));
+  }, [value]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
