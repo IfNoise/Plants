@@ -9,6 +9,7 @@ import {
   Dialog,
   FormControl,
   FormControlLabel,
+  Grid,
   IconButton,
   List,
   ListItem,
@@ -45,6 +46,7 @@ import ChannelsList from "./ChannelsList";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import StyledSwitch from "../StyledSwitch";
+import TimeRangeDial from "../TimeRangeDial";
 
 const MAX_LEVEL = 10000;
 
@@ -494,28 +496,49 @@ const TimerCard = ({ timer }) => {
           }
         }}
       />
-      {steps && (
-        <Typography variant="caption" component={"div"}>
-          Steps:{steps || ""}
-        </Typography>
-      )}
-      {stepTime && (
-        <Typography variant="caption" component={"div"}>
-          stepTime{stepTime || ""}
-        </Typography>
-      )}
-      {sunriseTime && (
-        <Typography variant="caption" component={"div"}>
-          Sunrise
-          {dayjs(minutesToDate(sunriseTime)).format("HH:mm").toString() || ""}
-        </Typography>
-      )}
-      {(sunsetTime !== "" || sunriseTime !== undefined) && (
-        <Typography variant="caption" component={"div"}>
-          Sunset
-          {dayjs(minutesToDate(sunsetTime)).format("HH:mm").toString() || ""}
-        </Typography>
-      )}
+      <Grid container spacing={2} sx={{ mt: 2, mb: 1 }}>
+        <Grid item>
+          {steps && (
+            <Typography variant="caption" component={"div"}>
+              Steps:{steps || ""}
+            </Typography>
+          )}
+          {stepTime && (
+            <Typography variant="caption" component={"div"}>
+              stepTime: {stepTime || ""}
+            </Typography>
+          )}
+          {sunriseTime && (
+            <Typography variant="caption" component={"div"}>
+              Sunrise:
+              {dayjs(minutesToDate(sunriseTime)).format("HH:mm").toString() ||
+                ""}
+            </Typography>
+          )}
+
+          {(sunsetTime !== "" || sunriseTime !== undefined) && (
+            <>
+              <Typography variant="caption" component={"div"}>
+                Sunset:
+                {dayjs(minutesToDate(sunsetTime)).format("HH:mm").toString() ||
+                  ""}
+              </Typography>
+            </>
+          )}
+        </Grid>
+        <Grid item>
+          {/* TimeRangeDial: visual day/night sector for this timer */}
+          {sunriseTime !== undefined && sunsetTime !== undefined && (
+            <Box sx={{ mt: -1 }}>
+              <TimeRangeDial
+                startSeconds={sunriseTime * 60}
+                stopSeconds={sunsetTime * 60}
+                size={84}
+              />
+            </Box>
+          )}
+        </Grid>
+      </Grid>
       <Slider
         sx={{ width: "60%", color: "success.main", ml: "10px", height: "10px" }}
         value={masterLevel}

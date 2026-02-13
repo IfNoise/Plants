@@ -28,7 +28,7 @@ import {
   useSetIrrigationTableMutation,
 } from "../../store/deviceApi";
 import MetricsChart from "../MetricsChart";
-import TimeRangeDial from "./TimeRangeDial";
+import TimeRangeDial from "../TimeRangeDial";
 
 /**
  * Irrigator card component with Map mode support

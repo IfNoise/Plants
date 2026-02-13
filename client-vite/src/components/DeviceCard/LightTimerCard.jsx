@@ -17,7 +17,7 @@ import EnableField from "./EnableField";
 import TimerMode from "./TimerMode";
 import TimeField from "./TimeField";
 import { secToTime, timeToSec } from "./utils";
-import TimeRangeDial from "./TimeRangeDial";
+import TimeRangeDial from "../TimeRangeDial";
 
 /**
  * Light timer card component

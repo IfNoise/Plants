@@ -18,7 +18,7 @@ export default function TimeRangeDial({
   startSeconds,
   stopSeconds,
   size = 84,
-  stroke = 8,
+  stroke = 4,
   color = "#d4c42f",
 }) {
   const start = normalizeSeconds(startSeconds);

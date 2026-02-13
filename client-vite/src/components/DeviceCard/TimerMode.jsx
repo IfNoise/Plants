@@ -30,13 +30,7 @@ function ModeIcon({
   fontSize = 18,
   activeColor,
 }) {
-  // OFF mode should always render in red (error color)
-  const isOff = modeValue === MODE.OFF;
-  const color = isOff
-    ? "error.main"
-    : selected
-      ? activeColor || "primary.main"
-      : "text.secondary";
+  const color = selected ? activeColor || "primary.main" : "text.secondary";
   const sx = { color, width: fontSize, height: fontSize };
 
   if (variant === "plus") return <AddIcon sx={sx} />;
@@ -89,7 +83,7 @@ const TimerMode = ({
       options.find((o) => o.value === Number(mode)) || options[2];
     return (
       <Box
-        sx={{ display: "inline-flex", alignItems: "center", gap: 1, pt: 0.5 }}
+        sx={{ display: "inline-flex", alignItems: "center", gap: 1, p: 0.5 }}
       >
         {showIcons ? (
           <Tooltip title={selected.label}>
