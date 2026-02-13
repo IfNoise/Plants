@@ -16,7 +16,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import EnableField from "./EnableField";
 import TimerMode from "./TimerMode";
 import TimeField from "./TimeField";
-import { TIMER_MODES, secToTime, timeToSec } from "./utils";
+import { secToTime, timeToSec } from "./utils";
+import TimeRangeDial from "./TimeRangeDial";
 
 /**
  * Light timer card component
@@ -64,13 +65,16 @@ const LightTimerCard = ({ name, config, onSave }) => {
             onSave({ [name]: { enable: e } }, false);
           }}
         />
-
+        <TimerMode
+          mode={config.mode}
+          interactive={false}
+          showIcons={true}
+          activeColor="#00ff00"
+        />
         <IconButton onClick={handleOpen} size="small">
           <SettingsIcon />
         </IconButton>
-        <Typography variant="caption" display="block">
-          Mode: {TIMER_MODES[config.mode]}
-        </Typography>
+        <TimeRangeDial startSeconds={config.start} stopSeconds={config.stop} />
         <Typography variant="caption" display="block">
           Start: {secToTime(config.start).format("HH:mm")} Stop:{" "}
           {secToTime(config.stop).format("HH:mm")}
@@ -107,7 +111,9 @@ const LightTimerCard = ({ name, config, onSave }) => {
             }}
           />
         </DialogContent>
-        <DialogActions sx={{ alignContent: "center", justifyContent: "center" }}>
+        <DialogActions
+          sx={{ alignContent: "center", justifyContent: "center" }}
+        >
           <Button onClick={handleSave}>Save</Button>
           <Checkbox
             checked={reboot}

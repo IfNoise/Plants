@@ -9,7 +9,12 @@ import {
 
 import PropTypes from "prop-types";
 
-export default function AreYouSure({ show, onCancel, onConfirm, message }) {
+export default function AreYouSure({
+  show,
+  onCancel,
+  onConfirm,
+  message = "Are you sure?",
+}) {
   return (
     <Dialog open={show}>
       <DialogTitle>Are you sure?</DialogTitle>
@@ -29,8 +34,4 @@ AreYouSure.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   message: PropTypes.string,
-};
-
-AreYouSure.defaultProps = {
-  message: "Are you sure?",
 };

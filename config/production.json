@@ -2,5 +2,6 @@
   "port": 5000,
   "jwtSecret": "surinagro ddweed chueaploeng",
   "mongodbUri": "mongodb://ddweed.org:27017/plants",
-  "baseUrl": "http://localhost:5000"
+  "baseUrl": "http://localhost:5000",
+  "victoriaMetricsUrl": "http://ddweed.org:8428"
 }

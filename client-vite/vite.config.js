@@ -19,9 +19,9 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/ddweed\.org\/api\/.*/i,
-            handler: 'NetworkFirst',
+            handler: "NetworkFirst",
             options: {
-              cacheName: 'api-cache',
+              cacheName: "api-cache",
               expiration: {
                 maxEntries: 50,
                 maxAgeSeconds: 5 * 60, // 5 минут
@@ -30,7 +30,7 @@ export default defineConfig({
           },
         ],
       },
-      disable: process.env.NODE_ENV === 'development', // Отключаем PWA в dev режиме
+      disable: process.env.NODE_ENV === "development", // Отключаем PWA в dev режиме
       manifest: {
         name: "Plants Database",
         short_name: "Plants Database",
@@ -61,5 +61,14 @@ export default defineConfig({
   ],
   optimizeDeps: {
     include: ["@emotion/react", "@emotion/styled", "@mui/material/Tooltip"],
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });

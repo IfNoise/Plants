@@ -232,7 +232,7 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
       await refetch();
       setNewConfig(JSON.parse(JSON.stringify(data)));
     } catch (error) {
-      console.error('Failed to save config:', error);
+      console.error("Failed to save config:", error);
     }
   };
   const handleChange = (path, value) => {
@@ -250,7 +250,7 @@ const DeviceSettingsList = ({ deviceId, onCancel }) => {
   useEffect(() => {
     if (isSuccess && data) {
       //setConfig(JSON.parse(JSON.stringify(data)))
-      setNewConfig(JSON.parse(JSON.stringify(data)));
+      setNewConfig(JSON.parse(JSON.stringify(data.data)));
     }
   }, [isSuccess, data]);
 
