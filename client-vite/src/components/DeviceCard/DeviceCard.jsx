@@ -10,12 +10,18 @@ import {
   CardHeader,
   Dialog,
   Stack,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Box,
 } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import Status from "./Status";
 import Outputs from "./Outputs";
 import IrrigatorCard from "./IrrigatorCard";
 import LightTimerCard from "./LightTimerCard";
 import DeviceSettingsList from "../DeviceSettingsList/DeviceSettingsList";
+import FileBrowser from "../FileBrowser";
 import { useSetConfigMutation } from "../../store/deviceApi";
 import useDeviceStatusContext from "../../hooks/useDeviceStatusContext";
 import {
@@ -30,6 +36,7 @@ import {
  */
 const DeviceCard = ({ device }) => {
   const [open, setOpen] = useState(false);
+  const [filesOpen, setFilesOpen] = useState(false);
   const { id, address, config, status } = device;
   const [setConfig, { isError, error }] = useSetConfigMutation();
 
@@ -58,6 +65,14 @@ const DeviceCard = ({ device }) => {
     setOpen(true);
   };
 
+  const handleFilesClose = () => {
+    setFilesOpen(false);
+  };
+
+  const handleFilesOpen = () => {
+    setFilesOpen(true);
+  };
+
   return (
     <>
       {isError && <Alert severity="error">{error.message}</Alert>}
@@ -67,11 +82,14 @@ const DeviceCard = ({ device }) => {
         }}
       >
         <CardHeader
+          sx={{
+            mb: 0,
+          }}
           avatar={<Status status={currentStatus} />}
           title={id}
           subheader={address}
         />
-        <CardContent>
+        <CardContent sx={{ pt: 0 }}>
           <Outputs deviceId={id} updateInterval={60000} />
           <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
             {Object.keys(currentConfig)
@@ -116,12 +134,35 @@ const DeviceCard = ({ device }) => {
         </CardContent>
         <CardActions>
           <Button onClick={handleOpen}>Settings</Button>
+          <Button onClick={handleFilesOpen}>Files</Button>
         </CardActions>
       </Card>
       <Dialog fullScreen open={open} onClose={handleClose}>
         {currentConfig && (
           <DeviceSettingsList deviceId={id} onCancel={handleClose} />
         )}
+      </Dialog>
+      <Dialog
+        open={filesOpen}
+        onClose={handleFilesClose}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <span>Файловый менеджер - {id}</span>
+            <IconButton onClick={handleFilesClose} size="small">
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <FileBrowser deviceId={id} />
+        </DialogContent>
       </Dialog>
     </>
   );

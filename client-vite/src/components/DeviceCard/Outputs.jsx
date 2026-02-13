@@ -35,16 +35,22 @@ const Outputs = ({ deviceId, updateInterval }) => {
 
   return (
     <Box
-      sx={{
-        m: 1,
-        p: 1,
+      sx={(theme) => ({
         width: "100%",
-      }}
+        p: "6px 8px",
+        m: 0.5,
+        borderRadius: 1,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.12)"
+            : "rgba(0, 0, 0, 0.12)"
+        }`,
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.04)"
+            : "rgba(0, 0, 0, 0.02)",
+      })}
     >
-      <Typography variant="h6" sx={{ mb: 1 }}>
-        Outputs
-      </Typography>
-
       {isLoading && <CircularProgress size={20} />}
       {isError && <Alert severity="error">{isError.message}</Alert>}
 

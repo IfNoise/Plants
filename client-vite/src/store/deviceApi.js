@@ -147,6 +147,86 @@ export const deviceApi = createApi({
         { type: 'DeviceState', id: deviceId },
       ],
     }),
+    // Файловая система - список файлов (детальный)
+    listFiles: build.query({
+      query: (deviceId) => ({
+        url: `devices/${deviceId}/call`,
+        method: "POST",
+        body: {
+          method: "FS.ListExt",
+        },
+      }),
+      transformResponse: (response) => {
+        // API возвращает { success: true, data: { result: [...] } }
+        const data = response?.data?.result || response?.result || response;
+        // Убеждаемся что возвращаем массив
+        return Array.isArray(data) ? data : [];
+      },
+      providesTags: (result, error, deviceId) => [
+        { type: 'FileSystem', id: deviceId },
+      ],
+    }),
+    // Получить содержимое файла
+    getFile: build.mutation({
+      query: ({ deviceId, filename, offset = 0, len }) => ({
+        url: `devices/${deviceId}/call`,
+        method: "POST",
+        body: {
+          method: "FS.Get",
+          params: {
+            filename,
+            offset,
+            ...(len && { len }),
+          },
+        },
+      }),
+      transformResponse: (response) => {
+        // API возвращает { success: true, data: { result: { data: "base64", left: 0 } } }
+        return response?.data?.result || response?.result || response;
+      },
+    }),
+    // Записать данные в файл
+    putFile: build.mutation({
+      query: ({ deviceId, filename, data, append = false }) => ({
+        url: `devices/${deviceId}/call`,
+        method: "POST",
+        body: {
+          method: "FS.Put",
+          params: {
+            filename,
+            data,
+            append,
+          },
+        },
+      }),
+      transformResponse: (response) => {
+        // API возвращает { success: true, data: { result: true } }
+        return response?.data?.result || response?.result || response;
+      },
+      invalidatesTags: (result, error, { deviceId }) => [
+        { type: 'FileSystem', id: deviceId },
+      ],
+    }),
+    // Удалить файл
+    removeFile: build.mutation({
+      query: ({ deviceId, filename }) => ({
+        url: `devices/${deviceId}/call`,
+        method: "POST",
+        body: {
+          method: "FS.Remove",
+          params: {
+            filename,
+          },
+        },
+      }),
+      transformResponse: (response) => {
+        // API возвращает { success: true, data: { result: true } }
+        return response?.data?.result || response?.result || response;
+      },
+      invalidatesTags: (result, error, { deviceId }) => [
+        { type: 'FileSystem', id: deviceId },
+      ],
+    }),
     // Новый специализированный эндпоинт для irrigation table
     getIrrigationTable: build.query({
       query: ({ deviceId, irrigatorKey, source = "metadata" }) => ({
@@ -199,5 +279,9 @@ export const {
   useSetComponentDataMutation,
   useGetIrrigationTableQuery,
   useSetIrrigationTableMutation,
+  useListFilesQuery,
+  useGetFileMutation,
+  usePutFileMutation,
+  useRemoveFileMutation,
   refetch,
 } = deviceApi;

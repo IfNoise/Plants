@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import { MapPage } from "./pages/MapPage/MapPage";
 import { GalleryPage } from "./pages/GalleryPage";
 import NutrientCalculator from "./pages/NutrientCalculator/NutrientCalculator";
+import DeviceFilesPage from "./pages/DeviceFilesPage";
 
 
 export const Router = createBrowserRouter(
@@ -42,6 +43,7 @@ export const Router = createBrowserRouter(
       <Route path="strain/:id" element={<StrainDetailPage />} />
       <Route path="gallery" element={<GalleryPage />} />
       <Route path="nutrients" element={<NutrientCalculator />} />
+      <Route path="device-files" element={<DeviceFilesPage />} />
 
 
       
