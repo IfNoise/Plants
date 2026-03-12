@@ -73,7 +73,7 @@ const TimerMode = ({
   const options = [
     { value: MODE.AUTO, label: "Auto" },
     { value: MODE.MANUAL, label: "Manual" },
-    { value: MODE.OFF, label: "Off" },
+    { value: MODE.OFF, label: "Off", color: "#ff0000" },
   ];
   if (showMapMode) options.push({ value: MODE.MAP, label: "Map" });
 
@@ -93,7 +93,7 @@ const TimerMode = ({
                 selected={true}
                 variant={iconVariant}
                 fontSize={20}
-                activeColor={activeColor}
+                activeColor={selected.color || activeColor}
               />
             </Box>
           </Tooltip>
@@ -178,19 +178,6 @@ TimerMode.propTypes = {
   showIcons: PropTypes.bool,
   iconVariant: PropTypes.oneOf(["mode", "plus"]),
   activeColor: PropTypes.string,
-};
-
-TimerMode.defaultProps = {
-  showMapMode: false,
-  interactive: true,
-  showIcons: true,
-  iconVariant: "mode",
-};
-
-// backward-compatible default for newly added prop
-TimerMode.defaultProps = {
-  ...TimerMode.defaultProps,
-  activeColor: "#1976d2",
 };
 
 export default TimerMode;
