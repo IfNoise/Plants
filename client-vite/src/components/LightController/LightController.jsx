@@ -1,6 +1,6 @@
 import { Card, Alert, Stack } from "@mui/material";
-import ChannelsList from "./ChannelsList";
-import TimerList from "./TimerList";
+import ChannelsList from "./channels/ChannelsList";
+import TimerList from "./timers/TimerList";
 import useChannelsContext from "../../hooks/useChannelsContext";
 
 const LightController = () => {

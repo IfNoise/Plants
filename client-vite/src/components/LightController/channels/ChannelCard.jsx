@@ -15,15 +15,15 @@ import {
   useGetLightChannelStateQuery,
   useRemoveChannelMutation,
   useSetMaxLevelMutation,
-} from "../../store/lightApi";
-import { selectChannel } from "../../store/channelsSlice";
+} from "../../../store/lightApi";
+import { selectChannel } from "../../../store/channelsSlice";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import TouchAppIcon from "@mui/icons-material/TouchApp";
-import CircularProgressWithLabel from "../CircularProgress";
-import LockWrapper from "./LockWrapper";
+import CircularProgressWithLabel from "../../CircularProgress";
+import LockWrapper from "../LockWrapper";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AreYouSure from "../AreYouSure";
+import AreYouSure from "../../AreYouSure";
 
 const MAX_LEVEL = 10000;
 
@@ -31,33 +31,23 @@ function valuetext(value) {
   return `${value}%`;
 }
 
-/**
- * Карточка канала освещения с управлением яркостью
- * @param {Object} props - свойства компонента
- * @param {Object} props.channel - данные канала
- * @param {Function} props.onEdit - обработчик редактирования канала
- */
 const ChannelCard = ({ channel, onEdit }) => {
   const { name, maxLevel, manual } = channel;
   const [contextMenu, setContextMenu] = useState(null);
   const [maxValue, setMaxValue] = useState((maxLevel / MAX_LEVEL) * 100);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  // WebSocket integration - получаем реал-тайм данные
   const realtimeChannel = useSelector((state) => selectChannel(state, name));
 
-  // Fallback к polling если WebSocket не предоставляет данные
   const { data: polledState } = useGetLightChannelStateQuery(name, {
     pollingInterval: 60000,
-    skip: !!realtimeChannel, // Пропускаем polling если есть WebSocket данные
+    skip: !!realtimeChannel,
   });
 
-  // Используем реал-тайм данные если доступны, иначе polled данные
   const currentChannel = realtimeChannel || channel;
   const currentState = realtimeChannel?.level ?? polledState?.state;
 
   useEffect(() => {
-    // Обновляем maxValue из текущих данных канала
     const currentMaxLevel = currentChannel.maxLevel ?? maxLevel;
     setMaxValue((currentMaxLevel / MAX_LEVEL) * 100);
   }, [currentChannel.maxLevel, maxLevel]);
@@ -69,10 +59,7 @@ const ChannelCard = ({ channel, onEdit }) => {
     event.preventDefault();
     setContextMenu(
       contextMenu === null
-        ? {
-            mouseX: event.clientX + 2,
-            mouseY: event.clientY - 6,
-          }
+        ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6 }
         : null,
     );
   };
@@ -144,12 +131,7 @@ const ChannelCard = ({ channel, onEdit }) => {
               <IconButton
                 size="small"
                 onClick={handleEditClick}
-                sx={{
-                  p: 0.25,
-                  minWidth: 0,
-                  width: "16px",
-                  height: "16px",
-                }}
+                sx={{ p: 0.25, minWidth: 0, width: "16px", height: "16px" }}
                 title="Редактировать"
               >
                 <EditIcon sx={{ fontSize: "12px" }} />
@@ -157,12 +139,7 @@ const ChannelCard = ({ channel, onEdit }) => {
               <IconButton
                 size="small"
                 onClick={handleRemoveClick}
-                sx={{
-                  p: 0.25,
-                  minWidth: 0,
-                  width: "16px",
-                  height: "16px",
-                }}
+                sx={{ p: 0.25, minWidth: 0, width: "16px", height: "16px" }}
                 title="Удалить"
               >
                 <DeleteIcon sx={{ fontSize: "12px" }} />
@@ -172,42 +149,24 @@ const ChannelCard = ({ channel, onEdit }) => {
 
           {manual ? (
             <TouchAppIcon
-              sx={{
-                fontSize: "18px",
-                alignSelf: "flex-end",
-              }}
+              sx={{ fontSize: "18px", alignSelf: "flex-end" }}
               color="error"
             />
           ) : (
             <AvTimerIcon
-              sx={{
-                fontSize: "18px",
-                alignSelf: "flex-end",
-              }}
+              sx={{ fontSize: "18px", alignSelf: "flex-end" }}
               color="success"
             />
           )}
 
-          <Stack
-            sx={{
-              alignItems: "center",
-            }}
-            direction="column"
-            spacing={1}
-          >
+          <Stack sx={{ alignItems: "center" }} direction="column" spacing={1}>
             <CircularProgressWithLabel
               variant="determinate"
               value={Math.floor((currentState / MAX_LEVEL) * 100) || 0}
-              sx={{
-                color: "success.light",
-              }}
+              sx={{ color: "success.light" }}
             />
             <Slider
-              sx={{
-                height: "90px",
-                width: "35px",
-                color: "success.main",
-              }}
+              sx={{ height: "90px", width: "35px", color: "success.main" }}
               size="small"
               orientation="vertical"
               getAriaLabel={() => "Максимальная яркость"}

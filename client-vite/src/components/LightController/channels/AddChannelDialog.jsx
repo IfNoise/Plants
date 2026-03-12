@@ -18,15 +18,12 @@ import { useState } from "react";
 import {
   useAddChannelMutation,
   useGetDevicesQuery,
-} from "../../store/lightApi";
+} from "../../../store/lightApi";
 import TungstenIcon from "@mui/icons-material/Tungsten";
 
 const Transition = Slide;
 const MAX_LEVEL = 10000;
 
-/**
- * Диалог добавления нового канала освещения
- */
 const AddChannelDialog = () => {
   const { data: devices } = useGetDevicesQuery();
   const [addChannel, { isLoading }] = useAddChannelMutation();
@@ -59,10 +56,7 @@ const AddChannelDialog = () => {
   };
 
   const handleChange = (field) => (event) => {
-    setNewChannel({
-      ...newChannel,
-      [field]: event.target.value,
-    });
+    setNewChannel({ ...newChannel, [field]: event.target.value });
     setError("");
   };
 
@@ -71,7 +65,6 @@ const AddChannelDialog = () => {
       setError("Все поля обязательны для заполнения");
       return;
     }
-
     try {
       await addChannel({
         name: newChannel.name,
@@ -161,7 +154,6 @@ const AddChannelDialog = () => {
                 inputProps={{ min: 0, max: 100 }}
                 helperText="Максимальная яркость канала (0-100%)"
               />
-
               <TextField
                 label="Минимальный уровень (%)"
                 type="number"
@@ -173,11 +165,11 @@ const AddChannelDialog = () => {
               />
             </FormControl>
 
-            {!devices || devices.length === 0 ? (
+            {(!devices || devices.length === 0) && (
               <Alert severity="info">
                 Сначала добавьте устройство в менеджере устройств
               </Alert>
-            ) : null}
+            )}
           </Stack>
         </DialogContent>
 

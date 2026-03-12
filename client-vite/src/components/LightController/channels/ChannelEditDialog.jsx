@@ -17,17 +17,10 @@ import PropTypes from "prop-types";
 import {
   useGetDevicesQuery,
   useUpdateChannelMutation,
-} from "../../store/lightApi";
+} from "../../../store/lightApi";
 
 const MAX_LEVEL = 10000;
 
-/**
- * Диалог редактирования параметров канала освещения
- * @param {Object} props - свойства компонента
- * @param {boolean} props.open - состояние открытия диалога
- * @param {Function} props.onClose - обработчик закрытия диалога
- * @param {Object} props.channel - данные редактируемого канала
- */
 const ChannelEditDialog = ({ open, onClose, channel }) => {
   const { data: devices } = useGetDevicesQuery();
   const [updateChannel, { isLoading }] = useUpdateChannelMutation();
@@ -51,27 +44,19 @@ const ChannelEditDialog = ({ open, onClose, channel }) => {
   }, [channel]);
 
   const handleChange = (field) => (event) => {
-    setFormData({
-      ...formData,
-      [field]: event.target.value,
-    });
+    setFormData({ ...formData, [field]: event.target.value });
   };
 
   const handleSave = async () => {
     if (!channel?.name) return;
-
     const updateData = {
       ...(formData.device && { device: formData.device }),
       ...(formData.port !== undefined && { port: parseInt(formData.port) }),
       maxLevel: Math.floor((MAX_LEVEL * formData.maxLevel) / 100),
       minLevel: Math.floor((MAX_LEVEL * formData.minLevel) / 100),
     };
-
     try {
-      await updateChannel({
-        name: channel.name,
-        channel: updateData,
-      }).unwrap();
+      await updateChannel({ name: channel.name, channel: updateData }).unwrap();
       onClose();
     } catch (error) {
       console.error("Ошибка обновления канала:", error);

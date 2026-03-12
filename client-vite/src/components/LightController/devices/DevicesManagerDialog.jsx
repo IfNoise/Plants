@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useGetDevicesQuery } from "../../store/lightApi";
+import { useGetDevicesQuery } from "../../../store/lightApi";
 import DeviceCard from "./DeviceCard";
 import AddDeviceDialog from "./AddDeviceDialog";
 import CloseIcon from "@mui/icons-material/Close";

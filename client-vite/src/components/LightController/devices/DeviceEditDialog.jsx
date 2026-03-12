@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useUpdateDeviceMutation } from "../../store/lightApi";
+import { useUpdateDeviceMutation } from "../../../store/lightApi";
 
 const DeviceEditDialog = ({ device, open, onClose }) => {
   const [updateDevice] = useUpdateDeviceMutation();
@@ -79,7 +79,6 @@ const DeviceEditDialog = ({ device, open, onClose }) => {
       <DialogTitle>Редактировать устройство: {device.name}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
-          {/* Отладочная информация */}
           <details style={{ fontSize: "12px", color: "text.secondary" }}>
             <summary>Данные устройства (для отладки)</summary>
             <pre>{JSON.stringify(device, null, 2)}</pre>

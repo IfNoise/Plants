@@ -14,18 +14,15 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { useAddDeviceMutation } from "../../store/lightApi";
+import { useAddDeviceMutation } from "../../../store/lightApi";
 import AddIcon from "@mui/icons-material/Add";
 
-/**
- * Диалог добавления нового устройства
- */
 const AddDeviceDialog = () => {
   const [addDevice, { isLoading }] = useAddDeviceMutation();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
 
-  const [newDevice, setNewDevice] = useState({
+  const defaultDevice = {
     name: "",
     type: "tcp",
     address: "",
@@ -38,7 +35,9 @@ const AddDeviceDialog = () => {
     unitId: "1",
     timeout: "1000",
     portsCount: "8",
-  });
+  };
+
+  const [newDevice, setNewDevice] = useState(defaultDevice);
 
   const handleOpen = () => {
     setOpen(true);
@@ -47,28 +46,12 @@ const AddDeviceDialog = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setNewDevice({
-      name: "",
-      type: "tcp",
-      address: "",
-      port: "502",
-      path: "",
-      baudRate: "9600",
-      dataBits: "8",
-      stopBits: "1",
-      parity: "none",
-      unitId: "1",
-      timeout: "1000",
-      portsCount: "8",
-    });
+    setNewDevice(defaultDevice);
     setError("");
   };
 
   const handleChange = (field) => (event) => {
-    setNewDevice({
-      ...newDevice,
-      [field]: event.target.value,
-    });
+    setNewDevice({ ...newDevice, [field]: event.target.value });
     setError("");
   };
 
@@ -77,12 +60,10 @@ const AddDeviceDialog = () => {
       setError("Название устройства обязательно");
       return;
     }
-
     if (newDevice.type === "tcp" && !newDevice.address) {
       setError("IP адрес обязателен для TCP устройства");
       return;
     }
-
     if (newDevice.type === "rtu" && !newDevice.path) {
       setError("Путь к порту обязателен для RTU устройства");
       return;
