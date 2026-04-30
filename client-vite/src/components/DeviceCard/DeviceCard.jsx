@@ -54,7 +54,7 @@ const DeviceCard = ({ device }) => {
   }, [id, subscribeToDevice, unsubscribeFromDevice]);
 
   // Use real-time data if available, fallback to initial data
-  const currentConfig = realtimeConfig || config;
+  const currentConfig = realtimeConfig || config || {};
   const currentStatus = realtimeStatus || status;
 
   const handleClose = () => {
