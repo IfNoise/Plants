@@ -3,14 +3,11 @@ import {
   AccordionActions,
   AccordionDetails,
   AccordionSummary,
-  Alert,
-  CircularProgress,
   Stack,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import { useGetLightChannelsQuery } from "../../../store/lightApi";
 import { selectAllChannels } from "../../../store/channelsSlice";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddChannelDialog from "./AddChannelDialog";
@@ -18,30 +15,10 @@ import ChannelCard from "./ChannelCard";
 import ChannelEditDialog from "./ChannelEditDialog";
 import DevicesManagerButton from "../devices/DevicesManagerButton";
 
-const ChannelsList = ({ channelNames, addButton }) => {
-  const { data, isLoading, isSuccess, isError, error } =
-    useGetLightChannelsQuery({});
-
-  const realtimeChannels = useSelector(selectAllChannels);
-
-  const [channels, setChannels] = useState([]);
+const ChannelsList = ({ channels, addButton }) => {
   const [editChannel, setEditChannel] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  useEffect(() => {
-    const channelsToUse =
-      Object.keys(realtimeChannels).length > 0
-        ? Object.values(realtimeChannels)
-        : data || [];
-
-    if (channelsToUse.length > 0 && channelNames?.length > 0) {
-      setChannels(
-        channelsToUse.filter((channel) => channelNames.includes(channel.name)),
-      );
-    } else if (channelsToUse.length > 0 && !channelNames) {
-      setChannels(channelsToUse);
-    }
-  }, [data, realtimeChannels, channelNames]);
+  const currentChannels = channels || [];
 
   const handleEditChannel = (channel) => {
     setEditChannel(channel);
@@ -61,16 +38,9 @@ const ChannelsList = ({ channelNames, addButton }) => {
         </AccordionSummary>
 
         <AccordionDetails>
-          {isLoading && <CircularProgress />}
-          {isError && (
-            <Alert severity="error">
-              {error?.message || "Ошибка загрузки"}
-            </Alert>
-          )}
-
           <Stack direction="row" useFlexGap flexWrap="wrap" spacing={1}>
-            {isSuccess &&
-              channels?.map((channel) => (
+            {currentChannels?.length > 0 &&
+              currentChannels?.map((channel) => (
                 <ChannelCard
                   key={channel.name}
                   channel={channel}
@@ -98,7 +68,7 @@ const ChannelsList = ({ channelNames, addButton }) => {
 };
 
 ChannelsList.propTypes = {
-  channelNames: PropTypes.array,
+  channels: PropTypes.arrayOf(PropTypes.object),
   addButton: PropTypes.bool,
 };
 

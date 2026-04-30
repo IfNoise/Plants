@@ -36,7 +36,8 @@ const TimerCard = ({ timer }) => {
   const [masterLevel, setMasterLevel] = useState(50);
   const [oldMasterLevel, setOldMasterLevel] = useState(50);
   const [faderMode, setFaderMode] = useState("fadeLevel");
-
+  const timerChannels =
+    lightChannels?.filter((channel) => channels.includes(channel.name)) || [];
   useEffect(() => {
     if (channels.length > 0) {
       channels.forEach((channel) => {
@@ -155,7 +156,7 @@ const TimerCard = ({ timer }) => {
           />
         </RadioGroup>
       </FormControl>
-      {channels?.length > 0 && <ChannelsList channelNames={channels} />}
+      {timerChannels?.length > 0 && <ChannelsList channels={timerChannels} />}
 
       <CardActions>
         <SubscribeChannelDialog timer={timer} />
